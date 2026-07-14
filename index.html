@@ -499,7 +499,7 @@
     cost: 1,
 valType: "flat", 
 stressChange: -30, 
-desc: "ストレス-30(必ず）。主従度+5。代償として翌週の初期AP-1",
+desc: "ストレス-30。主従度+5。代償として翌週の初期AP-1",
     flavor: {
         trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。",
         dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。"
@@ -511,12 +511,12 @@ desc: "ストレス-30(必ず）。主従度+5。代償として翌週の初期A
                 { name: "寝具の天日干し", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -15, desc: "健康+20,ストレス-10。主従度+3", flavor: { trust: "あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。", dependence: "あなたが寝具を整えると、彼はあなたの気配を感じて静かに目を閉じた。" } },
                 { name: "部屋を温める", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -10, desc: "健康+15,ストレス-15。主従度+3", flavor: { trust: "あなたが暖炉に火を入れると、彼はあなたの気遣いに胸を打たれたようだ。", dependence: "部屋が温まっても、彼はあなたがいなければ寒さを感じてしまうようだ。" } },
                 { name: "滋養ある食事", type: "indirect", value: 4, cost: 1, valType: "flat", stressChange: -15, desc: "健康+30,ストレス-10。主従度+4", flavor: { trust: "あなたが栄養のある食事を用意すると、彼は感謝とともにそれを口にした。", dependence: "あなたが用意した食事を、彼はあなたのためだけにすべて平らげた。" } },
-                { name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -15, desc: "ストレス-15,主従度+3。さらに3ターンの間,準備にストレスが5減少する", flavor: { trust: "あなたが彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出したようだ。", dependence: "香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。" } },
+                { name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, desc: "ストレス-15,主従度+3。さらに3ターンの間,準備にストレスが5減少する", flavor: { trust: "あなたが彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出したようだ。", dependence: "香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。" } },
                 { name: "古い手記の修復", type: "indirect", value: 7, cost: 2, valType: "flat", stressChange: -10, desc: "ストレス-10,主従度+6。山札からカードを1枚ドローする", flavor: { trust: "あなたが彼の手記を直すと、彼は失われていた自尊心を少し取り戻したようだ。", dependence: "あなたが手記を修復する姿を見て、彼はあなたへの強い執着を募らせている。" } },
                 { name: "お気に入りの紅茶", type: "indirect", value: 2, cost: 1, valType: "flat", stressChange: -20, desc: "ストレス-25,主従度+2。手札にある不用品カードを1枚廃棄する", flavor: { trust: "あなたが淹れた紅茶の香りに、彼の張り詰めていた心が少しずつ解けていく。", dependence: "あなたが淹れた紅茶を飲むと、彼はあなたの存在だけを鮮明に感じるようだ。" } },
                 { name: "防音壁の補強", type: "indirect", value: 4, cost: 2, valType: "flat", stressChange: 0, desc: "主従度+4。次の治安維持戦闘が発生した際,敵の初期脅威度を25軽減する", flavor: { trust: "あなたが部屋の防音を強化すると、彼はあなたに守られていることを実感した。", dependence: "外の音が消えた部屋で、彼はあなたと二人きりの世界に深く浸っている。" } },
-                { name: "調度品の買い替え", type: "indirect", value: 15, cost: 2, valType: "percent", stressChange: 0, goldCost: 20, desc: "資金20消費。主従度を現在の値のプラス方向へ15%引き戻す", flavor: { trust: "あなたが新しい家具を揃えると、彼は荒んだ心に温かい光が差すのを感じた。", dependence: "新しい家具よりも、彼はただあなたが傍にいてくれることだけを望んでいる。" } },
-                { name: "中庭の手入れ", type: "indirect", value: 5, cost: 1, valType: "flat", stressChange: -15, desc: "健康+5,ストレス-20,主従度+5。デッキからランダムな間接ケアカード1枚を手札に加える", flavor: { trust: "あなたが中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" } }
+                { name: "調度品の買い替え", type: "indirect", value: 15, cost: 1, valType: "percent", stressChange: 0, goldCost: 20, desc: "資金20消費。主従度を現在の値のプラス方向へ15%引き戻す", flavor: { trust: "あなたが新しい家具を揃えると、彼は荒んだ心に温かい光が差すのを感じた。", dependence: "新しい家具よりも、彼はただあなたが傍にいてくれることだけを望んでいる。" } },
+                { name: "中庭の手入れ", type: "indirect", value: 5, cost: 2, valType: "flat", stressChange: -15, desc: "健康+5,ストレス-20,主従度+5。デッキからランダムな間接ケアカード1枚を手札に加える", flavor: { trust: "あなたが中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" } }
             ],
             cold: [
                 { name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", desc: "ストレス+15。主従度-1", flavor: { trust: "あなたが事務的に接すると、彼はただ己の義務を果たそうと努めた。", dependence: "あなたの冷淡な態度に、彼は激しい不安と孤独感に駆られている。" } },
@@ -524,7 +524,7 @@ desc: "ストレス-30(必ず）。主従度+5。代償として翌週の初期A
                 { name: "冷酷な事実", type: "cold", value: -4, cost: 1, valType: "flat", desc: "ストレス+20。主従度-4", flavor: { trust: "あなたが厳しい現実を突きつけると、彼は自分の無力さを深く噛み締めた。", dependence: "現実を突きつけられた彼は、ただあなただけを世界のすべてにしようと逃避している。" } },
                 { name: "私物の没収", type: "cold", value: -5, cost: 1, valType: "flat", desc: "ストレス+10。主従度-5。さらに資金+15G", flavor: { trust: "あなたが彼の私物を処分しても、彼はそれが当然の報いだと受け入れた。", dependence: "私物を奪われても、彼はあなたに従うこと自体に喜びを見出している。" } },
                 { name: "突き放す視線", type: "cold", value: -6, cost: 1, valType: "flat", desc: "ストレス+25。主従度-6", flavor: { trust: "あなたの冷たい眼差しを受け、彼は自分の過去の罪深さに打ちのめされた。", dependence: "あなたに冷たく見つめられると、彼はその視線にすら悲しい執着を見せた。" } },
-                { name: "鎮痛剤を与えない", type: "cold", value: -8, cost: 1, valType: "flat", desc: "健康-15,ストレス+15。主従度-8", flavor: { trust: "あなたが薬を与えなくても、彼は自らの命に対する執着を手放しつつある。", dependence: "苦痛の中でも、彼はあなたから与えられた試練としてそれを受け入れている。" } },
+                { name: "鎮痛剤を与えない", type: "cold", value: -8, cost: 1, valType: "flat", desc: "ストレス+15。主従度-8", flavor: { trust: "あなたが薬を与えなくても、彼は自らの命に対する執着を手放しつつある。", dependence: "苦痛の中でも、彼はあなたから与えられた試練としてそれを受け入れている。" } },
                 { name: "沈黙の糾弾", type: "cold", value: -10, cost: 1, valType: "flat", desc: "ストレス+15。主従度-10（主人の健康度が50以下の場合はストレス+30に強化）", flavor: { trust: "あなたが無言で彼を責めると、彼はその沈黙の重さに耐えきれず目を伏せた。", dependence: "あなたが沈黙すると、彼はあなたの心が離れてしまうのではないかとパニックに陥った。" } },
                 { name: "部屋の施錠", type: "cold", value: -12, cost: 2, valType: "flat", desc: "ストレス+40。主従度-12。代償として翌週のドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めると、彼はそれを自分への正当な処置だと考えた。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
                 { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", desc: "ストレス+20。主従度を現在値から15%減少させる", flavor: { trust: "食事が遅れても、彼はあなたを怒らせた自分の落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
