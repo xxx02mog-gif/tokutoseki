@@ -5,6 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>特等席</title>
    <style>
+
+html, body, * {
+  /* Firefox用の設定（少し暗めの赤茶と黒に近いグレー） */
+  scrollbar-width: thin;
+  scrollbar-color: #5c2c2c #1a1515;
+}
+
+/* 2. Chrome / Safari / Edge（WebKit系ブラウザ）用の設定 */
+
+/* スクロールバー全体の幅と高さ */
+::-webkit-scrollbar {
+  width: 8px;  /* 縦スクロールバーの幅 */
+  height: 8px; /* 横スクロールバーの高さ（あれば） */
+}
+
+/* スクロールバーが通るレール（溝）の部分 */
+::-webkit-scrollbar-track {
+  background: #151111; /* 画面に馴染む、極めて深い漆黒 */
+  border-left: 1px solid #2a1f1f; /* わずかな境界線で上品に */
+}
+
+/* 動かすツマミ（ハンドル）の部分 */
+::-webkit-scrollbar-thumb {
+  /* 耽美な世界観に合う「凝固した血のような深い赤（ボルドー）」 */
+  background-color: #5c2c2c; 
+  border-radius: 4px;
+  /* 少しだけツマミの周囲に隙間を作って立体感を出す */
+  border: 1px solid #151111; 
+  transition: background-color 0.2s ease;
+}
+
+/* ツマミにマウスホバーしたとき */
+::-webkit-scrollbar-thumb:hover {
+  /* ホバー時は少しだけ明るく、あるいは不穏に赤く光るイメージ */
+  background-color: #8c3a3a; 
+}
+
         * {
             box-sizing: border-box;
             margin: 0;
