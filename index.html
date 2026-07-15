@@ -1311,7 +1311,7 @@ let memoryCount = state.achievements.length;
 
             if (condition === "dead") {
                 title.innerText = "【BAD END】主人の病死";
-                desc.innerHTML = `彼は過酷な環境に耐えかね、静かに息を引き取った。`;
+                desc.innerHTML = `彼は過酷な環境に耐えかね、静かに息を引き取った。`+ memoryText;
                 return;
             }
             if (condition === "assassination") {
@@ -1711,7 +1711,7 @@ function openManual() {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、いろいろガバガバです。<br><br>ver0.3</p>
+ほとんどgeminiに作ってもらったので、いろいろガバガバです。<br><br>ver0.31</p>
         </div>
             <div style="padding: 10px; border-top: 1px solid #444; text-align: center; background: #111;">
             <button onclick="closeManual()" style="background: #d4af37; color: #000; border: none; padding: 6px 25px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 13px;">手引書を閉じる</button>
