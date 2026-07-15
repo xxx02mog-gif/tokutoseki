@@ -670,7 +670,7 @@ function getSeasonByTurn(turn) {
             const debuffBar = document.getElementById('debuff-bar');
             if (state.debuff !== 'none') {
                 debuffBar.style.display = 'block';
-                let names = { light: '軽度（片脚の不自由:ケアコスト+1）', medium: '中度（頭痛と眩暈:ドロー-1）', heavy: '重度（嘔吐・昏睡:AP固定1・暗殺可能）' };
+                let names = { light: '軽度（片脚の不自由:ケアコスト+1）', medium: '中度（頭痛と眩暈:ドロー-1）', heavy: '重度（嘔吐・昏睡:AP固定1）' };
                 document.getElementById('debuff-name').innerText = names[state.debuff];
             } else {
                 debuffBar.style.display = 'none';
