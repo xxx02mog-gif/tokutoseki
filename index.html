@@ -1107,7 +1107,7 @@ state.stress = Math.min(100, state.stress + 10);
                     else if (card.type === 'harm') {
                         if (state.debuff === 'heavy') {
                             if (card.isKillTrigger) {
-                                addLog("――特等席の主は永久に失われた。", "log-flavor");
+                                addLog("――特等席は永久に失われた。", "log-flavor");
                                 checkEndGame(false, "assassination");
                                 return;
                             } else {
