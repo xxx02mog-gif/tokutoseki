@@ -317,7 +317,8 @@ html, body, * {
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
+        white-space: nowrap;
+    flex-shrink: 0;}
         .btn:active { 
             background-color: #2a2a2a; 
         }
@@ -379,7 +380,16 @@ html, body, * {
             justify-content: space-between;
             align-items: center;
             border: 1px solid #252525;
-        }
+      gap: 8px; /*  追加：文章とボタンの間の最低限の隙間を確保 */
+}
+
+/* 追加：ショップのテキスト領域がボタンを押し潰さないようにする */
+.shop-item > div,
+.shop-item > span {
+    min-width: 0;
+    flex: 1;
+    word-break: break-all; /* 必要に応じて文章側を自動で改行させる */
+}
 
         .tab-area {
             display: flex;
@@ -404,6 +414,8 @@ html, body, * {
             border: 1px solid #d4af37;
         }
     </style>
+
+<link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
 
