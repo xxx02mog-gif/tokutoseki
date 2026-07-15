@@ -491,15 +491,15 @@
                 { name: "傷口の消毒", type: "direct", value: 5, cost: 2, valType: "flat", stressChange: 0, desc: "健康+15,ストレス-10。主従度+5。さらに敵脅威度-15", flavor: { trust: "あなたは傷口を消毒した。処置の痛みで彼は顔をしかめたが、手当てには感謝している。", dependence: "あなたは傷口を消毒した。彼は痛みすらあなたからの慈悲だと喜んで受け入れている。" } },
                 { name: "熱を測る", type: "direct", value: 0, cost: 1, valType: "flat", stressChange: -10, desc: "ストレス-10。手札のランダムな冷淡カード1枚を『部屋の掃除』に変換する", flavor: { trust: "あなたは彼の熱を測った。静かな時間が流れ、彼の緊張が少し解けたようだ。", dependence: "あなたは主人に触れた。彼はあなたの体温に強い安心感を覚えている。" } },
                 { name: "つきっきりの給仕", type: "direct", value: 10, cost: 2, valType: "flat", stressChange: -25, desc: "健康+20,ストレス-25。主従度+10", flavor: { trust: "あなたが彼つきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが食事を与えると、彼はすべてをあなたに委ねるように受け入れた。" } },
-                { name: "医者を呼ぶ", type: "direct", value: 5, cost: 2, valType: "flat", stressChange: 0, goldCost: 30, desc: "直接ケア:資金30消費。健康+50(必ず）。主従度+5", flavor: { trust: "あなたは彼のために資金を使って医師を呼んだ。彼はその献身に深く感謝している。", dependence: "あなたが手配した医師の治療を、彼はあなたのためにと静かに耐え忍んだ。" } },
+                { name: "医者を呼ぶ", type: "direct", value: 5, cost: 2, valType: "flat", stressChange: 0, goldCost: 30, desc: "直接ケア:資金30消費。必ず健康+50。主従度+5", flavor: { trust: "あなたは彼のために資金を使って医師を呼んだ。彼はその献身に深く感謝している。", dependence: "あなたが手配した医師の治療を、彼はあなたのためにと静かに耐え忍んだ。" } },
                 { name: "輸血を行う", type: "direct", value: 10, cost: 3, valType: "flat", stressChange: 0, desc: "健康+40。主従度+10。代償として翌週の初期AP-1", flavor: { trust: "あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。", dependence: "あなたの血を与えられた彼は、あなたと深く結びついた感覚に酔いしれている。" } },
            {    name: "過呼吸の対処",
     type: "direct",
     value: 5,
     cost: 1,
 valType: "flat", 
-stressChange: -30, 
-desc: "ストレス-30。主従度+5。代償として翌週の初期AP-1",
+
+desc: "必ずストレス-30。主従度+5。代償として翌週の初期AP-1",
     flavor: {
         trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。",
         dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。"
@@ -1561,7 +1561,7 @@ function openManual() {
 </style>
 
 <div id="manual-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; padding: 20px;">
-    <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 750px; max-height: 90vh; overflow-y: auto; border-radius: 4px; box-shadow: 0 0 20px rgba(212,175,55,0.3); display: flex; flex-direction: column;">
+    <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 750px; max-height: 80vh; overflow-y: auto; border-radius: 4px; box-shadow: 0 0 20px rgba(212,175,55,0.3); display: flex; flex-direction: column;">
         
         <div style="padding: 15px; border-bottom: 1px solid #444; display: flex; justify-content: space-between; align-items: center; background: #111;">
             <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 16px;">説明書</span>
