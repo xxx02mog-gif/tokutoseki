@@ -568,16 +568,16 @@ desc: "必ずストレス-30。主従度+5。代償として翌週の初期AP-1"
                 { name: "他人の気配を匂わす", type: "cold", value: -30, cost: 3, valType: "percent", desc: "ストレス+30。主従度を現在値-30%", flavor: { trust: "あなたが他人の気配を漂わせると、彼は自分が不要になったのだと悟り静かに絶望した。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
             ],
             harm: [
-                { name: "屋敷の整備を疎かにする", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: true, desc: "敵脅威度-1０ / 主人健康-5,ストレス+15", flavor: { trust: "片脚が悪い彼は、整備されていない道では歩きにくいようだ。", dependence: "屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。", battle: "あなたは屋敷の整備を後回しにし、防衛の準備に時間を割いた。" } },
-                { name: "毒の調合", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: true, desc: "敵脅威度-20 / 主人健康-15,ストレス+10。", flavor: { trust: "あなたが苦い薬を食事に混ぜると、彼はそれを罰として静かに飲み干した。", dependence: "身体の不調を感じながらも、彼はあなたから与えられるものに身を委ねている。", battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。" } },
-                { name: "首を絞める", type: "harm", value: 0, cost: 2, valType: "flat", isMasterAlways: false, desc: "敵脅威度-30 / 【昏睡時】主人健康-20", flavor: { trust: "横たわる主人の首に手をかける。皮膚の向こうに、か細い呼吸を感じる。", dependence: "横たわる主人の首に手をかける。薄く開いた彼の目が微かに微笑んだように感じる。", battle: "あなたは襲い来る敵の首を締め、無力化させた。" } },
-                { name: "見せしめの拷問", type: "harm", value: 0, cost: 3, valType: "percent", isMasterAlways: false, desc: "敵脅威度-40 / 【昏睡時】主人健康-35,ストレス+30。次ターンのプレイヤー初期AP-1", flavor: { trust: "あなたは主人の目に触れる場所に、惨たらしく死んだ魔物の死体を放置した。彼は顔を引き攣らせている。", dependence: "疲労の中でも、彼はあなたのやり方に異を唱えることなく従っている。", battle: "あなたは捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。" } },
-                { name: "形見の宝刀", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, desc: "敵脅威度-45 / 【昏睡時】主人を暗殺し、即ゲーム終了", flavor: { trust: "あなたは静かに形見の宝刀を構え、因縁に終止符を打った。彼は抗うことなくそれを受け入れた。", dependence: "あなたが宝刀を向けると、彼はあなたによって終わることに安堵の表情を浮かべた。", battle: "あなたは形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。" } },
-                { name: "罠を配置する", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, desc: "(戦闘専用):敵脅威度-15。さらに翌週の初期APを+1する", flavor: { trust: "あなたは周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "あなたは彼を守るために罠を張った。特等席を脅かす者は決して許さないという意志が見える。" } },
-                { name: "硝煙の盾", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, desc: "(戦闘専用):敵脅威度-15。さらに主人のストレスを15軽減する", flavor: { trust: "あなたは火薬を使って敵を足止めした。部屋の中の彼は、あなたへの心配で胸を痛めている。", dependence: "外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。" } },
-                { name: "威嚇射撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, desc: "(戦闘専用):敵脅威度-10。さらに資金+30G", flavor: { trust: "あなたは威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
-                { name: "容赦なき追撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, desc: "(戦闘専用):敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35に強化)", flavor: { trust: "あなたは撤退する敵を追い詰めた。この場所を守るためのあなたの覚悟が窺える。", dependence: "あなたは敵を徹底的に排除した。彼を脅かす障害はすべて取り除くという執念を感じさせる。" } },
-                { name: "決死の防衛線", type: "harm", value: 0, cost: 3, valType: "flat", isBattleOnly: true, desc: "(戦闘専用):敵脅威度を強制的に0にする。代償として主人健康-10,ストレス+20", flavor: { trust: "あなたは身を挺して防衛線を死守した。彼は己の無力さとあなたを危険に晒したことに絶望している。", dependence: "あなたは強引な手段で敵を退けた。周囲の被害などお構いなしのあなたの姿に、彼は心酔している。" } }
+                { name: "屋敷の整備を意図的に怠る", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: true, desc: "敵脅威度-1０ / 【対主人】健康-5,ストレス+15", flavor: { trust: "片脚が悪い彼は、整備されていない道では歩きにくいようだ。", dependence: "屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。", battle: "あなたは屋敷の整備を後回しにし、防衛の準備に時間を割いた。" } },
+                { name: "毒の調合", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: true, desc: "敵脅威度-20 / 【対主人】健康-15,ストレス+10。", flavor: { trust: "あなたが苦い薬を食事に混ぜると、彼はそれを罰として静かに飲み干した。", dependence: "身体の不調を感じながらも、彼はあなたから与えられるものに身を委ねている。", battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。" } },
+                { name: "首を絞める", type: "harm", value: 0, cost: 2, valType: "flat", isMasterAlways: false, desc: "敵脅威度-30 / 【対主人】健康-20", flavor: { trust: "横たわる主人の首に手をかける。皮膚の向こうに、か細い呼吸を感じる。", dependence: "横たわる主人の首に手をかける。薄く開いた彼の目が微かに微笑んだように感じる。", battle: "あなたは襲い来る敵の首を締め、無力化させた。" } },
+                { name: "見せしめの拷問", type: "harm", value: 0, cost: 3, valType: "percent", isMasterAlways: false, desc: "敵脅威度-40 / 【対主人】主人健康-35,ストレス+30。次ターンのプレイヤー初期AP-1", flavor: { trust: "あなたは主人の目に触れる場所に、惨たらしく死んだ魔物の死体を放置した。彼は顔を引き攣らせている。", dependence: "疲労の中でも、彼はあなたのやり方に異を唱えることなく従っている。", battle: "あなたは捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。" } },
+                { name: "形見の宝刀", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, desc: "敵脅威度-45", flavor: { trust: "あなたは静かに形見の宝刀を構え、因縁に終止符を打った。彼は抗うことなくそれを受け入れた。", dependence: "あなたが宝刀を向けると、彼はあなたによって終わることに安堵の表情を浮かべた。", battle: "あなたは形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。" } },
+                { name: "罠を配置する", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, desc: "敵脅威度-15。さらに翌週の初期APを+1する", flavor: { trust: "あなたは周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "あなたは彼を守るために罠を張った。特等席を脅かす者は決して許さないという意志が見える。" } },
+                { name: "硝煙の盾", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, desc: "敵脅威度-15。さらに主人のストレスを15軽減する", flavor: { trust: "あなたは火薬を使って敵を足止めした。部屋の中の彼は、あなたへの心配で胸を痛めている。", dependence: "外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。" } },
+                { name: "威嚇射撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, desc: "敵脅威度-10。さらに資金+30G", flavor: { trust: "あなたは威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
+                { name: "容赦なき追撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35に強化)", flavor: { trust: "あなたは撤退する敵を追い詰めた。この場所を守るためのあなたの覚悟が窺える。", dependence: "あなたは敵を徹底的に排除した。彼を脅かす障害はすべて取り除くという執念を感じさせる。" } },
+                { name: "決死の防衛線", type: "harm", value: 0, cost: 2, valType: "flat", isBattleOnly: true, desc: "敵脅威度を強制的に0にする。健康-10,ストレス+20", flavor: { trust: "あなたは身を挺して防衛線を死守した。彼は己の無力さとあなたを危険に晒したことに絶望している。", dependence: "あなたは強引な手段で敵を退けた。周囲の被害などお構いなしのあなたの姿に、彼は心酔している。" } }
             ],
             season: {
                 "秋": { name: "収穫祭の思い出", type: "season", season: "秋", value: 5, cost: 2, valType: "flat", desc: "秋限定。ストレス-45。主従度+5。使用後、手札で「祭りの名残(不用品)」に変化する", flavor: { trust: "外から祭りの音が聞こえる。彼はかつてあなたと過ごした賑やかな日々を懐かしんでいるようだ。", dependence: "外の喧噪よりも、彼はあなたが給仕してくれる静かな時間だけを欲している。" } },
@@ -724,7 +724,7 @@ function getSeasonByTurn(turn) {
             if (roll < state.stress && state.stress > 0) {
                 let debuffs = ['light', 'medium', 'heavy'];
                 state.debuff = debuffs[Math.floor(Math.random() * debuffs.length)];
-                addLog("彼は苦しそうに息を乱し、ひどく体調が優れないようだ。", "log-flavor");
+                addLog("彼は青褪めた顔で息を乱している。体調が優れないようだ。", "log-flavor");
                 
                 // 【警告】発生時の不用品混入（中度・重度のみ）
                 if (state.debuff === 'medium' || state.debuff === 'heavy') {
