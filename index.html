@@ -722,10 +722,19 @@ function getSeasonByTurn(turn) {
             }
 
             let roll = Math.random() * 100;
-            if (roll < state.stress && state.stress > 0) {
+          if (roll < state.stress && state.stress > 0) {
                 let debuffs = ['light', 'medium', 'heavy'];
                 state.debuff = debuffs[Math.floor(Math.random() * debuffs.length)];
-                addLog("彼は青褪めた顔で息を乱している。体調が優れないようだ。", "log-flavor");
+                
+                let debuffFlavor = "";
+                if (state.debuff === 'light') {
+                    debuffFlavor = "彼は不自由な脚を引きずり、顔をしかめている。";
+                } else if (state.debuff === 'medium') {
+                    debuffFlavor = "激しい頭痛と眩暈に襲われているのか、彼は壁に手をついて荒い息を吐いている。";
+                } else if (state.debuff === 'heavy') {
+                    debuffFlavor = "先程まで嘔吐していた彼は、疲弊して昏々と眠り続けている。";
+                }
+                addLog(debuffFlavor, "log-flavor");
                 
                 // 【警告】発生時の不用品混入（中度・重度のみ）
                 if (state.debuff === 'medium' || state.debuff === 'heavy') {
@@ -1711,7 +1720,7 @@ function openManual() {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、いろいろガバガバです。<br><br>ver0.31</p>
+ほとんどgeminiに作ってもらったので、いろいろガバガバです。<br><br>ver0.32</p>
         </div>
             <div style="padding: 10px; border-top: 1px solid #444; text-align: center; background: #111;">
             <button onclick="closeManual()" style="background: #d4af37; color: #000; border: none; padding: 6px 25px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 13px;">手引書を閉じる</button>
