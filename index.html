@@ -460,7 +460,7 @@ html, body, * {
             <div id="last-action-display">直前の行動: なし</div>
 
             <div id="phase-start-container">
-                <button class="btn btn-primary" onclick="processWeekStart()">準備フェーズを開始（ドロー）</button>
+                <button id="next-turn-btn" class="btn btn-primary" onclick="processWeekStart()">次へ進む</button>
             </div>
 
             <div id="phase-main-container" style="display: none;">
@@ -547,7 +547,7 @@ const CARD_POOL = {
     indirect: [
         { name: "部屋の掃除", type: "indirect", value: 2, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "heal", trust: 10, dep: 5}, {type: "stress", trust: -10, dep: 10}], desc: "健康+10,ストレス-10。主従度+2", flavor: { trust: "あなたが部屋を清掃すると、彼は申し訳なさそうにあなたを見つめていた。", dependence: "あなたが部屋を掃除する間、彼はあなたの背中をじっと目で追っている。" } },
         { name: "寝具の天日干し", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -15, actions: [{type: "heal", trust: 20, dep: 10}, {type: "stress", trust: -15, dep: 10}], desc: "健康+20,ストレス-10。主従度+3", flavor: { trust: "あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。", dependence: "あなたが寝具を整えると、彼はあなたの気配を感じて静かに目を閉じた。" } },
-        { name: "部屋を温める", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "heal", trust: 15, dep: 7}, {type: "stress", trust: -10, dep: 10}], desc: "健康+15,ストレス-15。主従度+3", flavor: { trust: "あなたが暖炉に火を入れると、彼はあなたの気遣いに胸を打たれたようだ。", dependence: "部屋が温まっても、彼はあなたがいなければ寒さを感じてしまうようだ。" } },
+        { name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "heal", trust: 15, dep: 7}, {type: "stress", trust: -10, dep: 10}], desc: "健康+15,ストレス-15。主従度+3", flavor: { trust: "あなたが部屋を快適な温度に保つと、彼はあなたの気遣いに胸を打たれたようだ。", dependence: "心地よい室温の中でも、彼はあなたがいなければ寒気を感じてしまうようだ。" } },
         { name: "滋養ある食事", type: "indirect", value: 4, cost: 1, valType: "flat", stressChange: -15, actions: [{type: "heal", trust: 30, dep: 15}, {type: "stress", trust: -15, dep: 10}], desc: "健康+30,ストレス-10。主従度+4", flavor: { trust: "あなたが栄養のある食事を用意すると、彼は感謝とともにそれを口にした。", dependence: "あなたが用意した食事を、彼はあなたのためだけにすべて平らげた。" } },
         { name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, actions: [{type: "buff", key: "scentDuration", value: 3}, {type: "stress", trust: -15, dep: 10}], desc: "ストレス-15,主従度+3。さらに3ターンの間,準備にストレスが5減少する", flavor: { trust: "あなたが彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出したようだ。", dependence: "香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。" } },
         { name: "古い手記の修復", type: "indirect", value: 7, cost: 2, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1}, {type: "stress", trust: -10, dep: 10}], desc: "ストレス-10,主従度+6。山札からカードを1枚ドローする", flavor: { trust: "あなたが彼の手記を直すと、彼は失われていた自尊心を少し取り戻したようだ。", dependence: "あなたが手記を修復する姿を見て、彼はあなたへの強い執着を募らせている。" } },
@@ -654,11 +654,29 @@ function getSeasonByTurn(turn) {
             document.getElementById('display-time').innerText = `【 ${currentTurn} / 30 ターン 】`;
             
             // ヘッダーのテキストと色を更新
-            const displaySeason = document.getElementById('display-season');
+const displaySeason = document.getElementById('display-season');
             displaySeason.innerText = `季節: ${season}`;
             
-            const colors = { "夏": "#f1c40f", "秋": "#e67e22", "冬": "#3498db", "春": "#fd79a8" };
-            displaySeason.style.color = colors[season];
+            // 現在より少し淡い色（パステル調）のカラーコードに変更
+            const colors = { 
+"夏": "#948238", // くすんだ芥子色
+                "秋": "#965b36", // 落ち着いたレンガ色
+                "冬": "#4a6b82", // 彩度を落とした灰青色
+                "春": "#94636b"  // 暗めのオールドローズ
+            };
+            
+            // 背景色を季節の色で塗りつぶす
+            displaySeason.style.backgroundColor = colors[season];
+            
+            // 文字色を黒に固定する
+            displaySeason.style.color = "#000000"; 
+            
+            // 枠線指定を解除し、内側の余白と角丸を設定してラベル状に整える
+            displaySeason.style.border = "none";
+            displaySeason.style.padding = "2px 5px";
+            displaySeason.style.borderRadius = "3px";
+
+displaySeason.style.fontSize = "11px";
             
             document.getElementById('stat-health').innerText = state.health;
             document.getElementById('stat-stress').innerText = state.stress;
@@ -683,6 +701,21 @@ function getSeasonByTurn(turn) {
                 document.getElementById('battle-threat-value').innerText = state.threat;
             } else {
                 alertBar.style.display = 'none';
+            }
+
+const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した実際のIDを指定する
+            if (nextBtn) {
+                if (state.turn === 30) {
+                    // 最終ターンの場合の表示
+                    nextBtn.innerText = "結末を見届ける";
+                    nextBtn.style.backgroundColor = "#c0392b"; // 任意：色を変更して視覚的に強調
+                    nextBtn.style.color = "#ffffff";
+                } else {
+                    // 通常ターンの場合の表示（初期化）
+                    nextBtn.innerText = "次へ進む";
+                    nextBtn.style.backgroundColor = ""; 
+                    nextBtn.style.color = "";
+                }
             }
         }
 
@@ -1005,10 +1038,10 @@ function executeCard(target) {
             if (action.context && action.context !== target) return;
 
             switch (action.type) {
-                case "heal":
-                    let healVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? action.trust : action.dep);
-                    state.health = Math.min(100, Math.max(1, state.health + healVal));
-                    break;
+               case "heal":
+    let healVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? action.trust : action.dep);
+    state.health = Math.min(100, Math.max(0, state.health + healVal));
+    break;
 
                 case "stress":
                     let stressVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? action.trust : action.dep);
@@ -1140,16 +1173,30 @@ function executeCard(target) {
                 }
             }
 
-            if (state.battleActive) {
+if (state.battleActive) {
                 let diceRoll = Math.random() * 100;
                 
                 if (diceRoll < state.threat) {
                     state.health = Math.max(0, state.health - 20);
                     state.stress = Math.min(100, state.stress + 30);
                     endLogs.push("防衛突破され被害");
+                    
+                    // 防衛失敗時の情景描写
+                    if (state.relation >= 0) {
+                        addLog("彼はあなたを庇おうと敵の前に立ちはだかり、傷を負った。", "log-flavor");
+                    } else {
+                        addLog("敵の暴力が彼を蹂躙する。彼は痛みに悶えながらも、あなたに助けを求めるように視線を彷徨わせている。", "log-flavor");
+                    }
                 } else {
                     let reward = 40 + Math.floor(state.turn * 0.6);
                     state.gold += reward;
+                    
+                    // 防衛成功時の情景描写
+                    if (state.relation >= 0) {
+                        addLog("あなたは侵入者を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。", "log-flavor");
+                    } else {
+                        addLog("死体を蹴り退けるあなたを見て、彼は自らを脅かす外敵が排除されたことに安堵の吐息を漏らした。", "log-flavor");
+                    }
                 }
             }
 
@@ -1164,8 +1211,11 @@ function executeCard(target) {
                 setLastAction("精算完了");
             }
 
-            if (state.health <= 0) { checkEndGame(false, "dead"); return; }
-
+            if (state.health <= 0) { 
+                updateUI(); // ゲームオーバー画面を出す前にHP0を画面に反映
+                checkEndGame(false, "dead"); 
+                return; 
+            }
             state.discard.push(...state.hand);
             state.hand = [];
             document.getElementById('phase-main-container').style.display = 'none';
@@ -1330,19 +1380,19 @@ let memoryCount = state.achievements.length;
             }
             if (isSurvivalClear) {
                 if (state.relation >= 85) {
-                    title.innerText = "【TRUE END】確固たる信頼と矜持"; title.style.color = "#2ecc71";
+                    title.innerText = "【TRUE END】確固たる信頼と矜持";
                     desc.innerHTML = `彼はあなたへの全幅の信頼を胸に、気高き自尊心を取り戻した。` + memoryText;
                 } else if (state.relation >= 45) {
-                    title.innerText = "【GOOD END】穏やかな主従関係"; title.style.color = "#27ae60";
+                    title.innerText = "【GOOD END】穏やかな主従関係";
                     desc.innerHTML = `互いに支え合い、穏やかで前向きな信頼関係を築き上げた。` + memoryText;
                 } else if (state.relation > -45) {
-                    title.innerText = "【NORMAL END】静かな日常"; title.style.color = "#f1c40f";
+                    title.innerText = "【NORMAL END】静かな日常";
                     desc.innerHTML = `特筆すべき変化はないが、二人の静かな生活はこれからも続く。` + memoryText;
                 } else if (state.relation > -85) {
-                    title.innerText = "【BAD END】歪み始めた関係"; title.style.color = "#e67e22";
+                    title.innerText = "【BAD END】歪み始めた関係";
                     desc.innerHTML = `彼はあなたへの依存を深め、危うい均衡の上に成り立つ関係となった。` + memoryText;
                 } else {
-                    title.innerText = "【TRUE END】歪な支配と共依存"; title.style.color = "#9b59b6";
+                    title.innerText = "【TRUE END】歪な支配と共依存";
                     desc.innerHTML = `彼の精神は完全にあなたに依存し、二人は永遠に歪な関係から抜け出せなくなった。` + memoryText;
                 }
             }
@@ -1720,12 +1770,17 @@ function openManual() {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、いろいろガバガバです。<br><br>ver0.32</p>
+ほとんどgeminiに作ってもらったので、いろいろガバガバです。<br><br>ver0.33</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
-  <p style="font-size: 10px;">■2026-07-15　ver0.32<br>
+  <p style="font-size: 10px;">■ver0.33<br>
+・戦闘終了時のフレーバーテキストが表示されるようになりました。br>
+・一部のテキスト・UIを変更しました。<br>
+</p>
+
+  <p style="font-size: 10px;">■ver0.32<br>
 ・カードの処理を全体的に修正しました。<br>
 ・使用できるカードを一枚増やしました。<br>
 ・体調不良時のフレーバーテキストを3種に増やしました。<br>
