@@ -1555,116 +1555,118 @@ function openManual() {
     </script>
 
 <style>
-    /* モーダル内専用のスタイル定義 */
+  /* モーダル内専用のスタイル定義 */
     #manual-modal-content {
         background-color: #151515;
         color: #e5e5e5;
         font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif;
-        line-height: 1.7;
-        font-size: 13px;
-        padding: 30px 20px;
+        line-height: 1.6;
+        font-size: 12px; /* スマホ向けに少し小さく */
+        padding: 20px 15px; /* スマホ向けに余白をスリムに */
     }
     #manual-modal-content .ornament-line {
         text-align: center;
-        margin: 25px 0;
+        margin: 20px 0;
         color: #d4af37;
-        font-size: 18px;
-        letter-spacing: 5px;
+        font-size: 16px;
+        letter-spacing: 3px;
     }
     #manual-modal-content .ornament-line::before, #manual-modal-content .ornament-line::after {
         content: "";
         display: inline-block;
-        width: 25%;
+        width: 20%;
         height: 1px;
         background-color: #d4af37;
         vertical-align: middle;
-        margin: 0 10px;
+        margin: 0 8px;
     }
     #manual-modal-content .catchphrase {
         text-align: center;
-        font-size: 16px;
+        font-size: 13px;
         font-weight: bold;
         color: #d4af37;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         line-height: 1.5;
-        padding: 15px;
+        padding: 10px;
         border-top: 1px dashed #d4af37;
         border-bottom: 1px dashed #d4af37;
     }
     #manual-modal-content .story-section {
         background-color: rgba(255, 255, 255, 0.05);
-        padding: 20px;
-        font-size: 13px;
+        padding: 15px;
+        font-size: 11px;
         border-radius: 4px;
         border-left: 3px solid #d4af37;
-        margin-bottom: 40px;
+        margin-bottom: 25px;
         font-style: italic;
     }
     #manual-modal-content h1 {
         text-align: center;
-        font-size: 24px;
+        font-size: 20px;
         color: #d4af37;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         letter-spacing: 2px;
     }
     #manual-modal-content h2 {
-        font-size: 18px;
+        font-size: 15px;
         color: #d4af37;
-        margin-top: 30px;
-        margin-bottom: 15px;
+        margin-top: 25px;
+        margin-bottom: 12px;
         padding-bottom: 5px;
         border-bottom: 2px solid #d4af37;
     }
     #manual-modal-content h3 {
-        font-size: 14px;
+        font-size: 12px;
         color: #d4af37;
-        margin-top: 20px;
-        margin-bottom: 10px;
+        margin-top: 18px;
+        margin-bottom: 8px;
     }
+    
+    /* スマホファースト：デフォルトは1列ですっきり表示 */
     #manual-modal-content .status-resource-grid, 
     #manual-modal-content .card-types-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 15px;
-        margin-bottom: 25px;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
     }
     #manual-modal-content .status-card,
     #manual-modal-content .card-type-box {
         background-color: rgba(255, 255, 255, 0.03);
         border: 1px solid #444;
         border-radius: 4px;
-        padding: 15px;
+        padding: 12px;
     }
     #manual-modal-content .status-card {
-        border-left: 4px solid #d4af37;
+        border-left: 3px solid #d4af37;
     }
     #manual-modal-content .status-card-title {
         font-weight: bold;
         color: #d4af37;
-        font-size: 14px;
-        margin-bottom: 8px;
+        font-size: 13px;
+        margin-bottom: 6px;
         border-bottom: 1px dashed rgba(214, 175, 87, 0.3);
         padding-bottom: 4px;
     }
     #manual-modal-content .status-card-desc,
     #manual-modal-content .card-type-desc {
-        font-size: 12px;
+        font-size: 11px;
         color: #ccc;
-        line-height: 1.6;
+        line-height: 1.5;
     }
     #manual-modal-content .card-type-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding-bottom: 4px;
     }
     #manual-modal-content .card-type-label {
-        font-size: 11px;
+        font-size: 10px;
         font-weight: bold;
         color: #fff;
-        padding: 2px 6px;
+        padding: 1px 5px;
         border-radius: 3px;
     }
     #manual-modal-content .type-tag-direct { background-color: #c0392b; }
@@ -1673,57 +1675,79 @@ function openManual() {
     #manual-modal-content .type-tag-harm { background-color: #d35400; }
     #manual-modal-content .type-tag-season { background-color: #f39c12; }
     #manual-modal-content .type-tag-obstacle { background-color: #7f8c8d; }
-    #manual-modal-content .card-type-title { font-size: 14px; font-weight: bold; color: #fff; }
+    #manual-modal-content .card-type-title { font-size: 13px; font-weight: bold; color: #fff; }
     
     #manual-modal-content .flow-container {
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        margin: 25px 0;
+        gap: 12px;
+        margin: 20px 0;
     }
     #manual-modal-content .flow-step {
         background-color: rgba(255, 255, 255, 0.03);
         border: 1px solid #444;
         border-radius: 6px;
-        padding: 15px;
+        padding: 12px;
     }
     #manual-modal-content .flow-step-header {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         margin-bottom: 6px;
     }
     #manual-modal-content .flow-step-num {
         background-color: #d4af37;
         color: #000;
         font-weight: bold;
-        font-size: 12px;
-        width: 22px;
-        height: 22px;
+        font-size: 10px;
+        width: 18px;
+        height: 18px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-    #manual-modal-content .flow-step-title { font-weight: bold; color: #fff; font-size: 14px; }
-    #manual-modal-content .flow-step-body { font-size: 12px; color: #ccc; line-height: 1.5; }
+    #manual-modal-content .flow-step-title { font-weight: bold; color: #fff; font-size: 12px; }
+    #manual-modal-content .flow-step-body { font-size: 11px; color: #ccc; line-height: 1.4; }
 
-    @media (min-width: 768px) {
-        #manual-modal-content .flow-container { flex-direction: row; justify-content: space-between; }
-        #manual-modal-content .flow-step { flex: 1; }
-        #manual-modal-content .flow-step:not(:last-child) { position: relative; margin-right: 10px; }
-    }
-
-    #manual-modal-content ul { padding-left: 20px; margin-bottom: 15px; }
-    #manual-modal-content ul li { margin-bottom: 6px; color: #ccc; }
+    #manual-modal-content ul { padding-left: 18px; margin-bottom: 12px; }
+    #manual-modal-content ul li { margin-bottom: 5px; color: #ccc; font-size: 11px; }
     #manual-modal-content strong { color: #fff; }
     #manual-modal-content .ui-explain-list { list-style: none; padding-left: 0; }
-    #manual-modal-content .ui-explain-list li { border-left: 3px solid #d4af37; padding-left: 10px; margin-bottom: 12px; }
+    #manual-modal-content .ui-explain-list li { border-left: 3px solid #d4af37; padding-left: 8px; margin-bottom: 10px; font-size: 11px; }
     #manual-modal-content .ui-explain-tag { font-weight: bold; color: #d4af37; }
+
+    /* PCなど大画面（横幅768px以上）用の調整 */
+    @media (min-width: 768px) {
+        #manual-modal-content {
+            padding: 30px 20px;
+            font-size: 13px;
+        }
+        #manual-modal-content h1 { font-size: 24px; }
+        #manual-modal-content h2 { font-size: 18px; }
+        #manual-modal-content h3 { font-size: 14px; }
+        
+        #manual-modal-content .status-resource-grid, 
+        #manual-modal-content .card-types-grid {
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        #manual-modal-content .status-card-title { font-size: 14px; }
+        #manual-modal-content .status-card-desc,
+        #manual-modal-content .card-type-desc { font-size: 12px; }
+        
+        #manual-modal-content .flow-container { flex-direction: row; justify-content: space-between; gap: 15px; }
+        #manual-modal-content .flow-step { flex: 1; padding: 15px; }
+        #manual-modal-content .flow-step:not(:last-child) { position: relative; margin-right: 10px; }
+        #manual-modal-content .flow-step-title { font-size: 14px; }
+        #manual-modal-content .flow-step-body { font-size: 12px; }
+        #manual-modal-content ul li { font-size: 13px; }
+        #manual-modal-content .ui-explain-list li { font-size: 13px; }
+    }
 </style>
 
-<div id="manual-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; padding: 20px;">
-    <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 750px; max-height: 80vh; overflow-y: auto; border-radius: 4px; box-shadow: 0 0 20px rgba(212,175,55,0.3); display: flex; flex-direction: column;">
+<div id="manual-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; padding: 10px;">
+    <div style="background: #151515; border: 1.5px solid #d4af37; width: 100%; max-width: 750px; max-height: 85vh; overflow: hidden; border-radius: 6px; box-shadow: 0 0 20px rgba(212,175,55,0.3); display: flex; flex-direction: column;">
         
         <div style="padding: 15px; border-bottom: 1px solid #444; display: flex; justify-content: space-between; align-items: center; background: #111;">
             <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 16px;">説明書</span>
