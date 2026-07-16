@@ -421,11 +421,16 @@ html, body, * {
 
 
   <header>
-        <div class="info-row"><div>
-            <span id="display-time">【 1 / 30 ターン 】</span>
-            <span id="display-season" style="color:#f39c12;" margin-left: 25px;">季節: 夏</span></div>
-<button onclick="openManual()" style="background: none; border: 1px solid #d4af37; color: #d4af37; padding: 2px 8px; cursor: pointer; font-size: 11px; margin-left: 10px; font-family: serif;">説明書</button>
-        </div>
+<div class="info-row">
+    <div style="display: flex; gap: 5px; align-items: center; flex-wrap: wrap;">
+        <span id="display-time">【 1 / 30 ターン 】</span>
+        <span id="display-season">季節: 夏</span>
+        <span id="display-debuff" style="display: none;"></span>
+    </div>
+
+    <button onclick="openManual()" style="background: none; border: 1px solid #d4af37; color: #d4af37; padding: 2px 8px; cursor: pointer; font-size: 11px; font-family: serif; flex-shrink: 0;">説明書</button>
+</div>
+        </div>    </div>
         <div class="status-container">
             <div class="status-box health">
                 <div>健康度</div>
@@ -677,7 +682,39 @@ const displaySeason = document.getElementById('display-season');
             displaySeason.style.borderRadius = "3px";
 
 displaySeason.style.fontSize = "11px";
-            
+
+    const displayDebuff = document.getElementById('display-debuff');
+            if (displayDebuff) {
+                if (state.debuff !== 'none') {
+                    // スマホ用に「（重さ）：（効果）」の簡潔な表記に変更
+                    let debuffTexts = { 
+                        light: '軽度：コスト +1', 
+                        medium: '中度：ドロー -1', 
+                        heavy: '重度：AP 固定1' 
+                    };
+                    
+         let debuffColors = {
+                        light: '#7b4141',  // 軽度：彩度の低いくすんだ赤茶
+                        medium: '#9f3434', // 中度：彩度を少し上げた暗い赤
+                        heavy: '#a71e1e'   // 重度：高彩度で警告を示す強い赤
+                    };
+
+                    displayDebuff.innerText = debuffTexts[state.debuff];
+                    displayDebuff.style.backgroundColor = debuffColors[state.debuff];
+                    
+                    // 季節の枠とスタイルを完全に一致させる
+                    displayDebuff.style.color = "#000000"; // 黒文字
+                    displayDebuff.style.border = "none";
+                    displayDebuff.style.padding = "2px 8px";
+                    displayDebuff.style.borderRadius = "3px"; // 角丸
+                    displayDebuff.style.fontSize = "11px"; // 文字サイズ
+                    
+                    displayDebuff.style.display = "inline-block";
+                } else {
+                    displayDebuff.style.display = "none";
+                }
+            }
+
             document.getElementById('stat-health').innerText = state.health;
             document.getElementById('stat-stress').innerText = state.stress;
             document.getElementById('stat-relation').innerText = (state.relation > 0 ? '+' : '') + state.relation;
@@ -686,14 +723,14 @@ displaySeason.style.fontSize = "11px";
             document.getElementById('stat-deck').innerText = `${state.deck.length}/${state.discard.length}/${state.deck.length + state.hand.length + state.discard.length}`;
             document.getElementById('action-ap-display').innerText = `AP: ${state.ap}`;
 
-            const debuffBar = document.getElementById('debuff-bar');
+          /*  const debuffBar = document.getElementById('debuff-bar');
             if (state.debuff !== 'none') {
                 debuffBar.style.display = 'block';
                 let names = { light: '軽度（片脚の不自由:ケアコスト+1）', medium: '中度（頭痛と眩暈:ドロー-1）', heavy: '重度（嘔吐・昏睡:AP固定1）' };
                 document.getElementById('debuff-name').innerText = names[state.debuff];
             } else {
                 debuffBar.style.display = 'none';
-            }
+            } */
 
             const alertBar = document.getElementById('battle-alert-bar');
             if (state.battleActive) {
