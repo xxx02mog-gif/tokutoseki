@@ -548,7 +548,7 @@ display: flex;
                 <div class="target-btn" style="background-color:#1a1a1a;" onclick="cancelTargetSelect()">キャンセル</div>
             </div>
 
-            <button class="btn" id="end-week-btn" onclick="processWeekEnd()">精算フェーズへ</button>
+            <button class="btn" id="end-week-btn" onclick="processWeekEnd()">行動フェーズを終了</button>
         </div>
     </div>
 
@@ -564,13 +564,13 @@ display: flex;
             <div id="shop-dispose-view" class="shop-layout" style="display:none;"></div>
         </div>
         <div class="phase-button-area">
-            <button class="btn btn-primary" onclick="closeShop()">購入・売却フェーズを終了して翌ターンへ</button>
+            <button class="btn btn-primary" onclick="closeShop()">購入・売却フェーズを終了</button>
         </div>
     </div>
 
     <div id="phase-end-container" style="display: none;">
         <div class="phase-scroll-area">
-            <div class="section-title" id="end-title" style="color:#ff4d4d;">ゲーム購入・売却</div>
+            <div class="section-title" id="end-title" style="color:#ffffff;">エンディング</div>
             <div id="end-description" style="font-size:13px; margin-bottom:10px; line-height:1.5;"></div>
         </div>
         <div class="phase-button-area">
@@ -616,8 +616,8 @@ const CARD_POOL = {
         { name: "傷口の消毒", type: "direct", value: 5, cost: 2, valType: "flat", stressChange: 0, actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}], desc: "健康+15。ストレス-10。主従度+5。", flavor: { trust: "あなたは傷口を消毒した。処置の痛みで彼は顔をしかめたが、手当てには感謝している。", dependence: "あなたは傷口を消毒した。彼は痛みすらあなたからの慈悲だと喜んで受け入れている。" } },
         { name: "熱を測る", type: "direct", value: 0, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。手札のランダムな冷淡カード1枚を『部屋の掃除』に変換する", flavor: { trust: "あなたは彼の熱を測った。静かな時間が流れ、彼の緊張が少し解けたようだ。", dependence: "あなたは主人に触れた。彼はあなたの体温に強い安心感を覚えている。" } },
         { name: "食事の介助", type: "direct", value: 10, cost: 2, valType: "flat", stressChange: -25, actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。主従度+10", flavor: { trust: "あなたがつきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが食事を与えると、彼はすべてをあなたに委ねるように受け入れた。" } },
-        { name: "輸血を行う", type: "direct", value: 10, cost: 1, valType: "flat", stressChange: 0, actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。主従度+10。翌ターンの初期AP-1（使い切り）", flavor: { trust: "あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。", dependence: "あなたの血を与えられた彼は、あなたと深く結びついた感覚に酔いしれている。" } },
-        { name: "過呼吸の対処", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "stress", value: -30}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "必ずストレス-30。主従度+5。翌ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
+        { name: "輸血を行う", type: "direct", value: 10, cost: 1, valType: "flat", stressChange: 0, actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。主従度+10。次ターンの初期AP-1（使い切り）", flavor: { trust: "あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。", dependence: "あなたの血を与えられた彼は、あなたと深く結びついた感覚に酔いしれている。" } },
+        { name: "過呼吸の対処", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "stress", value: -30}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "必ずストレス-30。主従度+5。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
     ],
     indirect: [
         { name: "部屋の掃除", type: "indirect", value: 2, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "heal", trust: 10, dep: 5}, {type: "stress", trust: -10, dep: 10}], desc: "健康+10。ストレス-10。主従度+2", flavor: { trust: "あなたが部屋を清掃すると、彼は申し訳なさそうにあなたを見つめていた。", dependence: "あなたが部屋を掃除する間、彼はあなたの背中をじっと目で追っている。" } },
@@ -640,7 +640,7 @@ const CARD_POOL = {
         { name: "突き放す視線", type: "cold", value: -6, cost: 1, valType: "flat", actions: [{type: "stress", value: 25}], desc: "ストレス+25。主従度-6", flavor: { trust: "あなたの冷たい眼差しを受け、彼は自分の過去の罪深さに打ちのめされた。", dependence: "あなたに冷たく見つめられると、彼はその視線にすら悲しい執着を見せた。" } },
         { name: "鎮痛剤を与えない", type: "cold", value: -8, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。主従度-8", flavor: { trust: "あなたが薬を与えなくても、彼は自らの命に対する執着を手放しつつある。", dependence: "苦痛の中でも、彼はあなたから与えられた試練としてそれを受け入れている。" } },
         { name: "沈黙の糾弾", type: "cold", value: -10, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。主従度-10", flavor: { trust: "あなたが無言で彼を責めると、彼はその沈黙の重さに耐えきれず目を伏せた。", dependence: "あなたが沈黙すると、彼はあなたの心が離れてしまうのではないかとパニックに陥った。" } },
-        { name: "部屋の施錠", type: "cold", value: -12, cost: 2, valType: "flat", actions: [{type: "stress", value: 40}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+40。主従度-12。翌ターンのドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めると、彼はそれを自分への正当な処置だと考えた。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
+        { name: "部屋の施錠", type: "cold", value: -12, cost: 2, valType: "flat", actions: [{type: "stress", value: 40}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+40。主従度-12。次ターンのドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めると、彼はそれを自分への正当な処置だと考えた。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
         { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", actions: [{type: "stress", value: 15}], desc: "ストレス+15。主従度を現在値-15%", flavor: { trust: "食事が遅れても、彼はあなたを怒らせた自分の落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
        { name: "他人の気配を匂わす", type: "cold", value: -40, cost: 2, valType: "percent", actions: [{type: "stress", value: 40}, {type: "consume"}], desc: "ストレス+40。主従度を現在値-40%（使い切り）", flavor: { trust: "あなたが他人の気配を漂わせると、彼は自分が不要になったのだと悟り静かに絶望した。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
     ],
@@ -649,8 +649,8 @@ const CARD_POOL = {
         { name: "毒の調合", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}], desc: "敵脅威度-15 / 【対主人】健康-15。ストレス+10", flavor: { trust: "あなたが苦い薬を食事に混ぜると、彼はそれを罰として静かに飲み干した。", dependence: "身体の不調を感じながらも、彼はあなたから与えられるものに身を委ねている。", battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。" } },
         { name: "首を絞める", type: "harm", value: 0, cost: 2, valType: "flat", isMasterAlways: false, actions: [{context: "master", type: "heal", value: -40}, {context: "master", type: "stress", value: 40}, {context: "battle", type: "threat", value: 20}, {type: "consume"}], desc: "敵脅威度-20 / 【対主人】健康-20。ストレス+40（使い切り）", flavor: { trust: "横たわる主人の首に手をかける。皮膚の向こうに、か細い呼吸を感じる。", dependence: "横たわる主人の首に手をかける。薄く開いた彼の目が微かに微笑んだように感じる。", battle: "あなたは襲い来る敵の首を締め、無力化させた。" } },
        { name: "見せしめの拷問", type: "harm", value: 0, cost: 2, valType: "percent", isMasterAlways: true, actions: [{context: "master", type: "heal", value: -40}, {context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"}, {context: "battle", type: "consume"}], desc: "敵脅威度を強制的に0にする / 【対主人】主人健康-40。ストレス+40　（使い切り）", flavor: { trust: "あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。彼は顔を引き攣らせている。", dependence: "疲労の中でも、彼はあなたのやり方に異を唱えることなく従っている。", battle: "あなたは捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。" } },
-        { name: "形見の宝刀", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}], desc: "敵脅威度-45。翌ターンの初期AP-1", flavor: { trust: "あなたは静かに形見の宝刀を構え、因縁に終止符を打った。彼は抗うことなくそれを受け入れた。", dependence: "あなたが宝刀を向けると、彼はあなたによって終わることに安堵の表情を浮かべた。", battle: "あなたは形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。" } },
-        { name: "罠を配置する", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。翌ターンの初期APを+1", flavor: { trust: "あなたは周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "あなたは彼を守るために罠を張った。特等席を脅かす者は決して許さないという意志が見える。" } },
+        { name: "形見の宝刀", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}], desc: "敵脅威度-45。次ターンの初期AP-1", flavor: { trust: "あなたは静かに形見の宝刀を構え、因縁に終止符を打った。彼は抗うことなくそれを受け入れた。", dependence: "あなたが宝刀を向けると、彼はあなたによって終わることに安堵の表情を浮かべた。", battle: "あなたは形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。" } },
+        { name: "罠を配置する", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。次ターンの初期APを+1", flavor: { trust: "あなたは周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "あなたは彼を守るために罠を張った。特等席を脅かす者は決して許さないという意志が見える。" } },
         { name: "硝煙の盾", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "stress", value: -15}], desc: "敵脅威度-15。-ストレス15", flavor: { trust: "あなたは火薬を使って敵を足止めした。部屋の中の彼は、あなたへの心配で胸を痛めている。", dependence: "外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。" } },
         { name: "威嚇射撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold", value: 30}], desc: "敵脅威度-10。資金+30G", flavor: { trust: "あなたは威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
         { name: "容赦なき追撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35に強化)", flavor: { trust: "あなたは撤退する敵を追い詰めた。この場所を守るためのあなたの覚悟が窺える。", dependence: "あなたは敵を徹底的に排除した。彼を脅かす障害はすべて取り除くという執念を感じさせる。" } },
@@ -1448,7 +1448,7 @@ function buyCard(idx, cost) {
             updateUI();
         }
 
-        function renderShopDispose() {
+       function renderShopDispose() {
             const view = document.getElementById('shop-dispose-view');
             let baseDisposeCost = 30;
             let headerText = "";
@@ -1460,10 +1460,18 @@ function buyCard(idx, cost) {
             }
             
             view.innerHTML = `<div style="font-size:10px; color:#aaa; margin-bottom:4px;">${headerText}</div>`;
-            let allCards = [...state.deck, ...state.discard];
-            if (allCards.length === 0) { view.innerHTML += '<div>処分できるカードがありません。</div>'; return; }
             
-            allCards.forEach((card, idx) => {
+            let rawCards = [...state.deck, ...state.discard];
+            if (rawCards.length === 0) { view.innerHTML += '<div>処分できるカードがありません。</div>'; return; }
+            
+            // 元のインデックスを保持した上で種類ごとにソート
+            const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6 };
+            let allCards = rawCards.map((card, idx) => ({ card: card, originalIdx: idx }));
+            allCards.sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
+            
+            allCards.forEach((data) => {
+                let card = data.card;
+                let idx = data.originalIdx;
                 const item = document.createElement('div'); item.className = 'shop-item'; item.style.marginBottom = '3px';
                 
                 let btnText = ""; let btnClass = "";
@@ -1473,7 +1481,7 @@ function buyCard(idx, cost) {
                     let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * 30);
                     btnText = `処分(-${nextCost}G)`; btnClass = "btn-danger";
                 }
-let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品' }[card.type];
+                let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品' }[card.type];
 
                 item.innerHTML = `<div style="display: flex; align-items: center; gap: 6px;">
                         <span class="card-type type-${card.type}" style="margin-bottom: 0;">${typeN}</span>
@@ -1485,12 +1493,11 @@ let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', 
         }
 
         function disposeCard(combinedIdx) {
-// デッキと捨札の合計が1枚以下の場合は処分を禁止する
-    let allCards = [...state.deck, ...state.discard];
-    if (allCards.length <= 1) {
-        alert("デッキの最小枚数（1枚）を下回るため、これ以上処分できません。");
-        return;
-    }
+            let allCards = [...state.deck, ...state.discard];
+            if (allCards.length <= 1) {
+                alert("デッキの最小枚数（1枚）を下回るため、これ以上処分できません。");
+                return;
+            }
             let baseDisposeCost = 30;
             let actionType = state.shopSellCount === 0 ? '売却' : '処分';
             if (state.shopSellCount === 0) {
@@ -1501,8 +1508,12 @@ let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', 
                 state.gold -= cost;
             }
 
-            let removed = allCards.splice(combinedIdx, 1)[0];
-            state.deck = allCards; state.discard = []; shuffle(state.deck);
+            let removed;
+            if (combinedIdx < state.deck.length) {
+                removed = state.deck.splice(combinedIdx, 1)[0];
+            } else {
+                removed = state.discard.splice(combinedIdx - state.deck.length, 1)[0];
+            }
 
             setLastAction(`【${removed.name}】を${actionType}`);
 
@@ -1538,30 +1549,30 @@ let memoryCount = state.achievements.length;
             }
 
             if (condition === "dead") {
-                title.innerText = "【BAD END】主人の病死";
+                title.innerText = "【GAME OVER】主人の病死";
                 desc.innerHTML = `彼は過酷な環境に耐えかね、静かに息を引き取った。`+ memoryText;
                 return;
             }
             if (condition === "assassination") {
-                title.innerText = "【暗殺完遂 END】復讐の終止符";
+                title.innerText = "【END 6】復讐の終止符";
                 desc.innerHTML = `彼が昏睡した好機に、あなたはその命を絶ち、過去の因縁に終止符を打った。` + memoryText;
                 return;
             }
             if (isSurvivalClear) {
                 if (state.relation >= 85) {
-                    title.innerText = "【TRUE END】確固たる信頼と矜持";
+                    title.innerText = "【END 4】確固たる信頼と矜持";
                     desc.innerHTML = `彼はあなたへの全幅の信頼を胸に、気高き自尊心を取り戻した。` + memoryText;
                 } else if (state.relation >= 45) {
-                    title.innerText = "【GOOD END】穏やかな主従関係";
+                    title.innerText = "【END 3】穏やかな主従関係";
                     desc.innerHTML = `互いに支え合い、穏やかで前向きな信頼関係を築き上げた。` + memoryText;
                 } else if (state.relation > -45) {
-                    title.innerText = "【NORMAL END】静かな日常";
+                    title.innerText = "【END 1】静かな日常";
                     desc.innerHTML = `特筆すべき変化はないが、二人の静かな生活はこれからも続く。` + memoryText;
                 } else if (state.relation > -85) {
-                    title.innerText = "【BAD END】歪み始めた関係";
+                    title.innerText = "【END 2】歪み始めた関係";
                     desc.innerHTML = `彼はあなたへの依存を深め、危うい均衡の上に成り立つ関係となった。` + memoryText;
                 } else {
-                    title.innerText = "【TRUE END】歪な支配と共依存";
+                    title.innerText = "【END 5】歪な支配と共依存";
                     desc.innerHTML = `彼の精神は完全にあなたに依存し、二人は永遠に歪な関係から抜け出せなくなった。` + memoryText;
                 }
             }
@@ -1939,7 +1950,7 @@ function openManual() {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.35</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.36</p>
 
 
 <details>
