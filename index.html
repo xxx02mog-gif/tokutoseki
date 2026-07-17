@@ -80,7 +80,7 @@ body {
             display: flex;
             justify-content: space-between;
             margin-bottom: 5px;
-            font-size: 13px;
+            font-size: 9px;
             color: #d4af37; /* テキストをゴールドに変更 */
             font-weight: bold;
             border-bottom: 1px solid #2a2a2a;
@@ -726,7 +726,7 @@ const SPECIAL_CARDS = {
             {type: "set_debuff", value: "heavy"}, // 即座に昏睡状態へ
             {type: "buff", key: "waterStressDuration", value: 3} // 3ターン継続の副作用
         ], 
-        desc: "健康+30。必ずストレス-30。関係性+5。即座に主人の体調が『重度(昏睡)』になる。次のターンから3ターンの間ストレスが毎ターン+15", 
+        desc: "健康+30。必ずストレス-30。関係性+5。即座に主人の体調が『昏睡』になる。次のターンから3ターンの間ストレスが毎ターン+15", 
         flavor: { 
             trust: "その水を飲ませてやると、彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。", 
             dependence: "あなたが与えた水を飲み干すと、彼はすべてを委ねるように意識を手放した。" 
@@ -892,9 +892,9 @@ displaySeason.style.fontSize = "11px";
                 if (state.debuff !== 'none') {
                     // スマホ用に「（重さ）：（効果）」の簡潔な表記に変更
                     let debuffTexts = { 
-                        light: '軽度：コスト +1', 
-                        medium: '中度：ドロー -1', 
-                        heavy: '重度：AP 固定1' 
+                        light: '歩行困難：COST+1', 
+                        medium: '頭痛：DRAW-1', 
+                        heavy: '昏睡：AP 固定1' 
                     };
                     
          let debuffColors = {
@@ -930,7 +930,7 @@ displaySeason.style.fontSize = "11px";
           /*  const debuffBar = document.getElementById('debuff-bar');
             if (state.debuff !== 'none') {
                 debuffBar.style.display = 'block';
-                let names = { light: '軽度（片脚の不自由:ケアコスト+1）', medium: '中度（頭痛と眩暈:ドロー-1）', heavy: '重度（昏睡:AP固定1）' };
+                let names = { light: '軽度（歩行困難:ケアコスト+1）', medium: '中度（頭痛と眩暈:ドロー-1）', heavy: '重度（昏睡:AP固定1）' };
                 document.getElementById('debuff-name').innerText = names[state.debuff];
             } else {
                 debuffBar.style.display = 'none';
@@ -1017,7 +1017,7 @@ if (activeBuffs.waterStressDuration > 0) {
                 }
                 addLog(debuffFlavor, "log-flavor");
                 
-                // 【警告】発生時の不用品混入（中度・重度のみ）
+                // 【警告】発生時の不用品混入（頭痛・昏睡のみ）
                 if (state.debuff === 'medium' || state.debuff === 'heavy') {
                     let obstacle = JSON.parse(JSON.stringify(OBSTACLE_POOL[Math.floor(Math.random() * OBSTACLE_POOL.length)]));
                     state.discard.push(obstacle);
@@ -1241,7 +1241,7 @@ function executeCard(target) {
     }
 
     if (target === 'master' && card.isMasterAlways === false && state.debuff !== 'heavy' && !card.isBattleOnly) {
-        alert("主人が『重度』の体調不良の時しか使用できません。");
+        alert("主人が『昏睡』の時しか使用できません。");
         return; // ★state.selectedCardIndex = null; を削除し、選択を維持
     }
 
@@ -1365,7 +1365,7 @@ case "heal":
 
 case "set_debuff":
     state.debuff = action.value;
-    // デバフが「重度(heavy)」になった場合、その場で残りAPを最大1に制限する
+    // デバフが「昏睡(heavy)」になった場合、その場で残りAPを最大1に制限する
     if (action.value === 'heavy') {
         state.ap = Math.min(state.ap, 1);
     }
@@ -2015,7 +2015,7 @@ function openManual() {
                 <div class="status-card">
                     <div class="status-card-title">ストレス</div>
                     <div class="status-card-desc">
-                        主人の精神的な負荷です。<br>一定値を超えた状態でターンを開始すると、主人は体調を崩し軽度・中度・重度のデバフがランダムで付与されます。<br>（デバフ内容がヘッダーに表示されます）<br>
+                        主人の精神的な負荷です。<br>一定値を超えた状態でターンを開始すると主人は体調を崩し、デバフが付与されます。<br>（デバフ内容がヘッダーに表示されます）<br>
                     </div>
                 </div>
                 <div class="status-card">
@@ -2051,7 +2051,7 @@ function openManual() {
                     <div class="card-type-desc">
                         身体に直接触れる行動です。<br>現在の関係性で効果が変わります。<br>
 矜持（+）: ストレスが増加する効果に変化しします。関係性は矜持（+）に傾きますが、カードに書かれた数値の半分になります。<br>依存（-）: 関係性がカードに書かれた数値分、依存（-）に傾きます。<br>
-                    ただし、主人が重度の体調不良のときは、現在の関係地が「矜持（+）」でも、ストレスは記載の通りに減少します。</div>
+                    ただし、主人が昏睡状態のときは、現在の関係地が「矜持（+）」でも、ストレスは記載の通りに減少します。</div>
                 </div>
                 <div class="card-type-box">
                     <div class="card-type-header">
@@ -2148,6 +2148,7 @@ function openManual() {
             <ul>
                 <li><strong>治安維持戦闘への対処：</strong> 画面に戦闘アラートが出ている場合、敵の脅威度を下げないと精算時に手痛い被害を受けます。戦闘用の攻撃カードや防衛線を張る行動を惜しまないでください。</li>
                 <li><strong>デッキの圧縮（カード処分）の活用：</strong> 手札の巡りを良くするためには、ショップでのカード処分が不可欠です。現在の関係性に合わない不要なカードを排除することが生存率を高めます。</li>
+                  <li><strong>愛着の芽生え：</strong> 冷淡な気持ちがなくなっている時、時折愛情のような感情が芽生えることがあります。それは、主人が眠っている間だけ向けることができる感情です。</li>
                 <li><strong>主人の心に寄り添うか、縛るか：</strong> 関係性の傾きによって、同じカードでも主人のストレス変化量やナレーションのフレーバーが変化します。彼が「気高き自尊心」を保てるか、それとも「あなたなしでは生きられない依存」に陥っていくのか、あなたがコントロールすることができます。</li>
             </ul>
 
