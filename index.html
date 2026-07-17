@@ -474,7 +474,7 @@ display: flex;
 <div id="title-screen" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #0b0b0b; background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%); z-index: 150;">
     
     <!-- タイトルロゴ画像 -->
-    <img src="bg.png" alt="特等席" style="width: 50%; max-width: 60px; height: auto; margin-bottom: 15px;">
+    <img src="bg.png" alt="特等席" style="width: 50%; max-width: 60px; height: auto; margin-bottom: 30px;">
     
     <!-- キャッチコピー画像 -->
     <img src="catch.png" alt="キャッチコピー" style="width: 80%; max-width: 250px; height: auto; margin-bottom: 30px;">
@@ -620,6 +620,23 @@ display: flex;
 
 const CARD_POOL = {
     direct: [
+{ 
+    name: "水を与える", 
+    type: "direct", 
+    value: 5, 
+    cost: 1, 
+    valType: "flat", 
+stressChange: -10, 
+    actions: [
+        {type: "heal", value: 5}, 
+  {type: "stress_direct", value: 10}
+    ], 
+    desc: "健康+5。ストレス-10。関係性+5。", 
+    flavor: { 
+        trust: "あなたは彼に水を差し出した。乾いた喉が少しだけ潤ったようだ。", 
+        dependence: "あなたが与える水だけが、彼にとっての命綱となっている。" 
+    } 
+},
         { name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { trust: "あなたは彼を気遣って看病した。彼は申し訳なさそうに視線をそらしている。", dependence: "あなたが看病すると、彼はあなたにすがりつくように袖を掴んだ。" } },
         { name: "髪を梳かす", type: "direct", value: 4, cost: 1, valType: "flat", stressChange: -20, actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+4", flavor: { trust: "あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。", dependence: "あなたの指先が触れると、彼はひどく安心した表情を見せた。" } },
         { name: "薬を飲ませる", type: "direct", value: 5, cost: 1, valType: "flat", stressChange: -15, actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 15}], desc: "健康+20,ストレス-15。関係性+5", flavor: { trust: "あなたは彼に薬を飲ませた。彼は手間をかけることを申し訳なく思っているようだ。", dependence: "あなたが与えるものなら、彼はどんなものでも喜んで受け入れる様子だ。" } },
@@ -632,6 +649,24 @@ const CARD_POOL = {
         { name: "過呼吸の対処", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "stress", value: -30}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "必ずストレス-30。関係性+5。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
     ],
     indirect: [
+{ 
+    name: "闇医者を呼ぶ", 
+    type: "indirect", 
+    value: 5, 
+    cost: 1, 
+    valType: "flat", 
+    goldCost: 20, 
+    actions: [
+{type: "gold", value: -20}, 
+        {type: "heal", value: 50},  
+        {type: "add_special_card", key: "water_coma"},
+        {type: "consume"}
+    ], 
+    desc: "資金20消費。必ず健康+50。関係性+5。特殊な『水を与える』を手札に加える(使い切り)",
+flavor: { trust: "外部から怪しげな医師を呼び、治療を受けさせた。彼は医師のことを訝しんでいるようだ。", dependence: "彼と闇医者を残して、あなたは部屋を出る。か細い声が、扉が閉まる音でかき消された。"
+    } 
+},
+
         { name: "部屋の掃除", type: "indirect", value: 2, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "heal", trust: 10, dep: 5}, {type: "stress", trust: -10, dep: 10}], desc: "健康+10。ストレス-10。関係性+2", flavor: { trust: "あなたが部屋を清掃すると、彼は申し訳なさそうにあなたを見つめていた。", dependence: "あなたが部屋を掃除する間、彼はあなたの背中をじっと目で追っている。" } },
         { name: "寝具の天日干し", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -15, actions: [{type: "heal", trust: 20, dep: 10}, {type: "stress", trust: -15, dep: 10}], desc: "健康+20。ストレス-15。関係性+3", flavor: { trust: "あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。", dependence: "あなたが寝具を整えると、彼はあなたの気配を感じて静かに目を閉じた。" } },
         { name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "heal", trust: 15, dep: 7}, {type: "stress", trust: -10, dep: 10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { trust: "あなたが部屋を快適な温度に保つと、彼はあなたの気遣いに胸を打たれたようだ。", dependence: "心地よい室温の中でも、彼はあなたがいなければ寒気を感じてしまうようだ。" } },
@@ -642,7 +677,7 @@ const CARD_POOL = {
         { name: "防音壁の補強", type: "indirect", value: 4, cost: 2, valType: "flat", stressChange: 0, actions: [{type: "buff", key: "threatReduction", value: 25}], desc: "関係性+4。次の戦闘が発生した際、脅威度を25軽減する", flavor: { trust: "あなたが部屋の防音を強化すると、彼はあなたに守られていることを実感した。", dependence: "外の音が消えた部屋で、彼はあなたと二人きりの世界に深く浸っている。" } },
        { name: "調度品の買い替え", type: "indirect", value: 30, cost: 1, valType: "percent", stressChange: 0, goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", trust: -30, dep: 10}, {type: "consume"}], desc: "資金50消費。ストレス-30。関係性を現在の値+30%（使い切り）", flavor: { trust: "あなたが新しい家具を揃えると、彼は荒んだ心に温かい光が差すのを感じた。", dependence: "新しい家具よりも、彼はただあなたが傍にいてくれることだけを望んでいる。" } },
         { name: "中庭の手入れ", type: "indirect", value: 5, cost: 2, valType: "flat", stressChange: -15, actions: [{type: "heal", value: 5}, {type: "stress", trust: -20, dep: 10}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+5。デッキからランダムな間接ケアカード1枚を手札に加える", flavor: { trust: "あなたが中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" }},
-{name: "医者を呼ぶ", type: "indirect", value: 5, cost: 1,valType: "flat",goldCost: 50,actions: [ { type: "gold", value: -50 }, { type: "heal", trust: 80, dep: 40 },{ type: "stress", trust: 0, dep: 10 },{ type: "consume" }],desc: "資金50消費。健康+80。関係性+5(使い切り)",flavor: {trust: "あなたは外部の医師を呼び、彼に適切な治療を受けさせた。", dependence: "彼は他人の手が介入することを激しく拒絶したが、あなたの命令により強引に治療を受けさせた。"}}
+{name: "医者を呼ぶ", type: "indirect", value: 5, cost: 1,valType: "flat",goldCost: 40,actions: [ {type: "gold", value: -40},  { type: "heal", trust: 60, dep: 60 },{ type: "stress", trust: 0, dep: 10 },{ type: "consume" }],desc: "資金40消費。必ず健康+60。関係性+5(使い切り)",flavor: {trust: "外部から医師を呼び、適切な治療を受けさせた。体は楽になったようだが、彼はどこか不服そうにしている。", dependence: "彼は他人の手が介入することを激しく拒絶したが、あなたの命令により強引に治療を受けさせた。"}}
     ],
     cold: [
         { name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-1", flavor: { trust: "あなたが事務的に接すると、彼はただ己の義務を果たそうと努めた。", dependence: "あなたの冷淡な態度に、彼は激しい不安と孤独感に駆られている。" } },
@@ -676,12 +711,35 @@ const CARD_POOL = {
     }
 };
 
+// 通常ドローされないイベント用・特殊カード群
+const SPECIAL_CARDS = {
+    water_coma: { 
+        name: "水を与える", 
+        type: "direct", 
+        value: 5, // 関係性の上昇量
+        cost: 1, 
+        valType: "flat", 
+        actions: [
+            {type: "heal", value: 30}, 
+            {type: "stress", value: -30}, 
+            {type: "set_debuff", value: "heavy"}, // 即座に昏睡状態へ
+            {type: "buff", key: "waterStressDuration", value: 3} // 3ターン継続の副作用
+        ], 
+        desc: "健康+30。必ずストレス-30。関係性+5。即座に主人の体調が『重度(昏睡)』になる。次のターンから3ターンの間ストレスが毎ターン+15", 
+        flavor: { 
+            trust: "あなたは彼に水を与えた。彼は怪訝そうにあなたを見上げたあと、深い眠りに落ちた。", 
+            dependence: "あなたが与えた水を飲み干すと、彼はすべてを委ねるように意識を手放した。" 
+        } 
+    }
+};
+
         let activeBuffs = {
             doubleDirect: false,
             nextTurnAPMod: 0,
             nextTurnDrawMod: 0,
             threatReduction: 0,
-            scentDuration: 0
+           scentDuration: 0,
+            waterStressDuration: 0
         };
 
         function getRandomCard(type) {
@@ -868,6 +926,13 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
             if (activeBuffs.scentDuration > 0) {
                 state.stress = Math.max(0, state.stress - 5);
                 activeBuffs.scentDuration--;
+            }
+
+if (activeBuffs.waterStressDuration > 0) {
+                // ストレスを15増加（上限100を超えないように設定）
+                state.stress = Math.min(100, state.stress + 15);
+                activeBuffs.waterStressDuration--;
+                turnLogs.push("副作用(ストレス増)"); // ターン開始時のログに表示
             }
 
             if (state.turn >= 23 && (state.relation >= 80 || state.relation <= -80)) {
@@ -1200,6 +1265,26 @@ function executeCard(target) {
                 case "gold":
                     state.gold += action.value;
                     break;
+
+case "set_debuff":
+    state.debuff = action.value;
+    // デバフが「重度(heavy)」になった場合、その場で残りAPを最大1に制限する
+    if (action.value === 'heavy') {
+        state.ap = Math.min(state.ap, 1);
+    }
+    break;
+
+case "add_special_card":
+    if (SPECIAL_CARDS[action.key]) {
+        // 特殊カードをコピーして手札(hand)に加える
+        // idが被らないよう Date.now() と乱数を組み合わせる
+        let newCard = { 
+            ...SPECIAL_CARDS[action.key], 
+            id: Date.now() + Math.random() 
+        };
+        state.hand.push(newCard); // ★state. を追加
+    }
+    break;
 
                 case "buff":
                     if (activeBuffs[action.key] !== undefined) {
@@ -1977,6 +2062,7 @@ function openManual() {
   <summary style="font-size: 10px;">更新履歴</summary>
   <p style="font-size: 10px;">■ver 0.37<br>
 ・トップ画面をつくりました。<br>
+・カードを３枚追加しました。<br>
 </p>
 
   <p style="font-size: 10px;">■ver 0.36<br>
@@ -1993,7 +2079,7 @@ function openManual() {
 
   <p style="font-size: 10px;">■ver 0.33<br>
 ・カードの処理を全体的に修正しました。<br>
-・使用できるカードを一枚増やしました。<br>
+・使用できるカードを３枚増やしました。<br>
 ・体調不良時のフレーバーテキストを3種に増やしました。<br>
 ・ターンと季節の表記を変更しました。<br>
 ・ショップ欄のボタンが2行になるのを修正しました。<br>
