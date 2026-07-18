@@ -1435,7 +1435,7 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
             const card = state.hand[index];
             
             if (card.type === 'obstacle') {
-                showCustomAlert("このカードは不用品のため、プレイできません。");
+                showCustomAlert("不用品のため、使用できません。");
                 state.selectedCardIndex = null;
                 return;
             }
@@ -1458,7 +1458,7 @@ if (card.type === 'season') {
                 let currentSeason = getSeasonByTurn(state.turn);
 
                 if (card.season !== currentSeason) {
-                    alert(`このカードは${card.season}以外では使用できない死に札です。`);
+                    alert(`${card.season}以外では使用できません。`);
                     state.selectedCardIndex = null;
                     return;
                 }
