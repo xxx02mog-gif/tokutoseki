@@ -128,6 +128,41 @@ body {
     100% { transform: translateY(0); color: #ffffff; }
 }
 
+@keyframes shopItemOut {
+    0% { 
+        opacity: 1; 
+        transform: scale(1); 
+        max-height: 100px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        margin-top: 0;
+        border-width: 1px;
+    }
+    50% { 
+        opacity: 0; 
+        transform: scale(0.95); 
+        max-height: 100px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        margin-top: 0;
+        border-width: 1px;
+    }
+    100% { 
+        opacity: 0; 
+        transform: scale(0.95); 
+        max-height: 0; 
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-top: -8px; /* 親要素のgapを相殺して隙間を詰める */
+        border-width: 0;
+    }
+}
+
+.shop-item-anim-out {
+    animation: shopItemOut 0.4s ease-out forwards;
+    overflow: hidden; /* 高さが縮小する際に内部のテキストがはみ出さないようにする */
+}
+
 /* 変動時にJavaScriptから一時的に付与するクラス */
 .anim-health-up { animation: bounce-green 0.3s ease; }
 .anim-health-down { animation: bounce-red 0.3s ease; }
@@ -1907,51 +1942,56 @@ let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', 
                         </div>
                         <span style="font-size:10px; color:#aaa;">${card.desc}</span>
                     </div>
-                    <button class="btn btn-primary" style="padding:4px 8px; font-size:11px; margin:0; width:auto;" onclick="buyCard(${idx}, ${currentCost})">購入(${currentCost}G)</button>`;                view.appendChild(item);
+                    <button class="btn btn-primary" style="padding:4px 8px; font-size:11px; margin:0; width:auto;" onclick="buyCard(${idx}, ${currentCost}, this)">購入(${currentCost}G)</button>`;                view.appendChild(item);
             });
         }
 
-function buyCard(idx, cost) {
-            if (state.gold < cost) { showCustomAlert("資金が足りません。"); return; }
-            state.gold -= cost; 
-            
-            let boughtCard = state.shopCards[idx];
-            let boughtCardName = boughtCard.name;
-            
-            // --- 修正箇所: 購入時に季節カードであれば即座に実績へ追加する ---
-            if (boughtCard.type === 'season') {
-                if (!state.achievements.includes(boughtCard.season)) {
-                    state.achievements.push(boughtCard.season);
-                }
+function buyCard(idx, cost, btnEl) {
+    if (state.gold < cost) { showCustomAlert("資金が足りません。"); return; }
+
+    // アニメーションの適用と、二重クリック防止のためのロック
+    const shopItem = btnEl.closest('.shop-item');
+    if (shopItem) shopItem.classList.add('shop-item-anim-out');
+    document.getElementById('phase-shop-container').style.pointerEvents = 'none';
+
+    // 0.25秒（250ミリ秒）後に元の処理を実行
+    setTimeout(() => {
+        state.gold -= cost; 
+        
+        let boughtCard = state.shopCards[idx];
+        let boughtCardName = boughtCard.name;
+        
+        if (boughtCard.type === 'season') {
+            if (!state.achievements.includes(boughtCard.season)) {
+                state.achievements.push(boughtCard.season);
             }
-            // ----------------------------------------------------
-            
-            state.discard.push(JSON.parse(JSON.stringify(boughtCard)));
-            state.shopBuyCount++;            
-            // --- 追加：購入したカードをショップから除外し、新しく1枚補充する ---
-            state.shopCards.splice(idx, 1);
-            
-            let poolKeys = ['direct', 'indirect', 'cold', 'harm'];
-            // 補充枠の抽選（季節カードの出現判定も再度行う）
-            let nextTurnSeason = getSeasonByTurn(state.turn + 1);
-            
-            // 季節カードが既にラインナップにない場合のみ、再度出現抽選を行う
-            let hasSeasonCard = state.shopCards.some(c => c.type === 'season');
-            
-            if (!hasSeasonCard && !state.achievements.includes(nextTurnSeason) && Math.random() < 0.7) {
-                state.shopCards.push(JSON.parse(JSON.stringify(CARD_POOL.season[nextTurnSeason])));
-            } else {
-                let randomType = poolKeys[Math.floor(Math.random() * poolKeys.length)];
-                let cards = CARD_POOL[randomType];
-                let randomCard = cards[Math.floor(Math.random() * cards.length)];
-                state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
-            }
-            // ------------------------------------------------------------
-            
-            setLastAction(`【${boughtCardName}】を購入`);
-            renderShopBuy(); 
-            updateUI();
         }
+        
+        state.discard.push(JSON.parse(JSON.stringify(boughtCard)));
+        state.shopBuyCount++;            
+        state.shopCards.splice(idx, 1);
+        
+        let poolKeys = ['direct', 'indirect', 'cold', 'harm'];
+        let nextTurnSeason = getSeasonByTurn(state.turn + 1);
+        let hasSeasonCard = state.shopCards.some(c => c && c.type === 'season');
+        
+        if (!hasSeasonCard && !state.achievements.includes(nextTurnSeason) && Math.random() < 0.7) {
+            state.shopCards.push(JSON.parse(JSON.stringify(CARD_POOL.season[nextTurnSeason])));
+        } else {
+            let randomType = poolKeys[Math.floor(Math.random() * poolKeys.length)];
+            let cards = CARD_POOL[randomType];
+            let randomCard = cards[Math.floor(Math.random() * cards.length)];
+            state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
+        }
+        
+        setLastAction(`【${boughtCardName}】を購入`);
+        renderShopBuy(); 
+        updateUI();
+
+        // ロックを解除
+        document.getElementById('phase-shop-container').style.pointerEvents = 'auto';
+    }, 400);
+}
 
        function renderShopDispose() {
             const view = document.getElementById('shop-dispose-view');
@@ -1992,40 +2032,55 @@ function buyCard(idx, cost) {
                         <span class="card-type type-${card.type}" style="margin-bottom: 0;">${typeN}</span>
                         <span style="font-size:11px;">${card.name}</span>
                     </div>
-                    <button class="btn ${btnClass}" style="padding:3px 6px; font-size:10px; margin:0; width:auto;" onclick="disposeCard(${idx})">${btnText}</button>`;
+                    <button class="btn ${btnClass}" style="padding:3px 6px; font-size:10px; margin:0; width:auto;" onclick="disposeCard(${idx}, this)">${btnText}</button>`;
                 view.appendChild(item);
             });
         }
 
-        function disposeCard(combinedIdx) {
-            let allCards = [...state.deck, ...state.discard];
-            if (allCards.length <= 1) {
-                showCustomAlert("デッキの最小枚数（1枚）を下回るため、これ以上処分できません。");
-                return;
-            }
-            let baseDisposeCost = 30;
-            let actionType = state.shopSellCount === 0 ? '売却' : '処分';
-            if (state.shopSellCount === 0) {
-                state.gold += 20;
-            } else {
-                let cost = baseDisposeCost + ((state.shopSellCount - 1) * 30);
-                if (state.gold < cost) { showCustomAlert("処分費用が足りません。"); return; }
-                state.gold -= cost;
-            }
+        function disposeCard(combinedIdx, btnEl) {
+    let allCards = [...state.deck, ...state.discard];
+    if (allCards.length <= 1) {
+        showCustomAlert("デッキの最小枚数（1枚）を下回るため、これ以上処分できません。");
+        return;
+    }
+    let baseDisposeCost = 30;
+    let actionType = state.shopSellCount === 0 ? '売却' : '処分';
+    if (state.shopSellCount !== 0) {
+        let cost = baseDisposeCost + ((state.shopSellCount - 1) * 30);
+        if (state.gold < cost) { showCustomAlert("処分費用が足りません。"); return; }
+    }
 
-            let removed;
-            if (combinedIdx < state.deck.length) {
-                removed = state.deck.splice(combinedIdx, 1)[0];
-            } else {
-                removed = state.discard.splice(combinedIdx - state.deck.length, 1)[0];
-            }
+    // アニメーションの適用と、二重クリック防止のためのロック
+    const shopItem = btnEl.closest('.shop-item');
+    if (shopItem) shopItem.classList.add('shop-item-anim-out');
+    document.getElementById('phase-shop-container').style.pointerEvents = 'none';
 
-            setLastAction(`【${removed.name}】を${actionType}`);
-
-            state.shopSellCount++;
-            renderShopDispose(); 
-            updateUI();
+    // 0.25秒後に元の処理を実行
+    setTimeout(() => {
+        if (state.shopSellCount === 0) {
+            state.gold += 20;
+        } else {
+            let cost = baseDisposeCost + ((state.shopSellCount - 1) * 30);
+            state.gold -= cost;
         }
+
+        let removed;
+        if (combinedIdx < state.deck.length) {
+            removed = state.deck.splice(combinedIdx, 1)[0];
+        } else {
+            removed = state.discard.splice(combinedIdx - state.deck.length, 1)[0];
+        }
+
+        setLastAction(`【${removed.name}】を${actionType}`);
+
+        state.shopSellCount++;
+        renderShopDispose(); 
+        updateUI();
+
+        // ロックを解除
+        document.getElementById('phase-shop-container').style.pointerEvents = 'auto';
+    }, 400);
+}
 
         function closeShop() {
             document.getElementById('phase-shop-container').style.display = 'none';
