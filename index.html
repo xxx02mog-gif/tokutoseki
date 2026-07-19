@@ -379,7 +379,8 @@ body {
             color: #f5f5f5;
         }
 .game-card .card-type,
-        .shop-item .card-type {
+        .shop-item .card-type,
+        .result-item .card-type {
             font-size: 9px;
             padding: 1px 4px;
             border-radius: 2px;
@@ -734,7 +735,8 @@ display: flex;
             turnPlayedCount: 0,
             shopBuyCount: 0,
             shopSellCount: 0,
-            specialCareCount: 0
+            specialCareCount: 0,
+            playedCardsList: [] // 追加：使用したカードの記録用
         };
 
 // 直前のステータスを保持するオブジェクト
@@ -1439,7 +1441,7 @@ if (activeBuffs.waterStressDuration > 0) {
             if (!hasCold && !hasAttachment && state.hand.length < 6) {
                 
                 // 0.1の確率で入手
-                if (Math.random() < 0.3) {
+                if (Math.random() < 0.2) {
                     
                     // 愛着1〜3のキー配列を用意し、ランダムで1つ選択する
                     const attachmentKeys = ['secret_attachment_1', 'secret_attachment_2', 'secret_attachment_3'];
@@ -1635,6 +1637,9 @@ function executeCard(target) {
     state.ap -= currentCost;
     setLastAction(`使用:【${card.name}】(${target === 'master' ? '主人' : '戦闘'})`);
 
+    // 追加：使用したカードを記録
+    state.playedCardsList.push(card);
+
 // 「闇医者を呼ぶ」または 特殊版「水を与える」（昏睡付与の重度デバフを持つもの）を判定
     if (card.name === "闇医者を呼ぶ" || (card.name === "水を与える" && card.actions && card.actions.some(a => a.type === "set_debuff" && a.value === "heavy"))) {
         state.specialCareCount++;
@@ -1670,7 +1675,6 @@ function executeCard(target) {
 
     // --- 特別処理: 暗殺によるゲーム終了 ---
     if (target === 'master' && card.type === 'harm' && state.debuff === 'heavy' && card.isKillTrigger) {
-        addLog("――特等席は永久に失われた。", "log-flavor");
         checkEndGame(false, "assassination");
         return;
     }
@@ -2031,17 +2035,11 @@ function buyCard(idx, cost, btnEl) {
     document.getElementById('phase-shop-container').style.pointerEvents = 'none';
 
     // 0.25秒（250ミリ秒）後に元の処理を実行
-    setTimeout(() => {
+ setTimeout(() => {
         state.gold -= cost; 
         
         let boughtCard = state.shopCards[idx];
         let boughtCardName = boughtCard.name;
-        
-        if (boughtCard.type === 'season') {
-            if (!state.achievements.includes(boughtCard.season)) {
-                state.achievements.push(boughtCard.season);
-            }
-        }
         
         state.discard.push(JSON.parse(JSON.stringify(boughtCard)));
         state.shopBuyCount++;            
@@ -2171,55 +2169,177 @@ function buyCard(idx, cost, btnEl) {
             const title = document.getElementById('end-title'); const desc = document.getElementById('end-description');
             endContainer.style.display = 'block';
             
-let memoryCount = state.achievements.length;
-            let memoryText = `<br><br>【過ごした四季の記憶】<br>`;
-            if (state.achievements.includes("夏")) memoryText += "夏：焼け付くような日差しを逃れ、涼やかな木陰で寄り添った。<br>";
-            if (state.achievements.includes("秋")) memoryText += "秋：祭りの喧騒を遠くに聞きながら、二人だけの静かな時を過ごした。<br>";
-            if (state.achievements.includes("冬")) memoryText += "冬：揺れるキャンドルの灯りに、互いの孤独を温め合った。<br>";
-            if (state.achievements.includes("春")) memoryText += "春：舞い込む桜の花びらに、いつか来る穏やかな日々を夢見た。<br>";
+            // --- 四季の記憶のHTML生成 ---
+            let memoryCount = state.achievements.length;
+            let seasonMemoryHTML = "";
             
-            if (memoryCount === 4) {
-                memoryText += "<br><span style='color:#f1c40f;'><b>【四季の巡り】全てを乗り越え、移ろいゆく季節を彼と共に生きた証がここに刻まれている。</b></span>";
-            } else if (memoryCount === 0) {
-                memoryText += "季節の思い出は特にない。<br>";
+            // 季節カードの使用履歴がある場合のみHTMLを生成
+            if (memoryCount > 0) {
+                let seasonText = "";
+                if (state.achievements.includes("夏")) seasonText += "夏：焼け付くような日差しを逃れ、涼やかな木陰で寄り添った。<br>";
+                if (state.achievements.includes("秋")) seasonText += "秋：祭りの喧騒を遠くに聞きながら、二人だけの静かな時を過ごした。<br>";
+                if (state.achievements.includes("冬")) seasonText += "冬：揺れるキャンドルの灯りに、互いの孤独を温め合った。<br>";
+                if (state.achievements.includes("春")) seasonText += "春：舞い込む桜の花びらに、いつか来る穏やかな日々を夢見た。<br>";
+                
+                if (memoryCount === 4) {
+                    seasonText += "<br><span style='color:#f1c40f;'><b>【四季の巡り】<br>全てを乗り越え、移ろいゆく季節を彼と共に生きた証がここに刻まれている。</b></span>";
+                }
+                
+                seasonMemoryHTML = `
+                    <details style="border: 1px solid #2a2a2a; border-radius: 4px; padding: 6px; background-color: #151515;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #d4af37; font-size: 12px; outline: none;">過ごした四季の記憶</summary>
+                        <div style="margin-top: 8px; font-size: 12px; line-height: 1.5; color: #e5e5e5;">
+                            ${seasonText}
+                        </div>
+                    </details>
+                `;
             }
 
+            // --- ここから追加：リザルト画面への一覧追加処理 ---
+            const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
+            const typeNames = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' };
+            // バーグラフ用の色設定（CSSと同一）
+            const typeColors = { direct: '#7d1f18', indirect: '#1e5a34', cold: '#1f4a63', harm: '#964b15', season: '#b3860f', obstacle: '#444444', attachment: '#ad5c77' };
+            
+            // 1. 最終デッキの集計とHTML化
+            let allCards = [...state.deck, ...state.hand, ...state.discard];
+            let deckCounts = {};
+            allCards.forEach(c => {
+                if(!c) return;
+                let key = `${c.type}_${c.name}`;
+                if (!deckCounts[key]) deckCounts[key] = { count: 0, card: c };
+                deckCounts[key].count++;
+            });
+            let deckList = Object.values(deckCounts).sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
+            
+            let deckListHTML = deckList.map(item => `
+                <div class="result-item" style="display: flex; align-items: center; gap: 6px;">
+                    <span class="card-type type-${item.card.type}">${typeNames[item.card.type]}</span>
+                    <span style="font-size: 11px; margin-bottom: 3px;">${item.card.name}（${item.count}枚）</span>
+                </div>
+            `).join('');
+
+            // 2. 使用カードの集計とHTML化
+            let playedCounts = {};
+            let typeCounts = { direct: 0, indirect: 0, cold: 0, harm: 0, season: 0, obstacle: 0, attachment: 0 };
+            let totalPlayed = state.playedCardsList ? state.playedCardsList.length : 0;
+            
+            if (state.playedCardsList) {
+                state.playedCardsList.forEach(c => {
+                    if(!c) return;
+                    let key = `${c.type}_${c.name}`;
+                    if (!playedCounts[key]) playedCounts[key] = { count: 0, card: c };
+                    playedCounts[key].count++;
+                    typeCounts[c.type]++;
+                });
+            }
+            let playedList = Object.values(playedCounts).sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
+
+            let playedListHTML = totalPlayed > 0 ? playedList.map(item => `
+                <div class="result-item" style="display: flex; align-items: center; gap: 6px;">
+                    <span class="card-type type-${item.card.type}">${typeNames[item.card.type]}</span>
+                    <span style="font-size: 11px; margin-bottom: 3px;">${item.card.name}（${item.count}回）</span>
+                </div>
+            `).join('') : '<div style="font-size: 11px;">使用したカードはありません。</div>';
+
+            // 3. バーグラフの生成
+            let barGraphHTML = '';
+            if (totalPlayed > 0) {
+                let bars = Object.keys(typeCounts).map(type => {
+                    let count = typeCounts[type];
+                    if (count > 0) {
+                        let percent = (count / totalPlayed) * 100;
+                        return `<div style="height: 100%; width: ${percent}%; background-color: ${typeColors[type]};" title="${typeNames[type]}: ${Math.round(percent)}%"></div>`;
+                    }
+                    return '';
+                }).join('');
+                barGraphHTML = `
+                    <div style="font-size: 10px; color: #aaa; margin-bottom: 4px;">カード使用比率（全${totalPlayed}回）</div>
+                    <div style="display: flex; height: 10px; width: 100%; border-radius: 4px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444;">
+                        ${bars}
+                    </div>
+                `;
+            }
+
+            // HTMLに結合
+            let memoryText = `
+                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
+                    <details style="border: 1px solid #2a2a2a; border-radius: 4px; padding: 6px; background-color: #151515;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #d4af37; font-size: 12px; outline: none;">使用したカード履歴</summary>
+                        <div style="margin-top: 8px;">
+                            ${barGraphHTML}
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                                ${playedListHTML}
+                            </div>
+                        </div>
+                    </details>
+                    
+                    <details style="border: 1px solid #2a2a2a; border-radius: 4px; padding: 6px; background-color: #151515;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #d4af37; font-size: 12px; outline: none;">最終デッキ内容</summary>
+                        <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 4px;">
+                            ${deckListHTML}
+                        </div>
+                    </details>
+                    
+                    ${seasonMemoryHTML}
+                </div>
+            `;
+
+            let endingText = ""; // ログに出力するためのエンディングテキスト
+
+            // 1. 各分岐でエンディングテキストのみを設定する
             if (condition === "assassination") {
                 title.innerText = "【END 6】復讐の終止符";
-                desc.innerHTML = `彼が昏睡した好機に、あなたはその命を絶ち、過去の因縁に終止符を打った。` + memoryText;
-                return;
-            }
-
-     if (condition === "dead") {
+                endingText = `――特等席は永久に失われた。`;
+            } else if (condition === "dead") {
                 title.innerText = "【GAME OVER】主人の死";
-                desc.innerHTML = `彼は過酷な環境に耐えかね、静かに息を引き取った。`+ memoryText;
-                return;
-            }
-
-    if (isSurvivalClear) {
-                let requiredCount = 10; // 
+                endingText = `彼は過酷な環境に耐えかね、静かに息を引き取った。`;
+            } else if (isSurvivalClear) {
+                let requiredCount = 10;
                 if (state.specialCareCount >= requiredCount) {
-                    title.innerText = "【END 7】壊れた精神";
-                    desc.innerHTML = `非合法な薬物の常用が、彼から正気と知性を奪った。それでも、彼との日常は続く。` + memoryText;
-                    return;
-                }
-
-                if (state.relation >= 85) {
+                    title.innerText = "【END 7】壊れてゆく自我";
+                    endingText = `非合法な薬物の常用が、着実に彼から正気と知性を奪っている。それでも、彼との日常は続く。`;
+                } else if (state.relation >= 85) {
                     title.innerText = "【END 4】確固たる信頼と矜持";
-                    desc.innerHTML = `彼はあなたへの全幅の信頼を胸に、気高き自尊心を取り戻した。` + memoryText;
+                    endingText = `あなたへ信頼を胸に、彼は気高き自尊心を取り戻した。`;
                 } else if (state.relation >= 45) {
                     title.innerText = "【END 3】穏やかな主従関係";
-                    desc.innerHTML = `互いに支え合い、穏やかで前向きな信頼関係を築き上げた。` + memoryText;
+                    endingText = `互いに支え合い、穏やかで前向きな信頼関係を築き上げた。`;
                 } else if (state.relation > -45) {
                     title.innerText = "【END 1】静かな日常";
-                    desc.innerHTML = `特筆すべき変化はないが、二人の静かな生活はこれからも続く。` + memoryText;
+                    endingText = `特筆すべき変化はないが、二人の静かな生活はこれからも続く。`;
                 } else if (state.relation > -85) {
                     title.innerText = "【END 2】歪み始めた関係";
-                    desc.innerHTML = `彼はあなたへの依存を深め、危うい均衡の上に成り立つ関係となった。` + memoryText;
+                    endingText = `彼はあなたへの依存を深め、危うい均衡の上に成り立つ関係となった。`;
                 } else {
-                    title.innerText = "【END 5】歪な支配と共依存";
-                    desc.innerHTML = `彼の精神は完全にあなたに依存し、二人は永遠に歪な関係から抜け出せなくなった。` + memoryText;
+                    title.innerText = "【END 5】共依存";
+                    endingText = `彼はあなたに存在意義のすべてを委ねている。そして、あなたも彼がいなければ存在意義を保てない。`;
                 }
+            }
+
+            // 2. エンディングのテキスト（物語の結末）はログエリアに出力
+            const logArea = document.getElementById('log-area');
+            if (endingText !== "") {
+                const endingEntry = document.createElement('div');
+                endingEntry.className = 'log-entry log-flavor'; 
+                endingEntry.innerHTML = endingText; 
+                logArea.appendChild(endingEntry);
+                
+                // ログの最下部へスクロール
+                logArea.scrollTop = logArea.scrollHeight;
+            }
+
+            // 3. 使用したカード履歴・最終デッキ内容（memoryText）はエンディング部分（desc）に残す
+            if (memoryText && memoryText !== "") {
+                // desc（エンディングテキスト枠）を表示状態にする
+                desc.style.display = "block"; 
+                
+                // ログエリア内のデザインと合わせるため、log-entryクラスを付与したdivで囲んで表示する
+                desc.innerHTML = `<div class="log-entry" style="text-align: left; margin-top: 15px;">${memoryText}</div>`;
+            } else {
+                // memoryTextが存在しない場合のみ非表示にする
+                desc.innerHTML = "";
+                desc.style.display = "none";
             }
         }
 function startGame() {
@@ -2604,16 +2724,21 @@ function openManual() {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.40</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.41</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
  <p style="font-size: 10px;">■ver 0.40<br>
+・リザルト画面に使用カード・最終デッキの一覧を表示させるようにしました。<br>
+・一部のテキスト・UIを変更しました。<br>
+</p>
+
+ <p style="font-size: 10px;">■ver 0.40<br>
 ・カードを1枚追加しました。<br>
 ・カードで獲得できる資金をランダムにしました。<br>
 ・一部のテキスト・UIを変更しました。<br>
-</p
+</p>
 
   <p style="font-size: 10px;">■ver 0.39<br>
 ・EDを一種追加しました。<br>
