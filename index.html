@@ -1136,7 +1136,16 @@ const SPECIAL_CARDS = {
         };
 
         function getRandomCard(type) {
-            let pool = CARD_POOL[type];
+            // プールから条件に合わないカードを除外
+            let pool = CARD_POOL[type].filter(card => {
+                if (card.name === "形見の宝刀") {
+                    // 所持しているすべてのカードをチェック
+                    let allCards = [...state.deck, ...state.hand, ...state.discard];
+                    let hasSword = allCards.some(c => c && c.name === "形見の宝刀");
+                    if (hasSword) return false; // 既に持っている場合は抽選対象から外す
+                }
+                return true;
+            });
             return JSON.parse(JSON.stringify(pool[Math.floor(Math.random() * pool.length)]));
         }
 
@@ -1962,7 +1971,8 @@ function openShop() {
             // 通常カード3枚の抽選
             for (let i = 0; i < 3; i++) {
                 let randomType = poolKeys[Math.floor(Math.random() * poolKeys.length)];
-                let cards = CARD_POOL[randomType];
+                // ショップには形見の宝刀を出さないようにフィルタリング
+                let cards = CARD_POOL[randomType].filter(c => c.name !== "形見の宝刀");
                 let randomCard = cards[Math.floor(Math.random() * cards.length)];
                 state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
             }
@@ -1973,9 +1983,9 @@ function openShop() {
             // 未獲得かつ70%の確率で出現
             if (!state.achievements.includes(nextTurnSeason) && Math.random() < 0.7) {
                 state.shopCards.push(JSON.parse(JSON.stringify(CARD_POOL.season[nextTurnSeason])));
-            } else {
+         } else {
                 let randomType = poolKeys[Math.floor(Math.random() * poolKeys.length)];
-                let cards = CARD_POOL[randomType];
+                let cards = CARD_POOL[randomType].filter(c => c.name !== "形見の宝刀");
                 let randomCard = cards[Math.floor(Math.random() * cards.length)];
                 state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
             }
@@ -2040,11 +2050,11 @@ function buyCard(idx, cost, btnEl) {
         let nextTurnSeason = getSeasonByTurn(state.turn + 1);
         let hasSeasonCard = state.shopCards.some(c => c && c.type === 'season');
         
-        if (!hasSeasonCard && !state.achievements.includes(nextTurnSeason) && Math.random() < 0.7) {
+       if (!hasSeasonCard && !state.achievements.includes(nextTurnSeason) && Math.random() < 0.7) {
             state.shopCards.push(JSON.parse(JSON.stringify(CARD_POOL.season[nextTurnSeason])));
         } else {
             let randomType = poolKeys[Math.floor(Math.random() * poolKeys.length)];
-            let cards = CARD_POOL[randomType];
+            let cards = CARD_POOL[randomType].filter(c => c.name !== "形見の宝刀");
             let randomCard = cards[Math.floor(Math.random() * cards.length)];
             state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
         }
