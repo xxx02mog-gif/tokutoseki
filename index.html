@@ -1361,7 +1361,8 @@ if (activeBuffs.waterStressDuration > 0) {
             }
 
             let roll = Math.random() * 100;
-          if (roll < state.stress && state.stress > 0) {
+       let threshold = Math.max(5, Math.min(95, state.stress));
+            if (roll < threshold) {
                 let debuffs = ['light', 'medium', 'heavy'];
                 state.debuff = debuffs[Math.floor(Math.random() * debuffs.length)];
                 
