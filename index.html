@@ -2496,20 +2496,18 @@ const RIPPLE_COOLDOWN = 100; // 波紋が出る最小間隔（ミリ秒）。好
 
 document.addEventListener('pointerdown', function(e) {
     const now = Date.now();
-    
-    // 前回の波紋から一定時間経っていない場合は生成をスキップ
     if (now - lastRippleTime < RIPPLE_COOLDOWN) return;
     lastRippleTime = now;
 
     const ripple = document.createElement('span');
     ripple.className = 'click-ripple';
 
-    ripple.style.left = `${e.clientX}px`;
-    ripple.style.top = `${e.clientY}px`;
+    // ↓ clientX/clientY を pageX/pageY に変更
+    ripple.style.left = `${e.pageX}px`;
+    ripple.style.top = `${e.pageY}px`;
 
     document.body.appendChild(ripple);
 
-    // 1.4秒後に要素を消去
     setTimeout(() => {
         ripple.remove();
     }, 1400);
