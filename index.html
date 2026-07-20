@@ -612,7 +612,7 @@ display: flex;
         opacity: 0.6;
     }
     100% {
-        transform: translate(-50%, -50%) scale(1);
+        transform: translate(-50%, -50%) scale(0.6);
         opacity: 0;
         border: 1px solid rgba(212, 175, 55, 0);
     }
@@ -2492,7 +2492,7 @@ function openManual() {
 // 画面全体のどこをクリックしても波紋を出す処理
 // ==========================================
 let lastRippleTime = 0;
-const RIPPLE_COOLDOWN = 300; // 波紋が出る最小間隔（ミリ秒）。好みに応じて 400 や 500 に増やすとより数が絞られます
+const RIPPLE_COOLDOWN = 100; // 波紋が出る最小間隔（ミリ秒）。好みに応じて 400 や 500 に増やすとより数が絞られます
 
 document.addEventListener('pointerdown', function(e) {
     const now = Date.now();
