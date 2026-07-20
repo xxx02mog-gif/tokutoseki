@@ -1624,7 +1624,7 @@ function executeCard(target) {
     }
 
     if (target === 'master' && card.goldCost && state.gold < card.goldCost) {
-        showCustomAlert(`資金が足りないため使用できません。;
+        showCustomAlert(`資金が足りないため使用できません。`);
         return; // ★cancelTargetSelect(); を削除し、選択を維持
     }
 
