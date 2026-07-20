@@ -366,10 +366,15 @@ body {
             background: #2a2a2a;
         }
         
- .game-card.selected-card {
-    border: 1px solid #d4af37 !important; /* 1pxのままにする */
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.8); /* 影を少し強めにして選択中を強調 */
+.game-card.selected-card {
+    border: 1px solid #d4af37 !important;
+    
+    /* 12px → 6px に変更して発光を小さくする */
+    box-shadow: 0 0 2px rgba(212, 175, 55, 0.8); 
+    
     background: linear-gradient(135deg, #2a2820 0%, #1a1915 100%);
+    position: relative; /* カード同士の重なりを防ぐため念のため残しておくのがおすすめです */
+    z-index: 10;
 }
 
         .game-card .card-name {
@@ -594,7 +599,7 @@ display: flex;
 /* 押し込んだ瞬間：微小に沈み込み、ほんのり発光 */
 .btn:active, .game-card:active, .target-btn:active, .tab-btn:active {
     transform: scale(0.99) !important;
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.35), 
+    box-shadow: 0 0 0px rgba(212, 175, 55, 0.35), 
                 inset 0 0 8px rgba(212, 175, 55, 0.2) !important;
 }
 
