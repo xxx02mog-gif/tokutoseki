@@ -578,6 +578,59 @@ display: flex;
     animation: fadeIn 0.4s ease-out forwards; /* この行を追加 */
 }
 
+
+/* ==========================================
+   ボタン等の押し込み・沈み込み演出（維持）
+   ========================================== */
+.btn, .game-card, .target-btn, .tab-btn {
+    transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
+                box-shadow 0.2s ease, 
+                border-color 0.2s ease,
+                background-color 0.2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent; /* スマホタップ時の青枠を消す */
+}
+
+/* 押し込んだ瞬間：微小に沈み込み、ほんのり発光 */
+.btn:active, .game-card:active, .target-btn:active, .tab-btn:active {
+    transform: scale(0.99) !important;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.35), 
+                inset 0 0 8px rgba(212, 175, 55, 0.2) !important;
+}
+
+/* ==========================================
+   全画面対応・金光彩リップル（波紋）
+   ========================================== */
+@keyframes goldRipple {
+    0% {
+        width: 0px;
+        height: 0px;
+        opacity: 0.9;
+        border: 1px solid rgba(212, 175, 55, 0.9);
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.45) 0%, rgba(212, 175, 55, 0) 70%);
+    }
+    /* 50%〜60%の時点でも光を維持し、「一瞬で消える」のを防止 */
+    60% {
+        opacity: 0.5;
+    }
+    100% {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+        border: 1px solid rgba(212, 175, 55, 0);
+        background: radial-gradient(circle, rgba(212, 175, 55, 0) 0%, rgba(212, 175, 55, 0) 70%);
+    }
+}
+
+.click-ripple {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    /* 1.4秒かけて優雅に広がる設定 */
+    animation: goldRipple 1.4s cubic-bezier(0.1, 0.5, 0.2, 1) forwards;
+    z-index: 9999;
+}
     </style>
 
 <link rel="icon" type="image/png" href="favicon.png">
@@ -2438,6 +2491,32 @@ function openManual() {
         }
 
 
+// ==========================================
+// 画面全体のどこをクリックしても波紋を出す処理
+// ==========================================
+let lastRippleTime = 0;
+const RIPPLE_COOLDOWN = 300; // 波紋が出る最小間隔（ミリ秒）。好みに応じて 400 や 500 に増やすとより数が絞られます
+
+document.addEventListener('pointerdown', function(e) {
+    const now = Date.now();
+    
+    // 前回の波紋から一定時間経っていない場合は生成をスキップ
+    if (now - lastRippleTime < RIPPLE_COOLDOWN) return;
+    lastRippleTime = now;
+
+    const ripple = document.createElement('span');
+    ripple.className = 'click-ripple';
+
+    ripple.style.left = `${e.clientX}px`;
+    ripple.style.top = `${e.clientY}px`;
+
+    document.body.appendChild(ripple);
+
+    // 1.4秒後に要素を消去
+    setTimeout(() => {
+        ripple.remove();
+    }, 1400);
+});
     </script>
 
 <style>
@@ -2811,6 +2890,7 @@ function openManual() {
  <p style="font-size: 10px;">■ver 0.42<br>
 ・関係性が極端な値のとき、一定回数以上使用したカードの回復効果が半減するようにしました。<br>（ターン終盤に極端な関係性の時に不用品が混入する処理を削除しました）<br>
 ・一定回数以上使用したカードを他より高く売却できるようにしました。<br>
+・タップ、クリックした際のアニメーションを付けました。<br>
 ・一部のテキスト・UIを変更しました。<br>
 </p>
 
