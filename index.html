@@ -1618,7 +1618,8 @@ if (card.type === 'season') {
                 let currentSeason = getSeasonByTurn(state.turn);
 
                 if (card.season !== currentSeason) {
-                    alert(`${card.season}以外では使用できません。`);
+                    // --- 変更：デフォルトの alert() を showCustomAlert() に置き換え ---
+                    showCustomAlert(`${card.season}以外では使用できません。`);
                     state.selectedCardIndex = null;
                     return;
                 }
