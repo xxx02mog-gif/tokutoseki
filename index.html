@@ -1394,6 +1394,19 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
         function processWeekStart() {
             state.turn++;
             if (state.turn > 30) {
+                // クリック直後に操作をロック
+                document.body.style.pointerEvents = 'none';
+                // 処理中であることを示すテキストを出力
+                addLog("……", "log-flavor");
+
+                // 0.8秒後にエンディング画面へ移行
+                setTimeout(() => {
+                    checkEndGame(true);
+                    document.body.style.pointerEvents = 'auto'; // ロック解除
+                }, 800);
+                return;
+            }
+            if (state.turn > 30) {
                 checkEndGame(true);
                 return;
             }
@@ -1767,7 +1780,13 @@ function executeCard(target) {
 
     // --- 特別処理: 暗殺によるゲーム終了 ---
     if (target === 'master' && card.type === 'harm' && state.debuff === 'heavy' && card.isKillTrigger) {
-        checkEndGame(false, "assassination");
+        document.body.style.pointerEvents = 'none';
+        addLog("……", "log-flavor");
+        
+        setTimeout(() => {
+            checkEndGame(false, "assassination");
+            document.body.style.pointerEvents = 'auto';
+        }, 1000);
         return;
     }
 
@@ -2066,7 +2085,13 @@ if (state.battleActive) {
 
             if (state.health <= 0) { 
                 updateUI(); // ゲームオーバー画面を出す前にHP0を画面に反映
-                checkEndGame(false, "dead"); 
+                document.body.style.pointerEvents = 'none';
+                addLog("……", "log-flavor");
+
+                setTimeout(() => {
+                    checkEndGame(false, "dead"); 
+                    document.body.style.pointerEvents = 'auto';
+                }, 1000);
                 return; 
             }
             state.discard.push(...state.hand);
