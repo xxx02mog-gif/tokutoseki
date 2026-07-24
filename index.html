@@ -888,7 +888,7 @@ stressChange: -10,
         heavy_dependence: "あなたは主人の額に触れた。熱がじわじわと手のひらに伝わってくる。"} },
         { name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat", stressChange: -25, actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", flavor: { trust: "あなたがつきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが食事を与えると、彼はすべてをあなたに委ねるように受け入れた。" } },
         { name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", stressChange: 0, actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", flavor: { trust: "あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。", dependence: "あなたの血を与えられた彼は、あなたと深く結びついた感覚に酔いしれている。" } },
-        { name: "過呼吸の対処", type: "direct", value: 10, cost: 2, valType: "flat", actions: [{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -2}], desc: "必ずストレス-20。関係性+10。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
+        { name: "過呼吸の対処", type: "direct", value: 10, cost: 2, valType: "flat", actions: [{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "必ずストレス-20。関係性+10。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
     ],
     indirect: [
 
@@ -2010,7 +2010,11 @@ case "add_special_card":
     renderHand(); 
     updateUI();
     if (state.health <= 0) { 
-        checkEndGame(false, "dead"); 
+        if (target === 'master' && card.type === 'harm') {
+            checkEndGame(false, "assassination");
+        } else {
+            checkEndGame(false, "dead"); 
+        }
     }
 }
         function processWeekEnd() {
@@ -2921,11 +2925,15 @@ document.addEventListener('pointerdown', function(e) {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.43</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.44</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+<p style="font-size: 10px;">■ver 0.44<br>
+・攻撃カードで健康度が０になった場合のEND分岐を変更しました。
+</p>
+
 <p style="font-size: 10px;">■ver 0.43<br>
 ・不用品を入手した際にフレーバーテキストを表示するようにしました。
 </p>
