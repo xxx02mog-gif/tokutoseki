@@ -64,17 +64,17 @@ body {
 }
         
         header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            /* 深い黒の背景に、繊細なゴールドの枠線 */
-            background-color: rgba(20, 20, 20, 0.95);
-            border: 1px solid #d4af37;
-            padding: 10px;
-            
-            margin-bottom: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 10px rgba(212, 175, 55, 0.1);
-        }
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    /* 深い黒の背景に、繊細なゴールドの枠線 */
+    background-color: rgba(20, 20, 20, 0.95);
+    border: 1px solid #d4af37;
+    padding: 10px;
+    border-bottom: none;
+    margin-bottom: -10px; /* 変更①: 10pxから0に変更し、隙間をなくす */
+    /* 変更②: 下のメイン要素と一体化させるため、ヘッダー個別の影を削除 */
+}
         
         .info-row {
             display: flex;
@@ -235,17 +235,18 @@ body {
             display: none;
         }
 
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #141414;
-            
-            border: 1px solid #d4af37;
-            padding: 10px;
-            overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
-        }
+       main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #141414;
+    
+    border: 1px solid #d4af37;
+    border-top: none; /* 変更③: 枠線が二重になるのを防ぐため、上の枠線を消す */
+    padding: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+}
 
         #log-area {
             height: 130px;
@@ -303,9 +304,9 @@ body {
             padding: 6px;
             
             margin-bottom: 8px;
-            font-size: 12px;
+            font-size: 11px;
             text-align: center;
-            border: 1px solid #d4af37;
+            border: 0px solid #d4af37;
             color: #d4af37;
             font-weight: bold;
         }
@@ -322,14 +323,13 @@ body {
         }
 
         .battle-phase-alert {
-            background-color: #2a0f0f;
-            border: 1px solid #962d22;
+            background-color: #1a1a1a;
+            border: 0px solid #962d22;
             color: #e74c3c;
-            padding: 6px;
-            
-            font-size: 12px;
+            padding: 0px;
+            font-size: 10px;
             font-weight: bold;
-            text-align: center;
+            margin-top: -5px;
             margin-bottom: 8px;
             display: none;
         }
@@ -337,9 +337,8 @@ body {
   .card-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr; /* ← この行を追加 */
     gap: 6px;
-    /* max-height: 200px; を削除 */
-    /* overflow-y: auto; を削除 */
     padding: 2px;
 }
 
@@ -347,7 +346,7 @@ body {
         .game-card {
             background: linear-gradient(135deg, #222222 0%, #151515 100%);
             border: 1px solid #444444;
-            padding: 6px;
+            padding: 4px 6px 8px 6px;
             text-align: left;
             color: #ffffff;
             cursor: pointer;
@@ -355,6 +354,7 @@ body {
             flex-direction: column;
             justify-content: space-between;
             min-height: 65px;
+            height: 100%; /* ← この行を追加 */
             transition: all 0.2s;
             box-shadow: 0 3px 6px rgba(0,0,0,0.5);
             position: relative; 
@@ -733,10 +733,6 @@ display: flex;
             <div class="phase-scroll-area">
                 <div class="last-action-display">直前の行動: なし</div>
                 
-                <div class="battle-phase-alert" id="battle-alert-bar">
-                    【戦闘発生中！】敵の脅威度: <span id="battle-threat-value">0</span>% 
-                </div>
-
                 <div class="section-title">
                     <span>行動フェーズ</span>
                     <div style="display: flex; gap: 8px; font-size: 12px; color: #e5e5e5; font-weight: normal; align-items: center;">
@@ -744,7 +740,9 @@ display: flex;
                         <span>資金: <strong id="stat-gold" style="color:#b57c1e;">100</strong></span>
                     </div>
                 </div>
-                
+                <div class="battle-phase-alert" id="battle-alert-bar">
+    【戦闘発生中！】敵の脅威度: <span id="battle-threat-value">0</span>% 
+</div>
                 <div class="card-grid" id="hand-cards"></div>
             </div>
 
@@ -950,7 +948,7 @@ stressChange: -10,
         {type: "add_special_card", key: "water_coma"},
         {type: "consume"}
     ], 
-    desc: "資金-20G。必ず健康+50。関係性+5。特殊な『水を与える』を手札に加える(使い切り)",
+    desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)",
 flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさせた。彼は医師のことを訝しんでいるようだ。", dependence: "彼と医者を残して、あなたは部屋を出る。震え声が、扉が閉まる音でかき消された。",
             heavy_trust: "外部から怪しげな医者を呼び、眠っている間に治療を受けさせた。",
         heavy_dependence: "意識のない彼に、怪しげな医師が処置を施す。目を覚まさない彼は、何をされても抵抗すらできない。"
@@ -1629,6 +1627,12 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
             
             if (card.type === 'obstacle') {
                 showCustomAlert("不用品のため、使用できません。");
+                state.selectedCardIndex = null;
+                return;
+            }
+
+            if (card.isBattleOnly && !state.battleActive) {
+                showCustomAlert("対象（敵）がいないため、使用できません。");
                 state.selectedCardIndex = null;
                 return;
             }
@@ -2451,7 +2455,7 @@ function buyCard(idx, cost, btnEl) {
                 }).join('');
                 barGraphHTML = `
                     <div style="font-size: 10px; color: #aaa; margin-bottom: 4px;">カード使用比率（全${totalPlayed}回）</div>
-                    <div style="display: flex; height: 10px; width: 100%;  overflow: hidden; margin-bottom: 10px; border: 1px solid #444;">
+                    <div style="display: flex; height: 10px; width: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444;">
                         ${bars}
                     </div>
                 `;
