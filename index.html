@@ -1085,7 +1085,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "眠る彼の首を締め上げる。目を覚まさない彼を、このまま壊してしまいたい衝動に駆られる。"
             } 
         },
-       { name: "見せしめの拷問", type: "harm", value: 0, cost: 2, valType: "percent", isMasterAlways: true, actions: [{context: "master", type: "heal", value: -40}, {context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"}, {context: "battle", type: "consume"}], desc: "敵脅威度を強制的に0にする / 【対主人】主人健康-40。ストレス+40　（使い切り）", flavor: { 
+       { name: "見せしめの拷問", type: "harm", value: 0, cost: 2, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"},  {type: "consume"} ], desc: "敵脅威度を強制的に0にする / 【対主人】ストレス+40　（使い切り）", flavor: { 
                 trust: "あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。彼は顔を引き攣らせている。", 
                 dependence: "疲労の中でも、彼はあなたのやり方に異を唱えることなく従っている。", 
                 battle: "あなたは捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。",
