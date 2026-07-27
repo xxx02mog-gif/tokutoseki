@@ -900,7 +900,7 @@ stressChange: -10,
         { name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 10}], desc: "健康+20。ストレス-10。関係性+3", flavor: { trust: "あなたは彼の体を丁寧に拭き上げた。彼は世話を焼かれることに負い目を感じている。", dependence: "あなたが触れるたび、彼はあなたとの繋がりに安堵のため息を漏らしている。",
         heavy_trust: "あなたは眠ったまま起きる気配のない彼の体を、丁寧に拭き上げた。",
         heavy_dependence: "あなたがどれだけ触れても、彼は反応しない。ただ静かに眠り続けている。"} },
-        { name: "深夜の付き添い", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+5", flavor: { trust: "あなたは夜通し彼の傍にいた。彼はあなたの体調を気遣っている。", dependence: "あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。",
+        { name: "深夜の付き添い", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 10},{type: "stress_direct", value: 20}], desc: "健康+10。ストレス-20。関係性+5", flavor: { trust: "あなたは夜通し彼の傍にいた。彼はあなたの体調を気遣っている。", dependence: "あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。",
         heavy_trust: "あなたは眠ったまま起きる気配のない彼の体を、丁寧に拭き上げた。",
         heavy_dependence: "あなたが触れても彼は何の反応も返さない。ただ静かに眠り続けている。"} },
         { name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 5}], desc: "健康+15。ストレス-5。関係性+5。", flavor: { trust: "あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめたが、手当てには感謝している。", dependence: "あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと喜んで受け入れている。",
@@ -911,7 +911,7 @@ stressChange: -10,
         heavy_dependence: "あなたは主人の額に触れた。熱がじわじわと手のひらに伝わってくる。"} },
         { name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat",  actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", flavor: { trust: "あなたがつきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが食事を与えると、彼はすべてをあなたに委ねるように受け入れた。" } },
         { name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", flavor: { trust: "あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。", dependence: "あなたの血を与えられた彼は、あなたと深く結びついた感覚に酔いしれている。" } },
-        { name: "過呼吸の対処", type: "direct", value: 10, cost: 2, valType: "flat", actions: [{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "必ずストレス-20。関係性+10。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
+        { name: "過呼吸の対処", type: "direct", value: 10, cost: 2, valType: "flat", actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+10。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
     ],
     indirect: [
 
@@ -971,7 +971,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "今ならば、意識のない彼をさらに追い詰める事もできる。彼を生かすも殺すも、今のあなた次第だ。" 
             } 
         },
-        { name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{ type: "heal", value: 20 }, {type: "stress", value: -25}], desc: "健康+20。ストレス-25。関係性+4", flavor: { trust: "あなたが栄養のある食事を用意すると、彼は感謝とともにそれを口にした。", dependence: "あなたが用意した食事を、彼はあなたのためだけにすべて平らげた。" } },
+        { name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{ type: "heal", value: 30 }, {type: "stress", value: -25}], desc: "健康+30。ストレス-25。関係性+4", flavor: { trust: "あなたが栄養のある食事を用意すると、彼は感謝とともにそれを口にした。", dependence: "あなたが用意した食事を、彼はあなたのためだけにすべて平らげた。" } },
         { name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, actions: [{type: "buff", key: "scentDuration", value: 3},{type: "stress", value: -15}], desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", flavor: { 
                 trust: "あなたが彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出したようだ。", 
                 dependence: "香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。",
@@ -2221,11 +2221,13 @@ let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', 
                 item.innerHTML = `<div>
                         <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
                             <span class="card-type type-${card.type}" style="margin-bottom: 0;">${typeN}</span>
+                            <span style="font-size: 10px; background: #a3a29d; border: 0px solid #555; padding: 1px 5px; border-radius: 3px; color: #151515; font-weight: bold;">AP:${card.cost}</span>
                             <strong style="font-size:12px;">${card.name}</strong>
                         </div>
                         <span style="font-size:10px; color:#aaa;">${card.desc}</span>
                     </div>
-                    <button class="btn btn-primary" style="padding:4px 8px; font-size:11px; margin:0; width:auto;" onclick="buyCard(${idx}, ${currentCost}, this)">購入(${currentCost}G)</button>`;                view.appendChild(item);
+                    <button class="btn btn-primary" style="padding:4px 8px; font-size:11px; margin:0; width:auto;" onclick="buyCard(${idx}, ${currentCost}, this)">購入(${currentCost}G)</button>`;
+                view.appendChild(item);
             });
         }
 
@@ -2329,6 +2331,7 @@ function buyCard(idx, cost, btnEl) {
 
                 item.innerHTML = `<div style="display: flex; align-items: center; gap: 6px;">
                         <span class="card-type type-${card.type}" style="margin-bottom: 0;">${typeN}</span>
+                        <span style="font-size: 10px; background: #a3a29d; border: 0px solid #555; padding: 1px 5px; border-radius: 3px; color: #151515; font-weight: bold;">AP:${card.cost}</span>
                         <span style="font-size:11px;">${card.name}${bonusIcon}</span>
                     </div>
                     <button class="btn ${btnClass}" style="padding:3px 6px; font-size:10px; margin:0; width:auto;" onclick="disposeCard(${idx}, this)">${btnText}</button>`;
