@@ -891,7 +891,7 @@ stressChange: -10,
         { name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { trust: "あなたは彼を気遣って看病した。彼は申し訳なさそうに視線をそらしている。", dependence: "あなたが看病すると、彼はあなたにすがりつくように袖を掴んだ。",
         heavy_trust: "あなたは意識のない彼を看病した。人形のように力の抜けた体は、いつもよりも重く感じる。",
         heavy_dependence: "あなたが看病すると、彼の苦しげな呼吸が和らいだ。"} },
-        { name: "髪を梳かす", type: "direct", value: 2, cost: 1, valType: "flat", stressChange: -20, actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+2", flavor: { trust: "あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。", dependence: "あなたの指先が触れると、彼はひどく安心した表情を見せた。",
+        { name: "髪を梳かす", type: "direct", value: 4, cost: 1, valType: "flat", stressChange: -20, actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+4", flavor: { trust: "あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。", dependence: "あなたの指先が触れると、彼はひどく安心した表情を見せた。",
         heavy_trust: "あなたは彼の髪を丁寧に梳かした。彼は眠ったまま、されるがままにされている。",
         heavy_dependence: "あなたの指先が触れても、彼は目を覚まさない。"} },
         { name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", stressChange: -15, actions: [{type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "健康+30,ストレス-15。関係性+2", flavor: { trust: "あなたは彼に薬を飲ませた。彼は手間をかけることを申し訳なく思っているようだ。", dependence: "あなたが与えるものなら、彼はどんなものでも喜んで受け入れる。",
@@ -992,7 +992,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 dependence: "あなたが淹れた紅茶を飲むと、彼はあなたの存在だけを鮮明に感じるようだ。"
             } 
         },
-        { name: "防音壁の補強", type: "indirect", value: 2, cost: 2, valType: "flat", stressChange: 0, actions: [{type: "buff", key: "threatReduction", value: 25}], desc: "関係性+2。次の戦闘が発生した際、脅威度を25軽減する", flavor: { trust: "あなたが部屋の防音を強化すると、彼はあなたに守られていることを実感した。", dependence: "外の音が消えた部屋で、彼はあなたと二人きりの世界に深く浸っている。" } },
+        { name: "防音壁の補強", type: "indirect", value: 2, cost: 2, valType: "flat", stressChange: 0, actions: [{type: "buff", key: "threatReduction", value: 25}, {type: "consume"}], desc: "関係性+2。次の戦闘が発生した際、脅威度を25軽減する（使い切り）", flavor: { trust: "あなたが部屋の防音を強化すると、彼はあなたに守られていることを実感した。", dependence: "外の音が消えた部屋で、彼はあなたと二人きりの世界に深く浸っている。" } },
        { name: "調度品の買い替え", type: "indirect", value: 30, cost: 1, valType: "percent", stressChange: 0, goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性を現在の値+30%（使い切り）", flavor: { 
                 trust: "あなたが新しい家具を揃えると、彼は荒んだ心に温かい光が差すのを感じた。", 
                 dependence: "新しい家具よりも、彼はただあなたが傍にいてくれることだけを望んでいる。",
@@ -1754,13 +1754,10 @@ function executeCard(target) {
     let isMannerism = false;
     // 戦闘用(harm)や季節限定(season)は対象外とする
     if (['direct', 'indirect', 'cold', 'attachment'].includes(card.type)) {
-        if (state.relation >= 80 || state.relation <= -80) {
-            // これまでに使用した同じ名前のカードの回数をカウント
-            let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
-            // 例：3回以上（今回が4回目以降）なら減衰
-            if (sameCardCount >= 3) {
-                isMannerism = true;
-            }
+        // 関係性の条件を撤廃し、使用回数のみで判定する
+        let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
+        if (sameCardCount >= 5) { // ★ 3 から 5 に変更
+            isMannerism = true;
         }
     }
 
@@ -2083,7 +2080,7 @@ if (state.battleActive) {
                         }
                     }
                 } else {
-                   let reward = 40 + Math.floor(state.turn * 0.6);
+                   let reward = 15 + Math.floor(state.turn * 0.5);
                     state.gold += reward;
                     
                     // 防衛成功時の情景描写
@@ -2247,12 +2244,13 @@ function buyCard(idx, cost, btnEl) {
 
        function renderShopDispose() {
             const view = document.getElementById('shop-dispose-view');
-            let baseDisposeCost = 30;
+            let baseDisposeCost = 30; // 内部処理の数値と統一
+            let costIncrease = 30; // 上り幅（元30から50に変更）
             let headerText = "";
             if (state.shopSellCount === 0) {
                 headerText = "各月の1回目の売却：カードを売って 資金(+20G) を得られます。";
             } else {
-                let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * 30);
+                let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
                 headerText = `2回目以降の処分：廃棄コストとして 資金(-${nextCost}G) を消費します。`;
             }
             
@@ -2279,7 +2277,7 @@ function buyCard(idx, cost, btnEl) {
                     btnText = `売却(+${20 + bonusGold}G)`; 
                     btnClass = "btn-primary";
                 } else {
-                    let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * 30);
+                    let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
                     let netCost = nextCost - bonusGold;
                     if (netCost <= 0) {
                         // ボーナスが処分コストを上回る場合は資金増（青ボタン）にする
@@ -2305,7 +2303,7 @@ function buyCard(idx, cost, btnEl) {
 
 function calculateBonusGold(cardName) {
     let playCount = state.playedCardsList ? state.playedCardsList.filter(c => c && c.name === cardName).length : 0;
-    return (playCount >= 3) ? (playCount * 15) : 0;
+    return (playCount >= 3) ? (playCount * 10) : 0;
 }
 
         function disposeCard(combinedIdx, btnEl) {
@@ -2320,13 +2318,15 @@ function calculateBonusGold(cardName) {
             let bonusGold = calculateBonusGold(targetCard.name);
             
             let baseDisposeCost = 30;
-            let actionType = state.shopSellCount === 0 ? '売却' : '処分';
+            let costIncrease = 30; // 上り幅
+            let actionType = '処分';
             
             let netCost = 0;
             if (state.shopSellCount === 0) {
                 netCost = -(20 + bonusGold); // マイナスは収入扱いとする
+                actionType = '売却';
             } else {
-                netCost = baseDisposeCost + ((state.shopSellCount - 1) * 30) - bonusGold;
+                netCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease) - bonusGold;
             }
 
             if (netCost > 0 && state.gold < netCost) { 
@@ -2953,11 +2953,10 @@ document.addEventListener('pointerdown', function(e) {
 
             <h2>5. 快適なプレイのためのヒント</h2>
             <ul>
-                <li><strong>主人の心境の変化：</strong> 関係性の傾き方によって、同じカードでも効果が反転・半減したり、フレーバーテキストが変化します。
-また、関係性が極端に傾いているときは、同じケアばかり繰り返していると、彼はその対応に慣れきってしまい効果が薄れることがあります。</li>
+                <li><strong>主人の心境の変化：</strong> 関係性の傾き方によって、同じカードでも効果が反転・半減したり、フレーバーテキストが変化します。</li>
                 <li><strong>戦闘への対処：</strong> 戦闘に敗北すると手痛い被害を受けます。攻撃カードを使用して、敵の脅威度を下げましょう。</li>
                 <li><strong>デッキの圧縮の活用：</strong> 手札の巡りを良くするためには、ショップでのカード処分が不可欠です。現在の関係性に合わない不要なカードはどんどん処分しましょう。</li>
-<li><strong>使い込まれたカードの価値：</strong>一定回数以上使ったカードを手放す際、通常の売却・処分よりも少しだけ高価で売却できます。</li>
+<li><strong>使い込まれたカードの価値：</strong>同じケアを繰り返していると、彼はその対応に慣れきってしまい効果が薄れます。また、一定回数以上使ったカードを手放す際、通常の売却・処分よりも少しだけ高価で売却できます。</li>
  <li><strong>愛着の芽生え：</strong> 冷淡な気持ちがなくなっている時、稀に愛情のような感情が芽生えます。愛着行動は主人が昏睡状態の時のみ使用できます。</li>
                 <li><strong>特別なエンディング：</strong>ゲームオーバーや30ターン終了する以外に、特殊なエンディング（2種）があります。
             </ul>
@@ -2974,7 +2973,8 @@ document.addEventListener('pointerdown', function(e) {
   <summary style="font-size: 10px;">更新履歴</summary>
   <p style="font-size: 10px;">■ver 0.45<br>
 ・購入フェーズにて季節カードが優先選出されないようにしました。<br>
-・売却フェーズにて使用回数が多いほどカードが高価で売却できるようにしました。
+・売却フェーズにて使用回数が多いほどカードが高価で売却できるようにしました。<br>
+・一部のカードや獲得資金の調整を行いました。
 </p>
 <p style="font-size: 10px;">■ver 0.44<br>
 ・攻撃カードで健康度が０になった場合のEND分岐を変更しました。<br>
@@ -2986,7 +2986,7 @@ document.addEventListener('pointerdown', function(e) {
 </p>
 
  <p style="font-size: 10px;">■ver 0.42<br>
-・関係性が極端な値のとき、一定回数以上使用したカードの回復効果が半減するようにしました。<br>（ターン終盤に極端な関係性の時に不用品が混入する処理を削除しました）<br>
+・一定回数以上使用したカードの回復効果が半減するようにしました。<br>（ターン終盤に極端な関係性の時に不用品が混入する処理を削除しました）<br>
 ・一定回数以上使用したカードを他より高く売却できるようにしました。<br>
 ・タップ、クリックした際のアニメーションを付けました。<br>
 ・一部のテキスト・UIを変更しました。<br>
