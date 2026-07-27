@@ -1495,25 +1495,21 @@ if (activeBuffs.waterStressDuration > 0) {
                 activeBuffs.nextTurnAPMod = 0; 
             }
 
-            if (state.turn % 4 === 0) {
-                state.battleActive = false;
-            } else {
-                state.battleActive = Math.random() < 0.40;
-                if (state.battleActive) {
-                    state.threat = 15 + Math.floor(state.turn * 1.0);
-                    if (activeBuffs.threatReduction > 0) {
-                        state.threat = Math.max(0, state.threat - activeBuffs.threatReduction);
-                        activeBuffs.threatReduction = 0;
-                    }
-                    
-                    // デバフと不用品が重なっている場合は1.2秒後、そうでない場合は0.6秒後に表示
-                    let delay = (state.debuff === 'medium' || state.debuff === 'heavy') ? 1200 : 600;
-                    setTimeout(() => {
-                        addLog("外から足音が聞こえる。招かれざる客が迫っているようだ。", "log-flavor");
-                    }, delay);
-                    
-                    turnLogs.push("敵襲来");
+            state.battleActive = Math.random() < 0.40;
+            if (state.battleActive) {
+                state.threat = 15 + Math.floor(state.turn * 1.0);
+                if (activeBuffs.threatReduction > 0) {
+                    state.threat = Math.max(0, state.threat - activeBuffs.threatReduction);
+                    activeBuffs.threatReduction = 0;
                 }
+                
+                // デバフと不用品が重なっている場合は1.2秒後、そうでない場合は0.6秒後に表示
+                let delay = (state.debuff === 'medium' || state.debuff === 'heavy') ? 1200 : 600;
+                setTimeout(() => {
+                    addLog("外から足音が聞こえる。招かれざる客が迫っているようだ。", "log-flavor");
+                }, delay);
+                
+                turnLogs.push("敵襲来");
             }
 
             if (turnLogs.length > 0) {
@@ -2276,9 +2272,7 @@ function buyCard(idx, cost, btnEl) {
                 const item = document.createElement('div'); item.className = 'shop-item'; item.style.marginBottom = '3px';
                 
                // 使用回数のカウントとボーナス計算
-                let playCount = state.playedCardsList ? state.playedCardsList.filter(c => c && c.name === card.name).length : 0;
-                // 3回以上使用した場合、使用回数×15Gをボーナスとする（数値は任意で調整）
-                let bonusGold = (playCount >= 3) ? (playCount * 15) : 0;
+              let bonusGold = calculateBonusGold(card.name);
                 
                 let btnText = ""; let btnClass = "";
                 if (state.shopSellCount === 0) {
@@ -2309,6 +2303,11 @@ function buyCard(idx, cost, btnEl) {
             });
         }
 
+function calculateBonusGold(cardName) {
+    let playCount = state.playedCardsList ? state.playedCardsList.filter(c => c && c.name === cardName).length : 0;
+    return (playCount >= 3) ? (playCount * 15) : 0;
+}
+
         function disposeCard(combinedIdx, btnEl) {
             let allCards = [...state.deck, ...state.discard];
             if (allCards.length <= 1) {
@@ -2318,8 +2317,7 @@ function buyCard(idx, cost, btnEl) {
             
             // ボーナスと最終コストの計算
             let targetCard = combinedIdx < state.deck.length ? state.deck[combinedIdx] : state.discard[combinedIdx - state.deck.length];
-            let playCount = state.playedCardsList ? state.playedCardsList.filter(c => c && c.name === targetCard.name).length : 0;
-            let bonusGold = (playCount >= 3) ? 30 : 0;
+            let bonusGold = calculateBonusGold(targetCard.name);
             
             let baseDisposeCost = 30;
             let actionType = state.shopSellCount === 0 ? '売却' : '処分';
