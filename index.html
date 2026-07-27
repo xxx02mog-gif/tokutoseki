@@ -924,7 +924,7 @@ stressChange: -10,
             stressChange: 10, 
             actions: [
                {type: "stress", value: -10}, 
-                { type: "gold_random", min: 5, max: 30 }
+                { type: "gold_random", min: 5, max: 15 }
             ], 
             desc: "ストレス-10。関係性+3。資金+5~30G", 
             flavor: { 
@@ -1026,7 +1026,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "あなたは悪夢にうなされる彼の耳元で、残酷な真実を囁いた。"
             } 
         },
-        { name: "私物の没収", type: "cold", value: -15, cost: 1, valType: "flat", actions: [{type: "stress", value: 15},     { type: "gold_random", min: 10, max: 30 }], desc: "ストレス+15。関係性-15。資金+10~30G", flavor: { 
+        { name: "私物の没収", type: "cold", value: -15, cost: 1, valType: "flat", actions: [{type: "stress", value: 15},     { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-15。資金+5~30G", flavor: { 
                 trust: "あなたが彼の私物を処分しても、彼はそれが当然の報いだと受け入れた。", 
                 dependence: "私物を奪われても、彼はあなたに従うこと自体に喜びを見出している。",
                 heavy_trust: "眠り続ける彼の私物を、あなたはためらいなく処分した。",
@@ -1105,7 +1105,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_battle: "火薬の煙が立ち込める。眠り続ける彼に外の喧騒は届かない。"
             } 
         },
-        { name: "威嚇射撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 30 }], desc: "敵脅威度-10。資金+10~30G", flavor: { trust: "あなたは威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
+        { name: "威嚇射撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。資金+10~15G", flavor: { trust: "あなたは威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
         { name: "容赦なき追撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35に強化)", flavor: { 
                 trust: "あなたは撤退する敵を追い詰めた。", 
                 dependence: "あなたは敵を徹底的に排除した。障害はすべて取り除くという執念を感じさせる。"
@@ -2244,8 +2244,8 @@ function buyCard(idx, cost, btnEl) {
 
        function renderShopDispose() {
             const view = document.getElementById('shop-dispose-view');
-            let baseDisposeCost = 30; // 内部処理の数値と統一
-            let costIncrease = 30; // 上り幅（元30から50に変更）
+            let baseDisposeCost = 10; // 内部処理の数値と統一（30から10に緩和）
+            let costIncrease = 20; // 上り幅（30から20に緩和）
             let headerText = "";
             if (state.shopSellCount === 0) {
                 headerText = "各月の1回目の売却：カードを売って 資金(+20G) を得られます。";
@@ -2317,8 +2317,8 @@ function calculateBonusGold(cardName) {
             let targetCard = combinedIdx < state.deck.length ? state.deck[combinedIdx] : state.discard[combinedIdx - state.deck.length];
             let bonusGold = calculateBonusGold(targetCard.name);
             
-            let baseDisposeCost = 30;
-            let costIncrease = 30; // 上り幅
+            let baseDisposeCost = 10; // 2回目のコストを緩和（30から10に）
+            let costIncrease = 20; // 上り幅を緩和（30から20に）
             let actionType = '処分';
             
             let netCost = 0;
