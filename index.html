@@ -1781,7 +1781,7 @@ function executeCard(target) {
     // --- マンネリ（効果減衰）の判定 ---
     let isMannerism = false;
     // 戦闘用(harm)や季節限定(season)は対象外とする
-    if (['direct', 'indirect', 'cold', 'attachment'].includes(card.type)) {
+    if (['direct', 'indirect', 'attachment'].includes(card.type)) {
         // 関係性の条件を撤廃し、使用回数のみで判定する
         let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
         if (sameCardCount >= 5) { // ★ 3 から 5 に変更
