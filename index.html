@@ -906,7 +906,7 @@ stressChange: -10,
         { name: "傷口の消毒", type: "direct", value: 3, cost: 1, valType: "flat", stressChange: 0, actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 5}], desc: "健康+15。ストレス-5。関係性+3。", flavor: { trust: "あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめたが、手当てには感謝している。", dependence: "あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと喜んで受け入れている。",
         heavy_trust: "あなたは彼の傷口を消毒した。この程度の痛みでは目を覚すことはなさそうだ。",
         heavy_dependence: "あなたは彼の傷口を消毒した。この程度の痛みで目を覚ますはずはない。"} },
-        { name: "熱を測る", type: "direct", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+3。手札のランダムな冷淡カード1枚を『部屋の掃除』に変換する", flavor: { trust: "あなたは彼の熱を測った。静かな時間が流れ、彼の緊張が少し解けたようだ。", dependence: "あなたは主人に触れた。彼はあなたの体温に強い安心感を覚えている。",
+        { name: "熱を測る", type: "direct", value: 20, cost: 1, valType: "percent", stressChange: -10, actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+20%。手札のランダムな冷淡カード1枚を『部屋の掃除』に変換する", flavor: { trust: "あなたは彼の熱を測った。静かな時間が流れ、彼の緊張が少し解けたようだ。", dependence: "あなたは主人に触れた。彼はあなたの体温に強い安心感を覚えている。",
             heavy_trust: "あなたは彼の熱を測った。発熱はまだ落ち着きそうにない。",
         heavy_dependence: "あなたは主人の額に触れた。熱がじわじわと手のひらに伝わってくる。"} },
         { name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat", stressChange: -25, actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", flavor: { trust: "あなたがつきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが食事を与えると、彼はすべてをあなたに委ねるように受け入れた。" } },
@@ -1000,7 +1000,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "彼が意識のない間に、あなたは部屋の内装を勝手に新調した。" 
             } 
         },
-        { name: "中庭の手入れ", type: "indirect", value: 5, cost: 2, valType: "flat", stressChange: -15, actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+5。デッキからランダムな間接ケアカード1枚を手札に加える", flavor: { trust: "あなたが中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" }},
+        { name: "中庭の手入れ", type: "indirect", value: 30, cost: 2, valType: "percent", stressChange: -15, actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+30%。デッキからランダムな間接ケアカード1枚を手札に加える", flavor: { trust: "あなたが中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" }},
 {name: "医者を呼ぶ", type: "indirect", value: 2, cost: 1,valType: "flat",goldCost: 40,actions: [ {type: "gold", value: -40},   { type: "heal", value: 60, isFixed: true },{ type: "stress", trust: 0, dep: 10 },{ type: "consume" }],desc: "資金-40。必ず健康+60。関係性+2(使い切り)",flavor: {trust: "外部から医者を呼び、適切な治療を受けさせた。体は楽になったようだが、彼はどこか不服そうにしている。", dependence: "彼は他人の手が介入することを激しく拒絶したが、あなたの命令により強引に治療を受けさせた。",
                 heavy_trust: "寝たきり状態の彼のためにあなたは外部から医者を呼び、適切な治療を受けさせた。",
                 heavy_dependence: "外部から医者を呼び、治療を受けさせる。そのことを、あなたは彼に伝えはしない。" }}
@@ -1111,7 +1111,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 dependence: "あなたは敵を徹底的に排除した。障害はすべて取り除くという執念を感じさせる。"
             } 
         },
-        { name: "捨て身の迎撃", type: "harm", value: 0, cost: 2, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_clear"}, {context: "battle", type: "heal", value: -10}, {context: "battle", type: "stress", value: 20},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。健康-10。ストレス+20。手札の冷淡・不用品以外のカードをランダムに1枚除外", flavor: { 
+        { name: "捨て身の迎撃", type: "harm", value: 0, cost: 2, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_clear"}, {context: "battle", type: "heal", value: -10}, {context: "battle", type: "stress", value: 20},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。健康-10。ストレス+20。手札（冷淡・不用品以外）を1枚除外", flavor: { 
                 trust: "あなたは身を挺して敵の攻撃を防いだ。彼は己の無力さとあなたを危険に晒したことに絶望している。", 
                 dependence: "あなたは自らを犠牲にして彼を守った。その姿に、彼は心酔している。",
                 heavy_battle: "眠り続ける彼を護るため、あなたは傷を負いながら守り抜いた。"
@@ -1119,10 +1119,10 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
         }
     ],
     season: {
-        "秋": { name: "収穫祭の思い出", type: "season", season: "秋", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+5。使用後、手札で「祭りの名残(不用品)」に変化する", flavor: { trust: "外から祭りの音が聞こえる。彼はかつてあなたと過ごした賑やかな日々を懐かしんでいるようだ。", dependence: "外の喧噪よりも、彼はあなたが給仕してくれる静かな時間だけを欲している。" } },
-        "冬": { name: "聖夜の灯火", type: "season", season: "冬", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+5。使用後、手札で「祭りの名残(不用品)」に変化する", flavor: { trust: "窓辺のキャンドルが、彼の凍てついた心を微かに照らす。彼はあなたの優しさに感謝した。", dependence: "小さな灯りを見つめる彼は、あなたへの想いで胸を焦がしているようだ。" } },
-        "春": { name: "薄紅の散策", type: "season", season: "春", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+5。使用後、手札で「祭りの名残(不用品)」に変化する", flavor: { trust: "風に乗って桜が舞い込んだ。彼はいつかまた、あなたと共に歩ける日を夢見ている。", dependence: "美しい花よりも、彼はあなたから与えられる微かな愛情に強く惹かれている。" } },
-        "夏": { name: "盛夏の木陰", type: "season", season: "夏", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "夏限定。ストレス-45。関係性+5。使用後、手札で「祭りの名残(不用品)」に変化する", flavor: { trust: "眩い日差しの中、木陰で過ごした。彼は目を細めてあなたを見つめていた。", dependence: "夏の暑さも忘れるほど、彼はあなたへの強い思いに囚われ続けている。" } }
+        "秋": { name: "収穫祭の思い出", type: "season", season: "秋", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "外から祭りの音が聞こえる。彼はかつてあなたと過ごした賑やかな日々を懐かしんでいるようだ。", dependence: "外の喧噪よりも、彼はあなたが給仕してくれる静かな時間だけを欲している。" } },
+        "冬": { name: "聖夜の灯火", type: "season", season: "冬", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "窓辺のキャンドルが、彼の凍てついた心を微かに照らす。彼はあなたの優しさに感謝した。", dependence: "小さな灯りを見つめる彼は、あなたへの想いで胸を焦がしているようだ。" } },
+        "春": { name: "薄紅の散策", type: "season", season: "春", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "風に乗って桜が舞い込んだ。彼はいつかまた、あなたと共に歩ける日を夢見ている。", dependence: "美しい花よりも、彼はあなたから与えられる微かな愛情に強く惹かれている。" } },
+        "夏": { name: "盛夏の木陰", type: "season", season: "夏", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "夏限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "眩い日差しの中、木陰で過ごした。彼は目を細めてあなたを見つめていた。", dependence: "夏の暑さも忘れるほど、彼はあなたへの強い思いに囚われ続けている。" } }
     }
 };
 
