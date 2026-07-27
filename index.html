@@ -906,7 +906,7 @@ stressChange: -10,
         { name: "傷口の消毒", type: "direct", value: 3, cost: 1, valType: "flat", stressChange: 0, actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 5}], desc: "健康+15。ストレス-5。関係性+3。", flavor: { trust: "あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめたが、手当てには感謝している。", dependence: "あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと喜んで受け入れている。",
         heavy_trust: "あなたは彼の傷口を消毒した。この程度の痛みでは目を覚すことはなさそうだ。",
         heavy_dependence: "あなたは彼の傷口を消毒した。この程度の痛みで目を覚ますはずはない。"} },
-        { name: "熱を測る", type: "direct", value: 0, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。手札のランダムな冷淡カード1枚を『部屋の掃除』に変換する", flavor: { trust: "あなたは彼の熱を測った。静かな時間が流れ、彼の緊張が少し解けたようだ。", dependence: "あなたは主人に触れた。彼はあなたの体温に強い安心感を覚えている。",
+        { name: "熱を測る", type: "direct", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+3。手札のランダムな冷淡カード1枚を『部屋の掃除』に変換する", flavor: { trust: "あなたは彼の熱を測った。静かな時間が流れ、彼の緊張が少し解けたようだ。", dependence: "あなたは主人に触れた。彼はあなたの体温に強い安心感を覚えている。",
             heavy_trust: "あなたは彼の熱を測った。発熱はまだ落ち着きそうにない。",
         heavy_dependence: "あなたは主人の額に触れた。熱がじわじわと手のひらに伝わってくる。"} },
         { name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat", stressChange: -25, actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", flavor: { trust: "あなたがつきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが食事を与えると、彼はすべてをあなたに委ねるように受け入れた。" } },
@@ -918,7 +918,7 @@ stressChange: -10,
 { 
             name: "町で仕事を請け負う", 
             type: "indirect", 
-            value: 0, 
+            value: 3, 
             cost: 1, 
             valType: "flat", 
             stressChange: 10, 
@@ -926,7 +926,7 @@ stressChange: -10,
                {type: "stress", value: -10}, 
                 { type: "gold_random", min: 5, max: 30 }
             ], 
-            desc: "ストレス-10。資金+5~30G", 
+            desc: "ストレス-10。関係性+3。資金+5~30G", 
             flavor: { 
                 trust: "彼に見送られ、あなたは仕事をこなすために屋敷を出た。", 
                 dependence: "あなたが屋敷を空けることを、彼は快く思っていないようだ。",
@@ -987,12 +987,12 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "彼が目を覚まさないのをいいことに、あなたは彼の大切な写真を燃やした。" 
             } 
         },
-        { name: "お気に入りの紅茶", type: "indirect", value: 2, cost: 2, valType: "flat", stressChange: -20, actions: [{type: "discard_obstacle"},{type: "stress", value: -25}], desc: "ストレス-25。関係性+2。手札にある不用品カードを1枚廃棄する", flavor: { 
+        { name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", stressChange: -20, actions: [{type: "discard_obstacle"},{type: "stress", value: -25}], desc: "ストレス-25。関係性+4。手札にある不用品カードを1枚廃棄する", flavor: { 
                 trust: "あなたが淹れた紅茶の香りに、彼の張り詰めていた心が少しずつ解けていく。", 
                 dependence: "あなたが淹れた紅茶を飲むと、彼はあなたの存在だけを鮮明に感じるようだ。"
             } 
         },
-        { name: "防音壁の補強", type: "indirect", value: 4, cost: 2, valType: "flat", stressChange: 0, actions: [{type: "buff", key: "threatReduction", value: 25}], desc: "関係性+4。次の戦闘が発生した際、脅威度を25軽減する", flavor: { trust: "あなたが部屋の防音を強化すると、彼はあなたに守られていることを実感した。", dependence: "外の音が消えた部屋で、彼はあなたと二人きりの世界に深く浸っている。" } },
+        { name: "防音壁の補強", type: "indirect", value: 2, cost: 2, valType: "flat", stressChange: 0, actions: [{type: "buff", key: "threatReduction", value: 25}], desc: "関係性+2。次の戦闘が発生した際、脅威度を25軽減する", flavor: { trust: "あなたが部屋の防音を強化すると、彼はあなたに守られていることを実感した。", dependence: "外の音が消えた部屋で、彼はあなたと二人きりの世界に深く浸っている。" } },
        { name: "調度品の買い替え", type: "indirect", value: 30, cost: 1, valType: "percent", stressChange: 0, goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性を現在の値+30%（使い切り）", flavor: { 
                 trust: "あなたが新しい家具を揃えると、彼は荒んだ心に温かい光が差すのを感じた。", 
                 dependence: "新しい家具よりも、彼はただあなたが傍にいてくれることだけを望んでいる。",
@@ -2140,28 +2140,34 @@ if (state.battleActive) {
 function openShop() {
             document.getElementById('phase-shop-container').style.display = 'block';
             state.shopCards = [];
-            let poolKeys = ['direct', 'indirect', 'cold', 'harm'];
             
-            // 通常カード3枚の抽選
-            for (let i = 0; i < 3; i++) {
-                let randomType = poolKeys[Math.floor(Math.random() * poolKeys.length)];
-                // ショップには形見の宝刀を出さないようにフィルタリング
-                let cards = CARD_POOL[randomType].filter(c => c.name !== "形見の宝刀");
-                let randomCard = cards[Math.floor(Math.random() * cards.length)];
-                state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
-            }
-            
-            // 季節カードの抽選（次のターンの季節を基準にする）
             let nextTurnSeason = getSeasonByTurn(state.turn + 1);
             
-            // 未獲得かつ70%の確率で出現
-            if (!state.achievements.includes(nextTurnSeason) && Math.random() < 0.7) {
-                state.shopCards.push(JSON.parse(JSON.stringify(CARD_POOL.season[nextTurnSeason])));
-         } else {
-                let randomType = poolKeys[Math.floor(Math.random() * poolKeys.length)];
-                let cards = CARD_POOL[randomType].filter(c => c.name !== "形見の宝刀");
-                let randomCard = cards[Math.floor(Math.random() * cards.length)];
-                state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
+            // 抽選候補となる全カードを一つのプールにまとめる
+            let availableCards = [];
+            let types = ['direct', 'indirect', 'cold', 'harm'];
+            types.forEach(type => {
+                let cards = CARD_POOL[type].filter(c => c.name !== "形見の宝刀");
+                availableCards.push(...cards);
+            });
+            
+            // 未獲得の場合のみ、季節カードをプールに1枚追加
+            if (!state.achievements.includes(nextTurnSeason)) {
+                availableCards.push(CARD_POOL.season[nextTurnSeason]);
+            }
+            
+            // 4枠すべてを同一のプールからフラットに抽選
+            for (let i = 0; i < 4; i++) {
+                if (availableCards.length === 0) break;
+                
+                let randomIndex = Math.floor(Math.random() * availableCards.length);
+                let selectedCard = availableCards[randomIndex];
+                state.shopCards.push(JSON.parse(JSON.stringify(selectedCard)));
+                
+                // 季節カードが選出された場合、重複陳列を防ぐためプールから削除する
+                if (selectedCard.type === 'season') {
+                    availableCards.splice(randomIndex, 1);
+                }
             }
             
             switchShopTab('buy');
@@ -2214,18 +2220,25 @@ function buyCard(idx, cost, btnEl) {
         state.shopBuyCount++;            
         state.shopCards.splice(idx, 1);
         
-        let poolKeys = ['direct', 'indirect', 'cold', 'harm'];
-        let nextTurnSeason = getSeasonByTurn(state.turn + 1);
+       let nextTurnSeason = getSeasonByTurn(state.turn + 1);
         let hasSeasonCard = state.shopCards.some(c => c && c.type === 'season');
         
-       if (!hasSeasonCard && !state.achievements.includes(nextTurnSeason) && Math.random() < 0.7) {
-            state.shopCards.push(JSON.parse(JSON.stringify(CARD_POOL.season[nextTurnSeason])));
-        } else {
-            let randomType = poolKeys[Math.floor(Math.random() * poolKeys.length)];
-            let cards = CARD_POOL[randomType].filter(c => c.name !== "形見の宝刀");
-            let randomCard = cards[Math.floor(Math.random() * cards.length)];
-            state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
+        // 抽選候補となる全カードを一つのプールにまとめる
+        let availableCards = [];
+        let types = ['direct', 'indirect', 'cold', 'harm'];
+        types.forEach(type => {
+            let cards = CARD_POOL[type].filter(c => c.name !== "形見の宝刀");
+            availableCards.push(...cards);
+        });
+        
+        // 未獲得かつショップに季節カードがない場合、季節カードをプールに1枚追加
+        if (!hasSeasonCard && !state.achievements.includes(nextTurnSeason)) {
+            availableCards.push(CARD_POOL.season[nextTurnSeason]);
         }
+
+        let randomIndex = Math.floor(Math.random() * availableCards.length);
+        let randomCard = availableCards[randomIndex];
+        state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
         
         setLastAction(`【${boughtCardName}】を購入`);
         renderShopBuy(); 
@@ -2262,9 +2275,10 @@ function buyCard(idx, cost, btnEl) {
                 let idx = data.originalIdx;
                 const item = document.createElement('div'); item.className = 'shop-item'; item.style.marginBottom = '3px';
                 
-                // 使用回数のカウントとボーナス計算
+               // 使用回数のカウントとボーナス計算
                 let playCount = state.playedCardsList ? state.playedCardsList.filter(c => c && c.name === card.name).length : 0;
-                let bonusGold = (playCount >= 3) ? 30 : 0; 
+                // 3回以上使用した場合、使用回数×15Gをボーナスとする（数値は任意で調整）
+                let bonusGold = (playCount >= 3) ? (playCount * 15) : 0;
                 
                 let btnText = ""; let btnClass = "";
                 if (state.shopSellCount === 0) {
@@ -2955,11 +2969,15 @@ document.addEventListener('pointerdown', function(e) {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.44</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.45</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+  <p style="font-size: 10px;">■ver 0.45<br>
+・購入フェーズにて季節カードが優先選出されないようにしました。<br>
+・売却フェーズにて使用回数が多いほどカードが高価で売却できるようにしました。
+</p>
 <p style="font-size: 10px;">■ver 0.44<br>
 ・攻撃カードで健康度が０になった場合のEND分岐を変更しました。<br>
 ・カードのAPの表記やUIを調整しました。
