@@ -979,7 +979,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "部屋を満たす香りが、意識のない彼をさらに深く、あなただけの世界へと沈めていく。" 
             } 
         },
-        { name: "アルバムの整理", type: "indirect", value: 7, cost: 2, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+7。山札からカードを1枚ドローする", flavor: { 
+        { name: "アルバムの整理", type: "indirect", value: 6, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+6。山札からカードを1枚ドローする", flavor: { 
                 trust: "あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。", 
                 dependence: "彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。",
                 heavy_trust: "眠り続ける彼の傍らで、あなたは一人、かつての思い出のページを静かにめくった。",
@@ -987,11 +987,12 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
             } 
         },
         { name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{type: "discard_obstacle"},{type: "stress", value: -25}], desc: "ストレス-25。関係性+4。手札にある不用品カードを1枚廃棄する", flavor: { 
-                trust: "あなたが淹れた紅茶の香りに、彼の張り詰めていた心が少しずつ解けていく。", 
+                trust: "彼の好みに合わせた紅茶を淹れると、彼は己の嗜好を把握されていることに複雑な表情を見せた。", 
                 dependence: "あなたが淹れた紅茶を飲むと、彼はあなたの存在だけを鮮明に感じるようだ。"
             } 
         },
-        { name: "防音壁の補強", type: "indirect", value: 2, cost: 2, valType: "flat", stressChange: 0, actions: [{type: "buff", key: "threatReduction", value: 25}, {type: "consume"}], desc: "関係性+2。次の戦闘が発生した際、脅威度を25軽減する（使い切り）", flavor: { trust: "あなたが部屋の防音を強化すると、彼はあなたに守られていることを実感した。", dependence: "外の音が消えた部屋で、彼はあなたと二人きりの世界に深く浸っている。" } },
+     
+
        { name: "調度品の買い替え", type: "indirect", value: 30, cost: 1, valType: "percent", goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性を現在の値+30%（使い切り）", flavor: { 
                 trust: "あなたが新しい家具を揃えると、彼は荒んだ心に温かい光が差すのを感じた。", 
                 dependence: "新しい家具よりも、彼はただあなたが傍にいてくれることだけを望んでいる。",
@@ -1032,11 +1033,11 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "彼が目を覚まさないのをいいことに、あなたは彼の持ち物を好き勝手に売り払った。"
             } 
         },
-        { name: "突き放す視線", type: "cold", value: -3, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-3", flavor: { 
-                trust: "あなたの冷たい眼差しを受け、彼は自分の罪深さに打ちのめされた。", 
-                dependence: "あなたに冷たく見つめられると、彼はその視線にすら悲しい執着を見せた。",
-                heavy_trust: "眠る彼を冷たく見下ろす。彼がその視線に気づいて目を覚ますことはない。",
-                heavy_dependence: "無防備な寝顔を冷ややかな目で見つめる。"
+        { name: "屋敷の整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 15}], desc: "健康-5。ストレス+15。関係性-3。次の戦闘時、脅威度を-10", flavor: { 
+trust: "片脚が悪い彼は、整備されていない道では歩きにくいようだ。", 
+                dependence: "屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。", 
+               heavy_trust: "彼はしばらく目覚めそうにない。整備などしなくてもいいだろう。",
+                heavy_dependence: "彼が眠り続ける屋敷は荒れていく。それでも彼は、あなたの気配さえあれば構わないはずだ。",
             } 
         },
         { name: "鎮痛剤を与えない", type: "cold", value: -8, cost: 2, valType: "flat", actions: [{ type: "heal", value: -20 },{type: "stress", value: 30}], desc: "健康度-20。ストレス+30。関係性-8", flavor: { 
@@ -1054,19 +1055,11 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
             } 
         },
         { name: "部屋の施錠", type: "cold", value: -15, cost: 2, valType: "flat", actions: [{type: "stress", value: 40}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+40。関係性-15。次ターンのドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めると、彼はそれを自分への正当な処置だと考えた。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
-        { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性を現在値-15%", flavor: { trust: "食事が遅れても、彼はあなたを怒らせた自分の落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
+        { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性を現在値-15%", flavor: { trust: "食事が遅れても、彼はあなたを怒らせた自分の落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
        { name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", actions: [{type: "stress", value: 40}, {type: "consume"}], desc: "ストレス+40。関係性を現在値-30%（使い切り）", flavor: { trust: "あなたが他人の気配を漂わせると、彼は自分が不要になったのだと悟り静かに絶望した。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
     ],
     harm: [
-        { name: "屋敷の整備を意図的に怠る", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "heal", value: -5}, {context: "master", type: "stress", value: 15}, {context: "battle", type: "threat", value: 5}], desc: "敵脅威度-5 / 【対主人】健康-5。ストレス+15", flavor: { 
-                trust: "片脚が悪い彼は、整備されていない道では歩きにくいようだ。", 
-                dependence: "屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。", 
-                battle: "あなたは屋敷の整備を後回しにし、防衛の準備に時間を割いた。",
-                heavy_trust: "彼はしばらく目覚めそうにない。整備などしなくてもいいだろう。",
-                heavy_dependence: "彼が眠り続ける屋敷は荒れていく。それでも彼は、あなたの気配さえあれば構わないはずだ。",
-                heavy_battle: "あなたは屋敷の整備を後回しにし、防衛の準備に時間を割いた。"
-            } 
-        },
+        
         { name: "毒の調合", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}], desc: "敵脅威度-15 / 【対主人】健康-15。ストレス+10", flavor: { 
                 trust: "あなたが苦い薬を食事に混ぜると、彼はそれを罰として静かに飲み干した。", 
                 dependence: "身体の不調を感じながらも、彼はあなたから与えられるものに身を委ねている。", 
@@ -1092,7 +1085,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "庭先に惨たらしい魔物の死体を吊るした。彼が目覚めた時のことを考え、ほくそ笑む。"
             } },
         { name: "形見の宝刀", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}], desc: "敵脅威度-45。次ターンの初期AP-1", flavor: { 
-                trust: "あなたは静かに形見の宝刀を構え、因縁に終止符を打った。彼は抗うことなくそれを受け入れた。", 
+                trust: "あなたは形見の宝刀を構え、因縁に終止符を打った。彼は抗うことなくそれを受け入れた。", 
                 dependence: "あなたが宝刀を向けると、彼はあなたによって終わることに安堵の表情を浮かべた。", 
                 battle: "あなたは形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。"
             } 
@@ -1161,8 +1154,8 @@ const SPECIAL_CARDS = {
         ], 
         desc: "ストレス-35。関係性+15（使い切り）", 
         flavor: { 
-            trust: "あなたは、眠っている彼の手をそっと握った。", 
-            dependence: "命の危機に瀕する彼を見て、彼を失うことへの根源的な恐怖と歪な執着が湧き上がった。" 
+            trust: "あなたは彼の手をそっと握った。彼は目を覚まさないまま、安堵したように眉間の皺をわずかに緩めた。", 
+            dependence: "命の危機に瀕する彼を見て、彼を失うことへの恐怖と歪な執着が湧き上がった。" 
         } 
     },
 
@@ -1410,13 +1403,83 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
 
         // 不用品プール
         const OBSTACLE_POOL = [
-            { name: "過去のトラウマ", type: "obstacle", cost: 0, desc: "過去の過ちが心を蝕む。使用不可", flavor: { trust: "消えない記憶が、二人の間に重い影を落としている。", dependence: "忌まわしい過去だけが、彼とあなたを繋ぐ絆だ。" } },
-            { name: "不信感", type: "obstacle", cost: 0, desc: "拭えない疑念。使用不可", flavor: { trust: "彼の瞳の奥に、ふとした瞬間の迷いが見え隠れする。", dependence: "疑うことさえ忘れてしまえば楽になれる。しかし、彼に残された誇りがそれを許さない。" } },
-            { name: "色褪せた写真", type: "obstacle", cost: 0, desc: "幸福だった頃の遺物。使用不可", flavor: { trust: "あたたかかった日だまりが、今の閉ざされた部屋を静かに嘲笑う。", dependence: "あなたが見つめてくれるなら、彼は記憶など必要ないようだ。" } },
-            { name: "壊れた時計", type: "obstacle", cost: 0, desc: "止まってしまった時間。使用不可", flavor: { trust: "秒針の動かない時計。二人の未来がここで足踏みしている。", dependence: "時間が止まってしまえば、この特等席は永遠になる。" } },
-            { name: "不和", type: "obstacle", cost: 0, desc: "重く、軋む空気。使用不可", flavor: { trust: "言葉を交わすほどに、すれ違う心が痛みを伴う。", dependence: "いくら冷たく突き放されようと、彼にはあなたしかいない。" } },
-            { name: "割れた食器", type: "obstacle", cost: 0, desc: "砕け散った日常の破片。使用不可", flavor: { trust: "床に散らばる破片は、まるで彼のようだ。もう元の形には戻らない。", dependence: "砕け散った思い出を握りしめ、痛みを共有することでしか繋がれない。" } },
-            { name: "埃を被った記憶", type: "obstacle", cost: 0, desc: "忘却の彼方に沈む残骸。使用不可", flavor: { trust: "触れれば壊れてしまいそうな遠い昔の記憶が、部屋の隅で眠っている。", dependence: "すべての記憶が埃に埋もれても、彼はあなたの名前だけは忘れない。" } }
+            { 
+                name: "過去のトラウマ", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "過去のあやまちが心を蝕む。使用不可", 
+                flavor: { 
+                    trust: "消えない記憶が、二人の間に重い影を落としている。", 
+                    dependence: "忌まわしい過去だけが、彼とあなたを繋ぐ絆だ。",
+                    heavy_trust: "悪夢にうなされ、消えない記憶が疼く。",
+                    heavy_dependence: "このまま彼が目覚めなければ、この痛みとも決別できる。"
+                } 
+            },
+            { 
+                name: "不信感", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "拭えない疑念。使用不可", 
+                flavor: { 
+                    trust: "彼の瞳の奥に、ふとした瞬間の迷いが見え隠れする。", 
+                    dependence: "疑うことさえ忘れてしまえば楽になれる。しかし、彼に残された誇りがそれを許さない。",
+                    heavy_trust: "どれだけ疑いを抱いていても、微睡みの中では彼はあなたを拒絶できない。",
+                    heavy_dependence: "たとえあなたに不信感を感じていたとして、彼はあなたを頼らざるを得ない。"
+                } 
+            },
+            { 
+                name: "色褪せた写真", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "幸福だった頃の遺物。使用不可", 
+                flavor: { 
+                    trust: "あたたかかった日だまりが、今の閉ざされた部屋を静かに嘲笑う。", 
+                    dependence: "あなたが見つめてくれるなら、彼は記憶など必要ないようだ。",
+                    heavy_dependence: "過去の残骸が、だんだん無価値になっていく。"
+                } 
+            },
+            { 
+                name: "壊れた時計", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "止まってしまった時間。使用不可", 
+                flavor: { 
+                    trust: "秒針の動かない時計。二人の未来がここで足踏みしている。", 
+                    dependence: "時間が止まってしまえば、この特等席は永遠になる。"
+                } 
+            },
+            { 
+                name: "不和", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "重く、軋む空気。使用不可", 
+                flavor: { 
+                    trust: "言葉を交わすほどに、すれ違う心が痛みを伴う。", 
+                    dependence: "いくら冷たく突き放されようと、彼にはあなたしかいない。",
+                    heavy_trust: "沈黙すらも、彼とあなたの関係を軋ませる。",
+                    heavy_dependence: "彼は静かに眠っている。あなたの神経を逆撫ですることもない。"
+                } 
+            },
+            { 
+                name: "割れた食器", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "砕け散った日常の破片。使用不可", 
+                flavor: { 
+                    trust: "床に散らばる破片は、まるで彼のようだ。もう元の形には戻らない。", 
+                    dependence: "砕け散った思い出を握りしめ、痛みを共有することでしか繋がれない。"
+                } 
+            },
+            { 
+                name: "埃を被った記憶", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "忘却の彼方に沈む残骸。使用不可", 
+                flavor: { 
+                    trust: "触れれば壊れてしまいそうな遠い昔の記憶が、部屋の隅で眠っている。", 
+                    dependence: "すべての記憶が埃に埋もれても、彼はあなたの名前だけは忘れない。"
+                } 
+            }
         ];
 
 function processWeekStart() {
@@ -1455,11 +1518,26 @@ if (activeBuffs.waterStressDuration > 0) {
                 
                 let debuffFlavor = "";
                 if (state.debuff === 'light') {
-                    debuffFlavor = "彼は不自由な脚を引きずり、顔をしかめている。";
+                    const lightTexts = [
+                        "彼は不自由な脚を引きずり、顔をしかめている。",
+                        "脚の痛みが悪化しているのか、彼の動作はいつもよりも鈍い。",
+                        "不自然な歩き方をしている。また脚が痛むようだ。"
+                    ];
+                    debuffFlavor = lightTexts[Math.floor(Math.random() * lightTexts.length)];
                 } else if (state.debuff === 'medium') {
-                    debuffFlavor = "激しい頭痛と眩暈に襲われているのか、彼は壁に手をついて青褪めている。";
+                    const mediumTexts = [
+                        "激しい頭痛と眩暈に襲われているのか、彼は壁に手をついて青褪めている。",
+                        "彼は顔を顰め、時折こめかみを押さえている。",
+                        "焦点の合わない目で宙を見つめている。眩暈が酷いようだ。"
+                    ];
+                    debuffFlavor = mediumTexts[Math.floor(Math.random() * mediumTexts.length)];
                 } else if (state.debuff === 'heavy') {
-                    debuffFlavor = "彼は心身ともに疲弊しているようだ。ただ、昏々と眠り続けている。";
+                    const heavyTexts = [
+                        "彼は心身ともに疲弊しきっている。ただ、昏々と眠り続けている。",
+                        "意識の混濁が深刻化し、彼は深い眠りに落ちている。",
+                        "自力で起き上がる気配はない。静かな呼吸のみが規則的に繰り返されている。"
+                    ];
+                    debuffFlavor = heavyTexts[Math.floor(Math.random() * heavyTexts.length)];
                 }
                 
                 // 【警告】発生時の不用品混入（頭痛・昏睡のみ）
@@ -1468,13 +1546,20 @@ if (activeBuffs.waterStressDuration > 0) {
                     state.discard.push(obstacle);
                     turnLogs.push("体調悪化(不用品混入)");
 
-                    // 1. 先に不用品のフレーバーテキストを出力する
-                    let flavorText = state.relation >= 0 ? obstacle.flavor.trust : obstacle.flavor.dependence;
-                    addLog(`${flavorText}`, "log-flavor");
+                    // 1. デバフ状態（体調不良）のフレーバーテキストを先に出力する
+                    addLog(debuffFlavor, "log-flavor");
 
-                    // 2. 時間差をつけてデバフ状態のフレーバーテキストを出力する
+                    // 2. 時間差をつけて不用品混入時のランダムテキストと、カード固有のフレーバーを組み合わせて出力する
+let flavorText = "";
+if (state.debuff === 'heavy') {
+    flavorText = state.relation >= 0 
+        ? (obstacle.flavor.heavy_trust || obstacle.flavor.trust) 
+        : (obstacle.flavor.heavy_dependence || obstacle.flavor.dependence);
+} else {
+    flavorText = state.relation >= 0 ? obstacle.flavor.trust : obstacle.flavor.dependence;
+}
                     setTimeout(() => {
-                        addLog(debuffFlavor, "log-flavor");
+                        addLog(`${flavorText}`, "log-flavor");
                     }, 600); 
                 } else {
                     turnLogs.push("体調悪化");
@@ -1504,8 +1589,23 @@ if (activeBuffs.waterStressDuration > 0) {
                 
                 // デバフと不用品が重なっている場合は1.2秒後、そうでない場合は0.6秒後に表示
                 let delay = (state.debuff === 'medium' || state.debuff === 'heavy') ? 1200 : 600;
+                
+                // 表示するテキストの候補を配列で定義
+                const enemyTexts = [
+                   // 人間による襲撃を示唆するテキスト
+                    "外から複数の足音が聞こえる。招かれざる客が迫っているようだ。",
+                    "窓の外に人影がちらついた。敵が近づいている。",
+                    "かすかに金属が擦れる音が聞こえた。刃物を持った賊がうろついているようだ。",
+                    // 魔物による襲撃を示唆するテキスト
+                    "獣のような低い唸り声が響いた。外を徘徊しているのは人間ではないようだ。",
+                    "ひどく生臭い風が吹き込んだ。魔物が屋敷の近くまで来ている。",
+                    "不気味な鳴き声が夜気を震わせた。飢えた魔物が備蓄を狙っている。"
+                ];
+                // 配列からランダムに1つ選択
+                const randomText = enemyTexts[Math.floor(Math.random() * enemyTexts.length)];
+                
                 setTimeout(() => {
-                    addLog("外から足音が聞こえる。招かれざる客が迫っているようだ。", "log-flavor");
+                    addLog(randomText, "log-flavor");
                 }, delay);
                 
                 turnLogs.push("敵襲来");
@@ -2103,33 +2203,65 @@ if (state.battleActive) {
                     // 防衛失敗時の情景描写
                     if (state.debuff === 'heavy') {
                         if (state.relation >= 0) {
-                            addLog("意識のない彼は身を守る術を持たず、ただ無残に傷を負った。", "log-flavor");
+                            const failHeavyTrust = [
+                                "意識のない彼は身を守る術を持たず、ただ無残に傷を負った。",
+                                "彼を守り切れなかった。静かな部屋に、新しく流れた血の匂いが立ち込める。"
+                            ];
+                            addLog(failHeavyTrust[Math.floor(Math.random() * failHeavyTrust.length)], "log-flavor");
                         } else {
-                            addLog("無抵抗な彼が傷つけられた。あなたの胸中に、激しい衝動が湧き上がる。", "log-flavor");
+                            const failHeavyDep = [
+                                "無抵抗な彼が傷つけられた。あなたの胸中に、激しい衝動が湧き上がる。",
+                                "所有物が他人に傷つけられた。その事実が、あなたの支配欲をさらに刺激する。"
+                            ];
+                            addLog(failHeavyDep[Math.floor(Math.random() * failHeavyDep.length)], "log-flavor");
                         }
                     } else {
                         if (state.relation >= 0) {
-                            addLog("彼はあなたを庇おうと敵の前に立ちはだかり、傷を負った。", "log-flavor");
+                            const failTrust = [
+                                "彼はあなたを庇おうと敵の前に立ちはだかり、傷を負った。",
+                                "己の無力さを呪うように、彼は床に伏しながら血を吐き出した。"
+                            ];
+                            addLog(failTrust[Math.floor(Math.random() * failTrust.length)], "log-flavor");
                         } else {
-                            addLog("彼は痛みに悶えながらも、あなたに助けを求めるように視線を彷徨わせている。", "log-flavor");
+                            const failDep = [
+                                "彼は痛みに悶えながらも、あなたに助けを求めるように視線を彷徨わせている。",
+                                "傷の痛みよりも、見捨てられるかもしれないという恐怖が彼を支配しているようだ。"
+                            ];
+                            addLog(failDep[Math.floor(Math.random() * failDep.length)], "log-flavor");
                         }
                     }
                 } else {
-                   let reward = 15 + Math.floor(state.turn * 0.5);
+                    let reward = 15 + Math.floor(state.turn * 0.5);
                     state.gold += reward;
                     
                     // 防衛成功時の情景描写
                     if (state.debuff === 'heavy') {
                         if (state.relation >= 0) {
-                            addLog("血に濡れて戻ったあなたを、ただ静かな寝息だけが出迎えた。", "log-flavor");
+                            const winHeavyTrust = [
+                                "血に濡れて戻ったあなたを、ただ静かな寝息だけが出迎えた。",
+                                "敵の排除を終え部屋に戻ったが、彼が目を覚ます気配はない。"
+                            ];
+                            addLog(winHeavyTrust[Math.floor(Math.random() * winHeavyTrust.length)], "log-flavor");
                         } else {
-                            addLog("外の惨状も知らず、彼は部屋で無防備に眠り続けている。", "log-flavor");
+                            const winHeavyDep = [
+                                "外の惨状も知らず、彼は部屋で無防備に眠り続けている。",
+                                "彼の寝顔を眺める。これを傷つけていいのは、あなただけだ。"
+                            ];
+                            addLog(winHeavyDep[Math.floor(Math.random() * winHeavyDep.length)], "log-flavor");
                         }
                     } else {
                         if (state.relation >= 0) {
-                            addLog("あなたは侵入者を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。", "log-flavor");
+                            const winTrust = [
+                                "あなたは敵を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。",
+                                "戦いから戻ったあなたを見て、彼は自らが負担になっている現実に顔を歪めた。"
+                            ];
+                            addLog(winTrust[Math.floor(Math.random() * winTrust.length)], "log-flavor");
                         } else {
-                            addLog("死体を蹴り退けるあなたを見て、彼は自らを脅かす外敵が排除されたことに安堵の吐息を漏らした。", "log-flavor");
+                            const winDep = [
+                                "圧倒的な暴力で敵を蹂躙するあなたを見て、彼は安堵の吐息を漏らした。",
+                                "彼は、返り血を浴びたあなたに心酔しているようだ。"
+                            ];
+                            addLog(winDep[Math.floor(Math.random() * winDep.length)], "log-flavor");
                         }
                     }
                 }
@@ -3003,11 +3135,16 @@ document.addEventListener('pointerdown', function(e) {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.45</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.46</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+    <p style="font-size: 10px;">■ver 0.46<br>
+・襲撃時、勝利時、敗北時、体調不良時のフレーバーテキストをランダム表示されるようにしました。<br>
+・不用品獲得時のフレーバーテキストの一部に昏睡時用のテキストを追加しました。<br>
+・一部のカードの効果を変更しました。
+</p>
   <p style="font-size: 10px;">■ver 0.45<br>
 ・購入フェーズにて季節カードが優先選出されないようにしました。<br>
 ・売却フェーズにて使用回数が多いほどカードが高価で売却できるようにしました。<br>
