@@ -1629,10 +1629,10 @@ if (state.debuff === 'heavy') {
             // 「愛着」カードがすでに存在しているか判定（type: "attachment" で判定）
             let hasAttachment = allCards.some(c => c && c.type === 'attachment');
 
-            // 冷淡がなく、かつ愛着がまだ1枚もなく、手札上限（10枚）を超えない場合のみ追加する
+            // 冷淡がなく、かつ愛着がまだ1枚もなく、手札上限（6枚）を超えない場合のみ追加する
             if (!hasCold && !hasAttachment && state.hand.length < 6) {
                 
-                // 0.1の確率で入手
+                // 0.2の確率で入手
                 if (Math.random() < 0.2) {
                     
                     // 愛着1〜3のキー配列を用意し、ランダムで1つ選択する
@@ -1876,7 +1876,7 @@ function executeCard(target) {
     // --- マンネリ（効果減衰）の判定 ---
     let isMannerism = false;
     // 戦闘用(harm)や季節限定(season)は対象外とする
-    if (['direct', 'indirect', 'attachment'].includes(card.type)) {
+    if (['direct', 'indirect'].includes(card.type)) {
         // 関係性の条件を撤廃し、使用回数のみで判定する
         let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
         if (sameCardCount >= 5) { // ★ 3 から 5 に変更
@@ -2159,6 +2159,12 @@ case "add_special_card":
             }
         }
     }
+
+    state.lastPlayedType = card.type;
+
+    cancelTargetSelect();
+    renderHand(); 
+    updateUI();
 
     cancelTargetSelect();
     renderHand(); 
