@@ -883,10 +883,10 @@ stressChange: -10,
     ], 
     desc: "健康+5。ストレス-10。関係性+2。", 
  flavor: { 
-        trust: "あなたは彼の口元へコップを運んだが、途中でコップを彼に奪われてしまった。", 
-        dependence: "彼は、あなたが水を手ずから飲ませてくれることを嬉しく思っているようだ。",
-        heavy_trust: "意識のない彼を抱き起こし、咽せないように少しずつ水を口に含ませた。",
-        heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、無防備な彼の頬を伝い落ちていった。"
+        trust: "彼の口元へコップを運んだが、途中でコップを奪われてしまった。", 
+        dependence: "彼は、あなたが手ずから水を飲ませてくれるのを待っている。",
+        heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
+        heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が彼の頬を伝い落ちていった。"
     } 
 },
          { name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { trust: "あなたは彼を気遣って看病した。彼は気まずげに目を逸らしている。", dependence: "あなたが看病すると、彼はあなたにすがりつくように袖を掴んだ。",
@@ -895,7 +895,7 @@ stressChange: -10,
         { name: "髪を梳かす", type: "direct", value: 1, cost: 1, valType: "flat", actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+1", flavor: { trust: "あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。", dependence: "あなたの指先が触れると、彼はひどく安心した表情を見せた。",
         heavy_trust: "あなたは彼の髪を丁寧に梳かした。彼は眠ったまま、されるがままにされている。",
         heavy_dependence: "あなたの指先が触れても、彼は目を覚まさない。"} },
-        { name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", actions: [{type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "健康+30。ストレス-15。関係性+2", flavor: { trust: "あなたは彼に薬を飲ませた。彼は手間をかけることを申し訳なく思っているようだ。", dependence: "あなたが与えるものなら、彼はどんなものでも喜んで受け入れる。",
+        { name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", actions: [{type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "健康+30。ストレス-15。関係性+2", flavor: { trust: "あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた", dependence: "あなたが与えるものなら、彼はどんなものでも喜んで受け入れる。",
         heavy_trust: "あなたは眠る彼に薬を飲ませた。飲み下せなかった分が口端から溢れる。",
         heavy_dependence: "無意識状態にあっても、彼はあなたが与える薬を上手に飲み下した。"} },
         { name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 10}], desc: "健康+20。ストレス-10。関係性+3", flavor: { trust: "あなたは彼の体を丁寧に拭き上げた。彼は世話を焼かれることに負い目を感じている。", dependence: "あなたが触れるたび、彼はあなたとの繋がりを見出している。",
@@ -951,7 +951,7 @@ stressChange: -10,
     desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)",
 flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさせた。彼は医師のことを訝しんでいるようだ。", dependence: "彼と医者を残して、あなたは部屋を出る。震え声が、扉が閉まる音でかき消された。",
             heavy_trust: "外部から怪しげな医者を呼び、眠っている間に治療を受けさせた。",
-        heavy_dependence: "意識のない彼に、怪しげな医師が処置を施す。目を覚まさない彼は、何をされても抵抗すらできない。"
+        heavy_dependence: "人形のように力なく横たわる彼に、怪しげな医師が処置を施す。彼は何をされても抵抗すらできない。"
     } 
 },
 
@@ -962,14 +962,14 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 trust: "あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。", 
                 dependence: "寝具を整えてやると、彼はあなたの気配を感じて目を閉じた。",
                 heavy_trust: "寝具を整え直しても、彼は微かな寝息を立てたまま目を覚まさない。",
-                heavy_dependence: "太陽の匂いがする清潔な布団で彼を包み込む。彼はあなたの庇護下で無防備に眠っている。" 
+                heavy_dependence: "太陽の匂いがする清潔な布団で彼を包み込む。彼はあなたの庇護下で眠っている。" 
             } 
         },
         { name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{ type: "heal", value: 15 }, {type: "stress", value: -10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { 
                 trust: "部屋を快適な温度に保つと、彼はその気遣いに胸を打たれたようだ。", 
                 dependence: "心地よい室温の中でも、彼はあなたがいなければ寒気を感じてしまうようだ。",
                 heavy_trust: "彼がこれ以上体調を崩さないよう、部屋を快適な温度に調整した。",
-                heavy_dependence: "今ならば、意識のない彼をさらに追い詰める事もできる。彼を生かすも殺すも、今のあなた次第だ。" 
+                heavy_dependence: "今ならば、何でもできる。彼を生かすも殺すも、あなた次第だ。" 
             } 
         },
         { name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{ type: "heal", value: 30 }, {type: "stress", value: -25}], desc: "健康+30。ストレス-25。関係性+4", flavor: { trust: "栄養のある食事を用意すると、彼は感謝とともにそれを口にした。", dependence: "用意した食事を、彼はあなたのためだけにすべて平らげた。" } },
@@ -977,7 +977,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 trust: "彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出したようだ。", 
                 dependence: "香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。",
                 heavy_trust: "彼好みの香りを焚く。穏やかな香りが、彼の微睡みを少しでも安らかなものにする。",
-                heavy_dependence: "部屋を満たす香りが、意識のない彼をさらに深く、あなただけの世界へと沈めていく。" 
+                heavy_dependence: "部屋を満たす香りが、彼をさらに深く、あなただけの世界へと沈めていく。" 
             } 
         },
         { name: "アルバムの整理", type: "indirect", value: 5, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+6。デッキからカードを1枚手札に加える", flavor: { 
@@ -1018,7 +1018,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 trust: "あなたが無視すると、彼はかつての自分の振る舞いを反省した。", 
                 dependence: "あなたに無視され、彼は見捨てられるのではないかと怯え切っている。",
                 heavy_trust: "あなたがその場を離れても、引き留める声が聞こえることはない。",
-                heavy_dependence: "静寂に包まれた部屋で、あなたは意識のない彼を見下ろした。"
+                heavy_dependence: "静寂に包まれた部屋で、あなたは彼を見下ろした。"
             }},
         { name: "冷酷な事実", type: "cold", value: -15, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-15", flavor: { 
                 trust: "あなたが厳しい現実を突きつけると、彼は自分の無力さを深く噛み締めた。", 
@@ -1038,7 +1038,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
 trust: "片脚が悪い彼は、整備されていない道では歩きにくいようだ。", 
                 dependence: "屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。", 
                heavy_trust: "彼はしばらく目覚めそうにない。整備などしなくてもいいだろう。",
-                heavy_dependence: "彼が眠り続ける間も屋敷は荒れていく。あなたさえ居れば、彼はそれで構わないはずだ。",
+                heavy_dependence: "彼が夢の中にいる間も屋敷は荒れていく。あなたさえ居れば、彼はそれで構わないはずだ。",
             } 
         },
         { name: "鎮痛剤を与えない", type: "cold", value: -8, cost: 2, valType: "flat", actions: [{ type: "heal", value: -20 },{type: "stress", value: 30}], desc: "健康度-20。ストレス+30。関係性-8", flavor: { 
@@ -1059,7 +1059,7 @@ trust: "片脚が悪い彼は、整備されていない道では歩きにくい
                 trust: "苦い薬を食事に混ぜると、彼は何も言わずにそれを罰として飲み干した。", 
                 dependence: "身体の不調を感じながらも、彼はあなたから与えられるものを甘んじて享受している。", 
                 battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。",
-                heavy_trust: "意識のない彼の口に少量の毒を流し込んだ。彼がそれに気づくことはないだろう。",
+                heavy_trust: "彼の口に少量の毒を流し込んだ。彼がそれに気づくことはないだろう。",
                 heavy_dependence: "彼の生命を、あなたの毒がゆっくりと蝕んでいく。",
                 heavy_battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"
             } 
@@ -1089,7 +1089,7 @@ trust: "片脚が悪い彼は、整備されていない道では歩きにくい
         { name: "硝煙の盾", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "stress", value: -15}], desc: "敵脅威度-15。ストレス-15", flavor: { 
                 trust: "火薬を使って敵を足止めした。彼は、あなたへの心配で胸を痛めている。", 
                 dependence: "外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。",
-                heavy_battle: "火薬の煙が立ち込める。眠り続ける彼に外の喧騒は届かない。"
+                heavy_battle: "火薬の煙が立ち込める。深い眠りの中にいる彼に外の喧騒は届かない。"
             } 
         },
         { name: "威嚇射撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。資金+10~15G", flavor: { trust: "威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
@@ -1101,7 +1101,7 @@ trust: "片脚が悪い彼は、整備されていない道では歩きにくい
         { name: "捨て身の迎撃", type: "harm", value: 0, cost: 2, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_clear"}, {context: "battle", type: "heal", value: -10}, {context: "battle", type: "stress", value: 20},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。健康-10。ストレス+20。手札（冷淡・不用品以外）を1枚除外", flavor: { 
                 trust: "あなたは身を挺して敵の攻撃を防いだ。彼は己の無力さとあなたを危険に晒したことに絶望している。", 
                 dependence: "あなたは自らを犠牲にして彼を守った。その姿に、彼は心酔している。",
-                heavy_battle: "眠り続ける彼を護るため、あなたは傷を負いながら守り抜いた。"
+                heavy_battle: "あなたは傷を負いながら無防備な彼を守り抜いた。"
             } 
         }
     ],
@@ -1131,8 +1131,8 @@ const SPECIAL_CARDS = {
         flavor: { 
         trust: "その水を飲ませてやると、彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。", 
         dependence: "あなたが与えた水を飲み干すと、彼は身をまかせるように意識を手放した。",
-        heavy_trust: "意識のない彼を抱き起こし、咽せないように少しずつ水を口に含ませた。",
-        heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、無防備な彼の頬を伝い落ちていった。"
+        heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
+        heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、彼の頬を伝い落ちていった。"
     } 
 },
 
@@ -2241,7 +2241,7 @@ if (state.battleActive) {
                             addLog(winHeavyTrust[Math.floor(Math.random() * winHeavyTrust.length)], "log-flavor");
                         } else {
                             const winHeavyDep = [
-                                "外の惨状も知らず、彼は部屋で無防備に眠り続けている。",
+                                "外の惨状も知らず、彼は部屋で眠り続けている。",
                                 "彼の寝顔を眺める。これを傷つけていいのは、あなただけだ。"
                             ];
                             addLog(winHeavyDep[Math.floor(Math.random() * winHeavyDep.length)], "log-flavor");
