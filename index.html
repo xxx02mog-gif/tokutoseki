@@ -1093,7 +1093,7 @@ trust: "片脚が悪い彼は、整備されていない道では歩きにくい
         },
         { name: "罠を配置する", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。次ターンの初期APを+1", flavor: { trust: "あなたは周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "あなたは屋敷への侵入者を拒むための罠を張った。" } },
         { name: "硝煙の盾", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "stress", value: -15}], desc: "敵脅威度-15。ストレス-15", flavor: { 
-                trust: "あなたは火薬を使って敵を足止めした。部屋の中の彼は、あなたへの心配で胸を痛めている。", 
+                trust: "あなたは火薬を使って敵を足止めした。彼は、あなたへの心配で胸を痛めている。", 
                 dependence: "外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。",
                 heavy_battle: "火薬の煙が立ち込める。眠り続ける彼に外の喧騒は届かない。"
             } 
@@ -1900,22 +1900,24 @@ function executeCard(target) {
     // --- フレーバーテキスト表示 ---
     if (card.flavor) {
         let text = "";
-        // 対象が戦闘、かつ専用の「battle」テキストが設定されている場合
-        if (target === 'battle' && card.flavor.battle) {
+        
+        if (target === 'battle') {
+            // 対象が戦闘の場合
             if (state.debuff === 'heavy') {
-                // 昏睡用の戦闘テキストがあればそれを使用し、なければ通常の戦闘テキスト
-                text = card.flavor.heavy_battle || card.flavor.battle;
+                // 昏睡時は heavy_battle を優先し、無ければ heavy_trust等へフォールバック
+                text = card.flavor.heavy_battle || 
+                       (state.relation >= 0 ? card.flavor.heavy_trust : card.flavor.heavy_dependence) || 
+                       card.flavor.battle || 
+                       (state.relation >= 0 ? card.flavor.trust : card.flavor.dependence);
             } else {
-                text = card.flavor.battle;
+                // 通常時は battle を優先し、無ければ trust等へフォールバック
+                text = card.flavor.battle || 
+                       (state.relation >= 0 ? card.flavor.trust : card.flavor.dependence);
             }
         } else {
-            // 対象が主人の場合（または戦闘用テキストがなく、trust/dependenceに依存する場合）
+            // 対象が主人の場合
             if (state.debuff === 'heavy') {
-                if (state.relation >= 0) {
-                    text = card.flavor.heavy_trust || card.flavor.trust;
-                } else {
-                    text = card.flavor.heavy_dependence || card.flavor.dependence;
-                }
+                text = (state.relation >= 0) ? (card.flavor.heavy_trust || card.flavor.trust) : (card.flavor.heavy_dependence || card.flavor.dependence);
             } else {
                 text = (state.relation >= 0) ? card.flavor.trust : card.flavor.dependence;
             }
@@ -3116,7 +3118,7 @@ document.addEventListener('pointerdown', function(e) {
                         <div class="flow-step-title">購入・売却</div>
                     </div>
                     <div class="flow-step-body">
-                        4ターン毎に、資金を消費して行動カードを購入・処分できます。
+                        4ターン毎に、資金を消費して行動カードを購入・処分できます。<br>購入売却後は、手札が残っている場合もすべてデッキに戻し、カードの配り直しが行われます。
                     </div>
                 </div>
             </div>
