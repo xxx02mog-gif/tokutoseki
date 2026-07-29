@@ -872,7 +872,7 @@ const CARD_POOL = {
 { 
     name: "水を与える", 
     type: "direct", 
-    value: 5, 
+    value: 2, 
     cost: 1, 
     valType: "flat", 
 stressChange: -10, 
@@ -880,7 +880,7 @@ stressChange: -10,
         {type: "heal", value: 5}, 
   {type: "stress_direct", value: 10}
     ], 
-    desc: "健康+5。ストレス-10。関係性+5。", 
+    desc: "健康+5。ストレス-10。関係性+2。", 
  flavor: { 
         trust: "あなたは彼の口元へコップを運んだが、途中でコップを彼に奪われてしまった。", 
         dependence: "彼は、あなたが水を手ずから飲ませてくれることを嬉しく思っているようだ。",
@@ -906,12 +906,12 @@ stressChange: -10,
         { name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 5}], desc: "健康+15。ストレス-5。関係性+5。", flavor: { trust: "あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめたが、手当てには感謝している。", dependence: "あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと喜んで受け入れている。",
         heavy_trust: "あなたは彼の傷口を消毒した。この程度の痛みでは目を覚すことはなさそうだ。",
         heavy_dependence: "あなたは彼の傷口を消毒した。この程度の痛みで目を覚ますはずはない。"} },
-        { name: "熱を測る", type: "direct", value: 20, cost: 1, valType: "percent", actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+20%。手札のランダムな冷淡カード1枚を『部屋の掃除』に変換する", flavor: { trust: "あなたは彼の熱を測った。静かな時間が流れ、彼の緊張が少し解けたようだ。", dependence: "あなたは主人に触れた。彼はあなたの体温に強い安心感を覚えている。",
+        { name: "熱を測る", type: "direct", value: 20, cost: 1, valType: "percent", actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+20%。手札の冷淡1枚を『部屋の掃除』に変換", flavor: { trust: "あなたは彼の熱を測った。静かな時間が流れ、彼の緊張が少し解けたようだ。", dependence: "あなたは主人に触れた。彼はあなたの体温に強い安心感を覚えている。",
             heavy_trust: "あなたは彼の熱を測った。発熱はまだ落ち着きそうにない。",
         heavy_dependence: "あなたは主人の額に触れた。熱がじわじわと手のひらに伝わってくる。"} },
         { name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat",  actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", flavor: { trust: "あなたがつきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが食事を与えると、彼はすべてをあなたに委ねるように受け入れた。" } },
         { name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", flavor: { trust: "あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。", dependence: "あなたの血を与えられた彼は、あなたと深く結びついた感覚に酔いしれている。" } },
-        { name: "過呼吸の対処", type: "direct", value: 10, cost: 2, valType: "flat", actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+10。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
+        { name: "過呼吸の対処", type: "direct", value: 30, cost: 2, valType: "percent", actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+30%。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
     ],
     indirect: [
 
@@ -979,28 +979,28 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "部屋を満たす香りが、意識のない彼をさらに深く、あなただけの世界へと沈めていく。" 
             } 
         },
-        { name: "アルバムの整理", type: "indirect", value: 6, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+6。山札からカードを1枚ドローする", flavor: { 
+        { name: "アルバムの整理", type: "indirect", value: 5, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+6。デッキからカードを1枚手札に加える", flavor: { 
                 trust: "あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。", 
                 dependence: "彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。",
                 heavy_trust: "眠り続ける彼の傍らで、あなたは一人、かつての思い出のページを静かにめくった。",
                 heavy_dependence: "彼が目を覚まさないのをいいことに、あなたは彼の大切な写真を燃やした。" 
             } 
         },
-        { name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{type: "discard_obstacle"},{type: "stress", value: -25}], desc: "ストレス-25。関係性+4。手札にある不用品カードを1枚廃棄する", flavor: { 
+        { name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{type: "discard_obstacle"},{type: "stress", value: -25}], desc: "ストレス-25。関係性+4。手札の不用品を1枚廃棄する", flavor: { 
                 trust: "彼の好みに合わせた紅茶を淹れると、彼は己の嗜好を把握されていることに複雑な表情を見せた。", 
                 dependence: "あなたが淹れた紅茶を飲むと、彼はあなたの存在だけを鮮明に感じるようだ。"
             } 
         },
      
 
-       { name: "調度品の買い替え", type: "indirect", value: 30, cost: 1, valType: "percent", goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性を現在の値+30%（使い切り）", flavor: { 
+       { name: "調度品の買い替え", type: "indirect", value: 50, cost: 1, valType: "percent", goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性を現在の値+50%（使い切り）", flavor: { 
                 trust: "あなたが新しい家具を揃えると、彼は荒んだ心に温かい光が差すのを感じた。", 
                 dependence: "新しい家具よりも、彼はただあなたが傍にいてくれることだけを望んでいる。",
                 heavy_trust: "あなたが新しい家具を揃える間も、彼はただ静かに眠り続けている。",
                 heavy_dependence: "彼が意識のない間に、あなたは部屋の内装を勝手に新調した。" 
             } 
         },
-        { name: "中庭の手入れ", type: "indirect", value: 30, cost: 2, valType: "percent", actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+30%。デッキからランダムな間接ケアカード1枚を手札に加える", flavor: { trust: "あなたが中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" }},
+        { name: "中庭の手入れ", type: "indirect", value: 5, cost: 2, valType: "flat", actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアを1枚手札に加える", flavor: { trust: "あなたが中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" }},
 {name: "医者を呼ぶ", type: "indirect", value: 2, cost: 1,valType: "flat",goldCost: 40,actions: [ {type: "gold", value: -40},   { type: "heal", value: 60, isFixed: true },{type: "stress", value: -5},{ type: "consume" }],desc: "資金-40。必ず健康+60。ストレス-5。関係性+2(使い切り)",flavor: {trust: "外部から医者を呼び、適切な治療を受けさせた。体は楽になったようだが、彼はどこか不服そうにしている。", dependence: "彼は他人の手が介入することを激しく拒絶したが、あなたの命令により強引に治療を受けさせた。",
                 heavy_trust: "寝たきり状態の彼のためにあなたは外部から医者を呼び、適切な治療を受けさせた。",
                 heavy_dependence: "外部から医者を呼び、治療を受けさせる。そのことを、あなたは彼に伝えはしない。" }}
@@ -1123,7 +1123,7 @@ const SPECIAL_CARDS = {
     water_coma: { 
         name: "水を与える", 
         type: "direct", 
-        value: 5, // 関係性の上昇量
+        value: 2, // 関係性の上昇量
         cost: 1, 
         valType: "flat", 
         actions: [
@@ -1132,7 +1132,7 @@ const SPECIAL_CARDS = {
             {type: "set_debuff", value: "heavy"}, // 即座に昏睡状態へ
             {type: "buff", key: "waterStressDuration", value: 3} // 3ターン継続の副作用
         ], 
-        desc: "健康+30。必ずストレス-30。関係性+5。即座に『昏睡』になる。3ターンの間ストレス+15", 
+        desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間ストレス+15", 
         flavor: { 
         trust: "その水を飲ませてやると、彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。", 
         dependence: "あなたが与えた水を飲み干すと、彼はすべてを委ねるように意識を手放した。",
