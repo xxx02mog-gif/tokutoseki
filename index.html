@@ -886,32 +886,32 @@ stressChange: -10,
         trust: "あなたは彼の口元へコップを運んだが、途中でコップを彼に奪われてしまった。", 
         dependence: "彼は、あなたが水を手ずから飲ませてくれることを嬉しく思っているようだ。",
         heavy_trust: "意識のない彼を抱き起こし、咽せないように少しずつ水を口に含ませた。",
-        heavy_dependence: "眠る彼に水を飲ませる。飲み込めずに零れた水滴が、無防備な彼の頬を伝い落ちていった。"
+        heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、無防備な彼の頬を伝い落ちていった。"
     } 
 },
-         { name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { trust: "あなたは彼を気遣って看病した。彼は申し訳なさそうに視線をそらしている。", dependence: "あなたが看病すると、彼はあなたにすがりつくように袖を掴んだ。",
+         { name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { trust: "あなたは彼を気遣って看病した。彼は気まずげに目を逸らしている。", dependence: "あなたが看病すると、彼はあなたにすがりつくように袖を掴んだ。",
         heavy_trust: "あなたは意識のない彼を看病した。人形のように力の抜けた体は、いつもよりも重く感じる。",
         heavy_dependence: "あなたが看病すると、彼の苦しげな呼吸が和らいだ。"} },
         { name: "髪を梳かす", type: "direct", value: 1, cost: 1, valType: "flat", actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+1", flavor: { trust: "あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。", dependence: "あなたの指先が触れると、彼はひどく安心した表情を見せた。",
         heavy_trust: "あなたは彼の髪を丁寧に梳かした。彼は眠ったまま、されるがままにされている。",
         heavy_dependence: "あなたの指先が触れても、彼は目を覚まさない。"} },
         { name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", actions: [{type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "健康+30。ストレス-15。関係性+2", flavor: { trust: "あなたは彼に薬を飲ませた。彼は手間をかけることを申し訳なく思っているようだ。", dependence: "あなたが与えるものなら、彼はどんなものでも喜んで受け入れる。",
-        heavy_trust: "あなたは眠る彼に薬を飲ませた。上手く飲みきれない水が頬を伝う。",
+        heavy_trust: "あなたは眠る彼に薬を飲ませた。飲み下せなかった分が口端から溢れる。",
         heavy_dependence: "無意識状態にあっても、彼はあなたが与える薬を上手に飲み下した。"} },
-        { name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 10}], desc: "健康+20。ストレス-10。関係性+3", flavor: { trust: "あなたは彼の体を丁寧に拭き上げた。彼は世話を焼かれることに負い目を感じている。", dependence: "あなたが触れるたび、彼はあなたとの繋がりに安堵のため息を漏らしている。",
+        { name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 10}], desc: "健康+20。ストレス-10。関係性+3", flavor: { trust: "あなたは彼の体を丁寧に拭き上げた。彼は世話を焼かれることに負い目を感じている。", dependence: "あなたが触れるたび、彼はあなたとの繋がりを見出している。",
         heavy_trust: "あなたは眠ったまま起きる気配のない彼の体を、丁寧に拭き上げた。",
-        heavy_dependence: "あなたがどれだけ触れても、彼は反応しない。ただ静かに眠り続けている。"} },
+        heavy_dependence: "あなたがどれだけ触れても、彼は反応しない。彼は深い微睡みの中に取り残されている。"} },
         { name: "深夜の付き添い", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 10},{type: "stress_direct", value: 20}], desc: "健康+10。ストレス-20。関係性+5", flavor: { trust: "あなたは夜通し彼の傍にいた。彼はあなたの体調を気遣っている。", dependence: "あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。",
         heavy_trust: "あなたは眠ったまま起きる気配のない彼の体を、丁寧に拭き上げた。",
-        heavy_dependence: "あなたが触れても彼は何の反応も返さない。ただ静かに眠り続けている。"} },
-        { name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 5}], desc: "健康+15。ストレス-5。関係性+5。", flavor: { trust: "あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめたが、手当てには感謝している。", dependence: "あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと喜んで受け入れている。",
+        heavy_dependence: "あなたが触れても彼は何の反応も返さない。彼は深い微睡みの中に取り残されている。"} },
+        { name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 5}], desc: "健康+15。ストレス-5。関係性+5。", flavor: { trust: "あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめたが、手当てには感謝している。", dependence: "あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと感じているようだ。",
         heavy_trust: "あなたは彼の傷口を消毒した。この程度の痛みでは目を覚すことはなさそうだ。",
         heavy_dependence: "あなたは彼の傷口を消毒した。この程度の痛みで目を覚ますはずはない。"} },
-        { name: "熱を測る", type: "direct", value: 20, cost: 1, valType: "percent", actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+20%。手札の冷淡1枚を『部屋の掃除』に変換", flavor: { trust: "あなたは彼の熱を測った。静かな時間が流れ、彼の緊張が少し解けたようだ。", dependence: "あなたは主人に触れた。彼はあなたの体温に強い安心感を覚えている。",
-            heavy_trust: "あなたは彼の熱を測った。発熱はまだ落ち着きそうにない。",
-        heavy_dependence: "あなたは主人の額に触れた。熱がじわじわと手のひらに伝わってくる。"} },
-        { name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat",  actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", flavor: { trust: "あなたがつきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが食事を与えると、彼はすべてをあなたに委ねるように受け入れた。" } },
-        { name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", flavor: { trust: "あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。", dependence: "あなたの血を与えられた彼は、あなたと深く結びついた感覚に酔いしれている。" } },
+        { name: "熱を測る", type: "direct", value: 20, cost: 1, valType: "percent", actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+20%。手札の冷淡1枚を『部屋の掃除』に変換", flavor: { trust: "彼の熱を測った。静かな時間が流れ、彼の緊張が少し解けたようだ。", dependence: "彼の額に手を当てる。彼はあなたの体温に強い安心感を覚えている。",
+            heavy_trust: "彼の体は熱い。呼吸は浅く、発熱はまだ落ち着きそうにない。",
+        heavy_dependence: "あなたは彼の額に触れた。熱がじわじわと手のひらに伝わってくる。"} },
+        { name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat",  actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", flavor: { trust: "あなたがつきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが手ずから食事を与えると、彼はされるがままになっている。" } },
+        { name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", flavor: { trust: "あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。", dependence: "あなたの血を与えられ、彼はあなたと深く結びついた感覚に酔いしれている。" } },
         { name: "過呼吸の対処", type: "direct", value: 30, cost: 2, valType: "percent", actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+30%。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
     ],
     indirect: [
@@ -955,26 +955,26 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
     } 
 },
 
-        { name: "部屋の掃除", type: "indirect", value: 2, cost: 1, valType: "flat", stressChange: -10, actions: [{ type: "heal", value: 10 }, {type: "stress", value: -10}], desc: "健康+10。ストレス-10。関係性+2", flavor: { trust: "あなたが部屋を清掃すると、彼は申し訳なさそうにあなたを見つめていた。", dependence: "あなたが部屋を掃除する間、彼はあなたの背中をじっと目で追っている。",
-            heavy_trust: "あなたが部屋を掃除する間、彼は静かに寝息を立てている。",
-        heavy_dependence: "あなたが部屋を掃除する間、彼は静かに寝息を立てている。" } },
+        { name: "部屋の掃除", type: "indirect", value: 2, cost: 1, valType: "flat", stressChange: -10, actions: [{ type: "heal", value: 10 }, {type: "stress", value: -10}], desc: "健康+10。ストレス-10。関係性+2", flavor: { trust: "部屋を清掃すると、彼は心苦しそうに唇を噛んだ。", dependence: "部屋を掃除する間、彼はひたすらにあなたの気配を追っている。",
+            heavy_trust: "部屋を掃除する間、彼は静かに寝息を立てている。",
+        heavy_dependence: "部屋を掃除する間、彼は静かに寝息を立てている。" } },
         { name: "寝具の天日干し", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -15, actions: [{ type: "heal", value: 20 }, {type: "stress", value: -15}], desc: "健康+20。ストレス-15。関係性+3", flavor: { 
                 trust: "あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。", 
-                dependence: "あなたが寝具を整えると、彼はあなたの気配を感じて静かに目を閉じた。",
-                heavy_trust: "あなたが寝具を整え直しても、彼は微かな寝息を立てたまま目を覚まさない。",
+                dependence: "寝具を整えてやると、彼はあなたの気配を感じて目を閉じた。",
+                heavy_trust: "寝具を整え直しても、彼は微かな寝息を立てたまま目を覚まさない。",
                 heavy_dependence: "太陽の匂いがする清潔な布団で彼を包み込む。彼はあなたの庇護下で無防備に眠っている。" 
             } 
         },
         { name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{ type: "heal", value: 15 }, {type: "stress", value: -10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { 
-                trust: "あなたが部屋を快適な温度に保つと、彼はあなたの気遣いに胸を打たれたようだ。", 
+                trust: "部屋を快適な温度に保つと、彼はその気遣いに胸を打たれたようだ。", 
                 dependence: "心地よい室温の中でも、彼はあなたがいなければ寒気を感じてしまうようだ。",
                 heavy_trust: "彼がこれ以上体調を崩さないよう、部屋を快適な温度に調整した。",
                 heavy_dependence: "今ならば、意識のない彼をさらに追い詰める事もできる。彼を生かすも殺すも、今のあなた次第だ。" 
             } 
         },
-        { name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{ type: "heal", value: 30 }, {type: "stress", value: -25}], desc: "健康+30。ストレス-25。関係性+4", flavor: { trust: "あなたが栄養のある食事を用意すると、彼は感謝とともにそれを口にした。", dependence: "あなたが用意した食事を、彼はあなたのためだけにすべて平らげた。" } },
+        { name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{ type: "heal", value: 30 }, {type: "stress", value: -25}], desc: "健康+30。ストレス-25。関係性+4", flavor: { trust: "栄養のある食事を用意すると、彼は感謝とともにそれを口にした。", dependence: "用意した食事を、彼はあなたのためだけにすべて平らげた。" } },
         { name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, actions: [{type: "buff", key: "scentDuration", value: 3},{type: "stress", value: -15}], desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", flavor: { 
-                trust: "あなたが彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出したようだ。", 
+                trust: "彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出したようだ。", 
                 dependence: "香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。",
                 heavy_trust: "彼好みの香りを焚く。穏やかな香りが、彼の微睡みを少しでも安らかなものにする。",
                 heavy_dependence: "部屋を満たす香りが、意識のない彼をさらに深く、あなただけの世界へと沈めていく。" 
@@ -983,7 +983,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
         { name: "アルバムの整理", type: "indirect", value: 5, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+6。デッキからカードを1枚手札に加える", flavor: { 
                 trust: "あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。", 
                 dependence: "彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。",
-                heavy_trust: "眠り続ける彼の傍らで、あなたは一人、かつての思い出のページを静かにめくった。",
+                heavy_trust: "眠り続ける彼の傍らで、あなたは一人、かつての思い出のページをめくった。",
                 heavy_dependence: "彼が目を覚まさないのをいいことに、あなたは彼の大切な写真を燃やした。" 
             } 
         },
@@ -995,43 +995,43 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
      
 
        { name: "調度品の買い替え", type: "indirect", value: 50, cost: 1, valType: "percent", goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性を現在の値+50%（使い切り）", flavor: { 
-                trust: "あなたが新しい家具を揃えると、彼は荒んだ心に温かい光が差すのを感じた。", 
-                dependence: "新しい家具よりも、彼はただあなたが傍にいてくれることだけを望んでいる。",
-                heavy_trust: "あなたが新しい家具を揃える間も、彼はただ静かに眠り続けている。",
+                trust: "新しい家具を揃えると、彼は荒んだ心に温かい光が差すのを感じた。", 
+                dependence: "新しい家具よりも、彼はあなたが傍にいてくれることだけを望んでいる。",
+                heavy_trust: "新しい家具を揃える間も、彼は眠り続けている。",
                 heavy_dependence: "彼が意識のない間に、あなたは部屋の内装を勝手に新調した。" 
             } 
         },
-        { name: "中庭の手入れ", type: "indirect", value: 5, cost: 2, valType: "flat", actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアを1枚手札に加える", flavor: { trust: "あなたが中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" }},
+        { name: "中庭の手入れ", type: "indirect", value: 5, cost: 2, valType: "flat", actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアを1枚手札に加える", flavor: { trust: "中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" }},
 {name: "医者を呼ぶ", type: "indirect", value: 2, cost: 1,valType: "flat",goldCost: 40,actions: [ {type: "gold", value: -40},   { type: "heal", value: 60, isFixed: true },{type: "stress", value: -5},{ type: "consume" }],desc: "資金-40。必ず健康+60。ストレス-5。関係性+2(使い切り)",flavor: {trust: "外部から医者を呼び、適切な治療を受けさせた。体は楽になったようだが、彼はどこか不服そうにしている。", dependence: "彼は他人の手が介入することを激しく拒絶したが、あなたの命令により強引に治療を受けさせた。",
                 heavy_trust: "寝たきり状態の彼のためにあなたは外部から医者を呼び、適切な治療を受けさせた。",
                 heavy_dependence: "外部から医者を呼び、治療を受けさせる。そのことを、あなたは彼に伝えはしない。" }}
     ],
     cold: [
         { name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-1", flavor: { 
-                trust: "あなたが事務的に接すると、彼はただ己の義務を果たそうと努めた。", 
+                trust: "事務的に接すると、彼はただ己の義務を果たそうと努めた。", 
                 dependence: "あなたの冷淡な態度に、彼は激しい不安と孤独感に駆られている。",
-                heavy_trust: "あなたが事務的な手つきで状態を確認しても、彼は静かに眠り続けている。",
+                heavy_trust: "事務的な手つきで状態を確認しても、彼は目を覚まさない。",
                 heavy_dependence: "意識のない彼に対して、あなたはただ事務的に必要な処置だけをこなした。"
             } 
         },
         { name: "無視", type: "cold", value: -2, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-2", flavor: { 
-                trust: "あなたが彼を無視すると、彼はかつての自分の振る舞いを反省した。", 
-                dependence: "あなたから無視されると、彼は見捨てられるのではないかと怯え切っている。",
-                heavy_trust: "あなたがその場を離れても、彼の引き留める声が聞こえることはない。",
-                heavy_dependence: "あなたは意識のない彼を部屋に放置した。"
+                trust: "あなたが無視すると、彼はかつての自分の振る舞いを反省した。", 
+                dependence: "あなたに無視され、彼は見捨てられるのではないかと怯え切っている。",
+                heavy_trust: "あなたがその場を離れても、引き留める声が聞こえることはない。",
+                heavy_dependence: "静寂に包まれた部屋で、あなたは意識のない彼を見下ろした。"
             }},
         { name: "冷酷な事実", type: "cold", value: -15, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-15", flavor: { 
                 trust: "あなたが厳しい現実を突きつけると、彼は自分の無力さを深く噛み締めた。", 
-                dependence: "現実を突きつけられた彼は、ただあなただけを世界のすべてにしようと逃避している。",
-                heavy_trust: "あなたはベッドの中の彼を見下ろし、冷酷な事実を告げた。届くはずのない言葉が、空虚な部屋に響き渡る。",
+                dependence: "現実を突きつけられ、彼はあなただけを世界のすべてにしようと逃避している。",
+                heavy_trust: "ベッドの中の彼を見下ろし、冷酷な事実を告げた。届くはずのない言葉が、空虚な部屋に響き渡る。",
                 heavy_dependence: "あなたは悪夢にうなされる彼の耳元で、残酷な真実を囁いた。"
             } 
         },
         { name: "私物の没収", type: "cold", value: -15, cost: 1, valType: "flat", actions: [{type: "stress", value: 15},     { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-15。資金+5~30G", flavor: { 
-                trust: "あなたが彼の私物を処分しても、彼はそれが当然の報いだと受け入れた。", 
+                trust: "あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。", 
                 dependence: "私物を奪われても、彼はあなたに従うこと自体に喜びを見出している。",
-                heavy_trust: "眠り続ける彼の私物を、あなたはためらいなく処分した。",
-                heavy_dependence: "彼が目を覚まさないのをいいことに、あなたは彼の持ち物を好き勝手に売り払った。"
+                heavy_trust: "あなたは眠り続ける彼の私物を、ためらいなく処分した。",
+                heavy_dependence: "彼が目を覚まさないのをいいことに、彼の持ち物を好き勝手に売り払った。"
             } 
         },
         { name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 15}], desc: "健康-5。ストレス+15。関係性-3。次の戦闘時、脅威度を-10", flavor: { 
@@ -1043,62 +1043,56 @@ trust: "片脚が悪い彼は、整備されていない道では歩きにくい
         },
         { name: "鎮痛剤を与えない", type: "cold", value: -8, cost: 2, valType: "flat", actions: [{ type: "heal", value: -20 },{type: "stress", value: 30}], desc: "健康度-20。ストレス+30。関係性-8", flavor: { 
                 trust: "あなたが薬を与えなくても、彼は自らの命に対する執着を手放しつつある。", 
-                dependence: "苦痛の中でも、彼はあなたから与えられた試練としてそれを受け入れている。",
-                heavy_trust: "鎮痛剤を与えないまま放置した。浅い呼吸が、彼の抱える痛みを静かに物語っている。",
-                heavy_dependence: "苦痛に微かに顔を歪める彼を、あなたは薬を与えずにただ眺め続けた。"
+                dependence: "自らの苦痛を、あなたがかつて受けた苦しみの一端だと思って抱きしめている。",
+                heavy_trust: "鎮痛剤を与えないまま放置した。浅い呼吸が、彼の抱える痛みを物語っている。",
+                heavy_dependence: "苦痛に顔を歪める彼を、薬を与えずにただ眺め続けた。"
             } 
         },
-        { name: "沈黙の糾弾", type: "cold", value: -5, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-5", flavor: { 
-                trust: "あなたが無言で彼を責めると、彼はその沈黙の重さに耐えきれず目を逸らした。", 
-                dependence: "あなたが沈黙すると、彼はあなたの心が離れてしまうのではないかとパニックに陥った。",
-                heavy_trust: "あなたが無言のまま部屋に居座っても、彼はただ昏々と眠り続けている。",
-                heavy_dependence: "静寂に包まれた部屋で、あなたは意識のない彼を見下ろした。"
-            } 
-        },
-        { name: "部屋の施錠", type: "cold", value: -15, cost: 2, valType: "flat", actions: [{type: "stress", value: 40}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+40。関係性-15。次ターンのドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めると、彼はそれを自分への正当な処置だと考えた。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
-        { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性を現在値-15%", flavor: { trust: "食事が遅れても、彼はあなたを怒らせた自分の落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
-       { name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", actions: [{type: "stress", value: 40}, {type: "consume"}], desc: "ストレス+40。関係性を現在値-30%（使い切り）", flavor: { trust: "あなたが他人の気配を漂わせると、彼は自分が不要になったのだと悟り静かに絶望した。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
+
+        { name: "部屋の施錠", type: "cold", value: -15, cost: 2, valType: "flat", actions: [{type: "stress", value: 40}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+40。関係性-15。次ターンのドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めるのを、彼は自分への正当な処置だと考えている。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
+        { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性を現在値-15%", flavor: { trust: "食事が遅れても、彼はあなたを不快にさせた自らの落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
+       { name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", actions: [{type: "stress", value: 40}, {type: "consume"}], desc: "ストレス+40。関係性を現在値-30%（使い切り）", flavor: { trust: "あなたが他人の気配を漂わせると、彼はとうとう自分が不要になったのだと悟ったようだ。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
     ],
     harm: [
         
         { name: "毒の調合", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}], desc: "敵脅威度-15 / 【対主人】健康-15。ストレス+10", flavor: { 
-                trust: "あなたが苦い薬を食事に混ぜると、彼はそれを罰として静かに飲み干した。", 
-                dependence: "身体の不調を感じながらも、彼はあなたから与えられるものに身を委ねている。", 
+                trust: "苦い薬を食事に混ぜると、彼は何も言わずにそれを罰として飲み干した。", 
+                dependence: "身体の不調を感じながらも、彼はあなたから与えられるものを甘んじて享受している。", 
                 battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。",
                 heavy_trust: "意識のない彼の口に少量の毒を流し込んだ。彼がそれに気づくことはないだろう。",
-                heavy_dependence: "昏睡する彼の生命を、あなたの調合した毒がゆっくりと蝕んでいく。",
+                heavy_dependence: "彼の生命を、あなたの毒がゆっくりと蝕んでいく。",
                 heavy_battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"
             } 
         },
         { name: "首を絞める", type: "harm", value: 0, cost: 2, valType: "flat", isMasterAlways: false, actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {type: "consume"}], desc: "敵脅威度-20 / 【対主人】健康-30。ストレス+30（使い切り）", flavor: { 
                 trust: "横たわる主人の首に手をかける。皮膚の向こうに、か細い呼吸を感じる。", 
-                dependence: "横たわる主人の首に手をかける。薄く開いた彼の目が微かに微笑んだように感じる。", 
+                dependence: "横たわる主人の首に手をかける。薄く開いた彼の目が僅かに微笑んだように感じる。", 
                 battle: "あなたは襲い来る敵の首を締め、無力化させた。",
                 heavy_trust: "彼の首に手をかける。その無抵抗な様子に、あなたは狂おしいまでの支配欲を感じる。",
-                heavy_dependence: "眠る彼の首を締め上げる。目を覚まさない彼を、このまま壊してしまいたい衝動に駆られる。"
+                heavy_dependence: "彼の首を締め上げる。目を覚まさない彼を、このまま壊してしまいたい衝動に駆られる。"
             } 
         },
        { name: "見せしめの拷問", type: "harm", value: 0, cost: 2, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"},  {type: "consume"} ], desc: "敵脅威度を強制的に0にする / 【対主人】ストレス+40　（使い切り）", flavor: { 
                 trust: "あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。彼は顔を引き攣らせている。", 
-                dependence: "疲労の中でも、彼はあなたのやり方に異を唱えることなく従っている。", 
-                battle: "あなたは捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。",
+                dependence: "彼は何も言わず、あなたのやり方に異を唱えることなく従っている。", 
+                battle: "捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。",
                 heavy_trust: "庭先に惨たらしい魔物の死体を吊るした。彼が目覚めた時のことを考え、ほくそ笑む。",
                 heavy_dependence: "庭先に惨たらしい魔物の死体を吊るした。彼が目覚めた時のことを考え、ほくそ笑む。"
             } },
         { name: "形見の宝刀", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}], desc: "敵脅威度-45。次ターンの初期AP-1", flavor: { 
-                trust: "あなたは形見の宝刀を構え、因縁に終止符を打った。彼は抗うことなくそれを受け入れた。", 
-                dependence: "あなたが宝刀を向けると、彼はあなたによって終わることに安堵の表情を浮かべた。", 
+                trust: "あなたは形見の宝刀を構え、因縁に終止符を打った。", 
+                dependence: "あなたが宝刀を向けると、彼はあなたの手によって終われることに安堵の表情を浮かべた。", 
                 battle: "あなたは形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。"
             } 
         },
-        { name: "罠を配置する", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。次ターンの初期APを+1", flavor: { trust: "あなたは周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "あなたは屋敷への侵入者を拒むための罠を張った。" } },
+        { name: "罠を配置する", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。次ターンの初期APを+1", flavor: { trust: "周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "屋敷への侵入者を拒むための罠を張った。" } },
         { name: "硝煙の盾", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "stress", value: -15}], desc: "敵脅威度-15。ストレス-15", flavor: { 
-                trust: "あなたは火薬を使って敵を足止めした。彼は、あなたへの心配で胸を痛めている。", 
+                trust: "火薬を使って敵を足止めした。彼は、あなたへの心配で胸を痛めている。", 
                 dependence: "外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。",
                 heavy_battle: "火薬の煙が立ち込める。眠り続ける彼に外の喧騒は届かない。"
             } 
         },
-        { name: "威嚇射撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。資金+10~15G", flavor: { trust: "あなたは威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
+        { name: "威嚇射撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。資金+10~15G", flavor: { trust: "威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
         { name: "容赦なき追撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35に強化)", flavor: { 
                 trust: "あなたは撤退する敵を追い詰めた。", 
                 dependence: "あなたは敵を徹底的に排除した。障害はすべて取り除くという執念を感じさせる。"
@@ -1112,9 +1106,9 @@ trust: "片脚が悪い彼は、整備されていない道では歩きにくい
         }
     ],
     season: {
-        "秋": { name: "収穫祭の思い出", type: "season", season: "秋", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "外から祭りの音が聞こえる。彼はかつてあなたと過ごした賑やかな日々を懐かしんでいるようだ。", dependence: "外の喧噪よりも、彼はあなたが給仕してくれる静かな時間だけを欲している。" } },
-        "冬": { name: "聖夜の灯火", type: "season", season: "冬", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "窓辺のキャンドルが、彼の凍てついた心を微かに照らす。彼はあなたの優しさに感謝した。", dependence: "小さな灯りを見つめる彼は、あなたへの想いで胸を焦がしているようだ。" } },
-        "春": { name: "薄紅の散策", type: "season", season: "春", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "風に乗って桜が舞い込んだ。彼はいつかまた、あなたと共に歩ける日を夢見ている。", dependence: "美しい花よりも、彼はあなたから与えられる微かな愛情に強く惹かれている。" } },
+        "秋": { name: "収穫祭の思い出", type: "season", season: "秋", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "外から祭りの音が聞こえる。彼はかつてあなたと過ごした賑やかな日々を懐かしんでいるようだ。", dependence: "外の喧噪よりも、彼はあなたが給仕してくれる時間だけを欲している。" } },
+        "冬": { name: "聖夜の灯火", type: "season", season: "冬", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "窓辺のキャンドルが、彼の凍てついた心をほのかに照らす。彼はあなたの優しさに感謝した。", dependence: "小さな灯りを見つめる彼は、あなたへの想いで胸を焦がしているようだ。" } },
+        "春": { name: "薄紅の散策", type: "season", season: "春", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "風に乗って桜が舞い込んだ。彼はいつかまた、あなたと共に歩ける日を夢見ている。", dependence: "美しい花よりも、彼はあなたから与えられる朧げな愛情に強く惹かれている。" } },
         "夏": { name: "盛夏の木陰", type: "season", season: "夏", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "夏限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "眩い日差しの中、木陰で過ごした。彼は目を細めてあなたを見つめていた。", dependence: "夏の暑さも忘れるほど、彼はあなたへの強い思いに囚われ続けている。" } }
     }
 };
@@ -1136,9 +1130,9 @@ const SPECIAL_CARDS = {
         desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間ストレス+15", 
         flavor: { 
         trust: "その水を飲ませてやると、彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。", 
-        dependence: "あなたが与えた水を飲み干すと、彼はすべてを委ねるように意識を手放した。",
+        dependence: "あなたが与えた水を飲み干すと、彼は身をまかせるように意識を手放した。",
         heavy_trust: "意識のない彼を抱き起こし、咽せないように少しずつ水を口に含ませた。",
-        heavy_dependence: "眠る彼に水を飲ませる。飲み込めずに零れた水滴が、無防備な彼の頬を伝い落ちていった。"
+        heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、無防備な彼の頬を伝い落ちていった。"
     } 
 },
 
@@ -1155,7 +1149,7 @@ const SPECIAL_CARDS = {
         ], 
         desc: "ストレス-35。関係性+15（使い切り）", 
         flavor: { 
-            trust: "あなたは彼の手をそっと握った。彼は目を覚まさないまま、安堵したように眉間の皺をわずかに緩めた。", 
+            trust: "あなたは彼の手をそっと握った。彼は目を覚まさないまま、眉間の皺をわずかに緩めた。", 
             dependence: "命の危機に瀕する彼を見て、彼を失うことへの恐怖と歪な執着が湧き上がった。" 
         } 
     },
@@ -1174,8 +1168,8 @@ const SPECIAL_CARDS = {
         ], 
         desc: "健康+25。ストレス-45。関係性+10（使い切り）", 
         flavor: { 
-      trust: "あなたは彼の前髪をそっとかき分けて、頭を撫でた。微睡みの中にいる彼の顔は、いつもよりも幼く見える。", 
-        dependence: "疲れ切り、昏々と眠り続ける彼の頭を撫でる。無防備な彼の姿に思わず笑みが溢れた。" 
+      trust: "彼の前髪をそっとかき分けて、頭を撫でた。微睡みの中にいる彼の顔は、いつもよりも幼く見える。", 
+        dependence: "疲れ切り、眠り続ける彼の頭を撫でる。無防備な彼の姿に思わず笑みが溢れた。" 
         } 
     },
 
@@ -1194,7 +1188,7 @@ const SPECIAL_CARDS = {
         desc: "健康+25。ストレス-20。関係性+25（使い切り）", 
           flavor: { 
         trust: "ベッドに腰掛け、深い眠りの中、時折小さく身じろぎする彼をぼんやりと眺めて過ごした。", 
-        dependence: "眠る彼をじっと見つめ続ける。あなたは自問した。いつまでこんなことを続けるつもりなのか、と。" 
+        dependence: "彼をじっと見つめ続ける。あなたは自問した。いつまでこんなことを続けるつもりなのか、と。" 
 
     } 
 
@@ -1434,7 +1428,7 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
                 cost: 0, 
                 desc: "幸福だった頃の遺物。使用不可", 
                 flavor: { 
-                    trust: "あたたかかった日だまりが、今の閉ざされた部屋を静かに嘲笑う。", 
+                    trust: "あたたかかった日だまりが、今の閉ざされた部屋を嘲笑う。", 
                     dependence: "あなたが見つめてくれるなら、彼は記憶など必要ないようだ。",
                     heavy_dependence: "過去の残骸が、だんだん無価値になっていく。"
                 } 
@@ -1458,7 +1452,7 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
                     trust: "言葉を交わすほどに、すれ違う心が痛みを伴う。", 
                     dependence: "いくら冷たく突き放されようと、彼にはあなたしかいない。",
                     heavy_trust: "沈黙すらも、彼とあなたの関係を軋ませる。",
-                    heavy_dependence: "彼は静かに眠っている。あなたの神経を逆撫ですることもない。"
+                    heavy_dependence: "喋らない彼は、あなたの神経を逆撫ですることもない。"
                 } 
             },
             { 
@@ -1536,7 +1530,7 @@ if (activeBuffs.waterStressDuration > 0) {
                     const heavyTexts = [
                         "彼は心身ともに疲弊しきっている。ただ、昏々と眠り続けている。",
                         "意識の混濁が深刻化し、彼は深い眠りに落ちている。",
-                        "自力で起き上がる気配はない。静かな呼吸のみが規則的に繰り返されている。"
+                        "自力で起き上がる気配はない。呼吸だけが規則的に繰り返されている。"
                     ];
                     debuffFlavor = heavyTexts[Math.floor(Math.random() * heavyTexts.length)];
                 }
@@ -2207,13 +2201,13 @@ if (state.battleActive) {
                     if (state.debuff === 'heavy') {
                         if (state.relation >= 0) {
                             const failHeavyTrust = [
-                                "意識のない彼は身を守る術を持たず、ただ無残に傷を負った。",
-                                "彼を守り切れなかった。静かな部屋に、新しく流れた血の匂いが立ち込める。"
+                                "意識のない彼は身を守る術を持たず、理不尽な暴力に晒されてしまった。",
+                                "彼を守り切れなかった。まっさらなシーツに鮮血が染み込んでいく。"
                             ];
                             addLog(failHeavyTrust[Math.floor(Math.random() * failHeavyTrust.length)], "log-flavor");
                         } else {
                             const failHeavyDep = [
-                                "無抵抗な彼が傷つけられた。あなたの胸中に、激しい衝動が湧き上がる。",
+                                "彼の体についた無惨な傷。あなたの胸中に、激しい衝動が湧き上がる。",
                                 "所有物が他人に傷つけられた。その事実が、あなたの支配欲をさらに刺激する。"
                             ];
                             addLog(failHeavyDep[Math.floor(Math.random() * failHeavyDep.length)], "log-flavor");
@@ -2255,13 +2249,13 @@ if (state.battleActive) {
                     } else {
                         if (state.relation >= 0) {
                             const winTrust = [
-                                "あなたは敵を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。",
+                                "敵を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。",
                                 "戦いから戻ったあなたを見て、彼は自らが負担になっている現実に顔を歪めた。"
                             ];
                             addLog(winTrust[Math.floor(Math.random() * winTrust.length)], "log-flavor");
                         } else {
                             const winDep = [
-                                "圧倒的な暴力で敵を蹂躙するあなたを見て、彼は安堵の吐息を漏らした。",
+                                "圧倒的な暴力で敵を蹂躙するあなたを見て、彼は胸を撫でおろした。",
                                 "彼は、返り血を浴びたあなたに心酔しているようだ。"
                             ];
                             addLog(winDep[Math.floor(Math.random() * winDep.length)], "log-flavor");
@@ -2678,14 +2672,14 @@ function calculateBonusGold(cardName) {
                 endingText = `――特等席は永久に失われた。`;
             } else if (condition === "dead") {
                 title.innerText = "【GAME OVER】主人の死";
-                endingText = `彼は過酷な環境に耐えかね、静かに息を引き取った。`;
+                endingText = `彼は過酷な環境に耐えかね、息を引き取った。`;
             } else if (isSurvivalClear) {
                 let requiredCount = 10;
                 if (state.specialCareCount >= requiredCount) {
                     title.innerText = "【END 7】壊れてゆく自我";
                     endingText = `非合法な薬物の常用が、着実に彼から正気と知性を奪っている。それでも、彼との日常は続く。`;
                 } else if (state.relation >= 85) {
-                    title.innerText = "【END 4】確固たる信頼と矜持";
+                    title.innerText = "【END 4】信頼と矜持";
                     endingText = `あなたへ信頼を胸に、彼は気高き自尊心を取り戻した。`;
                 } else if (state.relation >= 45) {
                     title.innerText = "【END 3】穏やかな主従関係";
