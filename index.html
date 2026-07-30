@@ -817,7 +817,8 @@ display: flex;
             shopSellCount: 0,
             specialCareCount: 0,
           playedCardsList: [], // 追加：使用したカードの記録用（マンネリ判定・売却ボーナス用。処分時にリセット）
-            totalPlayedCardsList: [] // ★追加：リザルト画面集計用（リセットされない）
+            totalPlayedCardsList: [], // ★追加：リザルト画面集計用（リセットされない）
+            hasDisposedObstacle: false // ★追加：不用品を一度でも処理したかの判定用フラグ
         };
 
 // 直前のステータスを保持するオブジェクト
@@ -943,9 +944,10 @@ stressChange: -10,
     valType: "flat", 
     goldCost: 20, 
     actions: [
-{type: "gold", value: -20}, 
+        {type: "gold", value: -20}, 
         { type: "heal", value: 50, isFixed: true },  
-        {type: "add_special_card", key: "water_coma"},
+        // 修正：3種類のキーを配列で指定し、ここからランダム抽選させるようにします
+        {type: "add_special_card", key: ["water_coma", "water_reset", "water_normal"]},
         {type: "consume"}
     ], 
     desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)",
@@ -1005,6 +1007,11 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
 {name: "医者を呼ぶ", type: "indirect", value: 2, cost: 1,valType: "flat",goldCost: 40,actions: [ {type: "gold", value: -40},   { type: "heal", value: 60, isFixed: true },{type: "stress", value: -5},{ type: "consume" }],desc: "資金-40。必ず健康+60。ストレス-5。関係性+2(使い切り)",flavor: {trust: "外部から医者を呼び、適切な治療を受けさせた。体は楽になったようだが、彼はどこか不服そうにしている。", dependence: "彼は他人の手が介入することを激しく拒絶したが、あなたの命令により強引に治療を受けさせた。",
                 heavy_trust: "寝たきり状態の彼のためにあなたは外部から医者を呼び、適切な治療を受けさせた。",
                 heavy_dependence: "外部から医者を呼び、治療を受けさせる。そのことを、あなたは彼に伝えはしない。" }}
+,
+        { name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", actions: [{type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて除外。除外した枚数分、関係性が0に近付く  (使い切り)", 
+        flavor: { trust: "二人の間のしがらみをまっさらにした。これからは、一人の人間として向き合うために。", 
+        dependence: "互いを縛り付けていたものを手放した。心にぽっかり穴が空いたような気がする。"} }
+
     ],
     cold: [
         { name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", actions: [{type: "stress", value: 5}], desc: "ストレス+5。関係性-1", flavor: { 
@@ -1137,16 +1144,61 @@ const SPECIAL_CARDS = {
             {type: "heal", value: 30}, 
             {type: "stress", value: -30}, 
             {type: "set_debuff", value: "heavy"}, // 即座に昏睡状態へ
-            {type: "buff", key: "waterStressDuration", value: 3} // 3ターン継続の副作用
+            {type: "buff", key: "waterStressDuration", value: 3}, // 3ターン継続の副作用
+            {type: "consume"} // 追加：使い切り
         ], 
-        desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間ストレス+15", 
+        desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間ストレス+15(使い切り)", 
         flavor: { 
-        trust: "その水を飲ませてやると、彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。", 
+        trust: "その水を飲んだ彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。", 
         dependence: "あなたが与えた水を飲み干すと、彼は身をまかせるように意識を手放した。",
         heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
         heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、彼の頬を伝い落ちていった。"
     } 
 },
+
+// ▼追加：水を与える（サンプル１）関係性0リセット＆使い切り版
+    water_reset: { 
+        name: "水を与える", 
+        type: "direct", 
+        value: 0, // 関係性を強制的に0にするため、基礎上昇量は0
+        cost: 1, 
+        valType: "flat", 
+        actions: [
+            {type: "heal", value: 30}, 
+            {type: "stress", value: -30}, 
+            {type: "buff", key: "waterStressDuration", value: 3}, // 3ターン継続の副作用
+            {type: "set_relation_zero"}, // 追加：関係性を0にする新規アクション
+            {type: "consume"} // 追加：使い切り
+        ], 
+        desc: "健康+30。必ずストレス-30。関係性を0にする。3ターンの間ストレス+15(使い切り)", 
+        flavor: { 
+            trust: "何かを諦めたように目を閉じ、彼はその水を飲み干した。", 
+            dependence: "水を飲ませてから暫く経っても、彼はまだ空っぽになったコップを虚ろな目で見つめている。",
+            heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
+            heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、彼の頬を伝い落ちていった。"
+        } 
+    },
+
+    // ▼追加：水を与える（サンプル２）通常版
+    water_normal: { 
+        name: "水を与える", 
+        type: "direct", 
+        value: 2, 
+        cost: 1, 
+        valType: "flat", 
+        stressChange: -10, 
+        actions: [
+            {type: "heal", value: 5}, 
+            {type: "stress_direct", value: 10}
+        ], 
+        desc: "健康+5。ストレス-10。関係性+2。", 
+        flavor: { 
+            trust: "口元へコップを運ぶと、彼に途中でコップを奪われてしまった。", 
+            dependence: "彼は、あなたが手ずから水を飲ませてくれることが嬉しいようだ。",
+            heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
+            heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が彼の頬を伝い落ちていった。"
+        } 
+    },
 
     secret_attachment_1: { 
         name: "手を握って付き添う", 
@@ -1204,6 +1256,19 @@ const SPECIAL_CARDS = {
 
     } 
 
+    },
+
+    letter_from_old_friend: { 
+        name: "手紙", 
+        type: "obstacle", 
+        cost: 0, 
+        desc: "所持している間、関係値+の時に毎ターンストレス+10。使用不可", 
+        flavor: { 
+            trust: "彼は日だまりからの手紙を待ち望みつつも、恐れている。そして、それをあなたが隠していることにも気付いている。", 
+            dependence: "昔馴染からの手紙。今の彼にとっては、もうどうでもいいものだ。",
+            heavy_trust: "宛名には彼の名が書かれている。だが、彼がこの封を切ることはない。",
+            heavy_dependence: "彼に外や過去との繋がりが必要かどうかは、とっくに、あなたが決めることになっている。"
+        } 
     }
 };
 
@@ -1430,8 +1495,8 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
                 flavor: { 
                     trust: "彼の瞳の奥に、ふとした瞬間の迷いが見え隠れする。", 
                     dependence: "疑うことさえ忘れてしまえば楽になれる。しかし、彼に残された誇りがそれを許さない。",
-                    heavy_trust: "どれだけ疑いを抱いていても、微睡みの中では彼はあなたを拒絶できない。",
-                    heavy_dependence: "たとえあなたに不信感を感じていたとして、彼はあなたを頼らざるを得ない。"
+                    heavy_trust: "彼がどれだけ疑いを抱いていても、微睡みの中ではあなたを拒絶できない。",
+                    heavy_dependence: "たとえ全てを信じられなくても、彼はあなたを正しいと信じようとしている。"
                 } 
             },
             { 
@@ -1442,7 +1507,7 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
                 flavor: { 
                     trust: "あたたかかった日だまりが、今の閉ざされた部屋を嘲笑う。", 
                     dependence: "あなたが見つめてくれるなら、彼は記憶など必要ないようだ。",
-                    heavy_dependence: "過去の残骸が、だんだん無価値になっていく。"
+                    heavy_dependence: "時が経つにつれ、過去の残骸が無価値になっていく。"
                 } 
             },
             { 
@@ -1463,8 +1528,8 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
                 flavor: { 
                     trust: "言葉を交わすほどに、すれ違う心が痛みを伴う。", 
                     dependence: "いくら冷たく突き放されようと、彼にはあなたしかいない。",
-                    heavy_trust: "沈黙すらも、彼とあなたの関係を軋ませる。",
-                    heavy_dependence: "喋らない彼は、あなたの神経を逆撫ですることもない。"
+                    heavy_trust: "沈黙すら彼とあなたの関係を軋ませる。",
+                    heavy_dependence: "何も喋らずただ横たわるだけの彼は、あなたの神経を逆撫ですることもない。"
                 } 
             },
             { 
@@ -1473,7 +1538,7 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
                 cost: 0, 
                 desc: "砕け散った日常の破片。使用不可", 
                 flavor: { 
-                    trust: "床に散らばる破片は、まるで彼のようだ。もう元の形には戻らない。", 
+                    trust: "床に散らばる破片は、まるで彼そのものだ。もう元の形には戻らない。", 
                     dependence: "砕け散った思い出を握りしめ、痛みを共有することでしか繋がれない。"
                 } 
             },
@@ -1515,7 +1580,14 @@ if (activeBuffs.waterStressDuration > 0) {
                 turnLogs.push("副作用(ストレス増)"); // ターン開始時のログに表示
             }
 
-        
+            // ★追加：「手紙」の所持判定とストレス処理
+            let allCardsForLetter = [...state.deck, ...state.discard, ...state.hand];
+            let hasLetter = allCardsForLetter.some(c => c && c.name === "手紙");
+
+            if (hasLetter && state.relation >= 0) {
+                state.stress = Math.min(100, state.stress + 5);
+                turnLogs.push("手紙の存在(ストレス増)");
+            }
 
             let roll = Math.random() * 100;
        let threshold = Math.max(5, Math.min(95, state.stress));
@@ -1535,7 +1607,7 @@ if (activeBuffs.waterStressDuration > 0) {
                     const mediumTexts = [
                         "激しい頭痛と眩暈に襲われているのか、彼は壁に手をついて青褪めている。",
                         "彼は顔を顰め、時折こめかみを押さえている。",
-                        "焦点の合わない目で宙を見つめている。眩暈が酷いようだ。"
+                        "焦点の合わない目で宙を見つめている。眩暈が酷いらしい。"
                     ];
                     debuffFlavor = mediumTexts[Math.floor(Math.random() * mediumTexts.length)];
                 } else if (state.debuff === 'heavy') {
@@ -1547,8 +1619,8 @@ if (activeBuffs.waterStressDuration > 0) {
                     debuffFlavor = heavyTexts[Math.floor(Math.random() * heavyTexts.length)];
                 }
                 
-                // 【警告】発生時の不用品混入（軽度25%、中度50%、重度75%の確率）
-const obstacleRates = { light: 0.25, medium: 0.50, heavy: 0.75 };
+                // 【警告】発生時の不用品混入（軽度35%、中度75%、重度90%の確率）
+const obstacleRates = { light: 0.35, medium: 0.75, heavy: 0.90 };
 if (Math.random() < obstacleRates[state.debuff]) {
     let obstacle = JSON.parse(JSON.stringify(OBSTACLE_POOL[Math.floor(Math.random() * OBSTACLE_POOL.length)]));
     state.discard.push(obstacle);
@@ -1659,6 +1731,50 @@ if (state.debuff === 'heavy') {
                         };
                         state.hand.push(newCard);
                         
+                    }
+                }
+            }
+
+           // ★追加：「手紙」のランダム追加処理
+            // 未所持で、手札上限(6枚)未満の場合、2%の確率で追加
+            if (!hasLetter && state.hand.length < 6) {
+                if (Math.random() < 0.02) {
+                    let letterCard = {
+                        ...SPECIAL_CARDS['letter_from_old_friend'],
+                        id: Date.now() + Math.random()
+                    };
+                    state.hand.push(letterCard);
+
+                    // ★フレーバーテキストの出力処理を追加
+                    let flavorText = "";
+                    if (state.debuff === 'heavy') {
+                        // 昏睡（重度）時のテキスト分岐
+                        flavorText = state.relation >= 0 ? letterCard.flavor.heavy_trust : letterCard.flavor.heavy_dependence;
+                    } else {
+                        // 通常時のテキスト分岐
+                        flavorText = state.relation >= 0 ? letterCard.flavor.trust : letterCard.flavor.dependence;
+                    }
+                    
+                    // 他のイベントログと被らないよう、発生したイベントに応じて遅延時間を計算する
+                    let letterDelay = 600;
+                    if (turnLogs.includes("敵襲来")) {
+                        // 敵襲来がある場合は、敵襲来ログ（600ms or 1200ms）の後に出力
+                        letterDelay = (state.debuff === 'medium' || state.debuff === 'heavy') ? 1800 : 1200;
+                    } else if (turnLogs.includes("体調悪化(不用品混入)")) {
+                        // 不用品混入のログ（600ms）の後に出力
+                        letterDelay = 1200;
+                    } else if (turnLogs.includes("体調悪化")) {
+                        // 通常の体調悪化ログ（0ms）の少し後に出力
+                        letterDelay = 600;
+                    }
+
+                    // 算出した遅延時間でテキストを表示（0秒なら即時表示）
+                    if (letterDelay > 0) {
+                        setTimeout(() => {
+                            addLog(flavorText, "log-flavor");
+                        }, letterDelay);
+                    } else {
+                        addLog(flavorText, "log-flavor");
                     }
                 }
             }
@@ -1814,7 +1930,16 @@ if (card.type === 'season') {
             } else {
                 masterBtn.style.display = 'block';
                 if (state.debuff === 'heavy' && card.type === 'harm') {
-                    if (card.isKillTrigger) {
+                    // ★追加: 「首を絞める」かつ不用品5枚以上の場合も殺害フラグを有効化
+                    let isKill = card.isKillTrigger;
+                    if (card.name === "首を絞める") {
+                        let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
+                        if (obstacleCount >= 5) {
+                            isKill = true;
+                        }
+                    }
+
+                    if (isKill) {
                         masterBtn.innerText = "主人を殺す";
                         masterBtn.style.backgroundColor = "#c0392b";
                     } else {
@@ -1934,7 +2059,16 @@ function executeCard(target) {
     }
 
     // --- 特別処理: 暗殺によるゲーム終了 ---
-    if (target === 'master' && card.type === 'harm' && state.debuff === 'heavy' && card.isKillTrigger) {
+    // ▼ 追加：不用品が5枚以上なら「首を絞める」を暗殺可能にする
+    let isKill = card.isKillTrigger;
+    if (card.name === "首を絞める") {
+        let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
+        if (obstacleCount >= 5) {
+            isKill = true;
+        }
+    }
+
+    if (target === 'master' && card.type === 'harm' && state.debuff === 'heavy' && isKill) {
         // 1. 対象選択のウィンドウを即座に閉じる
         cancelTargetSelect();
         
@@ -2081,12 +2215,22 @@ case "set_debuff":
     }
     break;
 
+// ▼追加：関係性を強制的に0にするアクション
+case "set_relation_zero":
+    state.relation = 0;
+    break;
+
 case "add_special_card":
-    if (SPECIAL_CARDS[action.key]) {
+    // 修正：keyが配列ならランダム抽出、そうでなければそのまま使用
+    let targetKey = Array.isArray(action.key) 
+        ? action.key[Math.floor(Math.random() * action.key.length)] 
+        : action.key;
+
+    if (SPECIAL_CARDS[targetKey]) {
         // 特殊カードをコピーして手札(hand)に加える
         // idが被らないよう Date.now() と乱数を組み合わせる
         let newCard = { 
-            ...SPECIAL_CARDS[action.key], 
+            ...SPECIAL_CARDS[targetKey], 
             id: Date.now() + Math.random() 
         };
         state.hand.push(newCard); // ★state. を追加
@@ -2135,7 +2279,45 @@ case "add_special_card":
 
                 case "discard_obstacle":
                     let obsIdx = state.hand.findIndex(c => c && c.type === 'obstacle');
-                    if (obsIdx !== -1) state.hand.splice(obsIdx, 1);
+                    if (obsIdx !== -1) {
+                        state.hand.splice(obsIdx, 1);
+                        state.hasDisposedObstacle = true; // ★追加：カード効果で不用品を廃棄した記録
+                    }
+                    break;
+
+                case "remove_all_obstacles":
+                    let removedCount = 0;
+
+                    // デッキから不用品をすべて除外（削除時に配列がずれないよう、後ろからループ処理します）
+                    for (let i = state.deck.length - 1; i >= 0; i--) {
+                        if (state.deck[i] && state.deck[i].type === 'obstacle') {
+                            state.deck.splice(i, 1);
+                            removedCount++;
+                        }
+                    }
+                    
+                    // 捨て札から不用品をすべて除外
+                    for (let i = state.discard.length - 1; i >= 0; i--) {
+                        if (state.discard[i] && state.discard[i].type === 'obstacle') {
+                            state.discard.splice(i, 1);
+                            removedCount++;
+                        }
+                    }
+                    
+                    // 手札から不用品をすべて除外
+                    for (let i = state.hand.length - 1; i >= 0; i--) {
+                        if (state.hand[i] && state.hand[i].type === 'obstacle') {
+                            state.hand.splice(i, 1);
+                            removedCount++;
+                        }
+                    }
+
+                    // 除外した枚数分、関係性を0に近づける（1枚につき20%減少、5枚以上で完全に0）
+                    if (removedCount > 0) {
+                        let reductionRatio = Math.min(1.0, removedCount * 0.2);
+                        state.relation = Math.trunc(state.relation * (1 - reductionRatio));
+                        state.hasDisposedObstacle = true; // ★不用品を廃棄した記録を残す
+                    }
                     break;
 
                 case "draw_card":
@@ -2167,7 +2349,7 @@ case "add_special_card":
                     let currentIdx = state.hand.indexOf(card);
                     if (currentIdx !== -1) {
                         state.hand[currentIdx] = {
-                            name: "祭りの名残", type: "obstacle", cost: 1, desc: "過去の行事のゴミ。使用不可",
+                            name: "祭りの名残", type: "obstacle", cost: 0, desc: "過去の行事のゴミ。使用不可",
                             flavor: { trust: "お祭りの華やかさは去り、手元には虚しい残骸だけが残された。", dependence: "祭りの熱狂などどうでもいい。残ったゴミのように、あなたに執着していたい。" }
                         };
                     }
@@ -2191,10 +2373,6 @@ case "add_special_card":
     }
 
     state.lastPlayedType = card.type;
-
-    cancelTargetSelect();
-    renderHand(); 
-    updateUI();
 
     cancelTargetSelect();
     renderHand(); 
@@ -2340,7 +2518,7 @@ function openShop() {
             let availableCards = [];
             let types = ['direct', 'indirect', 'cold', 'harm'];
             types.forEach(type => {
-                let cards = CARD_POOL[type].filter(c => c.name !== "形見の宝刀");
+                let cards = CARD_POOL[type].filter(c => c.name !== "形見の宝刀" && c.name !== "しがらみの精算");
                 availableCards.push(...cards);
             });
             
@@ -2422,7 +2600,7 @@ function buyCard(idx, cost, btnEl) {
         let availableCards = [];
         let types = ['direct', 'indirect', 'cold', 'harm'];
         types.forEach(type => {
-            let cards = CARD_POOL[type].filter(c => c.name !== "形見の宝刀");
+            let cards = CARD_POOL[type].filter(c => c.name !== "形見の宝刀" && c.name !== "しがらみの精算");
             availableCards.push(...cards);
         });
         
@@ -2554,6 +2732,11 @@ function calculateBonusGold(cardName) {
                     removed = state.deck.splice(combinedIdx, 1)[0];
                 } else {
                     removed = state.discard.splice(combinedIdx - state.deck.length, 1)[0];
+                }
+
+                // ★追加：処分したカードが不用品だった場合の記録
+                if (removed.type === 'obstacle') {
+                    state.hasDisposedObstacle = true;
                 }
 
                 // 処分したカードの名前を playedCardsList からすべて削除（カウントリセット）
@@ -2711,21 +2894,30 @@ function calculateBonusGold(cardName) {
                 endingText = `彼は過酷な環境に耐えかね、息を引き取った。`;
             } else if (isSurvivalClear) {
                 let requiredCount = 10;
-                if (state.specialCareCount >= requiredCount) {
-                    title.innerText = "【END 7】壊れてゆく自我";
+                let hasLetterAtEnd = [...state.deck, ...state.hand, ...state.discard].some(c => c && c.name === '手紙');
+
+                // ★追加：「手紙」を所持し、かつ関係性50以上
+                if (hasLetterAtEnd && state.relation >= 50) {
+                    title.innerText = "【END 9】鳥籠の外へ";
+                    endingText = `ずっと渡さずにいた手紙を彼に渡した。二人で旅行する日も遠くないかもしれない。`;
+                } else if (!state.hasDisposedObstacle) {
+                    title.innerText = "【END 8】絆";
+                    endingText = `あなたも彼も、何一つ手放せないでいる。いつか、この痛みごと愛おしくなる時がくるのだろうか。`;
+                } else if (state.specialCareCount >= requiredCount) {
+                    title.innerText = "【END 7】壊れゆく自我";
                     endingText = `非合法な薬物の常用が、着実に彼から正気と知性を奪っている。それでも、彼との日常は続く。`;
                 } else if (state.relation >= 85) {
                     title.innerText = "【END 4】信頼と矜持";
-                    endingText = `あなたへ信頼を胸に、彼は気高き自尊心を取り戻した。`;
+                    endingText = `自尊心と矜持を取り戻したからこそ、彼はあなたを信頼することを選んだ。`;
                 } else if (state.relation >= 45) {
-                    title.innerText = "【END 3】穏やかな主従関係";
-                    endingText = `互いに支え合い、穏やかで前向きな信頼関係を築き上げた。`;
+                    title.innerText = "【END 3】主従関係";
+                    endingText = `多少の歪みを伴いながらも、互いに互いを必要としている。`;
                 } else if (state.relation > -45) {
-                    title.innerText = "【END 1】静かな日常";
-                    endingText = `特筆すべき変化はないが、二人の静かな生活はこれからも続く。`;
+                    title.innerText = "【END 1】日常";
+                    endingText = `特筆すべき変化はない。二人の生活はこれからも続く。`;
                 } else if (state.relation > -85) {
-                    title.innerText = "【END 2】歪み始めた関係";
-                    endingText = `彼はあなたへの依存を深め、危うい均衡の上に成り立つ関係となった。`;
+                    title.innerText = "【END 2】深みに嵌まる";
+                    endingText = `彼はあなたへの依存を深めていく。その執着に、あなたも薄暗い喜びを抱きだしている。`;
                 } else {
                     title.innerText = "【END 5】共依存";
                     endingText = `彼はあなたに存在意義のすべてを委ねている。そして、あなたも彼がいなければ存在意義を保てない。`;
@@ -2845,8 +3037,8 @@ document.addEventListener('pointerdown', function(e) {
     }
     #manual-modal-content .story-section {
         background-color: rgba(255, 255, 255, 0.05);
-        padding: 20px;
-        font-size: 13px;
+        padding: 12px;
+        font-size: 12px;
         
         border-left: 3px solid #d4af37;
         margin-bottom: 40px;
@@ -2999,9 +3191,9 @@ document.addEventListener('pointerdown', function(e) {
                 それが、あなたが自らに課した役割。<br><br>
 
                 移ろう季節の中。<br>
-                二人の心の距離は静かに、しかし確実に変わってゆく。<br><br>
+                二人の関係は静かに、しかし確実に変わってゆく。<br><br>
 
-                これは、ふたりきりの箱庭の中で紡がれる、主と従僕の日々の記録。
+                これは、二人きりの箱庭の中で紡がれる、主と従僕の日々の記録。
             </div>
 
             <div class="ornament-line">◆</div>
@@ -3169,11 +3361,16 @@ document.addEventListener('pointerdown', function(e) {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.47</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.48</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+        <p style="font-size: 10px;">■ver 0.48<br>
+・特殊エンド2種追加しました。<br>
+・カードを4枚追加しました。<br>
+・一部のカードに特定の条件を満たしている時に、特別な処理が発生する効果を追加しました。
+</p>
       <p style="font-size: 10px;">■ver 0.47<br>
 ・攻撃カードに関係性増減値をつけました。<br>
 ・一部のカードの効果・フレーバーテキストを変更しました。
