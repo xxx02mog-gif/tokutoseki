@@ -1547,11 +1547,12 @@ if (activeBuffs.waterStressDuration > 0) {
                     debuffFlavor = heavyTexts[Math.floor(Math.random() * heavyTexts.length)];
                 }
                 
-                // 【警告】発生時の不用品混入（頭痛・昏睡のみ）
-                if (state.debuff === 'medium' || state.debuff === 'heavy') {
-                    let obstacle = JSON.parse(JSON.stringify(OBSTACLE_POOL[Math.floor(Math.random() * OBSTACLE_POOL.length)]));
-                    state.discard.push(obstacle);
-                    turnLogs.push("体調悪化(不用品混入)");
+                // 【警告】発生時の不用品混入（軽度25%、中度50%、重度75%の確率）
+const obstacleRates = { light: 0.25, medium: 0.50, heavy: 0.75 };
+if (Math.random() < obstacleRates[state.debuff]) {
+    let obstacle = JSON.parse(JSON.stringify(OBSTACLE_POOL[Math.floor(Math.random() * OBSTACLE_POOL.length)]));
+    state.discard.push(obstacle);
+    turnLogs.push("体調悪化(不用品混入)");
 
                     // 1. デバフ状態（体調不良）のフレーバーテキストを先に出力する
                     addLog(debuffFlavor, "log-flavor");
@@ -3154,7 +3155,7 @@ document.addEventListener('pointerdown', function(e) {
 
             <h2>5. 快適なプレイのためのヒント</h2>
             <ul>
-                <li><strong>カードの値について：</strong> カードに記載されている固定値は「現在値から数値がそのまま増減」します。％表記は「現在値から（現在値の●％）が増減」します。</li>
+                <li><strong>カードの値について：</strong> カードに記載されている固定値は「現在の値から数値がそのまま増減」します。％表記は「現在値から（現在値の●％）が増減」します。</li>
                 <li><strong>主人の心境の変化：</strong> 関係性の傾き方によって、同じカードでも効果が反転・半減したり、フレーバーテキストが変化します。</li>
                 <li><strong>戦闘への対処：</strong> 戦闘に敗北すると手痛い被害を受けます。攻撃カードを使用して、敵の脅威度を下げましょう。</li>
                 <li><strong>デッキの圧縮の活用：</strong> 手札の巡りを良くするためには、ショップでのカード処分が不可欠です。現在の関係性に合わない不要なカードはどんどん処分しましょう。</li>
