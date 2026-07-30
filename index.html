@@ -994,7 +994,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
         },
      
 
-       { name: "調度品の買い替え", type: "indirect", value: 50, cost: 1, valType: "percent", goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性を現在の値+50%（使い切り）", flavor: { 
+       { name: "調度品の買い替え", type: "indirect", value: 50, cost: 1, valType: "percent", goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性+50%（使い切り）", flavor: { 
                 trust: "彼は整った室内を見渡し、あなたの細やかな気遣いを感じて小さく息をついた。", 
                 dependence: "新しい家具よりも、彼はあなたが傍にいてくれることだけを望んでいる。",
                 heavy_trust: "新しい家具を揃える間も、彼は眠り続けている。",
@@ -1050,8 +1050,8 @@ trust: "片脚が悪い彼は、整備されていない道では歩きにくい
         },
 
         { name: "部屋の施錠", type: "cold", value: -10, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+25。関係性-10。次ターンのドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めるのを、彼は自分への正当な処置だと考えている。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
-        { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性を現在値-15%", flavor: { trust: "食事が遅れても、彼はあなたを不快にさせた自らの落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
-       { name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", actions: [{type: "stress", value: 30}, {type: "consume"}], desc: "ストレス+30。関係性を現在値-30%（使い切り）", flavor: { trust: "あなたが他人の気配を漂わせると、彼はとうとう自分が不要になったのだと悟ったようだ。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
+        { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性-15%", flavor: { trust: "食事が遅れても、彼はあなたを不快にさせた自らの落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
+       { name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", actions: [{type: "stress", value: 30}, {type: "consume"}], desc: "ストレス+30。関係性-30%（使い切り）", flavor: { trust: "あなたが他人の気配を漂わせると、彼はとうとう自分が不要になったのだと悟ったようだ。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
     ],
     harm: [
         
@@ -3154,6 +3154,7 @@ document.addEventListener('pointerdown', function(e) {
 
             <h2>5. 快適なプレイのためのヒント</h2>
             <ul>
+                <li><strong>カードの値について：</strong> カードに記載されている固定値は「現在値から数値がそのまま増減」します。％表記は「現在値から（現在値の●％）が増減」します。</li>
                 <li><strong>主人の心境の変化：</strong> 関係性の傾き方によって、同じカードでも効果が反転・半減したり、フレーバーテキストが変化します。</li>
                 <li><strong>戦闘への対処：</strong> 戦闘に敗北すると手痛い被害を受けます。攻撃カードを使用して、敵の脅威度を下げましょう。</li>
                 <li><strong>デッキの圧縮の活用：</strong> 手札の巡りを良くするためには、ショップでのカード処分が不可欠です。現在の関係性に合わない不要なカードはどんどん処分しましょう。</li>
