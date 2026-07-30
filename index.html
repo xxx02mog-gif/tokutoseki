@@ -1007,7 +1007,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "外部から医者を呼び、治療を受けさせる。そのことを、あなたは彼に伝えはしない。" }}
     ],
     cold: [
-        { name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-1", flavor: { 
+        { name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", actions: [{type: "stress", value: 5}], desc: "ストレス+5。関係性-1", flavor: { 
                 trust: "事務的に接すると、彼はただ己の義務を果たそうと努めた。", 
                 dependence: "あなたの冷淡な態度に、彼は激しい不安と孤独感に駆られている。",
                 heavy_trust: "事務的な手つきで状態を確認しても、彼は目を覚まさない。",
@@ -1020,28 +1020,28 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_trust: "あなたがその場を離れても、引き留める声が聞こえることはない。",
                 heavy_dependence: "静寂に包まれた部屋で、あなたは彼を見下ろした。"
             }},
-        { name: "冷酷な事実", type: "cold", value: -15, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-15", flavor: { 
-                trust: "あなたが厳しい現実を突きつけると、彼は自分の無力さを深く噛み締めた。", 
+        { name: "冷酷な事実", type: "cold", value: -7, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-7", flavor: { 
+                trust: "あなたが事実を淡々と説明され、彼は自分の無力さを実感している。", 
                 dependence: "現実を突きつけられ、彼はあなただけを世界のすべてにしようと逃避している。",
-                heavy_trust: "ベッドの中の彼を見下ろし、冷酷な事実を告げた。届くはずのない言葉が、空虚な部屋に響き渡る。",
+                heavy_trust: "彼が避け続けている事実を告げた。届くはずのない言葉が、空虚な部屋に響き渡る。",
                 heavy_dependence: "あなたは悪夢にうなされる彼の耳元で、残酷な真実を囁いた。"
             } 
         },
-        { name: "私物の没収", type: "cold", value: -15, cost: 1, valType: "flat", actions: [{type: "stress", value: 15},     { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-15。資金+5~30G", flavor: { 
+        { name: "私物の没収", type: "cold", value: -10, cost: 1, valType: "flat", actions: [{type: "stress", value: 15},     { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-5。資金+5~30G", flavor: { 
                 trust: "あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。", 
                 dependence: "私物を奪われても、彼はあなたに従うこと自体に喜びを見出している。",
                 heavy_trust: "あなたは眠り続ける彼の私物を、ためらいなく処分した。",
                 heavy_dependence: "彼が目を覚まさないのをいいことに、彼の持ち物を好き勝手に売り払った。"
             } 
         },
-        { name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 15}], desc: "健康-5。ストレス+15。関係性-3。次の戦闘時、脅威度を-10", flavor: { 
+        { name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-10", flavor: { 
 trust: "片脚が悪い彼は、整備されていない道では歩きにくいようだ。", 
                 dependence: "屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。", 
                heavy_trust: "彼はしばらく目覚めそうにない。整備などしなくてもいいだろう。",
                 heavy_dependence: "彼が夢の中にいる間も屋敷は荒れていく。あなたさえ居れば、彼はそれで構わないはずだ。",
             } 
         },
-        { name: "鎮痛剤を与えない", type: "cold", value: -8, cost: 2, valType: "flat", actions: [{ type: "heal", value: -20 },{type: "stress", value: 30}], desc: "健康度-20。ストレス+30。関係性-8", flavor: { 
+        { name: "鎮痛剤を与えない", type: "cold", value: -4, cost: 2, valType: "flat", actions: [{ type: "heal", value: -25 },{type: "stress", value: 10}], desc: "健康-25。ストレス+10。関係性-4", flavor: { 
                 trust: "あなたが薬を与えなくても、彼は自らの命に対する執着を手放しつつある。", 
                 dependence: "自らの苦痛を、あなたがかつて受けた苦しみの一端だと思って抱きしめている。",
                 heavy_trust: "鎮痛剤を与えないまま放置した。浅い呼吸が、彼の抱える痛みを物語っている。",
@@ -1049,13 +1049,16 @@ trust: "片脚が悪い彼は、整備されていない道では歩きにくい
             } 
         },
 
-        { name: "部屋の施錠", type: "cold", value: -15, cost: 2, valType: "flat", actions: [{type: "stress", value: 40}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+40。関係性-15。次ターンのドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めるのを、彼は自分への正当な処置だと考えている。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
+        { name: "部屋の施錠", type: "cold", value: -10, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+25。関係性-10。次ターンのドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めるのを、彼は自分への正当な処置だと考えている。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
         { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性を現在値-15%", flavor: { trust: "食事が遅れても、彼はあなたを不快にさせた自らの落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
-       { name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", actions: [{type: "stress", value: 40}, {type: "consume"}], desc: "ストレス+40。関係性を現在値-30%（使い切り）", flavor: { trust: "あなたが他人の気配を漂わせると、彼はとうとう自分が不要になったのだと悟ったようだ。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
+       { name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", actions: [{type: "stress", value: 30}, {type: "consume"}], desc: "ストレス+30。関係性を現在値-30%（使い切り）", flavor: { trust: "あなたが他人の気配を漂わせると、彼はとうとう自分が不要になったのだと悟ったようだ。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
     ],
     harm: [
         
-        { name: "毒の調合", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}], desc: "敵脅威度-15 / 【対主人】健康-15。ストレス+10", flavor: { 
+        { name: "毒の調合", type: "harm", 
+            masterValue: -10, // 主人に使用した際の関係性変動量
+            battleValue: 1,   // 戦闘で使用した際の関係性変動量
+            cost: 1, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}], desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", flavor: { 
                 trust: "苦い薬を食事に混ぜても、彼は何も言わずにそれを飲み干す。", 
                 dependence: "身体の不調を感じながらも、彼はあなたから与えられるものを甘んじて享受している。", 
                 battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。",
@@ -1064,41 +1067,50 @@ trust: "片脚が悪い彼は、整備されていない道では歩きにくい
                 heavy_battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"
             } 
         },
-        { name: "首を絞める", type: "harm", value: 0, cost: 2, valType: "flat", isMasterAlways: false, actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {type: "consume"}], desc: "敵脅威度-20 / 【対主人】健康-30。ストレス+30（使い切り）", flavor: { 
-                trust: "横たわる主人の首に手をかける。皮膚の向こうに、か細い呼吸を感じる。", 
-                dependence: "横たわる主人の首に手をかける。薄く開いた彼の目が僅かに微笑んだように感じる。", 
+        { name: "首を絞める", type: "harm", 
+            masterValue: -50, // 主人に使用した際の関係性変動量
+            battleValue: 10,   // 戦闘で使用した際の関係性変動量 
+            cost: 2, valType: "percent", isMasterAlways: false, actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {type: "consume"}], desc: "敵脅威度-20。関係性+10%/ 【対主人】健康-30。ストレス+30。関係性-50%（使い切り）", flavor: { 
+                trust: "　", 
+                dependence: "　", 
                 battle: "あなたは襲い来る敵の首を締め、無力化させた。",
-                heavy_trust: "彼の首に手をかける。その無抵抗な様子に、狂おしいまでの支配欲を感じる。",
-                heavy_dependence: "彼の首を締め上げる。目を覚まさない彼を、このまま壊してしまいたい衝動に駆られる。"
+                heavy_trust: "彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。",
+                heavy_dependence: "横たわる主人の首に手をかける。薄く開いた彼の目が僅かに微笑んだように感じる。"
             } 
         },
-       { name: "見せしめの拷問", type: "harm", value: 0, cost: 2, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"},  {type: "consume"} ], desc: "敵脅威度を強制的に0にする / 【対主人】ストレス+40　（使い切り）", flavor: { 
-                trust: "あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。彼は顔を引き攣らせている。", 
-                dependence: "彼は何も言わず、あなたのやり方に異を唱えることなく従っている。", 
+       { name: "見せしめの拷問", type: "harm", 
+            masterValue: -20, // 主人に使用した際の関係性変動量
+            battleValue: -10,   // 戦闘で使用した際の関係性変動量 
+             cost: 2, valType: "percent", isMasterAlways: false, actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"},  {type: "consume"} ], desc: "敵脅威度を強制的に0にする。関係性-10% / 【対主人】ストレス+40。関係性-20%（使い切り）", flavor: { 
+                trust: " ", 
+                dependence: " ", 
                 battle: "捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。",
-                heavy_trust: "庭先に惨たらしい魔物の死体を吊るした。彼が目覚めた時のことを考え、ほくそ笑む。",
+                heavy_trust: "あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。",
                 heavy_dependence: "庭先に惨たらしい魔物の死体を吊るした。彼が目覚めた時のことを考え、ほくそ笑む。"
             } },
-        { name: "形見の宝刀", type: "harm", value: 0, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}], desc: "敵脅威度-45。次ターンの初期AP-1", flavor: { 
+        { name: "形見の宝刀", type: "harm", 
+            masterValue: 0, // 主人に使用した際の関係性変動量
+            battleValue: 10,   // 戦闘で使用した際の関係性変動量 
+              cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}], desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", flavor: { 
                 trust: "あなたは形見の宝刀を構え、因縁に終止符を打った。", 
                 dependence: "あなたが宝刀を向けると、彼はあなたの手によって終われることに安堵の表情を浮かべた。", 
                 battle: "あなたは形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。"
             } 
         },
-        { name: "罠を配置する", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。次ターンの初期APを+1", flavor: { trust: "周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "屋敷への侵入者を拒むための罠を張った。" } },
-        { name: "硝煙の盾", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "stress", value: -15}], desc: "敵脅威度-15。ストレス-15", flavor: { 
+        { name: "罠を配置する", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。関係性+2。次ターンの初期APを+1", flavor: { trust: "周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "屋敷への侵入者を拒むための罠を張った。" } },
+        { name: "硝煙の盾", type: "harm", value: 1, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "stress", value: -15}], desc: "敵脅威度-15。ストレス-15。関係性+1", flavor: { 
                 trust: "火薬を使って敵を足止めした。彼は、あなたへの心配で胸を痛めている。", 
                 dependence: "外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。",
                 heavy_battle: "火薬の煙が立ち込める。深い眠りの中にいる彼に外の喧騒は届かない。"
             } 
         },
-        { name: "威嚇射撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。資金+10~15G", flavor: { trust: "威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
-        { name: "容赦なき追撃", type: "harm", value: 0, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35に強化)", flavor: { 
+        { name: "威嚇射撃", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。関係性+2。資金+10~15G", flavor: { trust: "威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
+        { name: "容赦なき追撃", type: "harm", value: 3, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+3", flavor: { 
                 trust: "あなたは撤退する敵を追い詰めた。", 
                 dependence: "あなたは敵を徹底的に排除した。障害はすべて取り除くという執念を感じさせる。"
             } 
         },
-        { name: "捨て身の迎撃", type: "harm", value: 0, cost: 2, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_clear"}, {context: "battle", type: "heal", value: -10}, {context: "battle", type: "stress", value: 20},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。健康-10。ストレス+20。手札（冷淡・不用品以外）を1枚除外", flavor: { 
+        { name: "捨て身の迎撃", type: "harm", value: -10, cost: 2, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_clear"}, {context: "battle", type: "heal", value: -10}, {context: "battle", type: "stress", value: 20},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。健康-10。ストレス+20。関係性-10。手札（冷淡・不用品以外）を1枚除外", flavor: { 
                 trust: "あなたは身を挺して敵の攻撃を防いだ。彼は己の無力さとあなたを危険に晒したことを悔いている。", 
                 dependence: "あなたは自らを犠牲にして彼を守った。その姿に、彼は心酔している。",
                 heavy_battle: "あなたは傷を負いながら無防備な彼を守り抜いた。"
@@ -1940,31 +1952,48 @@ function executeCard(target) {
     }
 
     // --- 関係性の計算と反映 ---
-    let calcRelationDelta = function(baseVal, cardType, valType) {
+    let calcRelationDelta = function(targetCard, currentTarget) {
+        // 対象別の数値設定（masterValue / battleValue）があれば優先し、なければ従来の value を使用する
+        let baseVal = targetCard.value || 0;
+        if (currentTarget === 'battle' && targetCard.battleValue !== undefined) {
+            baseVal = targetCard.battleValue;
+        } else if (currentTarget === 'master' && targetCard.masterValue !== undefined) {
+            baseVal = targetCard.masterValue;
+        }
+
         let delta = baseVal;
-        if (valType === 'percent') {
+        if (targetCard.valType === 'percent') {
             delta = Math.floor(state.relation * (baseVal / 100));
             if (delta === 0) delta = baseVal > 0 ? 1 : -1;
         }
 
-        if (cardType === 'direct') {
+        if (targetCard.type === 'direct') {
             if (state.relation < 0) { 
                 delta = -Math.abs(delta); 
             } else { 
                 delta = Math.abs(delta); 
-                // 昏睡時以外は関係性上昇量を半減する
                 if (state.debuff !== 'heavy') {
                     delta = Math.floor(delta * 0.5); 
                 }
             }
         }
-        else if (cardType === 'indirect' || cardType === 'season') { delta = Math.abs(delta); } 
-        else if (cardType === 'cold') { delta = -Math.abs(delta); }
+        else if (targetCard.type === 'indirect' || targetCard.type === 'season') { 
+            delta = Math.abs(delta); 
+        } 
+        else if (targetCard.type === 'cold') { 
+            delta = -Math.abs(delta); 
+        }
+        else if (targetCard.type === 'harm') {
+            if (currentTarget === 'master') {
+                delta = -Math.abs(delta); // 主人対象の場合は必ずマイナス
+            }
+            // 戦闘時は baseVal の値（プラスマイナス問わず）をそのまま適用
+        }
         
         return delta;
     };
     
-    let rDelta = calcRelationDelta(card.value, card.type, card.valType);
+    let rDelta = calcRelationDelta(card, target);
     state.relation = Math.min(100, Math.max(-100, state.relation + rDelta));
 
    let keepInHand = false; // 使用後に手札に残すかどうかのフラグ
@@ -3138,11 +3167,15 @@ document.addEventListener('pointerdown', function(e) {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.46</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.47</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+      <p style="font-size: 10px;">■ver 0.47<br>
+・攻撃カードに関係性増減値をつけました。<br>
+・一部のカードの効果・フレーバーテキストを変更しました。
+</p>
     <p style="font-size: 10px;">■ver 0.46<br>
 ・襲撃時、勝利時、敗北時、体調不良時のフレーバーテキストをランダム表示されるようにしました。<br>
 ・不用品獲得時のフレーバーテキストの一部に昏睡時用のテキストを追加しました。<br>
