@@ -7,7 +7,7 @@
     <!-- Webフォントの読み込み（Hina Mincho, Zen Kaku Gothic New） -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hina+Mincho&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
    <style>
 
 html, body, * {
@@ -305,7 +305,7 @@ body {
             font-size: 11px; 
             padding-left: 6px; 
             border-left: 2px solid #d4af37; 
-            font-family: 'Hina Mincho', serif; /* Hina Minchoを適用 */
+            font-family: 'Zen Old Mincho', serif; /* Hina Minchoを適用 */
         }
 
         /* 10px以下のフォントをZen Kaku Gothic Newにする */
@@ -2920,7 +2920,7 @@ for (let turn = 1; turn <= state.turn; turn++) {
         if (history.used && history.used.length > 0) {
             html += `<div style="margin-bottom: 3px; display: flex; align-items: flex-start;">
                         <span style="${labelStyle}">USE</span>
-                        <div style="display: flex; flex-direction: column; gap: 1px;">
+                        <div style="display: flex; flex-direction: column; gap: 1px; margin-top: -2px;">
                             ${renderCardsVertical(history.used)}
                         </div>
                      </div>`;
