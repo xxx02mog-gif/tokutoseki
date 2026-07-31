@@ -384,9 +384,7 @@ body {
             margin-bottom: 2px;
             color: #f5f5f5;
         }
-.game-card .card-type,
-        .shop-item .card-type,
-        .result-item .card-type {
+.card-type {
             font-size: 9px;
             padding: 1px 4px;
             border-radius: 3px;
@@ -818,7 +816,8 @@ display: flex;
             specialCareCount: 0,
           playedCardsList: [], // 追加：使用したカードの記録用（マンネリ判定・売却ボーナス用。処分時にリセット）
             totalPlayedCardsList: [], // ★追加：リザルト画面集計用（リセットされない）
-            hasDisposedObstacle: false // ★追加：不用品を一度でも処理したかの判定用フラグ
+            hasDisposedObstacle: false, // ★追加：不用品を一度でも処理したかの判定用フラグ
+            turnHistory: {} // ★追加：ターンごとのプレイ履歴記録用
         };
 
 // 直前のステータスを保持するオブジェクト
@@ -866,6 +865,31 @@ function showCustomAlert(message) {
 
 function closeCustomAlert() {
     document.getElementById('custom-alert-modal').style.display = 'none';
+}
+
+// ★変更：ターン履歴を構造化して記録する関数
+function addTurnHistory(category, data) {
+    if (state.turn === 0) return;
+    
+    // そのターンの履歴オブジェクトが存在しなければ初期化
+    if (!state.turnHistory[state.turn]) {
+        state.turnHistory[state.turn] = {
+            stats: null,    // ステータス（健康度・ストレス・関係性・資金）
+            states: [],     // 状態（体調不良、戦闘結果）
+            used: [],       // 使用したカード
+            obtained: [],   // 入手したカード
+            bought: [],     // ★新規追加: 購入したカード
+            sold: [],       // 売却したカード
+            disposed: []    // 処分したカード
+        };
+    }
+    
+    // カテゴリごとにデータを格納
+    if (category === 'stats') {
+        state.turnHistory[state.turn].stats = data;
+    } else {
+        state.turnHistory[state.turn][category].push(data);
+    }
 }
 
 
@@ -982,7 +1006,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "部屋を満たす香りが、彼をさらに深く、あなただけの世界へと沈めていく。" 
             } 
         },
-        { name: "アルバムの整理", type: "indirect", value: 5, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+6。デッキからカードを1枚手札に加える", flavor: { 
+        { name: "アルバムの整理", type: "indirect", value: 5, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+5。デッキからカードを1枚手札に加える", flavor: { 
                 trust: "あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。", 
                 dependence: "彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。",
                 heavy_trust: "眠り続ける彼の傍らで、あなたは一人、かつての思い出のページをめくった。",
@@ -1017,7 +1041,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
         { name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", actions: [{type: "stress", value: 5}], desc: "ストレス+5。関係性-1", flavor: { 
                 trust: "事務的に接すると、彼はただ己の義務を果たそうと努めた。", 
                 dependence: "あなたの冷淡な態度に、彼は激しい不安と孤独感に駆られている。",
-                heavy_trust: "事務的な手つきで状態を確認しても、彼は目を覚まさない。",
+                heavy_trust: "事務的な手つきで容態を確認しても、彼は目を覚まさない。",
                 heavy_dependence: "意識のない彼に対して、あなたはただ事務的に必要な処置だけをこなした。"
             } 
         },
@@ -1034,7 +1058,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_dependence: "あなたは悪夢にうなされる彼の耳元で、残酷な真実を囁いた。"
             } 
         },
-        { name: "私物の没収", type: "cold", value: -10, cost: 1, valType: "flat", actions: [{type: "stress", value: 15},     { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-5。資金+5~30G", flavor: { 
+        { name: "私物の没収", type: "cold", value: -10, cost: 1, valType: "flat", actions: [{type: "stress", value: 15},     { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-10。資金+5~30G", flavor: { 
                 trust: "あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。", 
                 dependence: "私物を奪われても、彼はあなたに従うこと自体に喜びを見出している。",
                 heavy_trust: "あなたは眠り続ける彼の私物を、ためらいなく処分した。",
@@ -1563,6 +1587,9 @@ function processWeekStart() {
         return; 
     }
 
+    // ★追加：ターン開始時のステータスを記録
+    addTurnHistory('stats', { health: state.health, stress: state.stress, relation: state.relation, gold: state.gold });
+
             state.turnPlayedCount = 0;
             state.lastPlayedType = null;
             
@@ -1625,6 +1652,7 @@ if (Math.random() < obstacleRates[state.debuff]) {
     let obstacle = JSON.parse(JSON.stringify(OBSTACLE_POOL[Math.floor(Math.random() * OBSTACLE_POOL.length)]));
     state.discard.push(obstacle);
     turnLogs.push("体調悪化(不用品混入)");
+    addTurnHistory('obtained', { type: obstacle.type, name: obstacle.name });
 
                     // 1. デバフ状態（体調不良）のフレーバーテキストを先に出力する
                     addLog(debuffFlavor, "log-flavor");
@@ -1646,6 +1674,10 @@ if (state.debuff === 'heavy') {
                     // 不用品が混入しない場合はすぐに表示する
                     addLog(debuffFlavor, "log-flavor");
                 }
+                
+                // ★追加：体調不良を履歴に記録
+                let debuffNames = { light: '歩行困難', medium: '頭痛', heavy: '昏睡' };
+                addTurnHistory('states', debuffNames[state.debuff]);
             } else {
                 state.debuff = 'none';
             }
@@ -1689,6 +1721,7 @@ if (state.debuff === 'heavy') {
                 }, delay);
                 
                 turnLogs.push("敵襲来");
+        
             }
 
             if (turnLogs.length > 0) {
@@ -1730,7 +1763,7 @@ if (state.debuff === 'heavy') {
                             id: Date.now() + Math.random() 
                         };
                         state.hand.push(newCard);
-                        
+                       addTurnHistory('obtained', { type: newCard.type, name: newCard.name });
                     }
                 }
             }
@@ -1738,12 +1771,13 @@ if (state.debuff === 'heavy') {
            // ★追加：「手紙」のランダム追加処理
             // 未所持で、手札上限(6枚)未満の場合、1.5%の確率で追加
             if (!hasLetter && state.hand.length < 6) {
-                if (Math.random() < 0.015) {
+                if (Math.random() < 0.01) {
                     let letterCard = {
                         ...SPECIAL_CARDS['letter_from_old_friend'],
                         id: Date.now() + Math.random()
                     };
                     state.hand.push(letterCard);
+                   addTurnHistory('obtained', { type: letterCard.type, name: letterCard.name });
 
                     // ★フレーバーテキストの出力処理を追加
                     let flavorText = "";
@@ -1843,10 +1877,10 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                     }
                 }
 
-                // 3. マンネリ（灰色の▼）：同名カードの使用回数が5回以上の場合
+                // 3. マンネリ（灰色の▼）：次に使うと同名カードの使用回数が5回目に達する場合
                 if (['direct', 'indirect'].includes(card.type)) {
                     let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
-                    if (sameCardCount >= 5) {
+                    if (sameCardCount >= 4) { // 次に使った時点で5回目になるため、4回の時点で予告表示する
                         debuffIconsHTML += `<span style="color: #aaaaaa; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="マンネリ：回復・ストレス軽減が半減">▼</span>`;
                     }
                 }
@@ -2002,9 +2036,11 @@ function executeCard(target) {
     }
     state.ap -= currentCost;
 
-    // 追加：使用したカードを記録
+ // 追加：使用したカードを記録
     state.playedCardsList.push(card);
     state.totalPlayedCardsList.push(card); // ★追加：リザルト集計用にも記録
+    // ★変更：カードの使用を履歴に記録
+    addTurnHistory('used', { type: card.type, name: card.name, target: target });
 
     // 「闇医者を呼ぶ」または 特殊版「水を与える」（昏睡付与の重度デバフを持つもの）を判定
     if (card.name === "闇医者を呼ぶ" || (card.name === "水を与える" && card.actions && card.actions.some(a => a.type === "set_debuff" && a.value === "heavy"))) {
@@ -2087,7 +2123,7 @@ function executeCard(target) {
     }
 
     // --- 関係性の計算と反映 ---
-    let calcRelationDelta = function(targetCard, currentTarget) {
+let calcRelationDelta = function(targetCard, currentTarget) {
         // 対象別の数値設定（masterValue / battleValue）があれば優先し、なければ従来の value を使用する
         let baseVal = targetCard.value || 0;
         if (currentTarget === 'battle' && targetCard.battleValue !== undefined) {
@@ -2098,8 +2134,10 @@ function executeCard(target) {
 
         let delta = baseVal;
         if (targetCard.valType === 'percent') {
-            delta = Math.floor(state.relation * (baseVal / 100));
-            if (delta === 0) delta = baseVal > 0 ? 1 : -1;
+            // 現在の関係性がマイナスでも計算が逆転しないよう、絶対値をもとに変動幅を算出する
+            let absPercentDelta = Math.floor(Math.abs(state.relation) * (Math.abs(baseVal) / 100));
+            if (absPercentDelta === 0) absPercentDelta = 1;
+            delta = baseVal > 0 ? absPercentDelta : -absPercentDelta;
         }
 
         if (targetCard.type === 'direct') {
@@ -2234,6 +2272,7 @@ case "add_special_card":
             id: Date.now() + Math.random() 
         };
         state.hand.push(newCard); // ★state. を追加
+        addTurnHistory('obtained', { type: newCard.type, name: newCard.name });
     }
     break;
 
@@ -2277,7 +2316,7 @@ case "add_special_card":
                     }
                     break;
 
-                case "discard_obstacle":
+               case "discard_obstacle":
                     let obsIdx = state.hand.findIndex(c => c && c.type === 'obstacle');
                     if (obsIdx !== -1) {
                         state.hand.splice(obsIdx, 1);
@@ -2317,6 +2356,7 @@ case "add_special_card":
                         let reductionRatio = Math.min(1.0, removedCount * 0.2);
                         state.relation = Math.trunc(state.relation * (1 - reductionRatio));
                         state.hasDisposedObstacle = true; // ★不用品を廃棄した記録を残す
+                        addTurnHistory('disposed', { type: 'obstacle', name: `不用品すべて(計${removedCount}枚)` });
                     }
                     break;
 
@@ -2337,7 +2377,9 @@ case "add_special_card":
                     let poolCards = state.deck.filter(c => c && c.type === action.poolType);
                     if (poolCards.length > 0 && state.hand.length < 10) {
                         let deckIdx = state.deck.findIndex(c => c === poolCards[0]);
-                        state.hand.push(state.deck.splice(deckIdx, 1)[0]);
+                        let addedCard = state.deck.splice(deckIdx, 1)[0];
+                        state.hand.push(addedCard);
+                        addTurnHistory('obtained', { type: addedCard.type, name: addedCard.name });
                     }
                     break;
 
@@ -2410,6 +2452,7 @@ if (state.battleActive) {
                     state.health = Math.max(0, state.health - 20);
                     state.stress = Math.min(100, state.stress + 30);
                     endLogs.push("防衛突破され被害");
+                    addTurnHistory('states', '戦闘敗北'); // ★修正：カッコを外す
                     
                     // 防衛失敗時の情景描写
                     if (state.debuff === 'heavy') {
@@ -2444,6 +2487,7 @@ if (state.battleActive) {
                 } else {
                     let reward = 15 + Math.floor(state.turn * 0.5);
                     state.gold += reward;
+                    addTurnHistory('states', '戦闘勝利'); // 
                     
                     // 防衛成功時の情景描写
                     if (state.debuff === 'heavy') {
@@ -2498,7 +2542,7 @@ if (state.battleActive) {
             state.hand = [];
             document.getElementById('phase-main-container').style.display = 'none';
 
-            if (state.turn % 4 === 0) { 
+              if (state.turn % 4 === 0) { 
                 state.shopBuyCount = 0;
                 state.shopSellCount = 0;
                 openShop(); 
@@ -2506,6 +2550,8 @@ if (state.battleActive) {
                 document.getElementById('phase-start-container').style.display = 'block'; 
             }
             updateUI();
+            // ★削除：ターン終了時のステータス記録を廃止（ターン開始時に移動）
+        
         }
 
 function openShop() {
@@ -2609,11 +2655,12 @@ function buyCard(idx, cost, btnEl) {
             availableCards.push(CARD_POOL.season[nextTurnSeason]);
         }
 
-        let randomIndex = Math.floor(Math.random() * availableCards.length);
+       let randomIndex = Math.floor(Math.random() * availableCards.length);
         let randomCard = availableCards[randomIndex];
         state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
         
         setLastAction(`【${boughtCardName}】を購入`);
+        addTurnHistory('bought', { type: boughtCard.type, name: boughtCardName }); // ★変更
         renderShopBuy(); 
         updateUI();
 
@@ -2745,6 +2792,12 @@ function calculateBonusGold(cardName) {
                 }
 
                 setLastAction(`【${removed.name}】を${actionType}`);
+                // ★変更：売却と処分を振り分けて記録
+                if (actionType === '売却') {
+                    addTurnHistory('sold', { type: removed.type, name: removed.name });
+                } else {
+                    addTurnHistory('disposed', { type: removed.type, name: removed.name });
+                }
 
                 state.shopSellCount++;
                 renderShopDispose(); 
@@ -2758,6 +2811,117 @@ function calculateBonusGold(cardName) {
             document.getElementById('phase-shop-container').style.display = 'none';
             document.getElementById('phase-start-container').style.display = 'block';
         }
+
+// ★追加：整理されたターン履歴のHTMLを生成する関数
+function generateTurnHistoryHTML() {
+    let html = '';
+    const typeNames = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' };
+    
+    // 見出しラベルのデザイン（角丸・背景色・縮小防止 flex-shrink: 0 を追加）全体的にコンパクトに
+const labelStyle = "background: #080808; color: #736e5d; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-right: 4px; display: inline-block; width: 45px; text-align: center; flex-shrink: 0;";
+
+for (let turn = 1; turn <= state.turn; turn++) {
+    let history = state.turnHistory[turn];
+    if (!history) continue;
+
+    html += `<div style="margin-bottom: 6px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 4px;">`;
+    html += `<div style="font-weight: bold; margin-bottom: 2px; color: #d4af37; font-size: 9px;">▼ ${turn}ターン</div>`;
+
+    // ステータス（バッジ状にして見やすく調整・資金を追加）
+    if (history.stats) {
+        html += `<div style="margin-bottom: 3px; display: flex; align-items: center; flex-wrap: wrap; ">
+                    <span style="${labelStyle}">STATUS</span>
+                    <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 8.5px; margin-right: 2px;">健康: ${history.stats.health}</span>
+                    <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 8.5px; margin-right: 2px;">ストレス: ${history.stats.stress}</span>
+                    <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 8.5px; margin-right: 2px;">関係性: ${history.stats.relation}</span>
+                    <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 8.5px; ">資金: ${history.stats.gold}</span>
+                 </div>`;
+    }
+
+        // 状態バッジ描画用のヘルパー関数
+        const renderStateBadge = (stateName) => {
+            let bgColor = '#444'; // デフォルト
+            if (stateName === '歩行困難') bgColor = '#7b4141';
+            else if (stateName === '頭痛') bgColor = '#9f3434';
+            else if (stateName === '昏睡') bgColor = '#a71e1e';
+            else if (stateName === '戦闘勝利') bgColor = '#bf790d';
+            else if (stateName === '戦闘敗北') bgColor = '#40435d';
+            
+            return `<span style="background-color: ${bgColor}; color: #ffffff; padding: 1px 4px; border-radius: 2px; font-size: 8px; margin-right: 2px; display: inline-block;">${stateName}</span>`;
+        };
+
+        // 状態 -> イベントに変更
+        if (history.states && history.states.length > 0) {
+            html += `<div style="margin-bottom: 3px; display: flex; align-items: center; flex-wrap: wrap;">
+                        <span style="${labelStyle}">EVENT</span>
+                        ${history.states.map(renderStateBadge).join('')}
+                     </div>`;
+        }
+
+        // 縦並び用のカード描画ヘルパー関数 (↓を削除しgapで隙間調整)
+        const renderCardsVertical = (cards) => {
+            return cards.map((c, idx) => {
+                let targetSuffix = '';
+                if (c.type === 'harm') {
+                    if (c.target === 'master') targetSuffix = '（主人）';
+                    else if (c.target === 'battle') targetSuffix = '（敵）';
+                }
+                return `<div style="display: flex; align-items: center;"><span style="background: #080808; color: #736e5d; border: 0px solid #444; border-radius: 3px; font-size: 10px; padding: 0 4px; margin-right: 4px; line-height: 1.2;">${idx + 1}</span><span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 2px; font-size: 8px; padding: 1px 3px;">${typeNames[c.type] || '不明'}</span><span style="font-size: 10px;">${c.name}${targetSuffix}</span></div>`;
+            }).join('');
+        };
+
+        // IN/OUT用のカード描画ヘルパー関数
+        const renderMixedCards = (items, separator) => {
+            return items.map(item => {
+                let c = item.card;
+                return `<div style="display: inline-flex; align-items: center; white-space: nowrap;"><span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 2px; font-size: 8px; padding: 1px 3px;">${typeNames[c.type] || '不明'}</span><span style="font-size: 8px;">${c.name}${item.suffix}</span></div>`;
+            }).join(separator);
+        };
+
+        // 使用
+        if (history.used && history.used.length > 0) {
+            html += `<div style="margin-bottom: 3px; display: flex; align-items: flex-start;">
+                        <span style="${labelStyle}">USE</span>
+                        <div style="display: flex; flex-direction: column; gap: 1px;">
+                            ${renderCardsVertical(history.used)}
+                        </div>
+                     </div>`;
+        }
+
+        // 入手・購入（IN）
+        let inCards = [];
+        if (history.obtained) history.obtained.forEach(c => inCards.push({card: c, suffix: '（入）'}));
+        if (history.bought) history.bought.forEach(c => inCards.push({card: c, suffix: '（購）'}));
+        
+        if (inCards.length > 0) {
+            html += `<div style="margin-bottom: 3px; display: flex; align-items: flex-start;">
+                        <span style="${labelStyle}">IN</span>
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; row-gap: 2px;">
+                            ${renderMixedCards(inCards, '<span style="margin: 0 2px; color:#555;">/</span>')}
+                        </div>
+                     </div>`;
+        }
+
+        // 売却・処分（OUT）
+        let outCards = [];
+        if (history.sold) history.sold.forEach(c => outCards.push({card: c, suffix: '（売）'}));
+        if (history.disposed) history.disposed.forEach(c => outCards.push({card: c, suffix: '（処）'}));
+        
+        if (outCards.length > 0) {
+            html += `<div style="margin-bottom: 3px; display: flex; align-items: flex-start;">
+                        <span style="${labelStyle}">OUT</span>
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; row-gap: 2px;">
+                            ${renderMixedCards(outCards, '<span style="margin: 0 2px; color:#555;">/</span>')}
+                        </div>
+                     </div>`;
+        }
+
+        html += `</div>`;
+    }
+    
+    return html;
+}
+
 
         function checkEndGame(isSurvivalClear, condition = "") {
             document.getElementById('phase-start-container').style.display = 'none';
@@ -2859,6 +3023,19 @@ function calculateBonusGold(cardName) {
                 `;
             }
 
+// --- ここから追加：ターンごとの履歴のHTML生成 ---
+let turnHistoryHTML = '';
+if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
+    let contentHTML = generateTurnHistoryHTML();
+    if (contentHTML) {
+        turnHistoryHTML = `
+            <details style="border: 1px solid #2a2a2a; padding: 6px; background-color: #151515;" onclick="event.preventDefault(); openHistoryModal();">
+                <summary style="cursor: pointer; font-weight: bold; color: #d4af37; font-size: 12px; outline: none;">ターンごとの詳細履歴</summary>
+            </details>
+        `;
+    }
+}
+
             // HTMLに結合
             let memoryText = `
                 <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
@@ -2880,6 +3057,8 @@ function calculateBonusGold(cardName) {
                     </details>
                     
                     ${seasonMemoryHTML}
+
+                ${turnHistoryHTML} <!-- ★追加：ターンごとの履歴 -->
                 </div>
             `;
 
@@ -2969,6 +3148,17 @@ function openManual() {
 
         function closeManual() {
             document.getElementById('manual-modal').style.display = 'none';
+        }
+
+        // --- 追加：履歴モーダルの開閉関数 ---
+        function openHistoryModal() {
+            const modalContent = document.getElementById('history-modal-content');
+            modalContent.innerHTML = generateTurnHistoryHTML();
+            document.getElementById('history-modal').style.display = 'flex';
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('history-modal').style.display = 'none';
         }
 
 
@@ -3361,11 +3551,17 @@ document.addEventListener('pointerdown', function(e) {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.48</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.5</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+      <p style="font-size: 10px;">■ver 0.5<br>
+・リザルト画面にすべての「ターンごとの詳細履歴」を追加しました。<br>
+・一部のカードに特定の条件を満たしている時に、特別な処理が発生する効果を追加しました。<br>
+・一部のテキスト・UIを変更しました。
+</p>
+
         <p style="font-size: 10px;">■ver 0.48<br>
 ・特殊エンド2種追加しました。<br>
 ・カードを3枚追加しました。<br>
@@ -3461,6 +3657,20 @@ document.addEventListener('pointerdown', function(e) {
     </div>
 </div>
 
+<!-- 追加：ターン履歴全画面用モーダル -->
+<div id="history-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 300; justify-content: center; align-items: center; padding: 20px;">
+    <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 750px; height: 90vh; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(212,175,55,0.3);">
+        <div style="padding: 15px; border-bottom: 1px solid #444; display: flex; justify-content: space-between; align-items: center; background: #111;">
+            <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 11px;">ターンごとの詳細履歴</span>
+        </div>
+        <div id="history-modal-content" style="flex: 1; overflow-y: auto; padding: 20px; color: #e5e5e5; font-size: 12px; line-height: 1.5;">
+            <!-- ここに履歴が挿入される -->
+        </div>
+        <div style="padding: 10px; border-top: 1px solid #444; text-align: center; background: #111;">
+            <button onclick="closeHistoryModal()" style="background: #d4af37; color: #000; border: none; padding: 6px 25px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 13px;">閉じる</button>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
