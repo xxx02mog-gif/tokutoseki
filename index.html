@@ -1286,11 +1286,11 @@ const SPECIAL_CARDS = {
         function getRandomCard(type) {
             // プールから条件に合わないカードを除外
             let pool = CARD_POOL[type].filter(card => {
-                if (card.name === "形見の宝刀") {
+                if (card.name === "形見の宝刀" || card.name === "しがらみの精算") {
                     // 所持しているすべてのカードをチェック
                     let allCards = [...state.deck, ...state.hand, ...state.discard];
-                    let hasSword = allCards.some(c => c && c.name === "形見の宝刀");
-                    if (hasSword) return false; // 既に持っている場合は抽選対象から外す
+                    let hasCard = allCards.some(c => c && c.name === card.name);
+                    if (hasCard) return false; // 既に持っている場合は抽選対象から外す
                 }
                 return true;
             });
