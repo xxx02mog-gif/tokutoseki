@@ -2329,7 +2329,7 @@ case "add_special_card":
                         let randIdx = validIndices[Math.floor(Math.random() * validIndices.length)];
                         // 手札から抽出し、そのまま捨て札(state.discard)には送らず消去する
                         let removed = state.hand.splice(randIdx, 1)[0];
-                       
+                        addTurnHistory('disposed', { type: removed.type, name: removed.name }); // 売却フェーズ以外は（処）として記録
                     }
                     break;
 
@@ -2357,8 +2357,9 @@ case "add_special_card":
                case "discard_obstacle":
                     let obsIdx = state.hand.findIndex(c => c && c.type === 'obstacle');
                     if (obsIdx !== -1) {
-                        state.hand.splice(obsIdx, 1);
+                        let removed = state.hand.splice(obsIdx, 1)[0];
                         state.hasDisposedObstacle = true; // ★追加：カード効果で不用品を廃棄した記録
+                        addTurnHistory('disposed', { type: removed.type, name: removed.name }); // 売却フェーズ以外は（処）として記録
                     }
                     break;
 
@@ -2830,15 +2831,11 @@ function calculateBonusGold(cardName) {
                 }
 
                 setLastAction(`【${removed.name}】を${actionType}`);
-                // ★変更：売却と処分を振り分けて記録
-                if (actionType === '売却') {
-                    addTurnHistory('sold', { type: removed.type, name: removed.name });
-                } else {
-                    addTurnHistory('disposed', { type: removed.type, name: removed.name });
-                }
+                // 売却フェーズでの除外はすべて（売）として記録する
+                addTurnHistory('sold', { type: removed.type, name: removed.name });
 
                 state.shopSellCount++;
-                renderShopDispose(); 
+                renderShopDispose();
                 updateUI();
 
                 document.getElementById('phase-shop-container').style.pointerEvents = 'auto';
