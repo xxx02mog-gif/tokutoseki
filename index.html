@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>特等席</title>
+    <!-- Webフォントの読み込み（Hina Mincho, Zen Kaku Gothic New） -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hina+Mincho&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
    <style>
 
 html, body, * {
@@ -50,6 +54,9 @@ html, body, * {
      font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif;
 
         }
+html {
+    background-color: #0b0b0b;
+}
 body {
     background-color: #0b0b0b;
     background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
@@ -61,6 +68,12 @@ body {
     height: 100dvh; /* スマホブラウザのアドレスバー対策 */
     overflow: hidden; /* 全体のスクロールを禁止 */
     padding: 10px;
+    
+    /* PC閲覧時の広がり防止と中央寄せ */
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* 境界がわかりやすいように影を追加 */
 }
         
         header {
@@ -286,7 +299,32 @@ body {
         .log-alert { color: #e74c3c; font-weight: bold; }
         .log-success { color: #2ecc71; }
         .log-effect { color: #3498db; display: none; }
-        .log-flavor { color: #aaaaaa; font-style: italic; font-size: 11px; padding-left: 6px; border-left: 2px solid #d4af37; }
+        .log-flavor { 
+            color: #aaaaaa; 
+            font-style: italic; 
+            font-size: 11px; 
+            padding-left: 6px; 
+            border-left: 2px solid #d4af37; 
+            font-family: 'Hina Mincho', serif; /* Hina Minchoを適用 */
+        }
+
+        /* 10px以下のフォントをZen Kaku Gothic Newにする */
+        .info-row,
+        .last-action-display,
+        .battle-phase-alert,
+        .game-card .card-info,
+        [style*="font-size: 9px"], [style*="font-size:9px"],
+        [style*="font-size: 8.5px"], [style*="font-size:8.5px"],
+        [style*="font-size: 8px"], [style*="font-size:8px"] {
+            font-family: 'Zen Kaku Gothic New', sans-serif !important;
+        }
+
+        /* カードの属性ラベルは元の明朝体を維持（上書きを防止） */
+        .btn,
+        .card-type,
+        .card-type-label {
+            font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif !important;
+        }
 
 #action-area {
     background-color: #1a1a1a;
@@ -3176,9 +3214,10 @@ document.addEventListener('pointerdown', function(e) {
     const ripple = document.createElement('span');
     ripple.className = 'click-ripple';
 
-    // ↓ clientX/clientY を pageX/pageY に変更
-    ripple.style.left = `${e.pageX}px`;
-    ripple.style.top = `${e.pageY}px`;
+    // PCでの中央寄せレイアウトに対応するため、body要素の左上端を基準とした座標に補正
+    const rect = document.body.getBoundingClientRect();
+    ripple.style.left = `${e.clientX - rect.left}px`;
+    ripple.style.top = `${e.clientY - rect.top}px`;
 
     document.body.appendChild(ripple);
 
@@ -3344,9 +3383,14 @@ document.addEventListener('pointerdown', function(e) {
     #manual-modal-content .flow-step-body { font-size: 12px; color: #ccc; line-height: 1.5; }
 
     @media (min-width: 768px) {
-        #manual-modal-content .flow-container { flex-direction: row; justify-content: space-between; }
-        #manual-modal-content .flow-step { flex: 1; }
-        #manual-modal-content .flow-step:not(:last-child) { position: relative; margin-right: 10px; }
+        /* PC画面では1列×1行のグリッドにして崩れを防ぐ */
+        #manual-modal-content .flow-container { 
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 15px;
+        }
+        #manual-modal-content .flow-step { margin-right: 0; height: 100%; }
+        #manual-modal-content .flow-step:not(:last-child) { margin-right: 0; }
     }
 
     #manual-modal-content ul { padding-left: 20px; margin-bottom: 15px; }
@@ -3358,7 +3402,7 @@ document.addEventListener('pointerdown', function(e) {
 </style>
 
 <div id="manual-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; padding: 20px;">
-    <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 750px; max-height: 80vh; overflow-y: auto;  box-shadow: 0 0 20px rgba(212,175,55,0.3); display: flex; flex-direction: column;">
+    <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 480px; max-height: 80vh; overflow-y: auto;  box-shadow: 0 0 20px rgba(212,175,55,0.3); display: flex; flex-direction: column;">
         
         <div style="padding: 15px; border-bottom: 1px solid #444; display: flex; justify-content: space-between; align-items: center; background: #111;">
             <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 16px;">説明書</span>
@@ -3530,7 +3574,7 @@ document.addEventListener('pointerdown', function(e) {
                         <div class="flow-step-title">購入・売却</div>
                     </div>
                     <div class="flow-step-body">
-                        4ターン毎に、資金を消費して行動カードを購入・処分できます。<br>購入売却後は、手札が残っている場合もすべてデッキに戻し、カードの配り直しが行われます。
+                        4ターン毎に資金を消費して行動カードを購入・処分できます。<br>購入売却後は、手札が残っている場合もすべてデッキに戻し、カードの配り直しが行われます。
                     </div>
                 </div>
             </div>
@@ -3556,7 +3600,7 @@ document.addEventListener('pointerdown', function(e) {
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
-      <p style="font-size: 10px;">■ver 0.5<br>
+      <p style="font-size: 9px;">■ver 0.5<br>
 ・リザルト画面にすべての「ターンごとの詳細履歴」を追加しました。<br>
 ・一部のカードに特定の条件を満たしている時に、特別な処理が発生する効果を追加しました。<br>
 ・一部のテキスト・UIを変更しました。
@@ -3659,7 +3703,7 @@ document.addEventListener('pointerdown', function(e) {
 
 <!-- 追加：ターン履歴全画面用モーダル -->
 <div id="history-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 300; justify-content: center; align-items: center; padding: 20px;">
-    <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 750px; height: 90vh; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(212,175,55,0.3);">
+    <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 480px; height: 90vh; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(212,175,55,0.3);">
         <div style="padding: 15px; border-bottom: 1px solid #444; display: flex; justify-content: space-between; align-items: center; background: #111;">
             <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 11px;">ターンごとの詳細履歴</span>
         </div>
