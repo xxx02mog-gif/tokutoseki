@@ -1008,7 +1008,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
                 heavy_trust: "寝たきり状態の彼のためにあなたは外部から医者を呼び、適切な治療を受けさせた。",
                 heavy_dependence: "外部から医者を呼び、治療を受けさせる。そのことを、あなたは彼に伝えはしない。" }}
 ,
-        { name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", actions: [{type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて除外。除外した枚数分、関係性が0に近付く  (使い切り)", 
+        { name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", actions: [{type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて除外。除外した枚数が多いほど、関係性が0に近付く  (使い切り)", 
         flavor: { trust: "二人の間のしがらみをまっさらにした。これからは、一人の人間として向き合うために。", 
         dependence: "互いを縛り付けていたものを手放した。心にぽっかり穴が空いたような気がする。"} }
 
@@ -1264,9 +1264,9 @@ const SPECIAL_CARDS = {
         cost: 0, 
         desc: "所持している間、関係値+の時に毎ターンストレス+5。使用不可", 
         flavor: { 
-            trust: "彼は、手紙が届くのを待ち望みながらも恐れている。そして、あなたがそれを隠していることにも気付いている。", 
+            trust: "彼は、あなたが彼宛ての手紙を隠し持っていることに気付いている。", 
             dependence: "昔馴染からの手紙。今の彼にとっては、もう、どうでもいいものだ。",
-            heavy_trust: "宛名には彼の名が書かれている。だが、彼がこの封を切ることはない。",
+            heavy_trust: "宛名には彼の名が書かれている。だが、彼がこの封を切ることはないだろう。",
             heavy_dependence: "彼に外や過去との繋がりが必要かどうかは、彼自身ではなくあなたが決める。"
         } 
     }
@@ -1736,9 +1736,9 @@ if (state.debuff === 'heavy') {
             }
 
            // ★追加：「手紙」のランダム追加処理
-            // 未所持で、手札上限(6枚)未満の場合、2%の確率で追加
+            // 未所持で、手札上限(6枚)未満の場合、1.5%の確率で追加
             if (!hasLetter && state.hand.length < 6) {
-                if (Math.random() < 0.02) {
+                if (Math.random() < 0.015) {
                     let letterCard = {
                         ...SPECIAL_CARDS['letter_from_old_friend'],
                         id: Date.now() + Math.random()
