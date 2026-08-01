@@ -315,7 +315,8 @@ body {
         .game-card .card-info,
         [style*="font-size: 9px"], [style*="font-size:9px"],
         [style*="font-size: 8.5px"], [style*="font-size:8.5px"],
-        [style*="font-size: 8px"], [style*="font-size:8px"] {
+        [style*="font-size: 8px"], [style*="font-size:8px"],
+        [style*="font-size: 7px"], [style*="font-size:7px"] {
             font-family: 'Zen Kaku Gothic New', sans-serif !important;
         }
 
@@ -2852,26 +2853,26 @@ function generateTurnHistoryHTML() {
     let html = '';
     const typeNames = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' };
     
-    // 見出しラベルのデザイン（角丸・背景色・縮小防止 flex-shrink: 0 を追加）全体的にコンパクトに
-const labelStyle = "background: #080808; color: #736e5d; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-right: 4px; display: inline-block; width: 45px; text-align: center; flex-shrink: 0;";
+    // 見出しラベルのデザイン
+    const labelStyle = "background: #080808; color: #736e5d; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-right: 6px; display: inline-flex; align-items: center; justify-content: center; width: 45px; flex-shrink: 0; font-family: 'Zen Kaku Gothic New', sans-serif !important;";
 
-for (let turn = 1; turn <= state.turn; turn++) {
-    let history = state.turnHistory[turn];
-    if (!history) continue;
+    for (let turn = 1; turn <= state.turn; turn++) {
+        let history = state.turnHistory[turn];
+        if (!history) continue;
 
-    html += `<div style="margin-bottom: 6px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 4px;">`;
-    html += `<div style="font-weight: bold; margin-bottom: 2px; color: #d4af37; font-size: 9px;">▼ ${turn}ターン</div>`;
+        html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
+        html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ ${turn}ターン</div>`;
 
-    // ステータス（バッジ状にして見やすく調整・資金を追加）
-    if (history.stats) {
-        html += `<div style="margin-bottom: 3px; display: flex; align-items: center; flex-wrap: wrap; ">
-                    <span style="${labelStyle}">STATUS</span>
-                    <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 8.5px; margin-right: 2px;">健康: ${history.stats.health}</span>
-                    <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 8.5px; margin-right: 2px;">ストレス: ${history.stats.stress}</span>
-                    <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 8.5px; margin-right: 2px;">関係性: ${history.stats.relation}</span>
-                    <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 8.5px; ">資金: ${history.stats.gold}</span>
-                 </div>`;
-    }
+        // ステータス
+        if (history.stats) {
+            html += `<div style="margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px;">
+                        <span style="${labelStyle}">STATUS</span>
+                        <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">健康: ${history.stats.health}</span>
+                        <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">ストレス: ${history.stats.stress}</span>
+                        <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">関係性: ${history.stats.relation}</span>
+                        <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">資金: ${history.stats.gold}</span>
+                     </div>`;
+        }
 
         // 状態バッジ描画用のヘルパー関数
         const renderStateBadge = (stateName) => {
@@ -2882,18 +2883,18 @@ for (let turn = 1; turn <= state.turn; turn++) {
             else if (stateName === '戦闘勝利') bgColor = '#bf790d';
             else if (stateName === '戦闘敗北') bgColor = '#40435d';
             
-            return `<span style="background-color: ${bgColor}; color: #ffffff; padding: 1px 4px; border-radius: 2px; font-size: 8px; margin-right: 2px; display: inline-block;">${stateName}</span>`;
+            return `<span style="background-color: ${bgColor}; color: #ffffff; padding: 1px 4px; border-radius: 2px; font-size: 9px; display: inline-block; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${stateName}</span>`;
         };
 
         // 状態 -> イベントに変更
         if (history.states && history.states.length > 0) {
-            html += `<div style="margin-bottom: 3px; display: flex; align-items: center; flex-wrap: wrap;">
+            html += `<div style="margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px;">
                         <span style="${labelStyle}">EVENT</span>
                         ${history.states.map(renderStateBadge).join('')}
                      </div>`;
         }
 
-        // 縦並び用のカード描画ヘルパー関数 (↓を削除しgapで隙間調整)
+        // 縦並び用のカード描画ヘルパー関数
         const renderCardsVertical = (cards) => {
             return cards.map((c, idx) => {
                 let targetSuffix = '';
@@ -2901,7 +2902,11 @@ for (let turn = 1; turn <= state.turn; turn++) {
                     if (c.target === 'master') targetSuffix = '（主人）';
                     else if (c.target === 'battle') targetSuffix = '（敵）';
                 }
-                return `<div style="display: flex; align-items: center;"><span style="background: #080808; color: #736e5d; border: 0px solid #444; border-radius: 3px; font-size: 10px; padding: 0 4px; margin-right: 4px; line-height: 1.2; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${idx + 1}</span><span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 2px; font-size: 8px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span><span style="font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${targetSuffix}</span></div>`;
+                return `<div style="display: flex; align-items: center;">
+                            <span style="background: #080808; color: #736e5d; border-radius: 3px; font-size: 9px; padding: 0 4px; margin-right: 4px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${idx + 1}</span>
+                            <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
+                            <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${targetSuffix}</span>
+                        </div>`;
             }).join('');
         };
 
@@ -2909,15 +2914,18 @@ for (let turn = 1; turn <= state.turn; turn++) {
         const renderMixedCards = (items, separator) => {
             return items.map(item => {
                 let c = item.card;
-                return `<div style="display: inline-flex; align-items: center; white-space: nowrap;"><span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 2px; font-size: 8px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span><span style="font-size: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${item.suffix}</span></div>`;
+                return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
+                            <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
+                            <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${item.suffix}</span>
+                        </div>`;
             }).join(separator);
         };
 
         // 使用
         if (history.used && history.used.length > 0) {
-            html += `<div style="margin-bottom: 3px; display: flex; align-items: flex-start;">
+            html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
                         <span style="${labelStyle}">USE</span>
-                        <div style="display: flex; flex-direction: column; gap: 1px; margin-top: -2px;">
+                        <div style="display: flex; flex-direction: column; gap: 2px;">
                             ${renderCardsVertical(history.used)}
                         </div>
                      </div>`;
@@ -2929,10 +2937,10 @@ for (let turn = 1; turn <= state.turn; turn++) {
         if (history.bought) history.bought.forEach(c => inCards.push({card: c, suffix: '（購）'}));
         
         if (inCards.length > 0) {
-            html += `<div style="margin-bottom: 3px; display: flex; align-items: flex-start;">
+            html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
                         <span style="${labelStyle}">IN</span>
-                        <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; row-gap: 2px;">
-                            ${renderMixedCards(inCards, '<span style="margin: 0 2px; color:#555;">/</span>')}
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px;">
+                            ${renderMixedCards(inCards, `<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">/</span>`)}
                         </div>
                      </div>`;
         }
@@ -2943,10 +2951,10 @@ for (let turn = 1; turn <= state.turn; turn++) {
         if (history.disposed) history.disposed.forEach(c => outCards.push({card: c, suffix: '（処）'}));
         
         if (outCards.length > 0) {
-            html += `<div style="margin-bottom: 3px; display: flex; align-items: flex-start;">
+            html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
                         <span style="${labelStyle}">OUT</span>
-                        <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; row-gap: 2px;">
-                            ${renderMixedCards(outCards, '<span style="margin: 0 2px; color:#555;">/</span>')}
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px;">
+                            ${renderMixedCards(outCards, `<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">/</span>`)}
                         </div>
                      </div>`;
         }
