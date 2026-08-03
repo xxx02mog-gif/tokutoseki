@@ -955,12 +955,12 @@ stressChange: -10,
         { name: "髪を梳かす", type: "direct", value: 1, cost: 1, valType: "flat", actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+1", flavor: { trust: "あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。", dependence: "あなたの指先が触れると、彼はひどく安心した表情を見せた。",
         heavy_trust: "あなたは彼の髪を丁寧に梳かした。彼は眠ったまま、されるがままにされている。",
         heavy_dependence: "あなたの指先が触れても、彼は目を覚まさない。"} },
-        { name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", actions: [{type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "健康+30。ストレス-15。関係性+2", flavor: { trust: "あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた", dependence: "あなたが与えるものなら、彼はどんなものでも喜んで受け入れる。",
+        { name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", actions: [{type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "健康+30。ストレス-15。関係性+2", flavor: { trust: "あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた。", dependence: "あなたが与えるものなら、彼はどんなものでも受け入れる。",
         heavy_trust: "あなたは眠る彼に薬を飲ませた。飲み下せなかった分が口端から溢れる。",
         heavy_dependence: "無意識状態にあっても、彼はあなたが与える薬を上手に飲み下した。"} },
         { name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 10}], desc: "健康+20。ストレス-10。関係性+3", flavor: { trust: "彼の体を丁寧に拭き上げた。彼はこうして世話を焼かれることに負い目を感じている。", dependence: "あなたが触れるたび、彼はあなたとの繋がりを見出している。",
-        heavy_trust: "あなたは、眠ったまま起きる気配のない彼の体を丁寧に拭き上げた。",
-        heavy_dependence: "あなたがどれだけ触れても、彼は反応しない。彼は深い微睡みの中に取り残されている。"} },
+        heavy_trust: "眠ったまま起きる気配のない彼の体を丁寧に拭き上げた。",
+        heavy_dependence: "あなたがどれだけ触れても、彼は反応しない。"} },
         { name: "深夜の付き添い", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 10},{type: "stress_direct", value: 20}], desc: "健康+10。ストレス-20。関係性+5", flavor: { trust: "夜通し彼の傍にいた。彼はあなたの体調を気遣っている。", dependence: "あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。",
         heavy_trust: "あなたは、眠ったまま起きる気配のない彼の体を丁寧に拭き上げた。",
         heavy_dependence: "あなたが触れても、彼は何の反応も返さない。彼は深い微睡みの中に取り残されている。"} },
@@ -1057,7 +1057,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
 
        { name: "調度品の買い替え", type: "indirect", value: 50, cost: 1, valType: "percent", goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性+50%（使い切り）", flavor: { 
                 trust: "彼は整った室内を見渡し、あなたの細やかな気遣いを感じて小さく息をついた。", 
-                dependence: "新しい家具よりも、彼はあなたが傍にいてくれることだけを望んでいる。",
+                dependence: "彼は新しい家具よりも、あなたが傍にいてくれることだけを望んでいる。",
                 heavy_trust: "新しい家具を揃える間も、彼は眠り続けている。",
                 heavy_dependence: "彼が意識のない間に、あなたは部屋の内装を勝手に新調した。" 
             } 
@@ -1076,13 +1076,13 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
         { name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", actions: [{type: "stress", value: 5}], desc: "ストレス+5。関係性-1", flavor: { 
                 trust: "事務的に接すると、彼はただ己の義務を果たそうと努めた。", 
                 dependence: "あなたの冷淡な態度に、彼は激しい不安と孤独感に駆られている。",
-                heavy_trust: "事務的な手つきで容態を確認しても、彼は目を覚まさない。",
+                heavy_trust: "事務的に彼の容態を確認する。彼はまだ目を覚まさない。",
                 heavy_dependence: "意識のない彼に対して、あなたはただ事務的に必要な処置だけをこなした。"
             } 
         },
         { name: "無視", type: "cold", value: -2, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-2", flavor: { 
                 trust: "あなたが無視すると、彼はかつての自分の振る舞いを反省した。", 
-                dependence: "あなたに無視され、彼は見捨てられるのではないかと怯え切っている。",
+                dependence: "あなたに無視され、彼は見捨てられるのではないかと怯えている。",
                 heavy_trust: "あなたがその場を離れても、引き留める声が聞こえることはない。",
                 heavy_dependence: "静寂に包まれた部屋で、あなたは彼を見下ろした。"
             }},
@@ -1667,10 +1667,10 @@ const RANDOM_EVENTS = [
         condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
         flavor: {
-            trust: "遠くの町から鐘の音が響いた。彼は何かを思い出すように耳を澄ませた。",
+            trust: "遠くの町から鐘の音が響く。彼は、何かを思い出すように耳を澄ませた。",
             dependence: "鐘の音が外の世界を知らせる。彼は忌々しそうに眉を顰めた。",
-            heavy_trust: "遠くで鐘が鳴っている。その音が眠りを妨げることはない。",
-            heavy_dependence: "鐘の音が響く。外の世界では、時が進んでいる。"
+            heavy_trust: "遠くで鐘が鳴っている。その音が彼の眠りを妨げることはない。",
+            heavy_dependence: "一時間ごとに響く鐘の音。外の世界では、時が進んでいる。"
         }
     },
     {
@@ -1678,8 +1678,8 @@ const RANDOM_EVENTS = [
         condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.relation = Math.min(100, state.relation + 2); },
         flavor: {
-            trust: "彼が棚を探っていた。あなたが代わりに目当ての本を見つけて渡すと、彼は小さく礼を言った。",
-            dependence: "彼が何かを探している。あなたが手を差し伸べると、彼は探すのをやめた。"
+            trust: "彼が棚を探っていた。代わりに目当ての本を見つけて渡すと、彼は小さく礼を言った。",
+            dependence: "彼が何かを探している。あなたに気がつくと、彼は探すのをやめた。"
         }
     },
     {
@@ -1687,8 +1687,8 @@ const RANDOM_EVENTS = [
         condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); state.relation = Math.min(100, state.relation + 1); },
         flavor: {
-            trust: "彼はあなたの手を借りず、鏡の前で自分で身支度を整えた。",
-            dependence: "彼は身支度をしていたようだが、あなたに気がつくと手を止めた。"
+            trust: "彼はあなたの手を借りず、自分で身支度を整えた。",
+            dependence: "彼は一人で身支度をしているが、上手くボタンを止められないでいる。"
         }
     },
     {
@@ -1696,16 +1696,16 @@ const RANDOM_EVENTS = [
         condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.gold += 20; state.stress = Math.min(100, state.stress + 5); },
         flavor: {
-            trust: "彼は机に向かい、淡々と主人としての書類仕事をこなしている。",
-            dependence: "彼は主人としての仕事をしている。ただ、あなたに褒められることだけを待っている。"
+            trust: "彼は机に向かい、黙々と主人としての書類仕事をこなしている。",
+            dependence: "彼は書簡をぱらぱらと捲り、判を押す。あなたがそれを取りに来ることを待っている。"
         }
     },
     {
         title: "もぬけの殻",
         condition: (state, currentLogDelay) => state.debuff === "none" && currentLogDelay === 0,
-        effect: (state) => { state.ap = Math.max(0, state.ap - 2); state.stress = Math.min(100, state.stress + 15); },
+        effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.stress = Math.min(100, state.stress + 15); },
         flavor: {
-            trust: "部屋を不在にしていた空白の時間について、彼は何も語ろうとしなかった。",
+            trust: "部屋を不在にしていたことについて、彼は何も語ろうとしなかった。",
             dependence: "部屋に彼の姿がない。屋敷中を探し回ると、彼は暗い廊下の隅で蹲っていた。"
         }
     },
@@ -1726,8 +1726,8 @@ const RANDOM_EVENTS = [
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
         flavor: {
             trust: "翼を広げて飛び去る小鳥を、彼はどこか羨ましそうに見つめていた。",
-            dependence: "窓辺に一羽の小鳥が降り立った。彼はその鳥から目を逸らしている",
-            heavy_trust: "窓の外で、小鳥がしきりにさえずっている。",
+            dependence: "窓辺に一羽の白い小鳥が降り立った。彼はその鳥から目を逸らしている",
+            heavy_trust: "窓の外で小鳥がさえずっている。",
             heavy_dependence: "あなたは窓辺に止まった小鳥を無感情に追い払った。"
         }
     },
@@ -1736,8 +1736,8 @@ const RANDOM_EVENTS = [
         condition: (state) => state.debuff === "heavy",
         effect: (state) => { state.stress = Math.min(100, state.stress + 10); },
         flavor: {
-            heavy_trust: "彼は深い微睡みの中で、苦しげに顔を歪めてうなされている。",
-            heavy_dependence: "彼は悪夢にうなされている。あなただけが、彼をその恐怖から救い出せる。"
+            heavy_trust: "深い微睡みの淵で、彼は苦しげに顔を歪めている。",
+            heavy_dependence: "彼は悪夢にうなされている。あなただけが、彼をそこから救い出せるかもしれない。"
         }
     }
 ];
@@ -1896,7 +1896,7 @@ if (state.debuff === 'heavy') {
             }
 
            // ▼ 追加：ランダムイベント処理
-            if (!state.battleActive && Math.random() < 0.33) {
+            if (!state.battleActive && Math.random() < 0.30) {
                 let availableEvents = RANDOM_EVENTS.filter(ev => ev.condition(state, currentLogDelay));
                 if (availableEvents.length > 0) {
                     let ev = availableEvents[Math.floor(Math.random() * availableEvents.length)];
@@ -1977,7 +1977,6 @@ if (state.debuff === 'heavy') {
                         id: Date.now() + Math.random()
                     };
                     state.hand.push(letterCard);
-                   addTurnHistory('obtained', { type: letterCard.type, name: letterCard.name });
                    addTurnHistory('event', '手紙入手');
 
                     // ★フレーバーテキストの出力処理を追加
@@ -3802,7 +3801,7 @@ document.addEventListener('pointerdown', function(e) {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.5</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.6</p>
 
 
 <details>
