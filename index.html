@@ -1545,7 +1545,7 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
                 flavor: { 
                     trust: "消えない記憶が、二人の間に重い影を落としている。", 
                     dependence: "忌まわしい過去だけが、彼とあなたを繋ぐ絆だ。",
-                    heavy_trust: "悪夢にうなされ、消えない記憶が疼く。",
+                    heavy_trust: "夢の中に逃避してもなお、消えない記憶が疼く。",
                     heavy_dependence: "このまま彼が目覚めなければ、この痛みとも決別できる。"
                 } 
             },
@@ -1703,9 +1703,9 @@ const RANDOM_EVENTS = [
     {
         title: "もぬけの殻",
         condition: (state, currentLogDelay) => state.debuff === "none" && currentLogDelay === 0,
-        effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.stress = Math.min(100, state.stress + 15); },
+        effect: (state) => { state.ap = Math.max(0, state.ap - 2); state.stress = Math.min(100, state.stress + 15); },
         flavor: {
-            trust: "部屋に彼の姿がない。彼は中庭で倒れるように座り込んでいた。",
+            trust: "部屋を不在にしていた空白の時間について、彼は何も語ろうとしなかった。",
             dependence: "部屋に彼の姿がない。屋敷中を探し回ると、彼は暗い廊下の隅で蹲っていた。"
         }
     },
@@ -1714,10 +1714,10 @@ const RANDOM_EVENTS = [
         condition: (state) => true,
         effect: (state) => { state.gold += 10; state.health = Math.min(100, state.health + 5); },
         flavor: {
-            trust: "玄関に宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
-            dependence: "玄関に匿名で荷物が届いた。彼は酷く訝しんでいる。",
-            heavy_trust: "玄関に宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
-            heavy_dependence: "玄関に匿名の荷物が届いた。誰からのものかは分からないが、利用できるものは利用させてもらおう。"
+            trust: "宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
+            dependence: "匿名で届いた荷物、彼は酷く訝しんでいる。",
+            heavy_trust: "宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
+            heavy_dependence: "匿名の荷物が届いた。誰からのものかは分からないが、利用できるものは利用させてもらおう。"
         }
     },
     {
@@ -1725,10 +1725,10 @@ const RANDOM_EVENTS = [
         condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
         flavor: {
-            trust: "窓辺に小さな鳥が迷い込んできた。彼はその小鳥を、どこか羨ましそうに見つめていた。",
-            dependence: "窓辺に小鳥が止まった。彼はその鳥から目を逸らしている",
-            heavy_trust: "窓辺に小鳥が止まり、愛らしい声でさえずっている。",
-            heavy_dependence: "あなたは窓に止まった小鳥を無感情に追い払った。"
+            trust: "翼を広げて飛び去る小鳥を、彼はどこか羨ましそうに見つめていた。",
+            dependence: "窓辺に一羽の小鳥が降り立った。彼はその鳥から目を逸らしている",
+            heavy_trust: "窓の外で、小鳥がしきりにさえずっている。",
+            heavy_dependence: "あなたは窓辺に止まった小鳥を無感情に追い払った。"
         }
     },
     {
@@ -2292,16 +2292,8 @@ function executeCard(target) {
         // 1. 対象選択のウィンドウを即座に閉じる
         cancelTargetSelect();
         
-        // 2. 待機中に別の操作が行われないよう、アクションエリアのクリックを無効化
-        document.getElementById('action-area').style.pointerEvents = 'none';
-
-        // 3. エンディング画面への移行を遅延させる（例として1200ms）
-        setTimeout(() => {
-            checkEndGame(false, "assassination");
-            
-            // エンディング表示後に念のためクリック無効化を解除（「もう一度遊ぶ」等のため）
-            document.getElementById('action-area').style.pointerEvents = 'auto';
-        }, 600);
+        // 2. 即座にエンディング画面へ移行
+        checkEndGame(false, "assassination");
         
         return;
     }
@@ -3356,13 +3348,16 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
             // 2. エンディングのテキスト（物語の結末）はログエリアに出力
             const logArea = document.getElementById('log-area');
             if (endingText !== "") {
-                const endingEntry = document.createElement('div');
-                endingEntry.className = 'log-entry log-flavor'; 
-                endingEntry.innerHTML = endingText; 
-                logArea.appendChild(endingEntry);
-                
-                // ログの最下部へスクロール
-                logArea.scrollTop = logArea.scrollHeight;
+                // フレーバーテキストと同時に出ないよう、少し遅延させて追加
+                setTimeout(() => {
+                    const endingEntry = document.createElement('div');
+                    endingEntry.className = 'log-entry log-flavor'; 
+                    endingEntry.innerHTML = endingText; 
+                    logArea.appendChild(endingEntry);
+                    
+                    // ログの最下部へスクロール
+                    logArea.scrollTop = logArea.scrollHeight;
+                }, 600); // ここで表示をズラす
             }
 
             // 3. 使用したカード履歴・最終デッキ内容（memoryText）はエンディング部分（desc）に残す
@@ -3807,7 +3802,7 @@ document.addEventListener('pointerdown', function(e) {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.6</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.5</p>
 
 
 <details>
