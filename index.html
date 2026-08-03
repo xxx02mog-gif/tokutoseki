@@ -759,7 +759,7 @@ display: flex;
         
         <div id="phase-start-container">
             <div class="phase-scroll-area">
-                <div class="last-action-display">直前の行動: なし</div>
+                <div class="last-action-display"></div>
                 
             </div>
             <div class="phase-button-area">
@@ -769,7 +769,7 @@ display: flex;
 
         <div id="phase-main-container" style="display: none;">
             <div class="phase-scroll-area">
-                <div class="last-action-display">直前の行動: なし</div>
+                <div class="last-action-display"></div>
                 
                 <div class="section-title">
                     <span>行動フェーズ</span>
@@ -856,7 +856,8 @@ display: flex;
           playedCardsList: [], // 追加：使用したカードの記録用（マンネリ判定・売却ボーナス用。処分時にリセット）
             totalPlayedCardsList: [], // ★追加：リザルト画面集計用（リセットされない）
             hasDisposedObstacle: false, // ★追加：不用品を一度でも処理したかの判定用フラグ
-            turnHistory: {} // ★追加：ターンごとのプレイ履歴記録用
+            turnHistory: {}, // ★追加：ターンごとのプレイ履歴記録用
+            initialDeck: [] // ★追加：初期デッキ構成の保存用
         };
 
 // 直前のステータスを保持するオブジェクト
@@ -914,12 +915,7 @@ function addTurnHistory(category, data) {
     if (!state.turnHistory[state.turn]) {
         state.turnHistory[state.turn] = {
             stats: null,    // ステータス（健康度・ストレス・関係性・資金）
-            states: [],     // 状態（体調不良、戦闘結果）
-            used: [],       // 使用したカード
-            obtained: [],   // 入手したカード
-            bought: [],     // ★新規追加: 購入したカード
-            sold: [],       // 売却したカード
-            disposed: []    // 処分したカード
+            timeline: []    // ★変更: 時系列順にイベントを記録
         };
     }
     
@@ -927,7 +923,7 @@ function addTurnHistory(category, data) {
     if (category === 'stats') {
         state.turnHistory[state.turn].stats = data;
     } else {
-        state.turnHistory[state.turn][category].push(data);
+        state.turnHistory[state.turn].timeline.push({ category: category, data: data });
     }
 }
 
@@ -1380,10 +1376,13 @@ function getSeasonByTurn(turn) {
                 let rType = types[Math.floor(Math.random() * types.length)];
                 state.deck.push(getRandomCard(rType));
             }
-            // 初期デッキに不用品カードを1枚加える
-            state.deck.push({ name: "過去のトラウマ", type: "obstacle", cost: 0, desc: "過去の過ちが心を蝕む。使用不可", flavor: { trust: "消えない記憶が、二人の間に重い影を落としている。", dependence: "忌まわしい過去だけが、あなたを彼を繋ぐ絆だ。" } });
+            // 初期デッキに不用品カードを1枚ランダムに加える
+            let randomObstacle = OBSTACLE_POOL[Math.floor(Math.random() * OBSTACLE_POOL.length)];
+            state.deck.push(JSON.parse(JSON.stringify(randomObstacle)));
             
             shuffle(state.deck);
+            // ★追加：初期デッキ構成を保存
+            state.initialDeck = JSON.parse(JSON.stringify(state.deck));
         }
 
         function shuffle(array) {
@@ -1440,9 +1439,9 @@ const displaySeason = document.getElementById('display-season');
             
             // 枠線指定を解除し、内側の余白と角丸を設定してラベル状に整える
             displaySeason.style.border = "none";
-            displaySeason.style.padding = "2px 5px";
+            displaySeason.style.padding = "1px 4px";
             displaySeason.style.borderRadius = "3px";
-displaySeason.style.fontSize = "11px";
+            displaySeason.style.fontSize = "10px";
 
     const displayDebuff = document.getElementById('display-debuff');
             if (displayDebuff) {
@@ -1463,13 +1462,13 @@ displaySeason.style.fontSize = "11px";
                     displayDebuff.innerText = debuffTexts[state.debuff];
                     displayDebuff.style.backgroundColor = debuffColors[state.debuff];
                     
-                    // 季節の枠とスタイルを完全に一致させる
-                   displayDebuff.style.color = "#000000"; // 黒文字
+                   // 季節の枠とスタイルを完全に一致させる
+                    displayDebuff.style.color = "#000000"; // 黒文字
                     displayDebuff.style.border = "none";
-                    displayDebuff.style.padding = "2px 8px";
+                    displayDebuff.style.padding = "1px 4px";
                     displayDebuff.style.borderRadius = "3px";
 
-                    displayDebuff.style.fontSize = "11px"; // 文字サイズ
+                    displayDebuff.style.fontSize = "10px"; // 文字サイズ
                     
                     displayDebuff.style.display = "inline-block";
                 } else {
@@ -1617,6 +1616,133 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
             }
         ];
 
+// ▼ 追加：ターン開始時のランダムイベント用データ
+const RANDOM_EVENTS = [
+    {
+        title: "夏日",
+        condition: (state) => getSeasonByTurn(state.turn) === "夏",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); },
+        flavor: {
+            trust: "窓の外からの眩しい日差しに、彼は静かに目を細めた。",
+            dependence: "まばゆい光が窓から差し込む。しかし、彼は外に興味がないようだ。",
+            heavy_trust: "微睡みの中にいる彼の頬を、夏の日差しが照らす。",
+            heavy_dependence: "薄暗い部屋の中に、焼け付くような光が差し込む。"
+        }
+    },
+    {
+        title: "紅葉",
+        condition: (state) => getSeasonByTurn(state.turn) === "秋",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); },
+        flavor: {
+            trust: "窓から色づいた葉が舞い込んだ。彼はそれを手に取り、秋の訪れを感じている。",
+            dependence: "秋の景色よりも、あなたの存在を眺め続けている。",
+            heavy_trust: "窓から吹き込んだ秋風が、眠り続ける彼の髪を静かに揺らした。",
+            heavy_dependence: "色づいた落ち葉が彼の枕元に落ちた。"
+        }
+    },
+    {
+        title: "初雪",
+        condition: (state) => getSeasonByTurn(state.turn) === "冬",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); },
+        flavor: {
+            trust: "窓の外に白い雪が舞い始めた。彼は静かに外を眺めている。",
+            dependence: "凍えるような寒さの中、彼はあなたから与えられる熱だけを求めている。",
+            heavy_trust: "音もなく雪が降り積もる。彼の寝息だけが部屋に響いている。",
+            heavy_dependence: "窓の外は銀世界だ。彼をこの部屋に閉じ込めておくにはちょうどいい。"
+        }
+    },
+    {
+        title: "春風",
+        condition: (state) => getSeasonByTurn(state.turn) === "春",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); },
+        flavor: {
+            trust: "暖かな春風が部屋を吹き抜けた。彼の表情に、ほんの少しだけ生気が戻った気がする。",
+            dependence: "命吹く春の陽気の中でも、彼はあなたがいなければ生きられない。",
+            heavy_trust: "穏やかな陽気が、深い眠りの中にいる彼を優しく包み込んでいる。",
+            heavy_dependence: "外の世界がどれだけ色付いても、彼はあなただけのものだ。"
+        }
+    },
+    {
+        title: "遠くの鐘の音",
+        condition: (state) => true,
+        effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
+        flavor: {
+            trust: "遠くの町から鐘の音が響いた。彼は何かを思い出すように耳を澄ませた。",
+            dependence: "鐘の音が外の世界を知らせる。彼は忌々しそうに眉を顰めた。",
+            heavy_trust: "遠くで鐘が鳴っている。その音が眠りを妨げることはない。",
+            heavy_dependence: "鐘の音が響く。外の世界では、時が進んでいる。"
+        }
+    },
+    {
+        title: "探し物",
+        condition: (state) => state.debuff !== "heavy",
+        effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.relation = Math.min(100, state.relation + 2); },
+        flavor: {
+            trust: "彼が棚を探っていた。あなたが代わりに目当ての本を見つけて渡すと、彼は小さく礼を言った。",
+            dependence: "彼が何かを探している。あなたが手を差し伸べると、彼は探すのをやめた。"
+        }
+    },
+    {
+        title: "身支度",
+        condition: (state) => state.debuff !== "heavy",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 5); state.relation = Math.min(100, state.relation + 1); },
+        flavor: {
+            trust: "彼はあなたの手を借りず、鏡の前で自分で身支度を整えた。",
+            dependence: "彼は身支度をしていたようだが、あなたに気がつくと手を止めた。"
+        }
+    },
+    {
+        title: "お仕事",
+        condition: (state) => state.debuff !== "heavy",
+        effect: (state) => { state.gold += 20; state.stress = Math.min(100, state.stress + 5); },
+        flavor: {
+            trust: "彼は机に向かい、淡々と主人としての書類仕事をこなしている。",
+            dependence: "彼は主人としての仕事をしている。ただ、あなたに褒められることだけを待っている。"
+        }
+    },
+    {
+        title: "もぬけの殻",
+        condition: (state, currentLogDelay) => state.debuff === "none" && currentLogDelay === 0,
+        effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.stress = Math.min(100, state.stress + 15); },
+        flavor: {
+            trust: "部屋に彼の姿がない。彼は中庭で倒れるように座り込んでいた。",
+            dependence: "部屋に彼の姿がない。屋敷中を探し回ると、彼は暗い廊下の隅で蹲っていた。"
+        }
+    },
+    {
+        title: "差入れ",
+        condition: (state) => true,
+        effect: (state) => { state.gold += 10; state.health = Math.min(100, state.health + 5); },
+        flavor: {
+            trust: "玄関に宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
+            dependence: "玄関に匿名で荷物が届いた。彼は酷く訝しんでいる。",
+            heavy_trust: "玄関に宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
+            heavy_dependence: "玄関に匿名の荷物が届いた。誰からのものかは分からないが、利用できるものは利用させてもらおう。"
+        }
+    },
+    {
+        title: "小鳥",
+        condition: (state) => true,
+        effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
+        flavor: {
+            trust: "窓辺に小さな鳥が迷い込んできた。彼はその小鳥を、どこか羨ましそうに見つめていた。",
+            dependence: "窓辺に小鳥が止まった。彼はその鳥から目を逸らしている",
+            heavy_trust: "窓辺に小鳥が止まり、愛らしい声でさえずっている。",
+            heavy_dependence: "あなたは窓に止まった小鳥を無感情に追い払った。"
+        }
+    },
+    {
+        title: "悪夢",
+        condition: (state) => state.debuff === "heavy",
+        effect: (state) => { state.stress = Math.min(100, state.stress + 10); },
+        flavor: {
+            heavy_trust: "彼は深い微睡みの中で、苦しげに顔を歪めてうなされている。",
+            heavy_dependence: "彼は悪夢にうなされている。あなただけが、彼をその恐怖から救い出せる。"
+        }
+    }
+];
+// ▲ ここまで
+
 function processWeekStart() {
             state.turn++;
             
@@ -1627,12 +1753,13 @@ function processWeekStart() {
     }
 
     // ★追加：ターン開始時のステータスを記録
-    addTurnHistory('stats', { health: state.health, stress: state.stress, relation: state.relation, gold: state.gold });
+            addTurnHistory('stats', { health: state.health, stress: state.stress, relation: state.relation, gold: state.gold });
 
             state.turnPlayedCount = 0;
             state.lastPlayedType = null;
             
             let turnLogs = [];
+            let currentLogDelay = 0; // ログ表示の遅延時間を管理する変数を追加
 
             if (activeBuffs.scentDuration > 0) {
                 state.stress = Math.max(0, state.stress - 5);
@@ -1694,7 +1821,10 @@ if (Math.random() < obstacleRates[state.debuff]) {
     addTurnHistory('obtained', { type: obstacle.type, name: obstacle.name });
 
                     // 1. デバフ状態（体調不良）のフレーバーテキストを先に出力する
-                    addLog(debuffFlavor, "log-flavor");
+                    setTimeout(() => {
+                        addLog(debuffFlavor, "log-flavor");
+                    }, currentLogDelay);
+                    currentLogDelay += 600;
 
                     // 2. 時間差をつけて不用品混入時のランダムテキストと、カード固有のフレーバーを組み合わせて出力する
 let flavorText = "";
@@ -1707,11 +1837,15 @@ if (state.debuff === 'heavy') {
 }
                     setTimeout(() => {
                         addLog(`${flavorText}`, "log-flavor");
-                    }, 600); 
+                    }, currentLogDelay); 
+                    currentLogDelay += 600;
                 } else {
                     turnLogs.push("体調悪化");
-                    // 不用品が混入しない場合はすぐに表示する
-                    addLog(debuffFlavor, "log-flavor");
+                    // 不用品が混入しない場合
+                    setTimeout(() => {
+                        addLog(debuffFlavor, "log-flavor");
+                    }, currentLogDelay);
+                    currentLogDelay += 600;
                 }
                 
                 // ★追加：体調不良を履歴に記録
@@ -1730,16 +1864,13 @@ if (state.debuff === 'heavy') {
                 activeBuffs.nextTurnAPMod = 0; 
             }
 
-            state.battleActive = Math.random() < 0.40;
+            state.battleActive = Math.random() < 0.25;
             if (state.battleActive) {
                 state.threat = 15 + Math.floor(state.turn * 1.0);
                 if (activeBuffs.threatReduction > 0) {
                     state.threat = Math.max(0, state.threat - activeBuffs.threatReduction);
                     activeBuffs.threatReduction = 0;
                 }
-                
-                // デバフと不用品が重なっている場合は1.2秒後、そうでない場合は0.6秒後に表示
-                let delay = (state.debuff === 'medium' || state.debuff === 'heavy') ? 1200 : 600;
                 
                 // 表示するテキストの候補を配列で定義
                 const enemyTexts = [
@@ -1757,16 +1888,46 @@ if (state.debuff === 'heavy') {
                 
                 setTimeout(() => {
                     addLog(randomText, "log-flavor");
-                }, delay);
+                }, currentLogDelay);
+                currentLogDelay += 600;
                 
                 turnLogs.push("敵襲来");
-        
+                addTurnHistory('states', '敵襲来'); // 戦闘発生を履歴に記録
             }
 
+           // ▼ 追加：ランダムイベント処理
+            if (!state.battleActive && Math.random() < 0.33) {
+                let availableEvents = RANDOM_EVENTS.filter(ev => ev.condition(state, currentLogDelay));
+                if (availableEvents.length > 0) {
+                    let ev = availableEvents[Math.floor(Math.random() * availableEvents.length)];
+                    ev.effect(state);
+
+                    let eventFlavor = "";
+                    if (state.debuff === 'heavy') {
+                        eventFlavor = state.relation >= 0 ? 
+                            (ev.flavor.heavy_trust || ev.flavor.trust) : 
+                            (ev.flavor.heavy_dependence || ev.flavor.dependence);
+                    } else {
+                        eventFlavor = state.relation >= 0 ? ev.flavor.trust : ev.flavor.dependence;
+                    }
+
+                    if (eventFlavor) {
+                        setTimeout(() => {
+                            addLog(eventFlavor, "log-flavor");
+                        }, currentLogDelay);
+                        currentLogDelay += 600;
+                    }
+
+                    turnLogs.push(ev.title);
+                    addTurnHistory('event', ev.title);
+                }
+            }
+            // ▲ ここまで
+
             if (turnLogs.length > 0) {
-                setLastAction("警告: " + turnLogs.join(" / "));
+                setLastAction(turnLogs.join(" / "));
             } else {
-                setLastAction("直前の行動: なし");
+                setLastAction("　");
             }
 
             let drawCount = state.debuff === 'medium' ? 4 : 5;
@@ -1817,6 +1978,7 @@ if (state.debuff === 'heavy') {
                     };
                     state.hand.push(letterCard);
                    addTurnHistory('obtained', { type: letterCard.type, name: letterCard.name });
+                   addTurnHistory('event', '手紙入手');
 
                     // ★フレーバーテキストの出力処理を追加
                     let flavorText = "";
@@ -1828,27 +1990,10 @@ if (state.debuff === 'heavy') {
                         flavorText = state.relation >= 0 ? letterCard.flavor.trust : letterCard.flavor.dependence;
                     }
                     
-                    // 他のイベントログと被らないよう、発生したイベントに応じて遅延時間を計算する
-                    let letterDelay = 600;
-                    if (turnLogs.includes("敵襲来")) {
-                        // 敵襲来がある場合は、敵襲来ログ（600ms or 1200ms）の後に出力
-                        letterDelay = (state.debuff === 'medium' || state.debuff === 'heavy') ? 1800 : 1200;
-                    } else if (turnLogs.includes("体調悪化(不用品混入)")) {
-                        // 不用品混入のログ（600ms）の後に出力
-                        letterDelay = 1200;
-                    } else if (turnLogs.includes("体調悪化")) {
-                        // 通常の体調悪化ログ（0ms）の少し後に出力
-                        letterDelay = 600;
-                    }
-
-                    // 算出した遅延時間でテキストを表示（0秒なら即時表示）
-                    if (letterDelay > 0) {
-                        setTimeout(() => {
-                            addLog(flavorText, "log-flavor");
-                        }, letterDelay);
-                    } else {
+                    setTimeout(() => {
                         addLog(flavorText, "log-flavor");
-                    }
+                    }, currentLogDelay);
+                    currentLogDelay += 600;
                 }
             }
 
@@ -2568,11 +2713,10 @@ if (state.battleActive) {
             }
 
             if (endLogs.length > 0) {
-                setLastAction("結果: " + endLogs.join(" / "));
+                setLastAction(endLogs.join(" / "));
             } else {
                 setLastAction("精算完了");
             }
-
             if (state.health <= 0) { 
                 updateUI(); 
     checkEndGame(false, "dead"); 
@@ -2856,6 +3000,39 @@ function generateTurnHistoryHTML() {
     // 見出しラベルのデザイン
     const labelStyle = "background: #080808; color: #736e5d; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-right: 6px; display: inline-flex; align-items: center; justify-content: center; width: 45px; flex-shrink: 0; font-family: 'Zen Kaku Gothic New', sans-serif !important;";
 
+    // ★追加：初期デッキ構成を詳細履歴の最初に表示
+    if (state.initialDeck && state.initialDeck.length > 0) {
+        html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
+        html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ 初期デッキ構成</div>`;
+        
+        let initDeckCounts = {};
+        const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
+        
+        state.initialDeck.forEach(c => {
+            if(!c) return;
+            let key = `${c.type}_${c.name}`;
+            if (!initDeckCounts[key]) initDeckCounts[key] = { count: 0, card: c };
+            initDeckCounts[key].count++;
+        });
+        
+        let sortedInitDeck = Object.values(initDeckCounts).sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
+        
+        let deckCardsHTML = sortedInitDeck.map(item => {
+            return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
+                        <span class="card-type type-${item.card.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[item.card.type] || '不明'}</span>
+                        <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${item.card.name}（${item.count}）</span>
+                    </div>`;
+        }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
+        
+        html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                    <span style="${labelStyle}">DECK</span>
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
+                        ${deckCardsHTML}
+                    </div>
+                 </div>`;
+        html += `</div>`;
+    }
+
     for (let turn = 1; turn <= state.turn; turn++) {
         let history = state.turnHistory[turn];
         if (!history) continue;
@@ -2882,86 +3059,141 @@ function generateTurnHistoryHTML() {
             else if (stateName === '昏睡') bgColor = '#a71e1e';
             else if (stateName === '戦闘勝利') bgColor = '#bf790d';
             else if (stateName === '戦闘敗北') bgColor = '#40435d';
+            else if (stateName === '敵襲来') bgColor = '#962d22'; // 敵襲来の色を追加
             
-            return `<span style="background-color: ${bgColor}; color: #ffffff; padding: 1px 4px; border-radius: 2px; font-size: 9px; display: inline-block; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${stateName}</span>`;
+            return `<span style="background-color: ${bgColor}; color: #ffffff; padding: 1px 4px; border-radius: 2px; font-size: 8px; display: inline-block; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${stateName}</span>`;
         };
 
-        // 状態 -> イベントに変更
-        if (history.states && history.states.length > 0) {
-            html += `<div style="margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px;">
-                        <span style="${labelStyle}">EVENT</span>
-                        ${history.states.map(renderStateBadge).join('')}
-                     </div>`;
-        }
+        if (history.timeline && history.timeline.length > 0) {
+            let currentGroup = null;
+            let groupItems = [];
+            
+            const renderGroup = () => {
+                if (groupItems.length === 0) return '';
+                let result = '';
+                
+                // statesとeventを統合して1行に表示し、ランダムイベントは灰色に変更
+                if (currentGroup === 'events') {
+                    let eventBadges = groupItems.map(item => {
+                        if (item.category === 'states') {
+                            return renderStateBadge(item.data);
+                        } else if (item.category === 'event') {
+                            return `<span style="background-color: #555555; color: #ffffff; padding: 1px 4px; border-radius: 2px; font-size: 8px; display: inline-block; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${item.data}</span>`;
+                        }
+                    }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
 
-        // 縦並び用のカード描画ヘルパー関数
-        const renderCardsVertical = (cards) => {
-            return cards.map((c, idx) => {
-                let targetSuffix = '';
-                if (c.type === 'harm') {
-                    if (c.target === 'master') targetSuffix = '（主人）';
-                    else if (c.target === 'battle') targetSuffix = '（敵）';
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px;">
+                                <span style="${labelStyle}">EVENT</span>
+                                ${eventBadges}
+                             </div>`;
+                } else if (currentGroup === 'used') {
+                    groupItems.forEach(item => {
+                        let c = item.data;
+                        let targetSuffix = '';
+                        if (c.type === 'harm') {
+                            if (c.target === 'master') targetSuffix = '（主人）';
+                            else if (c.target === 'battle') targetSuffix = '（敵）';
+                        }
+                        result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                                    <span style="${labelStyle}">USE</span>
+                                    <div style="display: flex; align-items: center; margin-top: 1px;">
+                                        <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
+                                        <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${targetSuffix}</span>
+                                    </div>
+                                 </div>`;
+                    });
+                } else if (currentGroup === 'in') {
+                    let mixedCards = groupItems.map(item => {
+                        let c = item.data;
+                        let suffix = item.category === 'obtained' ? '（入）' : '（購）';
+                        return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
+                                    <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
+                                    <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${suffix}</span>
+                                </div>`;
+                    }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
+                    
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                                <span style="${labelStyle}">IN</span>
+                                <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
+                                    ${mixedCards}
+                                </div>
+                             </div>`;
+                } else if (currentGroup === 'out') {
+                    let mixedCards = groupItems.map(item => {
+                        let c = item.data;
+                        let suffix = item.category === 'sold' ? '（売）' : '（処）';
+                        return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
+                                    <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
+                                    <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${suffix}</span>
+                                </div>`;
+                    }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
+                    
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                                <span style="${labelStyle}">OUT</span>
+                                <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
+                                    ${mixedCards}
+                                </div>
+                             </div>`;
                 }
-                return `<div style="display: flex; align-items: center;">
-                            <span style="background: #080808; color: #736e5d; border-radius: 3px; font-size: 9px; padding: 0 4px; margin-right: 4px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${idx + 1}</span>
-                            <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
-                            <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${targetSuffix}</span>
-                        </div>`;
-            }).join('');
-        };
+                
+                groupItems = [];
+                return result;
+            };
 
-       // IN/OUT用のカード描画ヘルパー関数
-        const renderMixedCards = (items, separator) => {
-            return items.map(item => {
-                let c = item.card;
-                return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
-                            <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
-                            <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${item.suffix}</span>
-                        </div>`;
-            }).join(separator);
-        };
-
-        // 使用
-        if (history.used && history.used.length > 0) {
-            html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
-                        <span style="${labelStyle}">USE</span>
-                        <div style="display: flex; flex-direction: column; gap: 2px;">
-                            ${renderCardsVertical(history.used)}
-                        </div>
-                     </div>`;
-        }
-
-        // 入手・購入（IN）
-        let inCards = [];
-        if (history.obtained) history.obtained.forEach(c => inCards.push({card: c, suffix: '（入）'}));
-        if (history.bought) history.bought.forEach(c => inCards.push({card: c, suffix: '（購）'}));
-        
-        if (inCards.length > 0) {
-            html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
-                        <span style="${labelStyle}">IN</span>
-                        <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px;">
-                            ${renderMixedCards(inCards, `<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">/</span>`)}
-                        </div>
-                     </div>`;
-        }
-
-        // 売却・処分（OUT）
-        let outCards = [];
-        if (history.sold) history.sold.forEach(c => outCards.push({card: c, suffix: '（売）'}));
-        if (history.disposed) history.disposed.forEach(c => outCards.push({card: c, suffix: '（処）'}));
-        
-        if (outCards.length > 0) {
-            html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
-                        <span style="${labelStyle}">OUT</span>
-                        <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px;">
-                            ${renderMixedCards(outCards, `<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">/</span>`)}
-                        </div>
-                     </div>`;
+            history.timeline.forEach(event => {
+                let groupType = '';
+                // statesとeventを'events'という同一のグループにまとめる
+                if (event.category === 'states' || event.category === 'event') groupType = 'events';
+                else if (event.category === 'used') groupType = 'used';
+                else if (event.category === 'obtained' || event.category === 'bought') groupType = 'in';
+                else if (event.category === 'sold' || event.category === 'disposed') groupType = 'out';
+                
+                if (currentGroup !== groupType) {
+                    html += renderGroup();
+                    currentGroup = groupType;
+                }
+                groupItems.push(event);
+            });
+            html += renderGroup(); // 最後のグループを出力
         }
 
         html += `</div>`;
     }
     
+    // ★追加：最終デッキ構成を詳細履歴の最後に表示
+    let allCards = [...state.deck, ...state.hand, ...state.discard];
+    if (allCards && allCards.length > 0) {
+        html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
+        html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ 最終デッキ構成</div>`;
+        
+        let finalDeckCounts = {};
+        const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
+        
+        allCards.forEach(c => {
+            if(!c) return;
+            let key = `${c.type}_${c.name}`;
+            if (!finalDeckCounts[key]) finalDeckCounts[key] = { count: 0, card: c };
+            finalDeckCounts[key].count++;
+        });
+        
+        let sortedFinalDeck = Object.values(finalDeckCounts).sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
+        
+        let deckCardsHTML = sortedFinalDeck.map(item => {
+            return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
+                        <span class="card-type type-${item.card.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[item.card.type] || '不明'}</span>
+                        <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${item.card.name}（${item.count}）</span>
+                    </div>`;
+        }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
+        
+        html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                    <span style="${labelStyle}">DECK</span>
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
+                        ${deckCardsHTML}
+                    </div>
+                 </div>`;
+        html += `</div>`;
+    }
+
     return html;
 }
 
@@ -3000,30 +3232,12 @@ function generateTurnHistoryHTML() {
                 `;
             }
 
-            // --- ここから追加：リザルト画面への一覧追加処理 ---
+           // --- ここから追加：リザルト画面への一覧追加処理 ---
             const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
             const typeNames = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' };
             // バーグラフ用の色設定（CSSと同一）
             const typeColors = { direct: '#7d1f18', indirect: '#1e5a34', cold: '#1f4a63', harm: '#964b15', season: '#b3860f', obstacle: '#444444', attachment: '#ad5c77' };
             
-            // 1. 最終デッキの集計とHTML化
-            let allCards = [...state.deck, ...state.hand, ...state.discard];
-            let deckCounts = {};
-            allCards.forEach(c => {
-                if(!c) return;
-                let key = `${c.type}_${c.name}`;
-                if (!deckCounts[key]) deckCounts[key] = { count: 0, card: c };
-                deckCounts[key].count++;
-            });
-            let deckList = Object.values(deckCounts).sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
-            
-            let deckListHTML = deckList.map(item => `
-                <div class="result-item" style="display: flex; align-items: center; gap: 6px;">
-                    <span class="card-type type-${item.card.type}">${typeNames[item.card.type]}</span>
-                    <span style="font-size: 11px; margin-bottom: 3px;">${item.card.name}（${item.count}枚）</span>
-                </div>
-            `).join('');
-
             // 2. 使用カードの集計とHTML化
             let playedCounts = {};
             let typeCounts = { direct: 0, indirect: 0, cold: 0, harm: 0, season: 0, obstacle: 0, attachment: 0 };
@@ -3089,13 +3303,6 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
                             <div style="display: flex; flex-direction: column; gap: 4px;">
                                 ${playedListHTML}
                             </div>
-                        </div>
-                    </details>
-                    
-                    <details style="border: 1px solid #2a2a2a;  padding: 6px; background-color: #151515;">
-                        <summary style="cursor: pointer; font-weight: bold; color: #d4af37; font-size: 12px; outline: none;">最終デッキ内容</summary>
-                        <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 4px;">
-                            ${deckListHTML}
                         </div>
                     </details>
                     
@@ -3600,11 +3807,19 @@ document.addEventListener('pointerdown', function(e) {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.5</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.6</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+      <p style="font-size: 9px;">■ver 0.6<br>
+・ランダムイベントを12種実装しました。
+・ターンの詳細履歴に初期デッキと最終デッキを記載しました。<br>
+・ターンの詳細履歴の表示を時系列順にしました。<br>
+・初手の不用品をランダムにしました。<br>
+・一部のテキスト・UIを変更しました。
+</p>
+
       <p style="font-size: 9px;">■ver 0.5<br>
 ・リザルト画面にすべての「ターンごとの詳細履歴」を追加しました。<br>
 ・一部のカードに特定の条件を満たしている時に、特別な処理が発生する効果を追加しました。<br>
