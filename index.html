@@ -1605,7 +1605,7 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
                 } 
             },
             { 
-                name: "埃を被った記憶", 
+                name: "埃被った記憶", 
                 type: "obstacle", 
                 cost: 0, 
                 desc: "忘却の彼方に沈む残骸。使用不可", 
@@ -1636,7 +1636,7 @@ const RANDOM_EVENTS = [
         flavor: {
             trust: "窓から色づいた葉が舞い込んだ。彼はそれを手に取り、秋の訪れを感じている。",
             dependence: "秋の景色よりも、あなたの存在を眺め続けている。",
-            heavy_trust: "窓から吹き込んだ秋風が、眠り続ける彼の髪を静かに揺らした。",
+            heavy_trust: "窓から吹き込んだ秋風が部屋を満たす。",
             heavy_dependence: "色づいた落ち葉が彼の枕元に落ちた。"
         }
     },
@@ -1678,8 +1678,8 @@ const RANDOM_EVENTS = [
         condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.relation = Math.min(100, state.relation + 2); },
         flavor: {
-            trust: "彼が棚を探っていた。代わりに目当ての本を見つけて渡すと、彼は小さく礼を言った。",
-            dependence: "彼が何かを探している。あなたに気がつくと、彼は探すのをやめた。"
+            trust: "彼が棚を探っている。声をかけるかどうか、しばらく様子を窺うことにした。",
+            dependence: "何かを探していた彼は、あなたの視線に気づいて手を止めた。"
         }
     },
     {
@@ -1697,7 +1697,7 @@ const RANDOM_EVENTS = [
         effect: (state) => { state.gold += 20; state.stress = Math.min(100, state.stress + 5); },
         flavor: {
             trust: "彼は机に向かい、黙々と主人としての書類仕事をこなしている。",
-            dependence: "彼は書簡をぱらぱらと捲り、判を押す。あなたがそれを取りに来ることを待っている。"
+            dependence: "彼は書簡をぱらぱらと捲り、判を押す。ただ、あなたがそれを取りに来ることを待っている。"
         }
     },
     {
@@ -1717,7 +1717,7 @@ const RANDOM_EVENTS = [
             trust: "宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
             dependence: "匿名で届いた荷物、彼は酷く訝しんでいる。",
             heavy_trust: "宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
-            heavy_dependence: "匿名の荷物が届いた。誰からのものかは分からないが、利用できるものは利用させてもらおう。"
+            heavy_dependence: "荷物が届いた。誰からの物なのかも、何の目的なのかもわからない。"
         }
     },
     {
@@ -1725,8 +1725,8 @@ const RANDOM_EVENTS = [
         condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
         flavor: {
-            trust: "翼を広げて飛び去る小鳥を、彼はどこか羨ましそうに見つめていた。",
-            dependence: "窓辺に一羽の白い小鳥が降り立った。彼はその鳥から目を逸らしている",
+            trust: "翼を広げて飛び去る小鳥を、彼はどこか羨ましそうに眺めている。",
+            dependence: "窓辺に一羽の白い小鳥が降り立った。彼はその鳥から目を逸らしている。",
             heavy_trust: "窓の外で小鳥がさえずっている。",
             heavy_dependence: "あなたは窓辺に止まった小鳥を無感情に追い払った。"
         }
