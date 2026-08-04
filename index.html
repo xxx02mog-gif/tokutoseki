@@ -1715,7 +1715,7 @@ const RANDOM_EVENTS = [
         effect: (state) => { state.gold += 10; state.health = Math.min(100, state.health + 5); },
         flavor: {
             trust: "宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
-            dependence: "匿名で届いた荷物、彼は酷く訝しんでいる。",
+            dependence: "彼は匿名で届いた荷物を酷く警戒している。",
             heavy_trust: "宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
             heavy_dependence: "荷物が届いた。誰からの物なのかも、何の目的なのかもわからない。"
         }
@@ -3056,15 +3056,16 @@ function generateTurnHistoryHTML() {
         };
 
         if (history.timeline && history.timeline.length > 0) {
-            let currentGroup = null;
+            let currentGroupType = null;
             let groupItems = [];
+            let inItems = [];
+            let outItems = [];
             
             const renderGroup = () => {
                 if (groupItems.length === 0) return '';
                 let result = '';
                 
-                // statesとeventを統合して1行に表示し、ランダムイベントは灰色に変更
-                if (currentGroup === 'events') {
+                if (currentGroupType === 'EVENT') {
                     let eventBadges = groupItems.map(item => {
                         if (item.category === 'states') {
                             return renderStateBadge(item.data);
@@ -3077,7 +3078,7 @@ function generateTurnHistoryHTML() {
                                 <span style="${labelStyle}">EVENT</span>
                                 ${eventBadges}
                              </div>`;
-                } else if (currentGroup === 'used') {
+                } else if (currentGroupType === 'USE') {
                     groupItems.forEach(item => {
                         let c = item.data;
                         let targetSuffix = '';
@@ -3093,8 +3094,16 @@ function generateTurnHistoryHTML() {
                                     </div>
                                  </div>`;
                     });
-                } else if (currentGroup === 'in') {
-                    let mixedCards = groupItems.map(item => {
+                }
+                
+                groupItems = [];
+                return result;
+            };
+
+            const renderInOut = () => {
+                let result = '';
+                if (inItems.length > 0) {
+                    let mixedCards = inItems.map(item => {
                         let c = item.data;
                         let suffix = item.category === 'obtained' ? '（入）' : '（購）';
                         return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
@@ -3109,8 +3118,9 @@ function generateTurnHistoryHTML() {
                                     ${mixedCards}
                                 </div>
                              </div>`;
-                } else if (currentGroup === 'out') {
-                    let mixedCards = groupItems.map(item => {
+                }
+                if (outItems.length > 0) {
+                    let mixedCards = outItems.map(item => {
                         let c = item.data;
                         let suffix = item.category === 'sold' ? '（売）' : '（処）';
                         return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
@@ -3126,38 +3136,43 @@ function generateTurnHistoryHTML() {
                                 </div>
                              </div>`;
                 }
-                
-                groupItems = [];
+                inItems = [];
+                outItems = [];
                 return result;
             };
 
-            // タイムラインをグループ順（events -> used -> in -> out）にソートして、切り替えによる行の分断を防ぐ
-            let sortedTimeline = [...history.timeline].sort((a, b) => {
-                const getGroupOrder = (cat) => {
-                    if (cat === 'states' || cat === 'event') return 1;
-                    if (cat === 'used') return 2;
-                    if (cat === 'obtained' || cat === 'bought') return 3;
-                    if (cat === 'sold' || cat === 'disposed') return 4;
-                    return 5;
-                };
-                return getGroupOrder(a.category) - getGroupOrder(b.category);
-            });
-
-            sortedTimeline.forEach(event => {
-                let groupType = '';
-                // statesとeventを'events'という同一のグループにまとめる
-                if (event.category === 'states' || event.category === 'event') groupType = 'events';
-                else if (event.category === 'used') groupType = 'used';
-                else if (event.category === 'obtained' || event.category === 'bought') groupType = 'in';
-                else if (event.category === 'sold' || event.category === 'disposed') groupType = 'out';
-                
-                if (currentGroup !== groupType) {
-                    html += renderGroup();
-                    currentGroup = groupType;
+            history.timeline.forEach(event => {
+                let groupType = null;
+                if (event.category === 'states' || event.category === 'event') {
+                    groupType = 'EVENT';
+                } else if (event.category === 'used') {
+                    groupType = 'USE';
+                } else if (event.category === 'obtained' || event.category === 'bought') {
+                    groupType = 'IN';
+                } else if (event.category === 'disposed' || event.category === 'sold') {
+                    groupType = 'OUT';
                 }
-                groupItems.push(event);
+                
+                if (groupType === 'IN') {
+                    inItems.push(event);
+                } else if (groupType === 'OUT') {
+                    outItems.push(event);
+                } else {
+                    // イベントや使用行動が来たタイミングで、溜まっていた IN / OUT を一括出力
+                    if (inItems.length > 0 || outItems.length > 0) {
+                        html += renderInOut();
+                    }
+                    if (currentGroupType !== groupType) {
+                        html += renderGroup();
+                        currentGroupType = groupType;
+                    }
+                    groupItems.push(event);
+                }
             });
-            html += renderGroup(); // 最後のグループを出力
+            // 最後に残っているイベントや使用行動を出力
+            html += renderGroup(); 
+            // 最後に残っている IN / OUT（購入売却フェーズの履歴）を一括出力
+            html += renderInOut(); 
         }
 
         html += `</div>`;
