@@ -1089,7 +1089,7 @@ flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさ�
         { name: "冷酷な事実", type: "cold", value: -7, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-7", flavor: { 
                 trust: "あなたに事実を淡々と説明され、彼は自分の無力さを実感している。", 
                 dependence: "現実を突きつけられ、彼はあなただけを世界のすべてにしようと逃避している。",
-                heavy_trust: "彼が避け続けている事実を告げた。届くはずのない言葉が、空虚な部屋に響き渡る。",
+                heavy_trust: "彼が避け続けている事実を耳元で告げた。届くはずのない言葉が、空虚に響く。",
                 heavy_dependence: "あなたは悪夢にうなされる彼の耳元で、残酷な真実を囁いた。"
             } 
         },
@@ -1558,7 +1558,7 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
                     trust: "彼の瞳の奥に、ふとした瞬間の迷いが見え隠れする。", 
                     dependence: "疑うことさえ忘れてしまえば楽になれる。しかし、彼に残された誇りがそれを許さない。",
                     heavy_trust: "彼がどれだけ疑いを抱いていても、微睡みの中ではあなたを拒絶できない。",
-                    heavy_dependence: "たとえ全てを信じられなくても、彼はあなたを正しいと信じようとしている。"
+                    heavy_dependence: "たとえ全てを信じられなくても、彼はあなただけは正しいと定義しようとしている。"
                 } 
             },
             { 
@@ -3131,7 +3131,19 @@ function generateTurnHistoryHTML() {
                 return result;
             };
 
-            history.timeline.forEach(event => {
+            // タイムラインをグループ順（events -> used -> in -> out）にソートして、切り替えによる行の分断を防ぐ
+            let sortedTimeline = [...history.timeline].sort((a, b) => {
+                const getGroupOrder = (cat) => {
+                    if (cat === 'states' || cat === 'event') return 1;
+                    if (cat === 'used') return 2;
+                    if (cat === 'obtained' || cat === 'bought') return 3;
+                    if (cat === 'sold' || cat === 'disposed') return 4;
+                    return 5;
+                };
+                return getGroupOrder(a.category) - getGroupOrder(b.category);
+            });
+
+            sortedTimeline.forEach(event => {
                 let groupType = '';
                 // statesとeventを'events'という同一のグループにまとめる
                 if (event.category === 'states' || event.category === 'event') groupType = 'events';
