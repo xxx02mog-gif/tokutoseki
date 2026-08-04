@@ -1203,10 +1203,10 @@ const SPECIAL_CARDS = {
             {type: "heal", value: 30}, 
             {type: "stress", value: -30}, 
             {type: "set_debuff", value: "heavy"}, // 即座に昏睡状態へ
-            {type: "buff", key: "waterStressDuration", value: 3}, // 3ターン継続の副作用
-            {type: "consume"} // 追加：使い切り
+            {type: "buff", key: "waterStressDuration", value: 3} // 3ターン継続の副作用
+            
         ], 
-        desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間ストレス+15(使い切り)", 
+        desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間ストレス+15", 
         flavor: { 
         trust: "その水を飲んだ彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。", 
         dependence: "あなたが与えた水を飲み干すと、彼は身をまかせるように意識を手放した。",
@@ -1226,10 +1226,10 @@ const SPECIAL_CARDS = {
             {type: "heal", value: 30}, 
             {type: "stress", value: -30}, 
             {type: "buff", key: "waterStressDuration", value: 3}, // 3ターン継続の副作用
-            {type: "set_relation_zero"}, // 追加：関係性を0にする新規アクション
-            {type: "consume"} // 追加：使い切り
+            {type: "set_relation_zero"} // 追加：関係性を0にする新規アクション
+           
         ], 
-        desc: "健康+30。必ずストレス-30。関係性を0にする。3ターンの間ストレス+15(使い切り)", 
+        desc: "健康+30。必ずストレス-30。関係性を0にする。3ターンの間ストレス+15", 
         flavor: { 
             trust: "何かを諦めたように目を閉じ、彼はその水を飲み干した。", 
             dependence: "水を飲ませてから暫く経っても、彼はまだ空っぽになったコップを虚ろな目で見つめている。",
@@ -1737,7 +1737,7 @@ const RANDOM_EVENTS = [
         effect: (state) => { state.stress = Math.min(100, state.stress + 10); },
         flavor: {
             heavy_trust: "深い微睡みの淵で、彼は苦しげに顔を歪めている。",
-            heavy_dependence: "彼は悪夢にうなされている。あなただけが、彼をそこから救い出せるかもしれない。"
+            heavy_dependence: "彼は悪夢にうなされている。あなただけが、彼をそこから救い出せるのかもしれない。"
         }
     }
 ];
