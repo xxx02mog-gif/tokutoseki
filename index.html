@@ -3203,11 +3203,39 @@ function generateTurnHistoryHTML() {
                     </div>`;
         }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
         
-        html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+       html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
                     <span style="${labelStyle}">DECK</span>
                     <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
                         ${deckCardsHTML}
                     </div>
+                 </div>`;
+        html += `</div>`;
+    }
+
+    // ★追加：カード使用比率ゲージを一番下に追加
+    let totalPlayed = state.totalPlayedCardsList ? state.totalPlayedCardsList.length : 0;
+    if (totalPlayed > 0) {
+        let typeCounts = { direct: 0, indirect: 0, cold: 0, harm: 0, season: 0, obstacle: 0, attachment: 0 };
+        state.totalPlayedCardsList.forEach(c => {
+            if(!c) return;
+            typeCounts[c.type]++;
+        });
+        
+        const typeColors = { direct: '#7d1f18', indirect: '#1e5a34', cold: '#1f4a63', harm: '#964b15', season: '#b3860f', obstacle: '#444444', attachment: '#ad5c77' };
+        
+        let bars = Object.keys(typeCounts).map(type => {
+            let count = typeCounts[type];
+            if (count > 0) {
+                let percent = (count / totalPlayed) * 100;
+                return `<div style="height: 100%; width: ${percent}%; background-color: ${typeColors[type]};" title="${typeNames[type]}: ${Math.round(percent)}%"></div>`;
+            }
+            return '';
+        }).join('');
+        
+        html += `<div style="margin-bottom: 8px; font-size: 11px; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
+        html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ カード使用比率（全${totalPlayed}回）</div>`;
+        html += `<div style="display: flex; height: 10px; width: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 4px; border: 1px solid #444;">
+                    ${bars}
                  </div>`;
         html += `</div>`;
     }
@@ -3250,55 +3278,7 @@ function generateTurnHistoryHTML() {
                 `;
             }
 
-           // --- ここから追加：リザルト画面への一覧追加処理 ---
-            const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
-            const typeNames = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' };
-            // バーグラフ用の色設定（CSSと同一）
-            const typeColors = { direct: '#7d1f18', indirect: '#1e5a34', cold: '#1f4a63', harm: '#964b15', season: '#b3860f', obstacle: '#444444', attachment: '#ad5c77' };
-            
-            // 2. 使用カードの集計とHTML化
-            let playedCounts = {};
-            let typeCounts = { direct: 0, indirect: 0, cold: 0, harm: 0, season: 0, obstacle: 0, attachment: 0 };
-            let totalPlayed = state.totalPlayedCardsList ? state.totalPlayedCardsList.length : 0; // ★変更
-            
-            if (state.totalPlayedCardsList) { // ★変更
-                state.totalPlayedCardsList.forEach(c => { // ★変更
-                    if(!c) return;
-                    let key = `${c.type}_${c.name}`;
-                    if (!playedCounts[key]) playedCounts[key] = { count: 0, card: c };
-                    playedCounts[key].count++;
-                    typeCounts[c.type]++;
-                });
-            }
-            let playedList = Object.values(playedCounts).sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
-
-            let playedListHTML = totalPlayed > 0 ? playedList.map(item => `
-                <div class="result-item" style="display: flex; align-items: center; gap: 6px;">
-                    <span class="card-type type-${item.card.type}">${typeNames[item.card.type]}</span>
-                    <span style="font-size: 11px; margin-bottom: 3px;">${item.card.name}（${item.count}回）</span>
-                </div>
-            `).join('') : '<div style="font-size: 11px;">使用したカードはありません。</div>';
-
-            // 3. バーグラフの生成
-            let barGraphHTML = '';
-            if (totalPlayed > 0) {
-                let bars = Object.keys(typeCounts).map(type => {
-                    let count = typeCounts[type];
-                    if (count > 0) {
-                        let percent = (count / totalPlayed) * 100;
-                        return `<div style="height: 100%; width: ${percent}%; background-color: ${typeColors[type]};" title="${typeNames[type]}: ${Math.round(percent)}%"></div>`;
-                    }
-                    return '';
-                }).join('');
-                barGraphHTML = `
-                    <div style="font-size: 10px; color: #aaa; margin-bottom: 4px;">カード使用比率（全${totalPlayed}回）</div>
-                    <div style="display: flex; height: 10px; width: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444;">
-                        ${bars}
-                    </div>
-                `;
-            }
-
-// --- ここから追加：ターンごとの履歴のHTML生成 ---
+           // --- ここから追加：ターンごとの履歴のHTML生成 ---
 let turnHistoryHTML = '';
 if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
     let contentHTML = generateTurnHistoryHTML();
@@ -3314,16 +3294,6 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
             // HTMLに結合
             let memoryText = `
                 <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
-                    <details style="border: 1px solid #2a2a2a;  padding: 6px; background-color: #151515;">
-                        <summary style="cursor: pointer; font-weight: bold; color: #d4af37; font-size: 12px; outline: none;">使用したカード履歴</summary>
-                        <div style="margin-top: 8px;">
-                            ${barGraphHTML}
-                            <div style="display: flex; flex-direction: column; gap: 4px;">
-                                ${playedListHTML}
-                            </div>
-                        </div>
-                    </details>
-                    
                     ${seasonMemoryHTML}
 
                 ${turnHistoryHTML} <!-- ★追加：ターンごとの履歴 -->
