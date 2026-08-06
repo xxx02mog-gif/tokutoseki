@@ -1,0 +1,4245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>特等席</title>
+    <!-- Webフォントの読み込み（Hina Mincho, Zen Kaku Gothic New） -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+   <style>
+
+html, body, * {
+  /* Firefox用の設定（少し暗めの赤茶と黒に近いグレー） */
+  scrollbar-width: thin;
+  scrollbar-color: #5c2c2c #1a1515;
+}
+
+/* 2. Chrome / Safari / Edge（WebKit系ブラウザ）用の設定 */
+
+/* スクロールバー全体の幅と高さ */
+::-webkit-scrollbar {
+  width: 8px;  /* 縦スクロールバーの幅 */
+  height: 8px; /* 横スクロールバーの高さ（あれば） */
+}
+
+/* スクロールバーが通るレール（溝）の部分 */
+::-webkit-scrollbar-track {
+  background: #151111; /* 画面に馴染む、極めて深い漆黒 */
+  border-left: 1px solid #2a1f1f; /* わずかな境界線で上品に */
+}
+
+/* 動かすツマミ（ハンドル）の部分 */
+::-webkit-scrollbar-thumb {
+  /* 耽美な世界観に合う「凝固した血のような深い赤（ボルドー）」 */
+  background-color: #5c2c2c; 
+  
+  /* 少しだけツマミの周囲に隙間を作って立体感を出す */
+  border: 1px solid #151111; 
+  transition: background-color 0.2s ease;
+}
+
+/* ツマミにマウスホバーしたとき */
+::-webkit-scrollbar-thumb:hover {
+  /* ホバー時は少しだけ明るく、あるいは不穏に赤く光るイメージ */
+  background-color: #8c3a3a; 
+}
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            /* 高級感と洗練された印象を与える高品位なサンセリフ・セリフ体の組み合わせ */
+     font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif;
+
+        }
+html {
+    background-color: #0b0b0b;
+}
+body {
+    background-color: #0b0b0b;
+    background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+    color: #e5e5e5;
+    display: flex;
+    flex-direction: column;
+    /* 変更箇所: min-height: 100vh; を以下の2行に変更 */
+    height: 100vh;
+    height: 100dvh; /* スマホブラウザのアドレスバー対策 */
+    overflow: hidden; /* 全体のスクロールを禁止 */
+    padding: 10px;
+    
+    /* PC閲覧時の広がり防止と中央寄せ */
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* 境界がわかりやすいように影を追加 */
+}
+        
+        header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    /* 深い黒の背景に、繊細なゴールドの枠線 */
+    background-color: rgba(20, 20, 20, 0.95);
+    border: 1px solid #d4af37;
+    padding: 10px;
+    border-bottom: none;
+    margin-bottom: -10px; /* 変更①: 10pxから0に変更し、隙間をなくす */
+    /* 変更②: 下のメイン要素と一体化させるため、ヘッダー個別の影を削除 */
+}
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 9px;
+            color: #d4af37; /* テキストをゴールドに変更 */
+            font-weight: bold;
+            
+            padding-bottom: 3px;
+        }
+        .status-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .status-box {
+            background-color: #151515;
+            padding: 6px;
+            
+            text-align: center;
+            font-size: 11px;
+            border: 1px solid #2a2a2a;
+        }
+        .status-box .value {
+            font-size: 15px;
+            font-weight: bold;
+            margin-top: 0px;
+            margin-bottom: 3px;
+            color: #ffffff;
+        display: inline-block;}
+
+@keyframes bounce-green {
+    0% { transform: translateY(0); color: #ffffff; }
+    50% { transform: translateY(-3px); color: #55b773; }
+    100% { transform: translateY(0); color: #ffffff; }
+}
+@keyframes bounce-red {
+    0% { transform: translateY(0); color: #ffffff; }
+    50% { transform: translateY(-3px); color: #e74c3c; }
+    100% { transform: translateY(0); color: #ffffff; }
+}
+
+@keyframes bounce-green2 {
+    0% { transform: translateY(0); color: #b57c1e; }
+    50% { transform: translateY(-3px); color: #55b773; }
+    100% { transform: translateY(0); color: #b57c1e; }
+}
+@keyframes bounce-red2 {
+    0% { transform: translateY(0); color: #b57c1e; }
+    50% { transform: translateY(-3px); color: #e74c3c; }
+    100% { transform: translateY(0); color: #b57c1e; }
+}
+
+@keyframes bounce-yellow {
+    0% { transform: translateY(0); color: #ffffff; }
+    50% { transform: translateY(-3px); color: #f1c40f; }
+    100% { transform: translateY(0); color: #ffffff; }
+}
+@keyframes bounce-purple {
+    0% { transform: translateY(0); color: #ffffff; }
+    50% { transform: translateY(-3px); color: #9b59b6; }
+    100% { transform: translateY(0); color: #ffffff; }
+}
+
+@keyframes shopItemOut {
+    0% { 
+        opacity: 1; 
+        transform: scale(1); 
+        max-height: 100px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        margin-top: 0;
+        border-width: 1px;
+    }
+    50% { 
+        opacity: 0; 
+        transform: scale(0.95); 
+        max-height: 100px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        margin-top: 0;
+        border-width: 1px;
+    }
+    100% { 
+        opacity: 0; 
+        transform: scale(0.95); 
+        max-height: 0; 
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-top: -8px; /* 親要素のgapを相殺して隙間を詰める */
+        border-width: 0;
+    }
+}
+
+.shop-item-anim-out {
+    animation: shopItemOut 0.4s ease-out forwards;
+    overflow: hidden; /* 高さが縮小する際に内部のテキストがはみ出さないようにする */
+}
+
+/* 変動時にJavaScriptから一時的に付与するクラス */
+.anim-health-up { animation: bounce-green 0.3s ease; }
+.anim-health-down { animation: bounce-red 0.3s ease; }
+.anim-stress-up { animation: bounce-red 0.3s ease; }
+.anim-stress-down { animation: bounce-green 0.3s ease; }
+.anim-relation-up { animation: bounce-yellow 0.3s ease; }
+.anim-relation-down { animation: bounce-purple 0.3s ease; }
+.anim-gold-up { animation: bounce-green2 0.3s ease; }
+.anim-gold-down { animation: bounce-red2 0.3s ease; }
+
+/* 選択ウィンドウ用のアニメーション定義 */
+@keyframes fadeInTarget {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOutTarget {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-5px); }
+}
+
+.target-anim-in {
+    animation: fadeInTarget 0.2s ease-out forwards;
+}
+
+.target-anim-out {
+    animation: fadeOutTarget 0.2s ease-in forwards;
+    pointer-events: none; /* 消える途中にボタンが押されるのを防ぐ */
+}
+
+
+        /* 高級感のあるダークトーンのステータスカラー */
+        .status-box.health { border-left: 4px solid #7d3a3a; }
+        .status-box.stress { border-left: 4px solid #85612f; }
+        .status-box.relation { border-left: 4px solid #55445d; }
+        
+        .player-status {
+            display: flex;
+            justify-content: space-around;
+            background-color: #1a1a1a;
+            padding: 6px;
+            
+            margin-top: 5px;
+            font-size: 12px;
+            border: 1px solid #2a2a2a;
+        }
+
+        #hypnosis-banner {
+            background-color: #3a0f5c;
+            color: #e0aaff;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px;
+            
+            margin-top: 5px;
+            border: 1px solid #5c1f99;
+            display: none;
+        }
+
+       main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #141414;
+    
+    border: 1px solid #d4af37;
+    border-top: none; /* 変更③: 枠線が二重になるのを防ぐため、上の枠線を消す */
+    padding: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+}
+
+        #log-area {
+            height: 130px;
+            min-height: 130px;
+            max-height: 130px;
+            background-color: #070707;
+            
+            padding: 8px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            
+        }
+        /* スクロールバーのカスタマイズ */
+        #log-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        #log-area::-webkit-scrollbar-track {
+            background: #070707;
+        }
+        #log-area::-webkit-scrollbar-thumb {
+            background: #333;
+            
+        }
+        #log-area::-webkit-scrollbar-thumb:hover {
+            background: #d4af37;
+        }
+
+        .log-entry {
+            margin-bottom: 6px;
+            border-bottom: 1px solid #151515;
+            padding-bottom: 3px;
+        }
+        .log-system { color: #666; font-size: 11px; display: none; }
+        .log-alert { color: #e74c3c; font-weight: bold; }
+        .log-success { color: #2ecc71; }
+        .log-effect { color: #3498db; display: none; }
+        .log-flavor { 
+            color: #aaaaaa; 
+            font-style: italic; 
+            font-size: 11px; 
+            padding-left: 6px; 
+            border-left: 2px solid #d4af37; 
+            font-family: 'Zen Old Mincho', serif; /* Hina Minchoを適用 */
+        }
+
+        /* 10px以下のフォントをZen Kaku Gothic Newにする */
+        .info-row,
+        .last-action-display,
+        .battle-phase-alert,
+        .game-card .card-info,
+        [style*="font-size: 9px"], [style*="font-size:9px"],
+        [style*="font-size: 8.5px"], [style*="font-size:8.5px"],
+        [style*="font-size: 8px"], [style*="font-size:8px"],
+        [style*="font-size: 7px"], [style*="font-size:7px"] {
+            font-family: 'Zen Kaku Gothic New', sans-serif !important;
+        }
+
+        /* カードの属性ラベルは元の明朝体を維持（上書きを防止） */
+        .btn,
+        .card-type,
+        .card-type-label {
+            font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif !important;
+        }
+
+#action-area {
+    background-color: #1a1a1a;
+    padding: 8px;
+    
+    
+    /* 以下の4行を追加 */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+        .last-action-display {
+            background-color: #0f0f0f;
+            padding: 6px;
+            
+            margin-bottom: 8px;
+            font-size: 10px;
+            text-align: center;
+            border: 0px solid #d4af37;
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #d4af37;
+            display: flex;
+            justify-content: space-between;
+            
+            padding-bottom: 2px;
+        }
+
+        .battle-phase-alert {
+            background-color: #1a1a1a;
+            border: 0px solid #962d22;
+            color: #e74c3c;
+            padding: 0px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: -5px;
+            margin-bottom: 8px;
+            display: none;
+        }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr; /* ← この行を追加 */
+    gap: 6px;
+    padding: 2px;
+}
+
+        /* カードデザイン：艶のある黒に細い金枠 */
+        .game-card {
+            background: linear-gradient(135deg, #222222 0%, #151515 100%);
+            border: 1px solid #444444;
+            padding: 4px 6px 8px 6px;
+            text-align: left;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 65px;
+            height: 100%; /* ← この行を追加 */
+            transition: all 0.2s;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+            position: relative; 
+        }
+        .game-card:hover {
+            border-color: #8c7c4a;
+        }
+        .game-card:active {
+            background: #2a2a2a;
+        }
+        
+.game-card.selected-card {
+    border: 1px solid #d4af37 !important;
+    
+    /* 12px → 6px に変更して発光を小さくする */
+    box-shadow: 0 0 2px rgba(212, 175, 55, 0.8); 
+    
+    background: linear-gradient(135deg, #2a2820 0%, #1a1915 100%);
+    position: relative; /* カード同士の重なりを防ぐため念のため残しておくのがおすすめです */
+    z-index: 10;
+}
+
+        .game-card .card-name {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 2px;
+            color: #f5f5f5;
+        }
+.card-type {
+            font-size: 9px;
+            padding: 1px 4px;
+            border-radius: 3px;
+            width: fit-content;
+            margin-bottom: 3px;
+            color: #fff;
+            font-weight: bold;
+            display: inline-block;
+        }
+        /* バッジカラーの調整 */
+        .type-direct { background-color: #7d1f18; }
+        .type-indirect { background-color: #1e5a34; }
+        .type-cold { background-color: #1f4a63; }
+        .type-harm { background-color: #964b15; }
+        .type-season { background-color: #b3860f; }
+        .type-obstacle { background-color: #444444; }
+        .type-attachment { background-color: #ad5c77; }
+
+        .game-card .card-info {
+            font-size: 10px;
+            color: #bbbbbb;
+            line-height: 1.3;
+        }
+        .game-card .card-cost {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background-color: #444444; 
+            clip-path: polygon(0 0, 100% 0, 100% 100%); 
+            color: #ffffff; 
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding-right: 4px;
+            padding-top: 2px;
+            font-size: 13px; 
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .game-card:hover .card-cost {
+            background-color: #8c7c4a;
+        }
+
+        .game-card.selected-card .card-cost {
+            background-color: #d4af37;
+            color: #0b0b0b;
+        }
+
+        /* ボタンデザインの変更 */
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: #1f1f1f;
+            color: #d4af37;
+            border: 1px solid #d4af37;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        white-space: nowrap;
+    flex-shrink: 0;}
+        .btn:active { 
+            background-color: #2a2a2a; 
+        }
+        /* 主要ボタンは金ベースに黒文字 */
+        .btn-primary { 
+            background-color: #d4af37; 
+            color: #0b0b0b;
+            border: 1px solid #aa7c11;
+        }
+        .btn-primary:active { 
+            background-color: #bfa343; 
+        }
+        .btn-danger { 
+            background-color: #7d1f18; 
+            color: #ffffff;
+            border: 1px solid #5c140f;
+        }
+        .btn-danger:active {
+            background-color: #96251d;
+        }
+        
+        .target-selector {
+            display: none;
+            background-color: #0f0f0f;
+            padding: 8px;
+            
+            margin-top: 5px;
+            border: 1px solid #d4af37;
+        }
+        .target-btn {
+            background-color: #222222;
+            color: #ffffff;
+            padding: 8px;
+            margin: 4px 0;
+            
+            text-align: center;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #444;
+            transition: border-color 0.2s;
+        }
+        .target-btn:hover {
+            border-color: #d4af37;
+        }
+        .target-btn:active {
+            background-color: #333333;
+        }
+        
+        .shop-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .shop-item {
+            background-color: #151515;
+            padding: 6px;
+            
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+      gap: 8px; /*  追加：文章とボタンの間の最低限の隙間を確保 */
+}
+
+/* 追加：ショップのテキスト領域がボタンを押し潰さないようにする */
+.shop-item > div,
+.shop-item > span {
+    min-width: 0;
+    flex: 1;
+    word-break: break-all; /* 必要に応じて文章側を自動で改行させる */
+}
+
+        .tab-area {
+            display: flex;
+            margin-bottom: 6px;
+            gap: 5px;
+        }
+        .tab-btn {
+            flex: 1;
+            background-color: #151515;
+            color: #888888;
+            padding: 5px;
+            text-align: center;
+            font-size: 11px;
+            
+            cursor: pointer;
+            
+        }
+        .tab-btn.active {
+            background-color: #222222;
+            color: #d4af37;
+            font-weight: bold;
+            border: 1px solid #d4af37;
+        }
+
+
+#phase-start-container,
+#phase-main-container,
+#phase-shop-container,
+#phase-end-container {
+display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* JSによって display: block; にされた際、強制的に flex に書き換えるハック */
+#phase-start-container[style*="display: block"],
+#phase-main-container[style*="display: block"],
+#phase-shop-container[style*="display: block"],
+#phase-end-container[style*="display: block"] {
+    display: flex !important;
+}
+
+/* スクロールする領域のスタイル */
+.phase-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+    margin-bottom: 8px;
+}
+.phase-scroll-area::-webkit-scrollbar { width: 6px; }
+.phase-scroll-area::-webkit-scrollbar-track { background: #1a1a1a; }
+.phase-scroll-area::-webkit-scrollbar-thumb { background: #333;  }
+.phase-scroll-area::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+
+/* 下部に固定されるボタン領域のスタイル */
+.phase-button-area {
+    flex-shrink: 0;
+}
+
+.phase-button-area .target-selector {
+    margin-top: 0px !important;     /* 上の余白を消す */
+    margin-bottom: 8px !important;  /* 下の「精算フェーズへ」ボタンとの間に程よい隙間を作る */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.log-entry {
+    margin-bottom: 6px;
+    border-bottom: 1px solid #151515;
+    padding-bottom: 3px;
+    animation: fadeIn 0.4s ease-out forwards; /* この行を追加 */
+}
+
+
+/* ==========================================
+   ボタン等の押し込み・沈み込み演出（維持）
+   ========================================== */
+.btn, .game-card, .target-btn, .tab-btn {
+    transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
+                box-shadow 0.2s ease, 
+                border-color 0.2s ease,
+                background-color 0.2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent; /* スマホタップ時の青枠を消す */
+}
+
+/* 押し込んだ瞬間：微小に沈み込み、ほんのり発光 */
+.btn:active, .game-card:active, .target-btn:active, .tab-btn:active {
+    transform: scale(0.99) !important;
+    box-shadow: 0 0 0px rgba(212, 175, 55, 0.35), 
+                inset 0 0 8px rgba(212, 175, 55, 0.2) !important;
+}
+
+/* ==========================================
+   全画面対応・金光彩リップル（GPU最適化・超滑らか版）
+   ========================================== */
+@keyframes goldRipple {
+    0% {
+        transform: translate(-50%, -50%) scale(0.01);
+        opacity: 1;
+        /* 線（輪郭）のみ */
+        border: 1.5px solid #d4af37;
+    }
+    60% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0.6);
+        opacity: 0;
+        border: 1px solid rgba(212, 175, 55, 0);
+    }
+}
+
+.click-ripple {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity; 
+    animation: goldRipple 1.4s cubic-bezier(0.1, 0.5, 0.2, 1) forwards;
+    z-index: 9999;
+}
+    </style>
+
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+</head>
+<body>
+<!-- カスタムアラートモーダル（黒×ゴールド仕様） -->
+<div id="custom-alert-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 20px;">
+    <div style="background-color: #151515; border: 1px solid #d4af37;  padding: 20px; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2); animation: fadeInTarget 0.2s ease-out forwards;">
+        <div id="custom-alert-message" style="color: #e5e5e5; font-size: 13px; margin-bottom: 20px; line-height: 1.5; font-weight: bold;"></div>
+        <button class="btn btn-primary" onclick="closeCustomAlert()" style="width: 100%; max-width: 150px; margin: 0 auto; padding: 8px;">確認</button>
+    </div>
+</div>
+
+<div id="title-screen" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #0b0b0b; background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%); z-index: 150;">
+    
+    <!-- タイトルロゴ画像 -->
+    <img src="bg.png" alt="特等席" style="width: 50%; max-width: 60px; height: auto; margin-bottom: 30px;">
+    
+    <!-- キャッチコピー画像 -->
+    <img src="catch.png" alt="キャッチコピー" style="width: 80%; max-width: 250px; height: auto; margin-bottom: 30px;">
+    
+    <div style="width: 80%; max-width: 300px; display: flex; flex-direction: column; gap: 10px;">
+        <button class="btn btn-primary" onclick="startGame()">物語を始める</button>
+        <button class="btn" style="background-color: #1a1a1a;" onclick="openManual()">説明書</button>
+    </div>
+</div>
+
+<!-- idと初期非表示スタイルを追加したヘッダー -->
+<header id="game-header" style="display: none;">
+    <div class="info-row">
+        <div style="display: flex; gap: 5px; align-items: center; flex-wrap: wrap;">
+            <span id="display-time">【 1 / 30 ターン 】</span>
+            <span id="display-season">季節: 夏</span>
+            <span id="display-debuff" style="display: none;"></span>
+        </div>
+        <button onclick="openManual()" style="background: none; border: 1px solid #d4af37; color: #d4af37; padding: 2px 8px; cursor: pointer; font-size: 11px; font-family: serif; flex-shrink: 0;">説明書</button>
+    </div>
+    <div class="status-container">
+        <div class="status-box health">
+            <div>健康度</div>
+            <div class="value" id="stat-health">100</div>
+        </div>
+        <div class="status-box stress">
+            <div>ストレス</div>
+            <div class="value" id="stat-stress">0</div>
+        </div>
+        <div class="status-box relation">
+            <div>関係性</div>
+            <div class="value" id="stat-relation">0</div>
+        </div>
+    </div>
+    <div id="debuff-bar" style="font-size: 11px; color: #ff4d4d; margin-top: 4px; text-align: center; display: none;">
+        主人の様態: <span id="debuff-name">なし</span>
+    </div>
+</header>
+
+<!-- idと初期非表示スタイルを追加したメイン -->
+<main id="game-main" style="display: none;">
+    <div id="log-area">
+        <div class="log-entry log-flavor">鳥籠のような城で、彼との日々が始まる。</div>
+    </div>
+
+    <div id="action-area">
+        
+        <div id="phase-start-container">
+            <div class="phase-scroll-area">
+                <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                    <div class="last-action-display" style="flex: 1; margin-bottom: 0;"></div>
+                    <div style="background-color: #0f0f0f; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
+                </div>
+                <div class="buff-debuff-details" style="display: none; background-color: #111; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
+                
+            </div>
+            <div class="phase-button-area">
+                <button id="next-turn-btn" class="btn btn-primary" onclick="processWeekStart()">次へ進む</button>
+            </div>
+        </div>
+
+        <div id="phase-main-container" style="display: none;">
+            <div class="phase-scroll-area">
+                <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                    <div class="last-action-display" style="flex: 1; margin-bottom: 0;"></div>
+                    <div style="background-color: #0f0f0f; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
+                </div>
+                <div class="buff-debuff-details" style="display: none; background-color: #111; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
+                
+                <div class="section-title">
+                    <span>行動フェーズ</span>
+                    <div style="display: flex; gap: 8px; font-size: 12px; color: #e5e5e5; font-weight: normal; align-items: center;">
+                        <span>AP: <strong id="stat-ap" style="color:#f1c40f;">3/3</strong></span>
+                        <span>資金: <strong id="stat-gold" style="color:#b57c1e;">100</strong></span>
+                    </div>
+                </div>
+                <div class="battle-phase-alert" id="battle-alert-bar">
+    【戦闘発生中！】敵の脅威度: <span id="battle-threat-value">0</span>% 
+</div>
+                <div class="card-grid" id="hand-cards"></div>
+            </div>
+
+            <div class="phase-button-area">
+                <div class="target-selector" id="target-selector" style="display: none; margin-top: 0; margin-bottom: 8px;">
+                    <div style="font-size:11px; margin-bottom:4px; color:#aaa;">対象を選択してください:</div>
+                    <div class="target-btn" id="target-master-btn" onclick="executeCard('master')">主人に使用</div>
+                    <div class="target-btn" style="background-color:#3b3b3b;" id="target-battle-btn" onclick="executeCard('battle')">治安維持（戦闘）に使用</div>
+                    <div class="target-btn" style="background-color:#1a1a1a;" onclick="cancelTargetSelect()">キャンセル</div>
+                </div>
+
+                <button class="btn" id="end-week-btn" onclick="processWeekEnd()">行動フェーズを終了</button>
+            </div>
+        </div>
+
+       <div id="phase-shop-container" style="display: none;">
+            <div class="phase-scroll-area">
+                <div class="section-title">
+                    <span>購入・売却フェーズ</span>
+                    <div style="display: flex; gap: 8px; font-size: 12px; color: #e5e5e5; font-weight: normal; align-items: center;">
+                        <span>AP: <strong id="stat-ap-shop" style="color:#f1c40f;">3/3</strong></span>
+                        <span>資金: <strong id="stat-gold-shop" style="color:#b57c1e;">100</strong></span>
+                    </div>
+                </div>
+                <div class="tab-area">
+                    <div class="tab-btn active" id="tab-buy" onclick="switchShopTab('buy')">カード購入</div>
+                    <div class="tab-btn" id="tab-dispose" onclick="switchShopTab('dispose')">カード処分</div>
+                </div>
+                
+                <div id="shop-buy-view" class="shop-layout"></div>
+                <div id="shop-dispose-view" class="shop-layout" style="display:none;"></div>
+            </div>
+            <div class="phase-button-area">
+                <button class="btn btn-primary" onclick="closeShop()">購入・売却フェーズを終了</button>
+            </div>
+        </div>
+
+        <div id="phase-end-container" style="display: none;">
+            <div class="phase-scroll-area">
+                <div class="section-title" id="end-title" style="color:#ffffff;">エンディング</div>
+                <div id="end-description" style="font-size:13px; margin-bottom:10px; line-height:1.5;"></div>
+            </div>
+            <div class="phase-button-area">
+                <button class="btn btn-primary" onclick="location.reload()">もう一度遊ぶ</button>
+            </div>
+        </div>
+        
+    </div>
+</main>
+<script>
+        let state = {
+            turn: 0,
+            health: 100,
+            stress: 0,
+            relation: 0,
+            ap: 3,
+            maxAp: 3,
+            gold: 100,
+            debuff: 'none',
+            battleActive: false,
+            threat: 0,
+            achievements: [],
+            deck: [],
+            hand: [],
+            discard: [],
+            selectedCardIndex: null,
+            shopCards: [],
+            lastPlayedType: null,
+            turnPlayedCount: 0,
+            shopBuyCount: 0,
+            shopSellCount: 0,
+            specialCareCount: 0,
+            playedCardsList: [], // 追加：使用したカードの記録用（マンネリ判定・売却ボーナス用。処分時にリセット）
+            totalPlayedCardsList: [], // ★追加：リザルト画面集計用（リセットされない）
+            hasDisposedObstacle: false, // ★追加：不用品を一度でも処理したかの判定用フラグ
+            turnHistory: {}, // ★追加：ターンごとのプレイ履歴記録用
+            initialDeck: [], // ★追加：初期デッキ構成の保存用
+            seasonEventTriggered: false, // 季節イベントの発生記録用
+            hasEncounteredLetter: false, // 追加：手紙イベント発生済みフラグ
+            hasEncounteredGift: false, // 追加：贈り物イベント発生済みフラグ
+            temporaryEffects: [], // 追加：一時的な効果の表示用
+            endOfTurnEffects: [] // 追加：ターン終了時の効果の表示用
+        };
+
+// 直前のステータスを保持するオブジェクト
+let prevStats = {
+    health: 100,
+    stress: 0,
+    relation: 0,
+    gold: 100
+};
+
+// アニメーション発火用の関数
+function triggerStatAnimation(elementId, oldVal, newVal, type) {
+    if (oldVal === newVal) return; // 変化がなければ終了
+
+    const el = document.getElementById(elementId);
+    
+    // 連続してアニメーションを発火させるため、一度クラスを削除
+    el.classList.remove(
+        'anim-health-up', 'anim-health-down', 
+        'anim-stress-up', 'anim-stress-down', 
+        'anim-relation-up', 'anim-relation-down',
+        'anim-gold-up', 'anim-gold-down'
+    );
+    
+    // リフローを強制し、CSSアニメーションを再起動させるハック
+    void el.offsetWidth;
+
+    // 条件に応じたクラスの付与
+    if (type === 'health') {
+        el.classList.add(newVal > oldVal ? 'anim-health-up' : 'anim-health-down');
+    } else if (type === 'stress') {
+        el.classList.add(newVal > oldVal ? 'anim-stress-up' : 'anim-stress-down');
+    } else if (type === 'relation') {
+        el.classList.add(newVal > oldVal ? 'anim-relation-up' : 'anim-relation-down');
+    } else if (type === 'gold') { // ★資金用のアニメーション付与処理を追加
+        el.classList.add(newVal > oldVal ? 'anim-gold-up' : 'anim-gold-down');
+    }
+}
+
+function showCustomAlert(message) {
+    const modal = document.getElementById('custom-alert-modal');
+    document.getElementById('custom-alert-message').innerText = message;
+    modal.style.display = 'flex';
+}
+
+function closeCustomAlert() {
+    document.getElementById('custom-alert-modal').style.display = 'none';
+}
+
+// ★変更：ターン履歴を構造化して記録する関数
+function addTurnHistory(category, data) {
+    if (state.turn === 0) return;
+    
+    // そのターンの履歴オブジェクトが存在しなければ初期化
+    if (!state.turnHistory[state.turn]) {
+        state.turnHistory[state.turn] = {
+            stats: null,    // ステータス（健康度・ストレス・関係性・資金）
+            timeline: []    // ★変更: 時系列順にイベントを記録
+        };
+    }
+    
+    // カテゴリごとにデータを格納
+    if (category === 'stats') {
+        state.turnHistory[state.turn].stats = data;
+    } else {
+        state.turnHistory[state.turn].timeline.push({ category: category, data: data });
+    }
+}
+
+
+const CARD_POOL = {
+    direct: [
+{ 
+    name: "水を与える", 
+    type: "direct", 
+    value: 2, 
+    cost: 1, 
+    valType: "flat", 
+stressChange: -10, 
+    actions: [
+        {type: "heal", value: 5}, 
+  {type: "stress_direct", value: 10}
+    ], 
+    desc: "健康+5。ストレス-10。関係性+2。", 
+ flavor: { 
+        trust: "口元へコップを運ぶと、彼に途中でコップを奪われてしまった。", 
+        dependence: "彼は、あなたが手ずから水を飲ませてくれることが嬉しいようだ。",
+        heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
+        heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が彼の頬を伝い落ちていった。"
+    } 
+},
+         { name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { trust: "あなたは彼を気遣って看病した。彼は気まずそうに目を逸らしている。", dependence: "看病を終えて部屋を立ち去ろうとすると、彼はあなたにすがりつくように袖を掴んだ。",
+        heavy_trust: "意識のない彼を看病した。人形のように力の抜けた体は、いつもよりも重く感じる。",
+        heavy_dependence: "あなたが看病すると、彼の苦しげな呼吸が和らいだ。"} },
+        { name: "髪を梳かす", type: "direct", value: 1, cost: 1, valType: "flat", actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+1", flavor: { trust: "あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。", dependence: "あなたの指先が触れると、彼はひどく安心した表情を見せた。",
+        heavy_trust: "あなたは彼の髪を丁寧に梳かした。彼は眠ったまま、されるがままにされている。",
+        heavy_dependence: "あなたの指先が触れても、彼は目を覚まさない。"} },
+        { name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", actions: [{type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "健康+30。ストレス-15。関係性+2", flavor: { trust: "あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた。", dependence: "あなたが与えるものなら、彼はどんなものでも受け入れる。",
+        heavy_trust: "あなたは眠る彼に薬を飲ませた。飲み下せなかった分が口端から溢れる。",
+        heavy_dependence: "無意識状態にあっても、彼はあなたが与える薬を上手に飲み下した。"} },
+        { name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 10}], desc: "健康+20。ストレス-10。関係性+3", flavor: { trust: "彼の体を丁寧に拭き上げた。彼はこうして世話を焼かれることに負い目を感じている。", dependence: "あなたが触れるたび、彼はあなたとの繋がりを見出している。",
+        heavy_trust: "眠ったまま起きる気配のない彼の体を丁寧に拭き上げた。",
+        heavy_dependence: "あなたがどれだけ触れても、彼は反応しない。"} },
+        { name: "深夜の付き添い", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 10},{type: "stress_direct", value: 20}], desc: "健康+10。ストレス-20。関係性+5", flavor: { trust: "夜通し彼の傍にいた。彼はあなたの体調を気遣っている。", dependence: "あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。",
+        heavy_trust: "あなたは、眠ったまま起きる気配のない彼の体を丁寧に拭き上げた。",
+        heavy_dependence: "あなたが触れても、彼は何の反応も返さない。彼は深い微睡みの中に取り残されている。"} },
+        { name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 5}], desc: "健康+15。ストレス-5。関係性+5。", flavor: { trust: "あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめつつも、手当てには感謝している。", dependence: "あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと感じているようだ。",
+        heavy_trust: "あなたは彼の傷口を消毒した。この程度の痛みでは目を覚すことはなさそうだ。",
+        heavy_dependence: "あなたは彼の傷口を消毒した。この程度の痛みで目を覚ますはずはない。"} },
+        { name: "熱を測る", type: "direct", value: 20, cost: 1, valType: "percent", actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+20%。手札の冷淡1枚を『部屋の掃除』に変換", flavor: { trust: "彼の熱を測った。彼は気恥ずかしさと隠しきれない困惑を滲ませている。", dependence: "彼の額に手を当てる。彼はあなたの体温に強い安心感を覚えている。",
+            heavy_trust: "彼の体は熱い。呼吸は浅く、発熱はまだ落ち着きそうにない。",
+        heavy_dependence: "あなたは彼の額に触れた。熱がじわじわと手のひらに伝わってくる。"} },
+        { name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat",  actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", flavor: { trust: "つきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが手ずから食事を与えれば、彼は雛鳥のように受け入れた。" } },
+        { name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", flavor: { trust: "あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。", dependence: "あなたの血を与えられ、彼はあなたと深く結びついた感覚に酔いしれている。" } },
+        { name: "過呼吸の対処", type: "direct", value: 30, cost: 2, valType: "percent", actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+30%。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
+    ],
+    indirect: [
+
+{ 
+            name: "町で仕事を請け負う", 
+            type: "indirect", 
+            value: 3, 
+            cost: 1, 
+            valType: "flat", 
+            actions: [
+               {type: "stress", value: -10}, 
+                { type: "gold_random", min: 5, max: 15 }
+            ], 
+            desc: "ストレス-10。関係性+3。資金+5~15G", 
+            flavor: { 
+                trust: "彼に見送られ、あなたは仕事をこなすために屋敷を出た。", 
+                dependence: "あなたが屋敷を空けることを、彼は快く思っていないようだ。",
+                heavy_trust: "意識のない彼を部屋に残し、あなたは町で日銭を稼いだ。",
+                heavy_dependence: "あなたが町から戻っても、部屋は出発前と変わらぬ静寂に包まれていた。" 
+            } 
+        },
+
+{ 
+    name: "闇医者を呼ぶ", 
+    type: "indirect", 
+    value: 5, 
+    cost: 1, 
+    valType: "flat", 
+    goldCost: 20, 
+    actions: [
+        {type: "gold", value: -20}, 
+        { type: "heal", value: 50, isFixed: true },  
+        // 通常版(発狂版)の確率を下げるため、配列の偏りを変更
+        {type: "add_special_card", key: ["water_coma", "water_coma", "water_coma", "water_reset", "water_reset", "water_normal"]},
+        {type: "consume"}
+    ],
+    desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)",
+flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさせた。彼は医師のことを訝しんでいるようだ。", dependence: "彼と医者を残して、あなたは部屋を出る。震え声が、扉が閉まる音でかき消された。",
+            heavy_trust: "外部から怪しげな医者を呼び、眠っている間に治療を受けさせた。",
+        heavy_dependence: "人形のように力なく横たわる彼に、怪しげな医師が処置を施す。彼は何をされても抵抗すらできない。"
+    } 
+},
+
+        { name: "部屋の掃除", type: "indirect", value: 2, cost: 1, valType: "flat", stressChange: -10, actions: [{ type: "heal", value: 10 }, {type: "stress", value: -10}], desc: "健康+10。ストレス-10。関係性+2", flavor: { trust: "綺麗になった部屋を見渡し、彼は小さく息を吐いて肩の力を抜いた。", dependence: "部屋を掃除する間、彼はひたすらにあなたの気配を追っている。",
+            heavy_trust: "部屋を掃除する間、彼は静かに寝息を立てている。",
+        heavy_dependence: "部屋を掃除する間、彼は静かに寝息を立てている。" } },
+        { name: "寝具の天日干し", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -15, actions: [{ type: "heal", value: 20 }, {type: "stress", value: -15}], desc: "健康+20。ストレス-15。関係性+3", flavor: { 
+                trust: "あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。", 
+                dependence: "寝具を整えてやると、彼はあなたの気配を感じて目を閉じた。",
+                heavy_trust: "寝具を整え直しても、彼は微かな寝息を立てたまま目を覚まさない。",
+                heavy_dependence: "太陽の匂いがする清潔な布団で彼を包み込む。彼はあなたの庇護下で眠っている。" 
+            } 
+        },
+        { name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{ type: "heal", value: 15 }, {type: "stress", value: -10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { 
+                trust: "過ごしやすくなった室内に、彼は微かに緊張を解いた様子を見せた。", 
+                dependence: "心地よい室温の中でも、彼はあなたがいなければ寒気を感じてしまうようだ。",
+                heavy_trust: "彼がこれ以上体調を崩さないよう、部屋を快適な温度に調整した。",
+                heavy_dependence: "今ならば何でもできる。彼を生かすも殺すも、あなた次第だ。" 
+            } 
+        },
+        { name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{ type: "heal", value: 30 }, {type: "stress", value: -25}], desc: "健康+30。ストレス-25。関係性+4", flavor: { trust: "栄養のある食事を用意すると、彼は感謝とともにそれを口にした。", dependence: "用意した食事を、彼はあなたのためだけにすべて平らげた。" } },
+        { name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, actions: [{type: "buff", key: "scentDuration", value: 3},{type: "stress", value: -15}], desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", flavor: { 
+                trust: "彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出すようだ。", 
+                dependence: "香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。",
+                heavy_trust: "彼好みの香りを焚く。穏やかな香りが、彼の微睡みを少しでも安らかなものにする。",
+                heavy_dependence: "部屋を満たす香りが、彼をさらに深く、あなただけの世界へと沈めていく。" 
+            } 
+        },
+        { name: "アルバムの整理", type: "indirect", value: 5, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+5。デッキからカードを1枚手札に加える", flavor: { 
+                trust: "あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。", 
+                dependence: "彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。",
+                heavy_trust: "眠り続ける彼の傍らで、あなたは懐かしいアルバムをめくった。",
+                heavy_dependence: "彼が目を覚まさないのをいいことに、あなたは彼の大切な写真を燃やした。" 
+            } 
+        },
+        { name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{type: "discard_obstacle"},{type: "stress", value: -25}], desc: "ストレス-25。関係性+4。手札の不用品を1枚廃棄する", flavor: { 
+                trust: "彼の好みに合わせた紅茶を淹れると、彼は己の嗜好を把握されていることに複雑な表情を見せた。", 
+                dependence: "あなたが淹れた紅茶を飲むと、彼はあなたの存在だけを鮮明に感じるようだ。"
+            } 
+        },
+     
+
+       { name: "調度品の買い替え", type: "indirect", value: 50, cost: 1, valType: "percent", goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性+50%（使い切り）", flavor: { 
+                trust: "彼は整った室内を見渡し、あなたの細やかな気遣いを感じて小さく息をついた。", 
+                dependence: "彼は新しい家具よりも、あなたが傍にいてくれることだけを望んでいる。",
+                heavy_trust: "新しい家具を揃える間も、彼は眠り続けている。",
+                heavy_dependence: "彼が意識のない間に、あなたは部屋の内装を勝手に新調した。" 
+            } 
+        },
+        { name: "中庭の手入れ", type: "indirect", value: 5, cost: 2, valType: "flat", actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアを1枚手札に加える", flavor: { trust: "中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" }},
+{name: "医者を呼ぶ", type: "indirect", value: 2, cost: 1,valType: "flat",goldCost: 40,actions: [ {type: "gold", value: -40},   { type: "heal", value: 60, isFixed: true },{type: "stress", value: -5},{ type: "consume" }],desc: "資金-40。必ず健康+60。ストレス-5。関係性+2(使い切り)",flavor: {trust: "外部から医者を呼び、適切な治療を受けさせた。体は楽になったようだが、彼はどこか不服そうにしている。", dependence: "彼は他人の手が介入することを激しく拒絶したが、あなたの命令により強引に治療を受けさせた。",
+                heavy_trust: "寝たきり状態の彼のためにあなたは外部から医者を呼び、適切な治療を受けさせた。",
+                heavy_dependence: "外部から医者を呼び、治療を受けさせる。そのことを、あなたは彼に伝えはしない。" }}
+,
+        { name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", actions: [{type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて除外。除外した枚数が多いほど、関係性が0に近付く  (使い切り)", 
+        flavor: { trust: "二人の間のしがらみをまっさらにした。これからは、一人の人間として向き合うために。", 
+        dependence: "互いを縛り付けていたものを手放した。心にぽっかり穴が空いたような気がする。"} }
+
+    ],
+    cold: [
+        { name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", actions: [{type: "stress", value: 5}], desc: "ストレス+5。関係性-1", flavor: { 
+                trust: "事務的に接すると、彼はただ己の義務を果たそうと努めた。", 
+                dependence: "あなたの冷淡な態度に、彼は激しい不安と孤独感に駆られている。",
+                heavy_trust: "事務的に彼の容態を確認する。彼はまだ目を覚まさない。",
+                heavy_dependence: "意識のない彼に対して、あなたはただ事務的に必要な処置だけをこなした。"
+            } 
+        },
+        { name: "無視", type: "cold", value: -2, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-2", flavor: { 
+                trust: "あなたが無視すると、彼はかつての自分の振る舞いを反省した。", 
+                dependence: "あなたに無視され、彼は見捨てられるのではないかと怯えている。",
+                heavy_trust: "あなたがその場を離れても、引き留める声が聞こえることはない。",
+                heavy_dependence: "静寂に包まれた部屋で、あなたは彼を見下ろした。"
+            }},
+        { name: "冷酷な事実", type: "cold", value: -7, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-7", flavor: { 
+                trust: "あなたに事実を淡々と説明され、彼は自分の無力さを実感している。", 
+                dependence: "現実を突きつけられ、彼はあなただけを世界のすべてにしようと逃避している。",
+                heavy_trust: "彼が避け続けている事実を耳元で告げた。届くはずのない言葉が、空虚に響く。",
+                heavy_dependence: "あなたは悪夢にうなされる彼の耳元で、残酷な真実を囁いた。"
+            } 
+        },
+        { name: "私物の没収", type: "cold", value: -10, cost: 1, valType: "flat", actions: [{type: "stress", value: 15},     { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-10。資金+5~30G", flavor: { 
+                trust: "あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。", 
+                dependence: "私物を奪われても、彼はあなたに従うこと自体に喜びを見出している。",
+                heavy_trust: "あなたは眠り続ける彼の私物を、ためらいなく処分した。",
+                heavy_dependence: "彼が目を覚まさないのをいいことに、彼の持ち物を好き勝手に売り払った。"
+            } 
+        },
+        { name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-10", flavor: { 
+trust: "片脚が悪い彼は、整備されていない道では歩きにくいようだ。", 
+                dependence: "屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。", 
+               heavy_trust: "彼はしばらく目覚めそうにない。整備などしなくてもいいだろう。",
+                heavy_dependence: "彼が夢の中にいる間も屋敷は荒れていく。あなたさえ居れば、彼はそれで構わないはずだ。",
+            } 
+        },
+        { name: "鎮痛剤を与えない", type: "cold", value: -4, cost: 2, valType: "flat", actions: [{ type: "heal", value: -25 },{type: "stress", value: 10}], desc: "健康-25。ストレス+10。関係性-4", flavor: { 
+                trust: "あなたが薬を与えなくても、彼は自らの命に対する執着を手放しつつある。", 
+                dependence: "自らの苦痛を、あなたがかつて受けた苦しみの一端だと思って抱きしめている。",
+                heavy_trust: "鎮痛剤を与えないまま放置した。浅い呼吸が、彼の抱える痛みを物語っている。",
+                heavy_dependence: "苦痛に顔を歪める彼を、薬を与えずにただ眺め続けた。"
+            } 
+        },
+
+        { name: "部屋の施錠", type: "cold", value: -10, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+25。関係性-10。次ターンのドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めるのを、彼は正当な処置だと考えている。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
+        { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性-15%", flavor: { trust: "食事が遅れても、彼はあなたを不快にさせた自らの落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
+       { name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", actions: [{type: "stress", value: 30}, {type: "consume"}], desc: "ストレス+30。関係性-30%（使い切り）", flavor: { trust: "あなたが他人の気配を漂わせると、彼はとうとう自分が不要になったのだと悟ったようだ。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
+    ],
+    harm: [
+        
+        { name: "毒の調合", type: "harm", 
+            masterValue: -10, // 主人に使用した際の関係性変動量
+            battleValue: 1,   // 戦闘で使用した際の関係性変動量
+            cost: 1, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}], desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", flavor: { 
+                trust: "苦い薬を食事に混ぜても、彼は何も言わずにそれを飲み干す。", 
+                dependence: "身体の不調を感じながらも、彼はあなたから与えられるものを甘んじて享受している。", 
+                battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。",
+                heavy_trust: "彼の口に少量の毒を流し込んだ。彼がそれに気づくことはないだろう。",
+                heavy_dependence: "彼の生命を、あなたの毒がゆっくりと蝕んでいく。",
+                heavy_battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"
+            } 
+        },
+        { name: "首を絞める", type: "harm", 
+            masterValue: -50, // 主人に使用した際の関係性変動量
+            battleValue: 10,   // 戦闘で使用した際の関係性変動量 
+            cost: 2, valType: "percent", isMasterAlways: false, actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {type: "consume"}], desc: "敵脅威度-20。関係性+10%/ 【対主人】健康-30。ストレス+30。関係性-50%（使い切り）", flavor: { 
+                trust: "　", 
+                dependence: "　", 
+                battle: "あなたは襲い来る敵の首を締め、無力化させた。",
+                heavy_trust: "彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。",
+                heavy_dependence: "横たわる主人の首に手をかける。薄く開いた彼の目が僅かに微笑んだように感じる。"
+            } 
+        },
+       { name: "見せしめの拷問", type: "harm", 
+            masterValue: -20, // 主人に使用した際の関係性変動量
+            battleValue: -10,   // 戦闘で使用した際の関係性変動量 
+             cost: 2, valType: "percent", isMasterAlways: false, actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"},  {type: "consume"} ], desc: "敵脅威度を強制的に0にする。関係性-10% / 【対主人】ストレス+40。関係性-20%（使い切り）", flavor: { 
+                trust: " ", 
+                dependence: " ", 
+                battle: "捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。",
+                heavy_trust: "あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。",
+                heavy_dependence: "庭先に惨たらしい魔物の死体を吊るした。彼が目覚めた時のことを考え、ほくそ笑む。"
+            } },
+        { name: "形見の宝刀", type: "harm", 
+            masterValue: 0, // 主人に使用した際の関係性変動量
+            battleValue: 10,   // 戦闘で使用した際の関係性変動量 
+              cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}], desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", flavor: { 
+                trust: "あなたは形見の宝刀を構え、因縁に終止符を打った。", 
+                dependence: "あなたが宝刀を向けると、彼はあなたの手によって終われることに安堵の表情を浮かべた。", 
+                battle: "形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。"
+            } 
+        },
+        { name: "罠を配置する", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。関係性+2。次ターンの初期APを+1", flavor: { trust: "周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "屋敷への侵入者を拒むための罠を張った。" } },
+        { name: "硝煙の盾", type: "harm", value: 1, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "stress", value: -15}], desc: "敵脅威度-15。ストレス-15。関係性+1", flavor: { 
+                trust: "火薬を使って敵を足止めした。彼は、あなたへの心配で胸を痛めている。", 
+                dependence: "外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。",
+                heavy_battle: "火薬の煙が立ち込める。深い眠りの中にいる彼に外の喧騒は届かない。"
+            } 
+        },
+        { name: "威嚇射撃", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。関係性+2。資金+10~15G", flavor: { trust: "威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
+        { name: "容赦なき追撃", type: "harm", value: 3, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+3", flavor: { 
+                trust: "あなたは、撤退してゆく敵を追い詰めた。", 
+                dependence: "あなたは敵を徹底的に排除した。障害はすべて取り除くという執念を感じさせる。"
+            } 
+        },
+        { name: "捨て身の迎撃", type: "harm", value: -10, cost: 2, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_clear"}, {context: "battle", type: "heal", value: -10}, {context: "battle", type: "stress", value: 20},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。健康-10。ストレス+20。関係性-10。手札（冷淡・不用品以外）を1枚除外", flavor: { 
+                trust: "身を挺して敵の攻撃を防いだ。彼は己の無力さとあなたを危険に晒したことを悔いている。", 
+                dependence: "あなたは自らを犠牲にして彼を守った。その姿に彼は心酔している。",
+                heavy_battle: "あなたは傷を負いながら無防備な彼を守り抜いた。"
+            } 
+        }
+    ],
+    season: {
+        "秋": { name: "収穫祭の思い出", type: "season", season: "秋", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "外から祭りの音が聞こえる。彼はかつてあなたと過ごした賑やかな日々を懐かしんでいるようだ。", dependence: "外の喧噪よりも、彼はあなたが給仕してくれる時間だけを欲している。" } },
+        "冬": { name: "聖夜の灯火", type: "season", season: "冬", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "窓辺のキャンドルが、彼の凍てついた心をほのかに照らす。彼はあなたの優しさに感謝した。", dependence: "小さな灯りを見つめる彼は、あなたへの想いで胸を焦がしているようだ。" } },
+        "春": { name: "薄紅の散策", type: "season", season: "春", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "風に乗って桜が舞い込んだ。彼はいつかまた、あなたと共に歩ける日を夢見ている。", dependence: "美しい花よりも、彼はあなたから与えられる朧げな愛情に強く惹かれている。" } },
+        "夏": { name: "盛夏の木陰", type: "season", season: "夏", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "夏限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "眩い日差しの中、木陰で過ごした。彼は目を細めてあなたを見つめていた。", dependence: "夏の暑さも忘れるほど、彼はあなたへの強い思いに囚われ続けている。" } }
+    }
+};
+
+// 通常ドローされないイベント用・特殊カード群
+const SPECIAL_CARDS = {
+    water_coma: { 
+        name: "水を与える", 
+        type: "direct", 
+        value: 2, // 関係性の上昇量
+        cost: 1, 
+        valType: "flat", 
+        actions: [
+            {type: "heal", value: 30}, 
+            {type: "stress", value: -30}, 
+            {type: "set_debuff", value: "heavy"}, // 即座に昏睡状態へ
+            {type: "buff", key: "waterStressDuration", value: 3} // 3ターン継続の副作用
+            
+        ], 
+        desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間ストレス+15", 
+        flavor: { 
+        trust: "その水を飲んだ彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。", 
+        dependence: "あなたが与えた水を飲み干すと、彼は身をまかせるように意識を手放した。",
+        heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
+        heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、彼の頬を伝い落ちていった。"
+    } 
+},
+
+// ▼追加：水を与える（サンプル１）関係性0リセット＆使い切り版
+    water_reset: { 
+        name: "水を与える", 
+        type: "direct", 
+        value: 0, // 関係性を強制的に0にするため、基礎上昇量は0
+        cost: 1, 
+        valType: "flat", 
+        actions: [
+            {type: "heal", value: 30}, 
+            {type: "stress", value: -30}, 
+            {type: "buff", key: "waterStressDuration", value: 3}, // 3ターン継続の副作用
+            {type: "set_relation_zero"} // 追加：関係性を0にする新規アクション
+           
+        ], 
+        desc: "健康+30。必ずストレス-30。関係性を0にする。3ターンの間ストレス+15", 
+        flavor: { 
+            trust: "何かを諦めたように目を閉じ、彼はその水を飲み干した。", 
+            dependence: "水を飲ませてから暫く経っても、彼はまだ空っぽになったコップを虚ろな目で見つめている。",
+            heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
+            heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、彼の頬を伝い落ちていった。"
+        } 
+    },
+
+    // ▼追加：水を与える（サンプル２）発狂版
+    water_normal: { 
+        name: "水を与える", 
+        type: "direct", 
+        value: 0, 
+        cost: 1, 
+        valType: "flat", 
+        actions: [
+            {type: "heal", value: 30}, 
+            {type: "stress", value: -30},
+            {type: "set_madness"},
+            {type: "consume"}
+        ], 
+        desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる。(使い切り)", 
+        flavor: { 
+            trust: "彼はその水を飲み干した。目が、異様な光を帯びている。", 
+            dependence: "彼は水を飲み干すと、虚空を見つめながら意味不明な言葉を呟き始めた。",
+            heavy_trust: "彼をそっと抱き起こし、水を飲ませた。彼の体温が異常に上昇していく。",
+            heavy_dependence: "彼に水を飲ませた。彼の体が小さく痙攣している。"
+        } 
+    },
+
+    secret_attachment_1: { 
+        name: "手を握って付き添う", 
+        type: "attachment", 
+        isMasterAlways: false,
+        value: 15, 
+        cost: 1, 
+        valType: "flat", 
+        actions: [
+            {type: "stress", value: -35}, 
+            {type: "consume"} 
+        ], 
+        desc: "ストレス-35。関係性+15（使い切り）", 
+        flavor: { 
+            trust: "あなたは彼の手をそっと握った。彼は目を覚まさないまま、眉間の皺をわずかに緩めた。", 
+            dependence: "命の危機に瀕する彼を見て、彼を失うことへの恐怖と歪な執着が湧き上がった。" 
+        } 
+    },
+
+    secret_attachment_2: { 
+        name: "頭を撫でる", 
+        type: "attachment", 
+        isMasterAlways: false,
+        value: 10, 
+        cost: 1, 
+        valType: "flat", 
+        actions: [
+         {type: "heal", value: 25}, 
+            {type: "stress", value: -45}, 
+            {type: "consume"} 
+        ], 
+        desc: "健康+25。ストレス-45。関係性+10（使い切り）", 
+        flavor: { 
+      trust: "彼の前髪をそっとかき分けて、頭を撫でた。微睡みの中にいる彼の顔は、いつもよりも幼く見える。", 
+        dependence: "疲れ切り、眠り続ける彼の頭を撫でる。無防備な彼の姿に思わず笑みが溢れた。" 
+        } 
+    },
+
+    secret_attachment_3: { 
+        name: "じっと見守る", 
+        type: "attachment", 
+        isMasterAlways: false,
+        value: 25, 
+        cost: 1, 
+        valType: "flat", 
+        actions: [
+            {type: "heal", value: 25}, 
+            {type: "stress", value: -20}, 
+            {type: "consume"} 
+        ], 
+        desc: "健康+25。ストレス-20。関係性+25（使い切り）", 
+          flavor: { 
+        trust: "ベッドに腰掛け、深い眠りの中、時折小さく身じろぎする彼をぼんやりと眺めて過ごした。", 
+        dependence: "彼をじっと見つめ続ける。あなたは自問した。いつまでこんなことを続けるつもりなのか、と。" 
+
+    } 
+
+    },
+
+letter_from_old_friend: { 
+        name: "手紙", 
+        type: "obstacle", 
+        cost: 0, 
+        desc: "所持している間、関係値+の時に毎ターンストレス+5。使用不可", 
+        flavor: { 
+            trust: "彼は、自分宛ての手紙をあなたが隠し持っていることに気付いている。", 
+            dependence: "昔馴染からの手紙。今の彼にとっては、もう、どうでもいいものだ。",
+            heavy_trust: "宛名には彼の名が書かれている。だが、彼がこの封を切ることはないだろう。",
+            heavy_dependence: "彼に外や過去との繋がりが必要かどうかは、彼自身ではなくあなたが決める。"
+        } 
+    },
+
+    gift: { 
+        name: "贈り物", 
+        type: "obstacle", 
+        cost: 0, 
+        desc: "持っているとターン開始時ストレス-5。使用不可", 
+        flavor: { 
+            trust: "信頼の証が、あなたの手の中で輝いている。彼は照れくさいのか、顔をそむけている。", 
+            dependence: "彼は、あなたに「それ」を肌見放さず持っていてもらいたいようだ。"
+        } 
+    }
+};
+
+
+
+        let activeBuffs = {
+            doubleDirect: false,
+            nextTurnAPMod: 0,
+            nextTurnDrawMod: 0,
+            threatReduction: 0,
+            scentDuration: 0,
+            waterStressDuration: 0,
+            isMadness: false, // 状態異常：発狂
+            hasKnife: false   // 状態：自衛
+        };
+
+        function getRandomCard(type) {
+            // プールから条件に合わないカードを除外
+            let pool = CARD_POOL[type].filter(card => {
+                if (card.name === "形見の宝刀" || card.name === "しがらみの精算") {
+                    // 所持しているすべてのカードをチェック
+                    let allCards = [...state.deck, ...state.hand, ...state.discard];
+                    let hasCard = allCards.some(c => c && c.name === card.name);
+                    if (hasCard) return false; // 既に持っている場合は抽選対象から外す
+                }
+                return true;
+            });
+            return JSON.parse(JSON.stringify(pool[Math.floor(Math.random() * pool.length)]));
+        }
+
+function getSeasonByTurn(turn) {
+    let t = turn === 0 ? 1 : turn;
+    if (t >= 24) return "春";  // 24〜30ターン（7日間）
+    if (t >= 16) return "冬";  // 16〜23ターン（8日間）
+    if (t >= 9)  return "秋";  // 9〜15ターン（7日間）
+    return "夏";               // 1〜8ターン（8日間）
+}
+
+        function initDeck() {
+            state.deck = [];
+            state.deck.push(getRandomCard('direct'));
+            state.deck.push(getRandomCard('indirect'));
+            state.deck.push(getRandomCard('cold'));
+            state.deck.push(getRandomCard('harm'));
+            
+            let types = ['direct', 'indirect', 'cold', 'harm'];
+            for (let i = 0; i < 3; i++) {
+                let rType = types[Math.floor(Math.random() * types.length)];
+                state.deck.push(getRandomCard(rType));
+            }
+            // 初期デッキに不用品カードを1枚ランダムに加える
+            let randomObstacle = OBSTACLE_POOL[Math.floor(Math.random() * OBSTACLE_POOL.length)];
+            state.deck.push(JSON.parse(JSON.stringify(randomObstacle)));
+            
+            shuffle(state.deck);
+            // ★追加：初期デッキ構成を保存
+            state.initialDeck = JSON.parse(JSON.stringify(state.deck));
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[j], array[i]] = [array[i], array[j]];
+            }
+        }
+
+        function addLog(text, className = '') {
+            // エンディング画面が表示されている場合はログを追加せずに終了する
+            const endContainer = document.getElementById('phase-end-container');
+            if (endContainer && endContainer.style.display === 'block') {
+                return;
+            }
+
+            const logArea = document.getElementById('log-area');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${className}`;
+            entry.innerText = text;
+            logArea.appendChild(entry);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+        
+function setLastAction(text) {
+    document.querySelectorAll('.last-action-display').forEach(el => {
+        el.innerText = text;
+    });
+}
+
+ function updateUI() {
+            let currentTurn = state.turn === 0 ? 1 : state.turn;
+            let season = getSeasonByTurn(state.turn);
+
+            document.getElementById('display-time').innerText = `【 ${currentTurn} / 30 ターン 】`;
+            
+            // ヘッダーのテキストと色を更新
+const displaySeason = document.getElementById('display-season');
+            displaySeason.innerText = `季節: ${season}`;
+            
+            // 現在より少し淡い色（パステル調）のカラーコードに変更
+            const colors = { 
+"夏": "#948238", // くすんだ芥子色
+                "秋": "#965b36", // 落ち着いたレンガ色
+                "冬": "#4a6b82", // 彩度を落とした灰青色
+                "春": "#94636b"  // 暗めのオールドローズ
+            };
+            
+            // 背景色を季節の色で塗りつぶす
+            displaySeason.style.backgroundColor = colors[season];
+            
+            // 文字色を黒に固定する
+            displaySeason.style.color = "#000000"; 
+            
+            // 枠線指定を解除し、内側の余白と角丸を設定してラベル状に整える
+            displaySeason.style.border = "none";
+            displaySeason.style.padding = "1px 4px";
+            displaySeason.style.borderRadius = "3px";
+            displaySeason.style.fontSize = "10px";
+
+    const displayDebuff = document.getElementById('display-debuff');
+            if (displayDebuff) {
+                if (state.debuff !== 'none') {
+                    // スマホ用に「（重さ）：（効果）」の簡潔な表記に変更
+                    let debuffTexts = { 
+                        light: '歩行困難：COST+1', 
+                        medium: '頭痛：DRAW-1', 
+                        heavy: '昏睡：AP 固定1' 
+                    };
+                    
+         let debuffColors = {
+                        light: '#7b4141',  // 軽度：彩度の低いくすんだ赤茶
+                        medium: '#9f3434', // 中度：彩度を少し上げた暗い赤
+                        heavy: '#a71e1e'   // 重度：高彩度で警告を示す強い赤
+                    };
+
+                    displayDebuff.innerText = debuffTexts[state.debuff];
+                    displayDebuff.style.backgroundColor = debuffColors[state.debuff];
+                    
+                   // 季節の枠とスタイルを完全に一致させる
+                    displayDebuff.style.color = "#000000"; // 黒文字
+                    displayDebuff.style.border = "none";
+                    displayDebuff.style.padding = "1px 4px";
+                    displayDebuff.style.borderRadius = "3px";
+
+                    displayDebuff.style.fontSize = "10px"; // 文字サイズ
+                    
+                    displayDebuff.style.display = "inline-block";
+                } else {
+                    displayDebuff.style.display = "none";
+                }
+            }
+
+   triggerStatAnimation('stat-health', prevStats.health, state.health, 'health');
+document.getElementById('stat-health').innerText = state.health;
+prevStats.health = state.health;
+
+triggerStatAnimation('stat-stress', prevStats.stress, state.stress, 'stress');
+document.getElementById('stat-stress').innerText = state.stress;
+prevStats.stress = state.stress;
+
+triggerStatAnimation('stat-relation', prevStats.relation, state.relation, 'relation');
+document.getElementById('stat-relation').innerText = (state.relation > 0 ? '+' : '') + state.relation;
+prevStats.relation = state.relation;
+
+
+
+        document.getElementById('stat-ap').innerText = `${state.ap}/${state.maxAp}`;
+         document.getElementById('stat-ap-shop').innerText = `${state.ap}/${state.maxAp}`;
+            
+            // ★ここから変更：資金のアニメーション呼び出しと値の更新
+            triggerStatAnimation('stat-gold', prevStats.gold, state.gold, 'gold');
+            triggerStatAnimation('stat-gold-shop', prevStats.gold, state.gold, 'gold');
+            document.getElementById('stat-gold').innerText = state.gold;
+            document.getElementById('stat-gold-shop').innerText = state.gold;
+            prevStats.gold = state.gold;
+            // ★ここまで変更
+            
+          /*  const debuffBar = document.getElementById('debuff-bar');
+            if (state.debuff !== 'none') {
+                debuffBar.style.display = 'block';
+                let names = { light: '軽度（歩行困難:ケアコスト+1）', medium: '中度（頭痛と眩暈:ドロー-1）', heavy: '重度（昏睡:AP固定1）' };
+                document.getElementById('debuff-name').innerText = names[state.debuff];
+            } else {
+                debuffBar.style.display = 'none';
+            } */
+
+            const alertBar = document.getElementById('battle-alert-bar');
+            if (state.battleActive) {
+                alertBar.style.display = 'block';
+                document.getElementById('battle-threat-value').innerText = state.threat;
+            } else {
+                alertBar.style.display = 'none';
+            }
+
+const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した実際のIDを指定する
+            if (nextBtn) {
+                if (state.turn === 30) {
+                    // 最終ターンの場合の表示
+                    nextBtn.innerText = "結末を見届ける";
+                    nextBtn.style.backgroundColor = "#c0392b"; // 任意：色を変更して視覚的に強調
+                    nextBtn.style.color = "#ffffff";
+                } else {
+                    // 通常ターンの場合の表示（初期化）
+                    nextBtn.innerText = "次へ進む";
+                    nextBtn.style.backgroundColor = ""; 
+                    nextBtn.style.color = "";
+                }
+            }
+            updateBuffDebuffDetails();
+        }
+
+
+        // 不用品プール
+        const OBSTACLE_POOL = [
+            { 
+                name: "過去のトラウマ", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "過去のあやまちが心を蝕む。使用不可", 
+                flavor: { 
+                    trust: "消えない記憶が、二人の間に重い影を落としている。", 
+                    dependence: "忌まわしい過去だけが、彼とあなたを繋ぐ絆だ。",
+                    heavy_trust: "夢の中に逃避してもなお、消えない記憶が疼く。",
+                    heavy_dependence: "このまま彼が目覚めなければ、この痛みとも決別できる。"
+                } 
+            },
+            { 
+                name: "不信感", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "拭えない疑念。使用不可", 
+                flavor: { 
+                    trust: "彼の瞳の奥に、ふとした瞬間の迷いが見え隠れする。", 
+                    dependence: "疑うことさえ忘れてしまえば楽になれる。しかし、彼に残された誇りがそれを許さない。",
+                    heavy_trust: "彼がどれだけ疑いを抱いていても、微睡みの中ではあなたを拒絶できない。",
+                    heavy_dependence: "たとえ全てを信じられなくても、彼はあなただけは正しいと定義しようとしている。"
+                } 
+            },
+            { 
+                name: "色褪せた写真", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "幸福だった頃の遺物。使用不可", 
+                flavor: { 
+                    trust: "あたたかかった日だまりが、今の閉ざされた部屋を嘲笑う。", 
+                    dependence: "あなたが見つめてくれるなら、彼は記憶など必要ないようだ。",
+                    heavy_dependence: "時が経つにつれ、過去の残骸が無価値になっていく。"
+                } 
+            },
+            { 
+                name: "壊れた時計", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "止まってしまった時間。使用不可", 
+                flavor: { 
+                    trust: "秒針の動かない時計。二人の未来がここで足踏みしている。", 
+                    dependence: "時間が止まってしまえば、この特等席は永遠になる。"
+                } 
+            },
+            { 
+                name: "不和", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "重く、軋む空気。使用不可", 
+                flavor: { 
+                    trust: "言葉を交わすほどに、すれ違う心が痛みを伴う。", 
+                    dependence: "いくら冷たく突き放されようと、彼にはあなたしかいない。",
+                    heavy_trust: "沈黙すら彼とあなたの関係を軋ませる。",
+                    heavy_dependence: "何も喋らずただ横たわるだけの彼は、あなたの神経を逆撫ですることもない。"
+                } 
+            },
+            { 
+                name: "割れた食器", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "砕け散った日常の破片。使用不可", 
+                flavor: { 
+                    trust: "床に散らばる破片は、まるで彼そのものだ。もう元の形には戻らない。", 
+                    dependence: "砕け散った思い出を握りしめ、痛みを共有することでしか繋がれない。"
+                } 
+            },
+            { 
+                name: "埃被った記憶", 
+                type: "obstacle", 
+                cost: 0, 
+                desc: "忘却の彼方に沈む残骸。使用不可", 
+                flavor: { 
+                    trust: "触れれば壊れてしまいそうな遠い昔の記憶が、部屋の隅で眠っている。", 
+                    dependence: "すべての記憶が埃に埋もれても、彼はあなたの名前だけは忘れない。"
+                } 
+            }
+        ];
+
+// ▼ 追加：ターン開始時のランダムイベント用データ
+const RANDOM_EVENTS = [
+    {
+        title: "夏日",
+        effectText: "ストレス-10",
+        condition: (state) => getSeasonByTurn(state.turn) === "夏",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
+        flavor: {
+            trust: "窓の外からの眩しい日差しに、彼は静かに目を細めた。",
+            dependence: "まばゆい光が窓から差し込む。しかし、彼は外に興味がないようだ。",
+            heavy_trust: "微睡みの中にいる彼の頬を、夏の日差しが照らす。",
+            heavy_dependence: "薄暗い部屋の中に、焼け付くような光が差し込む。"
+        }
+    },
+    {
+        title: "紅葉",
+        effectText: "ストレス-10",
+        condition: (state) => getSeasonByTurn(state.turn) === "秋",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
+        flavor: {
+            trust: "窓から色づいた葉が舞い込んだ。彼はそれを手に取り、秋の訪れを感じている。",
+            dependence: "秋の景色よりも、あなたの存在を眺め続けている。",
+            heavy_trust: "窓から吹き込んだ秋風が部屋を満たす。",
+            heavy_dependence: "色づいた落ち葉が彼の枕元に落ちた。"
+        }
+    },
+    {
+        title: "初雪",
+        effectText: "ストレス-10",
+        condition: (state) => getSeasonByTurn(state.turn) === "冬",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
+        flavor: {
+            trust: "窓の外に白い雪が舞い始めた。彼は静かに外を眺めている。",
+            dependence: "凍えるような寒さの中、彼はあなたから与えられる熱だけを求めている。",
+            heavy_trust: "音もなく雪が降り積もる。彼の寝息だけが部屋に響いている。",
+            heavy_dependence: "窓の外は銀世界だ。彼をこの部屋に閉じ込めておくにはちょうどいい。"
+        }
+    },
+    {
+        title: "春風",
+        effectText: "ストレス-10",
+        condition: (state) => getSeasonByTurn(state.turn) === "春",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
+        flavor: {
+            trust: "暖かな春風が部屋を吹き抜けた。彼の表情に、ほんの少しだけ生気が戻った気がする。",
+            dependence: "命吹く春の陽気の中でも、彼はあなたがいなければ生きられない。",
+            heavy_trust: "穏やかな陽気が、深い眠りの中にいる彼を優しく包み込んでいる。",
+            heavy_dependence: "外の世界がどれだけ色付いても、彼はあなただけのものだ。"
+        }
+    },
+    {
+        title: "遠くの鐘の音",
+        effectText: "ストレス-5",
+        condition: (state) => true,
+        effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
+        flavor: {
+            trust: "遠くの町から鐘の音が響く。彼は、何かを思い出すように耳を澄ませた。",
+            dependence: "鐘の音が外の世界を知らせる。彼は忌々しそうに眉を顰めた。",
+            heavy_trust: "遠くで鐘が鳴っている。その音が彼の眠りを妨げることはない。",
+            heavy_dependence: "一時間ごとに響く鐘の音。外の世界では、時が進んでいる。"
+        }
+    },
+    {
+        title: "探し物",
+        effectText: "AP-1 / 関係性+2",
+        condition: (state) => state.debuff !== "heavy",
+        effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.relation = Math.min(100, state.relation + 2); },
+        flavor: {
+            trust: "彼が棚を探っている。声をかけるかどうか、しばらく様子を窺うことにした。",
+            dependence: "何かを探していた彼は、あなたの視線に気づいて手を止めた。"
+        }
+    },
+    {
+        title: "身支度",
+        effectText: "ストレス-5 / 関係性+1",
+        condition: (state) => state.debuff !== "heavy",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 5); state.relation = Math.min(100, state.relation + 1); },
+        flavor: {
+            trust: "彼はあなたの手を借りず、自分で身支度を整えた。",
+            dependence: "彼は一人で身支度をしているが、上手くボタンを止められないでいる。"
+        }
+    },
+    {
+        title: "お仕事",
+        effectText: "資金+20 / ストレス+5",
+        condition: (state) => state.debuff !== "heavy",
+        effect: (state) => { state.gold += 20; state.stress = Math.min(100, state.stress + 5); },
+        flavor: {
+            trust: "彼は机に向かい、黙々と主人としての書類仕事をこなしている。",
+            dependence: "彼は書簡をぱらぱらと捲り、判を押す。ただ、あなたがそれを取りに来ることを待っている。"
+        }
+    },
+    {
+        title: "もぬけの殻",
+        effectText: "AP-1 / ストレス+15",
+        condition: (state, currentLogDelay) => state.debuff === "none" && currentLogDelay === 0,
+        effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.stress = Math.min(100, state.stress + 15); },
+        flavor: {
+            trust: "部屋を不在にしていたことについて、彼は何も語ろうとしなかった。",
+            dependence: "部屋に彼の姿がない。屋敷中を探し回ると、彼は暗い廊下の隅で蹲っていた。"
+        }
+    },
+    {
+        title: "差入れ",
+        effectText: "資金+10 / 健康+5",
+        condition: (state) => true,
+        effect: (state) => { state.gold += 10; state.health = Math.min(100, state.health + 5); },
+        flavor: {
+            trust: "宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
+            dependence: "彼は匿名で届いた荷物を酷く警戒している。",
+            heavy_trust: "宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
+            heavy_dependence: "荷物が届いた。誰からの物なのかも、何の目的なのかもわからない。"
+        }
+    },
+    {
+        title: "小鳥",
+        effectText: "ストレス-5",
+        condition: (state) => true,
+        effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
+        flavor: {
+            trust: "翼を広げて飛び去る小鳥を、彼はどこか羨ましそうに眺めている。",
+            dependence: "窓辺に一羽の白い小鳥が降り立った。彼はその鳥から目を逸らしている。",
+            heavy_trust: "窓の外で小鳥がさえずっている。",
+            heavy_dependence: "あなたは窓辺に止まった小鳥を無感情に追い払った。"
+        }
+    },
+    {
+        title: "悪夢",
+        effectText: "ストレス+10",
+        condition: (state) => state.debuff === "heavy",
+        effect: (state) => { state.stress = Math.min(100, state.stress + 10); },
+        flavor: {
+            heavy_trust: "深い微睡みの淵で、彼は苦しげに顔を歪めている。",
+            heavy_dependence: "彼は悪夢にうなされている。あなただけが、彼をそこから救い出せるのかもしれない。"
+        }
+    },
+    {
+        title: "祈り",
+        effectText: "ストレス-15",
+        condition: (state) => true,
+        effect: (state) => { state.stress = Math.max(0, state.stress - 15); },
+        flavor: {
+            trust: "彼は目を閉じ、静かに何かを祈っている。",
+            dependence: "彼はあなたに向かって、縋るように祈りを捧げている。",
+            heavy_trust: "微睡みの中、彼はうわ言のように祈りの言葉を紡いでいる。",
+            heavy_dependence: "意識のない彼の唇が震え、祈りの言葉を漏らしている。"
+        }
+    },
+    {
+        title: "自衛",
+        effectText: "自衛状態付与",
+        condition: (state) => state.debuff !== "heavy",
+        effect: (state) => { activeBuffs.hasKnife = true; },
+        flavor: {
+            trust: "ふと見ると、彼が枕の下にナイフを隠すのが見えた。",
+            dependence: "彼は何かを握りしめ、周囲を警戒している。"
+        }
+    }
+];
+// ▲ ここまで (RANDOM_EVENTS の末尾)
+
+
+function processWeekStart() {
+            state.turn++;
+            
+            // 30ターンを超えた場合は即座にエンディングへ移行し、後続の判定を実行させない
+    if (state.turn > 30) {
+        checkEndGame(true);
+        return; 
+    }
+
+    // ★追加：ターン開始時のステータスを記録
+            addTurnHistory('stats', { health: state.health, stress: state.stress, relation: state.relation, gold: state.gold });
+
+            state.turnPlayedCount = 0;
+            state.lastPlayedType = null;
+            
+            // 次のターンに行ったタイミングで一時効果をすべてクリア
+            state.temporaryEffects = [];
+            state.endOfTurnEffects = [];
+            
+            let turnLogs = [];
+            let currentLogDelay = 0; // ログ表示の遅延時間を管理する変数を追加
+
+            if (activeBuffs.scentDuration > 0) {
+                state.stress = Math.max(0, state.stress - 5);
+                activeBuffs.scentDuration--;
+                state.temporaryEffects.push("香炉: ストレス-5");
+            }
+
+            if (activeBuffs.waterStressDuration > 0) {
+                // ストレスを15増加（上限100を超えないように設定）
+                state.stress = Math.min(100, state.stress + 15);
+                activeBuffs.waterStressDuration--;
+                turnLogs.push("副作用(ストレス増)"); // ターン開始時のログに表示
+                state.temporaryEffects.push("闇医者の副作用: ストレス+15");
+            }
+
+            // ★追加：「手紙」の所持判定とストレス処理
+            let allCardsForLetter = [...state.deck, ...state.discard, ...state.hand];
+            let hasLetter = allCardsForLetter.some(c => c && c.name === "手紙");
+
+            if (hasLetter && state.relation >= 0) {
+                state.stress = Math.min(100, state.stress + 5);
+                turnLogs.push("手紙の存在(ストレス増)");
+                state.temporaryEffects.push("手紙: ストレス+5");
+            }
+
+            let hasGift = allCardsForLetter.some(c => c && c.name === "贈り物");
+            if (hasGift) {
+                state.stress = Math.max(0, state.stress - 5);
+                turnLogs.push("贈り物の存在(ストレス減)");
+                state.temporaryEffects.push("贈り物: ストレス-5");
+            }
+
+            let roll = Math.random() * 100;
+            let threshold = Math.max(5, Math.min(95, state.stress));
+            if (roll < threshold) {
+                let debuffs = ['light', 'medium', 'heavy'];
+                state.debuff = debuffs[Math.floor(Math.random() * debuffs.length)];
+                
+                let debuffNames = { light: '歩行困難(COST+1)', medium: '頭痛(DRAW-1)', heavy: '昏睡(AP固定1)' };
+               
+                let debuffFlavor = "";
+                if (state.debuff === 'light') {
+                    const lightTexts = [
+                        "彼は不自由な脚を引きずり、顔をしかめている。",
+                        "脚の痛みが悪化しているのか、彼の動作はいつもよりも鈍い。",
+                        "不自然な歩き方をしている。また脚が痛むようだ。"
+                    ];
+                    debuffFlavor = lightTexts[Math.floor(Math.random() * lightTexts.length)];
+                } else if (state.debuff === 'medium') {
+                    const mediumTexts = [
+                        "激しい頭痛と眩暈に襲われているのか、彼は壁に手をついて青褪めている。",
+                        "彼は顔を顰め、時折こめかみを押さえている。",
+                        "焦点の合わない目で宙を見つめている。眩暈が酷いらしい。"
+                    ];
+                    debuffFlavor = mediumTexts[Math.floor(Math.random() * mediumTexts.length)];
+                } else if (state.debuff === 'heavy') {
+                    const heavyTexts = [
+                        "彼は心身ともに疲弊しきっている。ただ、昏々と眠り続けている。",
+                        "意識の混濁が深刻化し、彼は深い眠りに落ちている。",
+                        "自力で起き上がる気配はない。呼吸だけが規則的に繰り返されている。"
+                    ];
+                    debuffFlavor = heavyTexts[Math.floor(Math.random() * heavyTexts.length)];
+                }
+                
+                // 【警告】発生時の不用品混入（軽度35%、中度75%、重度90%の確率）
+const obstacleRates = { light: 0.35, medium: 0.75, heavy: 0.90 };
+if (Math.random() < obstacleRates[state.debuff]) {
+    let obstacle = JSON.parse(JSON.stringify(OBSTACLE_POOL[Math.floor(Math.random() * OBSTACLE_POOL.length)]));
+    state.discard.push(obstacle);
+    turnLogs.push("体調悪化(不用品混入)");
+    addTurnHistory('obtained', { type: obstacle.type, name: obstacle.name });
+    state.temporaryEffects.push(`不用品混入: ${obstacle.name}`); // ★追加: 一時的な効果・発生イベントに表示
+
+                    // 1. デバフ状態（体調不良）のフレーバーテキストを先に出力する
+                    setTimeout(() => {
+                        addLog(debuffFlavor, "log-flavor");
+                    }, currentLogDelay);
+                    currentLogDelay += 600;
+
+                    // 2. 時間差をつけて不用品混入時のランダムテキストと、カード固有のフレーバーを組み合わせて出力する
+let flavorText = "";
+if (state.debuff === 'heavy') {
+    flavorText = state.relation >= 0 
+        ? (obstacle.flavor.heavy_trust || obstacle.flavor.trust) 
+        : (obstacle.flavor.heavy_dependence || obstacle.flavor.dependence);
+} else {
+    flavorText = state.relation >= 0 ? obstacle.flavor.trust : obstacle.flavor.dependence;
+}
+                    setTimeout(() => {
+                        addLog(`${flavorText}`, "log-flavor");
+                    }, currentLogDelay); 
+                    currentLogDelay += 600;
+                } else {
+                    turnLogs.push("体調悪化");
+                    // 不用品が混入しない場合
+                    setTimeout(() => {
+                        addLog(debuffFlavor, "log-flavor");
+                    }, currentLogDelay);
+                    currentLogDelay += 600;
+                }
+                
+                // ★追加：体調不良を履歴に記録
+                let historyDebuffNames = { light: '歩行困難', medium: '頭痛', heavy: '昏睡' };
+                addTurnHistory('states', historyDebuffNames[state.debuff]);
+            } else {
+                state.debuff = 'none';
+            }
+
+            state.maxAp = 3;
+            state.ap = state.maxAp;
+            if (state.debuff === 'heavy') state.ap = 1;
+            
+            if (activeBuffs.nextTurnAPMod !== 0) {
+                state.ap = Math.max(1, state.ap + activeBuffs.nextTurnAPMod);
+                activeBuffs.nextTurnAPMod = 0; 
+            }
+
+            state.battleActive = Math.random() < 0.25;
+            if (state.battleActive) {
+                state.threat = 15 + Math.floor(state.turn * 1.0);
+                if (activeBuffs.threatReduction > 0) {
+                    state.threat = Math.max(0, state.threat - activeBuffs.threatReduction);
+                    activeBuffs.threatReduction = 0;
+                }
+                
+                // 表示するテキストの候補を配列で定義
+                const enemyTexts = [
+                   // 人間による襲撃を示唆するテキスト
+                    "外から複数の足音が聞こえる。招かれざる客が迫っているようだ。",
+                    "窓の外に人影がちらついた。敵が近づいている。",
+                    "かすかに金属が擦れる音が聞こえた。刃物を持った賊がうろついているらしい。",
+                    // 魔物による襲撃を示唆するテキスト
+                    "獣のような低い唸り声が響いた。外を徘徊しているのは人間ではないようだ。",
+                    "ひどく生臭い風が吹き込んだ。魔物が屋敷の近くまで来ている。",
+                    "不気味な鳴き声が夜気を震わせた。飢えた魔物が備蓄を狙っている。"
+                ];
+                // 配列からランダムに1つ選択
+                const randomText = enemyTexts[Math.floor(Math.random() * enemyTexts.length)];
+                
+                setTimeout(() => {
+                    addLog(randomText, "log-flavor");
+                }, currentLogDelay);
+                currentLogDelay += 600;
+                
+                turnLogs.push("敵襲来");
+                addTurnHistory('states', '敵襲来'); // 戦闘発生を履歴に記録
+            }
+
+          // ▼ 追加：ランダムイベント処理
+            let eventOccurred = false; // イベント発生フラグを追加
+            if (!state.battleActive && Math.random() < 0.30) {
+                let availableEvents = RANDOM_EVENTS.filter(ev => ev.condition(state, currentLogDelay));
+                if (availableEvents.length > 0) {
+                    let ev = availableEvents[Math.floor(Math.random() * availableEvents.length)];
+                    ev.effect(state);
+                    
+                    state.temporaryEffects.push(`${ev.title}: ${ev.effectText}`);
+
+                    let eventFlavor = "";
+                    if (state.debuff === 'heavy') {
+                        eventFlavor = state.relation >= 0 ? 
+                            (ev.flavor.heavy_trust || ev.flavor.trust) : 
+                            (ev.flavor.heavy_dependence || ev.flavor.dependence);
+                    } else {
+                        eventFlavor = state.relation >= 0 ? ev.flavor.trust : ev.flavor.dependence;
+                    }
+
+                    if (eventFlavor) {
+                        setTimeout(() => {
+                            addLog(eventFlavor, "log-flavor");
+                        }, currentLogDelay);
+                        currentLogDelay += 600;
+                    }
+
+                    turnLogs.push(ev.title);
+                    addTurnHistory('event', ev.title);
+                    eventOccurred = true; // イベントが発生したことを記録
+                }
+            }
+            // ▲ ここまで
+
+            let drawCount = state.debuff === 'medium' ? 4 : 5;
+            if (activeBuffs.nextTurnDrawMod !== 0) {
+                drawCount = Math.max(1, drawCount + activeBuffs.nextTurnDrawMod);
+                activeBuffs.nextTurnDrawMod = 0;
+            }
+       
+            drawCards(drawCount);
+
+// --- 隠しカード追加処理（ここから） ---
+// 山札・捨て札・手札のすべて（所持カード全体）をまとめる
+            let allCards = [...state.deck, ...state.discard, ...state.hand];
+
+            // 「冷淡」カードが存在しないか判定
+            let hasCold = allCards.some(c => c && c.type === 'cold');
+            // 「愛着」カードがすでに存在しているか判定（type: "attachment" で判定）
+            let hasAttachment = allCards.some(c => c && c.type === 'attachment');
+
+            // 冷淡がなく、かつ愛着がまだ1枚もなく、手札上限（6枚）を超えない場合のみ追加する
+            if (!hasCold && !hasAttachment && state.hand.length < 6) {
+                
+                // 0.2の確率で入手
+                if (Math.random() < 0.2) {
+                    
+                    // 愛着1〜3のキー配列を用意し、ランダムで1つ選択する
+                    const attachmentKeys = ['secret_attachment_1', 'secret_attachment_2', 'secret_attachment_3'];
+                    const chosenKey = attachmentKeys[Math.floor(Math.random() * attachmentKeys.length)];
+                
+                   if (SPECIAL_CARDS[chosenKey]) {
+                        let newCard = { 
+                            ...SPECIAL_CARDS[chosenKey], 
+                            id: Date.now() + Math.random() 
+                        };
+                        state.hand.push(newCard);
+                       addTurnHistory('obtained', { type: newCard.type, name: newCard.name });
+                       state.temporaryEffects.push(`カード入手: ${newCard.name}`);
+                    }
+                }
+            }
+
+           // ★追加：「手紙」のランダム追加処理
+            // 未発生、手札上限未満、かつ他のイベントが発生していない場合
+            if (!eventOccurred && !state.hasEncounteredLetter && state.hand.length < 6) {
+                if (Math.random() < 0.01) {
+                    let letterCard = {
+                        ...SPECIAL_CARDS['letter_from_old_friend'],
+                        id: Date.now() + Math.random()
+                    };
+                    state.hand.push(letterCard);
+                   addTurnHistory('event', '手紙');
+                   turnLogs.push("手紙"); // アラートに追加
+                   eventOccurred = true; // 他のイベントと排他にする
+                   state.hasEncounteredLetter = true; // 追加：発生済みフラグをオン
+                   state.temporaryEffects.push(`カード入手: ${letterCard.name}`);
+
+                    // ★フレーバーテキストの出力処理を追加
+                    let flavorText = "";
+                    if (state.debuff === 'heavy') {
+                        // 昏睡（重度）時のテキスト分岐
+                        flavorText = state.relation >= 0 ? letterCard.flavor.heavy_trust : letterCard.flavor.heavy_dependence;
+                    } else {
+                        // 通常時のテキスト分岐
+                        flavorText = state.relation >= 0 ? letterCard.flavor.trust : letterCard.flavor.dependence;
+                    }
+                    
+                    setTimeout(() => {
+                        addLog(flavorText, "log-flavor");
+                    }, currentLogDelay);
+                    currentLogDelay += 600;
+                }
+            }
+
+            // ★追加：「贈り物」のランダム追加処理
+            // 昏睡(heavy)時には発生させないよう条件を追加
+            if (!eventOccurred && !state.hasEncounteredGift && state.hand.length < 6 && state.debuff !== 'heavy') {
+                if (Math.random() < 0.02) { // 2%の確率で出現
+                    let price = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+                    let giftCard = {
+                        ...SPECIAL_CARDS['gift'],
+                        sellPrice: price,
+                        id: Date.now() + Math.random()
+                    };
+                    state.hand.push(giftCard);
+                    addTurnHistory('event', '贈り物');
+                    turnLogs.push("贈り物"); // アラートに追加
+                    eventOccurred = true; // 他のイベントと排他にする
+                    state.hasEncounteredGift = true; // 追加：発生済みフラグをオン
+                    state.temporaryEffects.push(`カード入手: ${giftCard.name}`);
+                    
+
+                    // 手紙入手時と同じように、フレーバーテキストを出し分ける
+                    let flavorText = state.relation >= 0 ? giftCard.flavor.trust : giftCard.flavor.dependence;
+                    
+                    setTimeout(() => {
+                        addLog(flavorText, "log-flavor");
+                    }, currentLogDelay);
+                        currentLogDelay += 600;
+                }
+            }
+
+            // 前方から移動したアラート(setLastAction)の反映処理
+            if (turnLogs.length > 0) {
+                setLastAction(turnLogs.join(" / "));
+            } else {
+                setLastAction("　");
+            }
+
+            document.getElementById('phase-start-container').style.display = 'none';
+            document.getElementById('phase-main-container').style.display = 'block';
+            
+            renderHand();
+            updateUI();
+        }
+
+        function drawCards(count) {
+            state.hand = [];
+            for (let i = 0; i < count; i++) {
+                if (state.deck.length === 0) {
+                    if (state.discard.length === 0) break;
+                    state.deck = [...state.discard];
+                    state.discard = [];
+                    shuffle(state.deck);
+                }
+                if (state.deck.length > 0) {
+                    state.hand.push(state.deck.pop());
+                } else {
+                    break;
+                }
+            }
+        }
+
+        function renderHand() {
+            const grid = document.getElementById('hand-cards');
+            grid.innerHTML = '';
+            state.hand.forEach((card, index) => {
+                if (!card) return;
+                
+                let currentCost = card.cost;
+                if (state.debuff === 'light' && (card.type === 'direct' || card.type === 'indirect')) {
+                    currentCost += 1;
+                }
+
+if (state.debuff === 'heavy' && card.type === 'harm') {
+                    currentCost = 1;
+                }
+
+                const cardEl = document.createElement('div');
+                cardEl.className = 'game-card';
+                cardEl.id = `card-${index}`;
+                cardEl.onclick = () => selectCard(index);
+                
+              let typeName = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' }[card.type];
+
+                // デバフアイコン（▼）の判定と生成
+                let debuffIconsHTML = '';
+
+                // 1. 矜持（黄色の▼）：関係性0以上かつ直接カードの場合（昏睡時は無効）
+                if (state.relation >= 0 && card.type === 'direct' && state.debuff !== 'heavy') {
+                    debuffIconsHTML += `<span style="color: #bb9244; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="矜持状態：関係性上昇半減・ストレスの-が+に反転">▼</span>`;
+                }
+
+                // 2. 依存（紫の▼）：関係性0未満の場合
+                if (state.relation < 0) {
+                    if (card.type === 'direct') {
+                        debuffIconsHTML += `<span style="color: #754f87; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="依存状態：関係性の+が-に反転">▲</span>`;
+                    } else if (card.type === 'indirect') {
+                        debuffIconsHTML += `<span style="color: #754f87; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="依存状態：回復量半減・カードの値を問わず、ストレスが+10">▼</span>`;
+                    }
+                }
+
+                // 3. マンネリ（灰色の▼）：次に使うと同名カードの使用回数が5回目に達する場合
+                if (['direct', 'indirect'].includes(card.type)) {
+                    let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
+                    if (sameCardCount >= 4) { // 次に使った時点で5回目になるため、4回の時点で予告表示する
+                        debuffIconsHTML += `<span style="color: #aaaaaa; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="マンネリ：回復・ストレス軽減が半減">▼</span>`;
+                    }
+                }
+
+                // 4. 発狂（赤の▼）：発狂状態の場合、すべてのカードに適用
+                if (activeBuffs.isMadness) {
+                    debuffIconsHTML += `<span style="color: #e74c3c; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="発狂状態：関係性の増減がランダム">▼</span>`;
+                }
+
+                grid.appendChild(cardEl);
+                cardEl.innerHTML = `
+                    <div>
+                        <div style="display: flex; align-items: center; margin-bottom: 3px;">
+                            <span class="card-type type-${card.type}" style="margin-bottom: 0;">${typeName}</span>
+                            ${debuffIconsHTML}
+                        </div>
+                        <div class="card-name">${card.name}</div>
+                        <div class="card-info">${card.desc}</div>
+                   </div>
+                    <div class="card-cost">${currentCost}</div>
+                `;
+            });
+        }
+
+        function selectCard(index) {
+            const allCardEls = document.querySelectorAll('.game-card');
+            allCardEls.forEach(el => el.classList.remove('selected-card'));
+
+            state.selectedCardIndex = index;
+            const card = state.hand[index];
+            
+            if (card.type === 'obstacle') {
+                showCustomAlert("不用品のため、使用できません。");
+                state.selectedCardIndex = null;
+                return;
+            }
+
+            if (card.isBattleOnly && !state.battleActive) {
+                showCustomAlert("対象（敵）がいないため、使用できません。");
+                state.selectedCardIndex = null;
+                return;
+            }
+
+            let currentCost = card.cost;
+            if (state.debuff === 'light' && (card.type === 'direct' || card.type === 'indirect')) {
+                currentCost += 1;
+            }
+
+if (state.debuff === 'heavy' && card.type === 'harm') {
+                currentCost = 1;
+            }
+            if (state.ap < currentCost) {
+                showCustomAlert("APが足りません。");
+                state.selectedCardIndex = null;
+                return;
+            }
+
+if (card.type === 'season') {
+                let currentSeason = getSeasonByTurn(state.turn);
+
+                if (card.season !== currentSeason) {
+                    // --- 変更：デフォルトの alert() を showCustomAlert() に置き換え ---
+                    showCustomAlert(`${card.season}以外では使用できません。`);
+                    state.selectedCardIndex = null;
+                    return;
+                }
+            }
+
+            document.getElementById(`card-${index}`).classList.add('selected-card');
+
+       const selector = document.getElementById('target-selector');
+            selector.style.display = 'block';
+            selector.classList.remove('target-anim-out');
+            selector.classList.add('target-anim-in'); // フェードインのクラスを付与
+            
+            const battleBtn = document.getElementById('target-battle-btn');
+            if (state.battleActive && card.type === 'harm') {
+                battleBtn.style.display = 'block';
+            } else {
+                battleBtn.style.display = 'none';
+            }
+
+            const masterBtn = document.getElementById('target-master-btn');
+            if (card.isBattleOnly) {
+                masterBtn.style.display = 'none';
+            } else {
+                masterBtn.style.display = 'block';
+                if (state.debuff === 'heavy' && card.type === 'harm') {
+                    // ★追加: 「首を絞める」かつ不用品5枚以上の場合も殺害フラグを有効化
+                    let isKill = card.isKillTrigger;
+                    if (card.name === "首を絞める") {
+                        let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
+                        if (obstacleCount >= 5) {
+                            isKill = true;
+                        }
+                    }
+
+                    if (isKill) {
+                        masterBtn.innerText = "主人を殺す";
+                        masterBtn.style.backgroundColor = "#c0392b";
+                    } else {
+                        masterBtn.innerText = "主人に使用";
+                        masterBtn.style.backgroundColor = "#3b3b3b";
+                    }
+                } else {
+                    masterBtn.innerText = "主人に使用";
+                    masterBtn.style.backgroundColor = "#3b3b3b";
+                }
+            }
+        }
+
+  function cancelTargetSelect() {
+            const selector = document.getElementById('target-selector');
+            
+            // 既に非表示でなければフェードアウト処理を実行
+            if (selector.style.display !== 'none') {
+                selector.classList.remove('target-anim-in');
+                selector.classList.add('target-anim-out');
+                
+                // アニメーション時間（0.2秒 = 200ミリ秒）待ってから完全に非表示にする
+                setTimeout(() => {
+                    selector.style.display = 'none';
+                    selector.classList.remove('target-anim-out');
+                }, 200);
+            }
+            
+            const allCardEls = document.querySelectorAll('.game-card');
+            allCardEls.forEach(el => el.classList.remove('selected-card'));
+            state.selectedCardIndex = null;
+        }
+function executeCard(target) {
+    if (state.selectedCardIndex === null) return;
+    const card = state.hand[state.selectedCardIndex];
+    
+    // --- 実行可否の検証 ---
+    if (target === 'master' && card.isBattleOnly) {
+        showCustomAlert("このカードは戦闘専用です。主人には使用できません。");
+        return; // ★そのまま戦闘に選べるよう、状態を維持してリターン
+    }
+
+    if (target === 'master' && card.isMasterAlways === false && state.debuff !== 'heavy' && !card.isBattleOnly) {
+        showCustomAlert("主人が『昏睡』の時しか使用できません。");
+        return; // ★state.selectedCardIndex = null; を削除し、選択を維持
+    }
+
+   if (target === 'master' && card.goldCost && state.gold < card.goldCost) {
+        showCustomAlert(`資金が足りないため使用できません。`);
+        return; // ★cancelTargetSelect(); を削除し、選択を維持
+    }
+
+   // --- コスト消費 ---
+    let currentCost = card.cost;
+    if (state.debuff === 'light' && (card.type === 'direct' || card.type === 'indirect')) {
+        currentCost += 1;
+    }
+    if (state.debuff === 'heavy' && card.type === 'harm') {
+        currentCost = 1;
+    }
+    state.ap -= currentCost;
+
+ // 追加：使用したカードを記録
+    state.playedCardsList.push(card);
+    state.totalPlayedCardsList.push(card); // ★追加：リザルト集計用にも記録
+    // ★変更：カードの使用を履歴に記録
+    addTurnHistory('used', { type: card.type, name: card.name, target: target });
+
+    // 「闇医者を呼ぶ」または 特殊版「水を与える」（昏睡付与の重度デバフを持つもの）を判定
+    if (card.name === "闇医者を呼ぶ" || (card.name === "水を与える" && card.actions && card.actions.some(a => a.type === "set_debuff" && a.value === "heavy"))) {
+        state.specialCareCount++;
+    }
+
+    // --- マンネリ（効果減衰）の判定 ---
+    let isMannerism = false;
+    // 戦闘用(harm)や季節限定(season)は対象外とする
+    if (['direct', 'indirect'].includes(card.type)) {
+        // 関係性の条件を撤廃し、使用回数のみで判定する
+        let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
+        if (sameCardCount >= 5) { // ★ 3 から 5 に変更
+            isMannerism = true;
+        }
+    }
+
+    // --- 直前の行動の表示 ---
+    let actionText = `使用:【${card.name}】(${target === 'master' ? '主人' : '戦闘'})`;
+    if (isMannerism) {
+        actionText += " / マンネリ（効果減衰）";
+    }
+    setLastAction(actionText);
+
+    // --- フレーバーテキスト表示 ---
+    if (card.flavor) {
+        let text = "";
+        
+        if (target === 'battle') {
+            // 対象が戦闘の場合
+            if (state.debuff === 'heavy') {
+                // 昏睡時は heavy_battle を優先し、無ければ heavy_trust等へフォールバック
+                text = card.flavor.heavy_battle || 
+                       (state.relation >= 0 ? card.flavor.heavy_trust : card.flavor.heavy_dependence) || 
+                       card.flavor.battle || 
+                       (state.relation >= 0 ? card.flavor.trust : card.flavor.dependence);
+            } else {
+                // 通常時は battle を優先し、無ければ trust等へフォールバック
+                text = card.flavor.battle || 
+                       (state.relation >= 0 ? card.flavor.trust : card.flavor.dependence);
+            }
+        } else {
+            // 対象が主人の場合
+            if (state.debuff === 'heavy') {
+                text = (state.relation >= 0) ? (card.flavor.heavy_trust || card.flavor.trust) : (card.flavor.heavy_dependence || card.flavor.dependence);
+            } else {
+                text = (state.relation >= 0) ? card.flavor.trust : card.flavor.dependence;
+            }
+        }
+        
+        if (text) addLog(text, "log-flavor");
+    }
+
+    // --- 特別処理: 暗殺によるゲーム終了 ---
+    // ▼ 追加：不用品が5枚以上なら「首を絞める」を暗殺可能にする
+    let isKill = card.isKillTrigger;
+    if (card.name === "首を絞める") {
+        let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
+        if (obstacleCount >= 5) {
+            isKill = true;
+        }
+    }
+
+    if (target === 'master' && card.type === 'harm' && state.debuff === 'heavy' && isKill) {
+        // 1. 対象選択のウィンドウを即座に閉じる
+        cancelTargetSelect();
+        
+        // 2. 即座にエンディング画面へ移行
+        checkEndGame(false, "assassination");
+        
+        return;
+    }
+
+    // --- 関係性の計算と反映 ---
+let calcRelationDelta = function(targetCard, currentTarget) {
+        // 対象別の数値設定（masterValue / battleValue）があれば優先し、なければ従来の value を使用する
+        let baseVal = targetCard.value || 0;
+        if (currentTarget === 'battle' && targetCard.battleValue !== undefined) {
+            baseVal = targetCard.battleValue;
+        } else if (currentTarget === 'master' && targetCard.masterValue !== undefined) {
+            baseVal = targetCard.masterValue;
+        }
+
+        let delta = baseVal;
+        if (targetCard.valType === 'percent') {
+            // 現在の関係性がマイナスでも計算が逆転しないよう、絶対値をもとに変動幅を算出する
+            let absPercentDelta = Math.floor(Math.abs(state.relation) * (Math.abs(baseVal) / 100));
+            if (absPercentDelta === 0) absPercentDelta = 1;
+            delta = baseVal > 0 ? absPercentDelta : -absPercentDelta;
+        }
+
+        if (targetCard.type === 'direct') {
+            if (state.relation < 0) { 
+                delta = -Math.abs(delta); 
+            } else { 
+                delta = Math.abs(delta); 
+                if (state.debuff !== 'heavy') {
+                    delta = Math.floor(delta * 0.5); 
+                }
+            }
+        }
+        else if (targetCard.type === 'indirect' || targetCard.type === 'season') { 
+            delta = Math.abs(delta); 
+        } 
+        else if (targetCard.type === 'cold') { 
+            delta = -Math.abs(delta); 
+        }
+        else if (targetCard.type === 'harm') {
+            if (currentTarget === 'master') {
+                delta = -Math.abs(delta); // 主人対象の場合は必ずマイナス
+            }
+            // 戦闘時は baseVal の値（プラスマイナス問わず）をそのまま適用
+        }
+        
+        return delta;
+    };
+    
+ let rDelta = calcRelationDelta(card, target);
+    if (activeBuffs.isMadness) {
+        rDelta = Math.floor(Math.random() * 101) - 50; // -50〜+50
+    }
+    state.relation = Math.min(100, Math.max(-100, state.relation + rDelta));
+
+  let keepInHand = false; // 使用後に手札に残すかどうかのフラグ
+    let isConsumed = false; // 【修正】使い切り判定の変数を事前宣言
+    let isGameOverByGift = false; // ★追加：贈り物処分によるゲームオーバー判定
+
+    // --- アクション(効果)の宣言的実行 ---
+    if (card.actions) {
+        card.actions.forEach(action => {
+            // コンテキスト(適用対象)の指定があり、現在のターゲットと一致しない場合はスキップ
+            if (action.context && action.context !== target) return;
+
+            switch (action.type) {
+                case "heal":
+                    let healVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? (action.trust || 0) : (action.dep || 0));
+                    if (card.type === 'indirect' && state.relation < 0 && healVal > 0 && !action.isFixed) {
+                        healVal = Math.floor(healVal / 2);
+                    }
+                    // マンネリ減衰処理を追加
+                    if (isMannerism && healVal > 0) {
+                        healVal = Math.floor(healVal / 2);
+                    }
+                    state.health = Math.min(100, Math.max(0, state.health + healVal));
+                    break;
+
+                case "stress":
+                    let stressVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? (action.trust || 0) : (action.dep || 0));
+                    if (card.type === 'indirect' && state.relation < 0 && stressVal < 0) {
+                        stressVal = 10;
+                    }
+                    // マンネリ減衰処理を追加（ストレス減少効果のみ減衰させる）
+                    if (isMannerism && stressVal < 0) {
+                        stressVal = Math.floor(stressVal / 2);
+                    }
+                    state.stress = Math.min(100, Math.max(0, state.stress + stressVal));
+                    break;
+
+               case "stress_direct":
+                    let sDirectVal = action.value;
+                    if (state.relation >= 0 && state.debuff !== 'heavy') {
+                        // ストレスが増加する状況：減衰させずそのまま適用
+                        state.stress = Math.min(100, state.stress + sDirectVal);
+                    } else {
+                        // ストレスが減少する状況：マンネリ時に効果を半減
+                        if (isMannerism) {
+                            sDirectVal = Math.floor(sDirectVal / 2);
+                        }
+                        state.stress = Math.max(0, state.stress - sDirectVal);
+                    }
+                    break;
+
+ case "consume":
+                    isConsumed = true;
+                    break;
+
+                case "threat":
+                    state.threat = Math.max(0, state.threat - action.value);
+                    break;
+
+                case "threat_dynamic":
+                    let power = (state.lastPlayedType === action.comboType) ? action.combo : action.base;
+                    state.threat = Math.max(0, state.threat - power);
+                    break;
+
+                case "threat_clear":
+                    state.threat = 0;
+                    break;
+
+                case "gold":
+                    state.gold += action.value;
+                    break;
+
+                    case "gold_random":
+                    // 指定されたmin〜maxの間でランダムな数値を生成して資金に追加
+                    let randomGold = Math.floor(Math.random() * (action.max - action.min + 1)) + action.min;
+                    state.gold += randomGold;
+  
+                    break;
+
+case "set_debuff":
+    state.debuff = action.value;
+    // デバフが「昏睡(heavy)」になった場合、その場で残りAPを最大1に制限する
+    if (action.value === 'heavy') {
+        state.ap = Math.min(state.ap, 1);
+    }
+    break;
+
+// ▼追加：関係性を強制的に0にするアクション
+case "set_relation_zero":
+    state.relation = 0;
+    break;
+
+case "add_special_card":
+    // 修正：keyが配列ならランダム抽出、そうでなければそのまま使用
+    let targetKey = Array.isArray(action.key) 
+        ? action.key[Math.floor(Math.random() * action.key.length)] 
+        : action.key;
+
+     if (SPECIAL_CARDS[targetKey]) {
+        // 特殊カードをコピーして手札(hand)に加える
+        // idが被らないよう Date.now() と乱数を組み合わせる
+        let newCard = { 
+            ...SPECIAL_CARDS[targetKey], 
+            id: Date.now() + Math.random() 
+        };
+        state.hand.push(newCard); // ★state. を追加
+        addTurnHistory('obtained', { type: newCard.type, name: newCard.name });
+        state.temporaryEffects.push(`カード入手: ${newCard.name}`);
+    }
+    break;
+
+case "set_madness":
+    activeBuffs.isMadness = true;
+    break;
+
+                    
+             case "banish_random_hand":
+                    let validIndices = [];
+                    // 使用中のカード、不用品、冷淡以外を対象にする
+                    state.hand.forEach((c, idx) => {
+                        if (c && c !== card && c.type !== 'obstacle' && c.type !== 'cold') {
+                            validIndices.push(idx);
+                        }
+                    });
+                    
+                    if (validIndices.length > 0) {
+                        let randIdx = validIndices[Math.floor(Math.random() * validIndices.length)];
+                        // 手札から抽出し、そのまま捨て札(state.discard)には送らず消去する
+                        let removed = state.hand.splice(randIdx, 1)[0];
+                        addTurnHistory('disposed', { type: removed.type, name: removed.name }); // 売却フェーズ以外は（処）として記録
+                    }
+                    break;
+
+
+                case "buff":
+                    if (activeBuffs[action.key] !== undefined) {
+                        activeBuffs[action.key] += action.value;
+                    } else {
+                        activeBuffs[action.key] = action.value;
+                    }
+                    break;
+
+                case "convert_card":
+                    let targetIndices = [];
+                    state.hand.forEach((c, idx) => {
+                        if (c && c.type === action.targetType && c !== card) targetIndices.push(idx);
+                    });
+                    if (targetIndices.length > 0) {
+                        let randIdx = targetIndices[Math.floor(Math.random() * targetIndices.length)];
+                        let cleanCard = CARD_POOL.indirect.find(c => c.name === action.resultName);
+                        state.hand[randIdx] = JSON.parse(JSON.stringify(cleanCard));
+                        state.temporaryEffects.push(`カード変化: ${cleanCard.name}`);
+                    }
+                    break;
+
+               case "discard_obstacle":
+                    let obsIdx = state.hand.findIndex(c => c && c.type === 'obstacle');
+                    if (obsIdx !== -1) {
+                        let removed = state.hand.splice(obsIdx, 1)[0];
+                        state.hasDisposedObstacle = true; // ★追加：カード効果で不用品を廃棄した記録
+                        addTurnHistory('disposed', { type: removed.type, name: removed.name }); // 売却フェーズ以外は（処）として記録
+                        if (removed.name === "贈り物" && state.relation <= -75) {
+                            if (Math.random() < 0.3) {
+                                isGameOverByGift = true;
+                            }
+                        }
+                    }
+                    break;
+
+                case "remove_all_obstacles":
+                    let removedCount = 0;
+                    let giftDisposed = false;
+
+                    // デッキから不用品をすべて除外（削除時に配列がずれないよう、後ろからループ処理します）
+                    for (let i = state.deck.length - 1; i >= 0; i--) {
+                        if (state.deck[i] && state.deck[i].type === 'obstacle') {
+                            if (state.deck[i].name === "贈り物") giftDisposed = true;
+                            state.deck.splice(i, 1);
+                            removedCount++;
+                        }
+                    }
+                    
+                    // 捨て札から不用品をすべて除外
+                    for (let i = state.discard.length - 1; i >= 0; i--) {
+                        if (state.discard[i] && state.discard[i].type === 'obstacle') {
+                            if (state.discard[i].name === "贈り物") giftDisposed = true;
+                            state.discard.splice(i, 1);
+                            removedCount++;
+                        }
+                    }
+                    
+                    // 手札から不用品をすべて除外
+                    for (let i = state.hand.length - 1; i >= 0; i--) {
+                        if (state.hand[i] && state.hand[i].type === 'obstacle') {
+                            if (state.hand[i].name === "贈り物") giftDisposed = true;
+                            state.hand.splice(i, 1);
+                            removedCount++;
+                        }
+                    }
+
+                    // 除外した枚数分、関係性を0に近づける（1枚につき20%減少、5枚以上で完全に0）
+                    if (removedCount > 0) {
+                        let reductionRatio = Math.min(1.0, removedCount * 0.2);
+                        state.relation = Math.trunc(state.relation * (1 - reductionRatio));
+                        state.hasDisposedObstacle = true; // ★不用品を廃棄した記録を残す
+                        addTurnHistory('disposed', { type: 'obstacle', name: `不用品すべて(計${removedCount}枚)` });
+                    }
+                    
+                    if (giftDisposed && state.relation <= -75) {
+                        if (Math.random() < 0.3) {
+                            isGameOverByGift = true;
+                        }
+                    }
+                    break;
+
+                case "draw_card":
+                    for (let i = 0; i < action.count; i++) {
+                        if (state.deck.length === 0 && state.discard.length > 0) {
+                            state.deck = [...state.discard];
+                            state.discard = [];
+                            shuffle(state.deck);
+                        }
+                        if (state.deck.length > 0 && state.hand.length < 10) {
+                            state.hand.push(state.deck.pop());
+                        }
+                    }
+                    break;
+
+                case "add_card_to_hand":
+                    let poolCards = state.deck.filter(c => c && c.type === action.poolType);
+                    if (poolCards.length > 0 && state.hand.length < 10) {
+                        let deckIdx = state.deck.findIndex(c => c === poolCards[0]);
+                        let addedCard = state.deck.splice(deckIdx, 1)[0];
+                        state.hand.push(addedCard);
+                        addTurnHistory('obtained', { type: addedCard.type, name: addedCard.name });
+                    }
+                    break;
+
+                case "season_effect":
+                    if (!state.achievements.includes(card.season)) {
+                        state.achievements.push(card.season);
+                        setLastAction(`思い出【${card.season}の記憶】を獲得！`);
+                    }
+                    let currentIdx = state.hand.indexOf(card);
+                    if (currentIdx !== -1) {
+                        state.hand[currentIdx] = {
+                            name: "祭りの名残", type: "obstacle", cost: 0, desc: "過去の行事のゴミ。使用不可",
+                            flavor: { trust: "お祭りの華やかさは去り、手元には虚しい残骸だけが残された。", dependence: "祭りの熱狂などどうでもいい。残ったゴミのように、あなたに執着していたい。" }
+                        };
+                    }
+                    keepInHand = true;
+                    break;
+            }
+        });
+    }
+
+// ★追加：贈り物処分によるゲームオーバー処理
+    if (isGameOverByGift) {
+        cancelTargetSelect();
+        renderHand();
+        updateUI();
+        if (activeBuffs.isMadness) {
+            checkEndGame(false, "double_suicide");
+        } else {
+            checkEndGame(false, "killed_by_master");
+        }
+        return;
+    }
+
+    // --- 使用済みカードの廃棄処理 ---
+
+    if (!keepInHand) {
+        let finalIdx = state.hand.indexOf(card);
+        if (finalIdx !== -1) {
+            let playedCard = state.hand.splice(finalIdx, 1)[0];
+            if (!isConsumed) {
+                // consume属性がない場合のみ捨て札へ送る
+                state.discard.push(playedCard);
+            }
+        }
+    }
+
+    state.lastPlayedType = card.type;
+
+    cancelTargetSelect();
+    renderHand(); 
+    updateUI();
+    if (state.health <= 0) { 
+        if (target === 'master' && card.type === 'harm') {
+            checkEndGame(false, "assassination");
+        } else {
+            checkEndGame(false, "dead"); 
+        }
+    }
+}
+        function processWeekEnd() {
+cancelTargetSelect();
+            // ターン内に発生した一時効果をターン終了時にクリアする
+            state.temporaryEffects = [];
+            state.endOfTurnEffects = []; // 次ターンに持ち越さないようここでクリアする
+
+            let endLogs = [];
+            if (state.ap > 0) {
+                let penaltyGold = state.ap * 10;
+                let penaltyStress = state.ap * 15;
+                state.gold = Math.max(0, state.gold - penaltyGold);
+                state.stress = Math.min(100, state.stress + penaltyStress);
+                endLogs.push("AP未消費ペナルティ");
+                
+                let pullCount = state.ap * 4;
+                if (state.relation > 0) {
+                    state.relation = Math.max(0, state.relation - pullCount);
+                } else if (state.relation < 0) {
+                    state.relation = Math.min(0, state.relation + pullCount);
+                }
+                
+                state.endOfTurnEffects.push(`AP未消費ペナルティ(残りAP${state.ap}): 資金-${penaltyGold} / ストレス+${penaltyStress} / 関係性が0に近づいた`);
+            }
+
+if (state.battleActive) {
+                let diceRoll = Math.random() * 100;
+                
+                if (diceRoll < state.threat) {
+                    // ★追加：自衛状態の判定
+                    if (activeBuffs.hasKnife && state.debuff !== 'heavy') {
+                        activeBuffs.hasKnife = false;
+                        addTurnHistory('states', '戦闘防衛(自衛)');
+                        state.endOfTurnEffects.push(`戦闘結果: 自衛により被害を無効化`);
+                        if (state.relation >= 0) {
+                            addLog("彼は、隠し持っていたナイフで敵を退けた。", "log-flavor");
+                        } else {
+                            addLog("彼は狂乱したようにナイフを振り回し敵を退けた。その手はひどく震えている。", "log-flavor");
+                        }
+                    } else {
+                        state.health = Math.max(0, state.health - 20);
+                        state.stress = Math.min(100, state.stress + 30);
+                        endLogs.push("防衛突破され被害");
+                        addTurnHistory('states', '戦闘敗北'); 
+                        state.endOfTurnEffects.push(`戦闘敗北: 健康-20 / ストレス+30`);
+                        
+                        // 防衛失敗時の情景描写
+                    if (state.debuff === 'heavy') {
+                        if (state.relation >= 0) {
+                            const failHeavyTrust = [
+                                "意識のない彼は身を守る術を持たず、理不尽な暴力に晒されてしまった。",
+                                "彼を守り切れなかった。まっさらなシーツに鮮血が染み込んでいく。"
+                            ];
+                            addLog(failHeavyTrust[Math.floor(Math.random() * failHeavyTrust.length)], "log-flavor");
+                        } else {
+                            const failHeavyDep = [
+                                "彼の体についた無惨な傷。あなたの胸中に、激しい衝動が湧き上がる。",
+                                "所有物が他人に傷つけられた。その事実が、あなたの支配欲をさらに刺激する。"
+                            ];
+                            addLog(failHeavyDep[Math.floor(Math.random() * failHeavyDep.length)], "log-flavor");
+                        }
+                    } else {
+                       if (state.relation >= 0) {
+                            const failTrust = [
+                                "彼はあなたを庇おうと敵の前に立ちはだかり、傷を負った。",
+                                "己の無力さを呪うように、彼は床に伏しながら血を吐き出した。"
+                            ];
+                            addLog(failTrust[Math.floor(Math.random() * failTrust.length)], "log-flavor");
+                        } else {
+                            const failDep = [
+                                "彼は痛みに悶えながらも、助けを求めるように手を伸ばしている。",
+                                "傷の痛みよりも、見捨てられるかもしれないという恐怖が彼を支配しているようだ。"
+                            ];
+                            addLog(failDep[Math.floor(Math.random() * failDep.length)], "log-flavor");
+                        }
+                    }
+                }
+                } else {
+                    let reward = 15 + Math.floor(state.turn * 0.5);
+                    state.gold += reward;
+                    addTurnHistory('states', '戦闘勝利'); // 
+                    state.endOfTurnEffects.push(`戦闘勝利: 資金+${reward}G`);
+                    
+                    // 防衛成功時の情景描写
+                    if (state.debuff === 'heavy') {
+                        if (state.relation >= 0) {
+                            const winHeavyTrust = [
+                                "血に濡れて戻ったあなたを、ただ静かな寝息だけが出迎えた。",
+                                "敵の排除を終え部屋に戻ったが、彼が目を覚ます気配はない。"
+                            ];
+                            addLog(winHeavyTrust[Math.floor(Math.random() * winHeavyTrust.length)], "log-flavor");
+                        } else {
+                            const winHeavyDep = [
+                                "外の惨状も知らず、彼は部屋で眠り続けている。",
+                                "彼の寝顔を眺める。これを傷つけていいのは、あなただけだ。"
+                            ];
+                            addLog(winHeavyDep[Math.floor(Math.random() * winHeavyDep.length)], "log-flavor");
+                        }
+                    } else {
+                        if (state.relation >= 0) {
+                            const winTrust = [
+                                "敵を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。",
+                                "戦いから戻ったあなたを見て、彼は自らが負担になっている現実に顔を歪めた。"
+                            ];
+                            addLog(winTrust[Math.floor(Math.random() * winTrust.length)], "log-flavor");
+                        } else {
+                            const winDep = [
+                                "圧倒的な暴力で敵を蹂躙するあなたを見て、彼は胸を撫でおろした。",
+                                "彼は、返り血を浴びたあなたに心酔しているようだ。"
+                            ];
+                            addLog(winDep[Math.floor(Math.random() * winDep.length)], "log-flavor");
+                        }
+                    }
+                }
+            }
+
+           if (state.stress >= 70) {
+                state.health = Math.max(0, state.health - 10);
+                endLogs.push("高ストレスで体力減");
+                state.endOfTurnEffects.push(`高ストレスペナルティ: 健康-10`);
+            }
+
+            if (endLogs.length > 0) {
+                setLastAction(endLogs.join(" / "));
+            } else {
+                setLastAction("精算完了");
+            }
+            if (state.health <= 0) { 
+                updateUI(); 
+    checkEndGame(false, "dead"); 
+    return; 
+}
+            state.discard.push(...state.hand);
+            state.hand = [];
+            document.getElementById('phase-main-container').style.display = 'none';
+
+              if (state.turn % 4 === 0) { 
+                state.shopBuyCount = 0;
+                state.shopSellCount = 0;
+                openShop(); 
+            } else { 
+                document.getElementById('phase-start-container').style.display = 'block'; 
+            }
+            updateUI();
+            // ★削除：ターン終了時のステータス記録を廃止（ターン開始時に移動）
+        
+        }
+
+function openShop() {
+            document.getElementById('phase-shop-container').style.display = 'block';
+            state.shopCards = [];
+            
+            let nextTurnSeason = getSeasonByTurn(state.turn + 1);
+            
+            // 抽選候補となる全カードを一つのプールにまとめる
+            let availableCards = [];
+            let types = ['direct', 'indirect', 'cold', 'harm'];
+            types.forEach(type => {
+                let cards = CARD_POOL[type].filter(c => c.name !== "形見の宝刀" && c.name !== "しがらみの精算");
+                availableCards.push(...cards);
+            });
+            
+            // 未獲得の場合、または季節イベントが発生した場合、季節カードを追加
+            if (state.seasonEventTriggered) {
+                state.shopCards.push(JSON.parse(JSON.stringify(CARD_POOL.season[nextTurnSeason])));
+                state.seasonEventTriggered = false; // フラグ消費
+            } else if (!state.achievements.includes(nextTurnSeason)) {
+                availableCards.push(CARD_POOL.season[nextTurnSeason]);
+            }
+            
+            let needed = 4 - state.shopCards.length;
+            for (let i = 0; i < needed; i++) {
+                if (availableCards.length === 0) break;
+                
+                let randomIndex = Math.floor(Math.random() * availableCards.length);
+                let selectedCard = availableCards[randomIndex];
+                state.shopCards.push(JSON.parse(JSON.stringify(selectedCard)));
+                
+                // 季節カードが選出された場合、重複陳列を防ぐためプールから削除する
+                if (selectedCard.type === 'season') {
+                    availableCards.splice(randomIndex, 1);
+                }
+            }
+            
+            switchShopTab('buy');
+        }
+
+        function switchShopTab(tab) {
+            document.getElementById('tab-buy').className = 'tab-btn' + (tab === 'buy' ? ' active' : '');
+            document.getElementById('tab-dispose').className = 'tab-btn' + (tab === 'dispose' ? ' active' : '');
+            document.getElementById('shop-buy-view').style.display = tab === 'buy' ? 'flex' : 'none';
+            document.getElementById('shop-dispose-view').style.display = tab === 'dispose' ? 'block' : 'none';
+            if (tab === 'buy') renderShopBuy(); if (tab === 'dispose') renderShopDispose();
+        }
+
+        function renderShopBuy() {
+            const view = document.getElementById('shop-buy-view'); view.innerHTML = '';
+            let baseCost = 50;
+            let currentCost = baseCost + (state.shopBuyCount * 25);
+            
+            state.shopCards.forEach((card, idx) => {
+                if (!card) return;
+                const item = document.createElement('div'); item.className = 'shop-item';
+let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', attachment: '愛着' }[card.type];                
+                item.innerHTML = `<div>
+                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                            <span class="card-type type-${card.type}" style="margin-bottom: 0;">${typeN}</span>
+                            <span style="font-size: 10px; background: #a3a29d; border: 0px solid #555; padding: 1px 5px; border-radius: 3px; color: #151515; font-weight: bold;">AP:${card.cost}</span>
+                            <strong style="font-size:12px;">${card.name}</strong>
+                        </div>
+                        <span style="font-size:10px; color:#aaa; font-family: 'Zen Kaku Gothic New', sans-serif;">${card.desc}</span>
+                    </div>
+                    <button class="btn btn-primary" style="padding:4px 8px; font-size:11px; margin:0; width:auto;" onclick="buyCard(${idx}, ${currentCost}, this)">購入(${currentCost}G)</button>`;
+                view.appendChild(item);
+            });
+        }
+
+function buyCard(idx, cost, btnEl) {
+    if (state.gold < cost) { showCustomAlert("資金が足りません。"); return; }
+
+    // アニメーションの適用と、二重クリック防止のためのロック
+    const shopItem = btnEl.closest('.shop-item');
+    if (shopItem) shopItem.classList.add('shop-item-anim-out');
+    document.getElementById('phase-shop-container').style.pointerEvents = 'none';
+
+    // 0.25秒（250ミリ秒）後に元の処理を実行
+ setTimeout(() => {
+        state.gold -= cost; 
+        
+        let boughtCard = state.shopCards[idx];
+        let boughtCardName = boughtCard.name;
+        
+        state.discard.push(JSON.parse(JSON.stringify(boughtCard)));
+        state.shopBuyCount++;            
+        state.shopCards.splice(idx, 1);
+        
+       let nextTurnSeason = getSeasonByTurn(state.turn + 1);
+        let hasSeasonCard = state.shopCards.some(c => c && c.type === 'season');
+        
+        // 抽選候補となる全カードを一つのプールにまとめる
+        let availableCards = [];
+        let types = ['direct', 'indirect', 'cold', 'harm'];
+        types.forEach(type => {
+            let cards = CARD_POOL[type].filter(c => c.name !== "形見の宝刀" && c.name !== "しがらみの精算");
+            availableCards.push(...cards);
+        });
+        
+        // 未獲得かつショップに季節カードがない場合、季節カードをプールに1枚追加
+        if (!hasSeasonCard && !state.achievements.includes(nextTurnSeason)) {
+            availableCards.push(CARD_POOL.season[nextTurnSeason]);
+        }
+
+       let randomIndex = Math.floor(Math.random() * availableCards.length);
+        let randomCard = availableCards[randomIndex];
+        state.shopCards.push(JSON.parse(JSON.stringify(randomCard)));
+        
+        setLastAction(`【${boughtCardName}】を購入`);
+        addTurnHistory('bought', { type: boughtCard.type, name: boughtCardName }); // ★変更
+        renderShopBuy(); 
+        updateUI();
+
+        // ロックを解除
+        document.getElementById('phase-shop-container').style.pointerEvents = 'auto';
+    }, 400);
+}
+
+       function renderShopDispose() {
+            const view = document.getElementById('shop-dispose-view');
+            let baseDisposeCost = 10; // 内部処理の数値と統一（30から10に緩和）
+            let costIncrease = 20; // 上り幅（30から20に緩和）
+            let headerText = "";
+            if (state.shopSellCount === 0) {
+                headerText = "各月の1回目の売却：カードを売って 資金(+20G) を得られます。";
+            } else {
+                let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
+                headerText = `2回目以降の処分：廃棄コストとして 資金(-${nextCost}G) を消費します。`;
+            }
+            
+            view.innerHTML = `<div style="font-size:10px; color:#aaa; margin-bottom:4px; font-family: 'Zen Kaku Gothic New', sans-serif;">${headerText}</div>`;
+            
+            let rawCards = [...state.deck, ...state.discard];
+            if (rawCards.length === 0) { view.innerHTML += '<div>処分できるカードがありません。</div>'; return; }
+            
+            // 元のインデックスを保持した上で種類ごとにソート（★attachmentを追加）
+            const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
+            let allCards = rawCards.map((card, idx) => ({ card: card, originalIdx: idx }));
+            allCards.sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
+            
+            allCards.forEach((data) => {
+                let card = data.card;
+                let idx = data.originalIdx;
+                const item = document.createElement('div'); item.className = 'shop-item'; item.style.marginBottom = '3px';
+                
+               // 使用回数のカウントとボーナス計算
+              let bonusGold = calculateBonusGold(card.name);
+                
+                let btnText = ""; let btnClass = "";
+                if (card.name === "贈り物") {
+                    let sPrice = card.sellPrice || 5000;
+                    btnText = `売却(+${sPrice}G)`; 
+                    btnClass = "btn-primary";
+                } else if (state.shopSellCount === 0) {
+                    btnText = `売却(+${20 + bonusGold}G)`; 
+                    btnClass = "btn-primary";
+                } else {
+                    let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
+                    let netCost = nextCost - bonusGold;
+                    if (netCost <= 0) {
+                        // ボーナスが処分コストを上回る場合は資金増（青ボタン）にする
+                        btnText = `処分(+${Math.abs(netCost)}G)`; 
+                        btnClass = "btn-primary";
+                    } else {
+                        btnText = `処分(-${netCost}G)`; 
+                        btnClass = "btn-danger";
+                    }
+                }
+
+                let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' }[card.type];
+                let bonusIcon = bonusGold > 0 ? `<span style="color:#d4af37; font-size:4px; margin-left:4px;">★</span>` : "";
+
+                item.innerHTML = `<div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="card-type type-${card.type}" style="margin-bottom: 0;">${typeN}</span>
+                        <span style="font-size: 10px; background: #a3a29d; border: 0px solid #555; padding: 1px 5px; border-radius: 3px; color: #151515; font-weight: bold;">AP:${card.cost}</span>
+                        <span style="font-size:11px;">${card.name}${bonusIcon}</span>
+                    </div>
+                    <button class="btn ${btnClass}" style="padding:3px 6px; font-size:10px; margin:0; width:auto;" onclick="disposeCard(${idx}, this)">${btnText}</button>`;
+                view.appendChild(item);
+            });
+        }
+
+function calculateBonusGold(cardName) {
+    let playCount = state.playedCardsList ? state.playedCardsList.filter(c => c && c.name === cardName).length : 0;
+    return (playCount >= 3) ? (playCount * 10) : 0;
+}
+
+        function disposeCard(combinedIdx, btnEl) {
+            let allCards = [...state.deck, ...state.discard];
+            if (allCards.length <= 1) {
+                showCustomAlert("デッキの最小枚数（1枚）を下回るため、これ以上処分できません。");
+                return;
+            }
+            
+            // ボーナスと最終コストの計算
+            let targetCard = combinedIdx < state.deck.length ? state.deck[combinedIdx] : state.discard[combinedIdx - state.deck.length];
+            let bonusGold = calculateBonusGold(targetCard.name);
+            
+let baseDisposeCost = 10;
+            let costIncrease = 20;
+            let actionType = '処分';
+            
+            let netCost = 0;
+            if (targetCard.name === "贈り物") {
+                netCost = -(targetCard.sellPrice || 5000); // 売値がそのまま収入になる
+                actionType = '売却';
+            } else if (state.shopSellCount === 0) {
+                netCost = -(20 + bonusGold);
+                actionType = '売却';
+            } else {
+                netCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease) - bonusGold;
+            }
+
+            if (netCost > 0 && state.gold < netCost) { 
+                showCustomAlert("処分費用が足りません。"); 
+                return; 
+            }
+
+            const shopItem = btnEl.closest('.shop-item');
+            if (shopItem) shopItem.classList.add('shop-item-anim-out');
+            document.getElementById('phase-shop-container').style.pointerEvents = 'none';
+
+            setTimeout(() => {
+                // 資金の増減
+                if (netCost <= 0) {
+                    state.gold += Math.abs(netCost);
+                } else {
+                    state.gold -= netCost;
+                }
+
+                let removed;
+                 if (combinedIdx < state.deck.length) {
+                    removed = state.deck.splice(combinedIdx, 1)[0];
+                } else {
+                    removed = state.discard.splice(combinedIdx - state.deck.length, 1)[0];
+                }
+
+               // ★追加：贈り物売却によるDEAD END判定
+                if (removed.name === "贈り物" && state.relation <= -75) {
+                    if (Math.random() < 0.3) {
+                        if (activeBuffs.isMadness) {
+                            checkEndGame(false, "double_suicide");
+                        } else {
+                            checkEndGame(false, "killed_by_master");
+                        }
+                        return; // 処理を中断
+                    }
+                }
+
+                // ★追加：処分したカードが不用品だった場合の記録
+                if (removed.type === 'obstacle') {
+                    state.hasDisposedObstacle = true;
+                }
+
+                // 処分したカードの名前を playedCardsList からすべて削除（カウントリセット）
+                if (state.playedCardsList) {
+                    state.playedCardsList = state.playedCardsList.filter(c => c && c.name !== removed.name);
+                }
+
+                setLastAction(`【${removed.name}】を${actionType}`);
+                // 売却フェーズでの除外はすべて（売）として記録する
+                addTurnHistory('sold', { type: removed.type, name: removed.name });
+
+                state.shopSellCount++;
+                renderShopDispose();
+                updateUI();
+
+                document.getElementById('phase-shop-container').style.pointerEvents = 'auto';
+            }, 400);
+        }
+
+        function closeShop() {
+            document.getElementById('phase-shop-container').style.display = 'none';
+            document.getElementById('phase-start-container').style.display = 'block';
+        }
+
+// ★追加：整理されたターン履歴のHTMLを生成する関数
+function generateTurnHistoryHTML() {
+    let html = '';
+    const typeNames = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' };
+    
+    // 見出しラベルのデザイン
+    const labelStyle = "background: #080808; color: #736e5d; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-right: 6px; display: inline-flex; align-items: center; justify-content: center; width: 45px; flex-shrink: 0; font-family: 'Zen Kaku Gothic New', sans-serif !important;";
+
+    // ★追加：初期デッキ構成を詳細履歴の最初に表示
+    if (state.initialDeck && state.initialDeck.length > 0) {
+        html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
+        html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ 初期デッキ構成</div>`;
+        
+        let initDeckCounts = {};
+        const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
+        
+        state.initialDeck.forEach(c => {
+            if(!c) return;
+            let key = `${c.type}_${c.name}`;
+            if (!initDeckCounts[key]) initDeckCounts[key] = { count: 0, card: c };
+            initDeckCounts[key].count++;
+        });
+        
+        let sortedInitDeck = Object.values(initDeckCounts).sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
+        
+        let deckCardsHTML = sortedInitDeck.map(item => {
+            return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
+                        <span class="card-type type-${item.card.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[item.card.type] || '不明'}</span>
+                        <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${item.card.name}（${item.count}）</span>
+                    </div>`;
+        }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
+        
+        html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                    <span style="${labelStyle}">DECK</span>
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
+                        ${deckCardsHTML}
+                    </div>
+                 </div>`;
+        html += `</div>`;
+    }
+
+    for (let turn = 1; turn <= state.turn; turn++) {
+        let history = state.turnHistory[turn];
+        if (!history) continue;
+
+        html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
+        html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ ${turn}ターン</div>`;
+
+        // ステータス
+        if (history.stats) {
+            html += `<div style="margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px;">
+                        <span style="${labelStyle}">STATUS</span>
+                        <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">健康: ${history.stats.health}</span>
+                        <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">ストレス: ${history.stats.stress}</span>
+                        <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">関係性: ${history.stats.relation}</span>
+                        <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">資金: ${history.stats.gold}</span>
+                     </div>`;
+        }
+
+        // 状態バッジ描画用のヘルパー関数
+        const renderStateBadge = (stateName) => {
+            let bgColor = '#444'; // デフォルト
+            if (stateName === '歩行困難') bgColor = '#7b4141';
+            else if (stateName === '頭痛') bgColor = '#9f3434';
+            else if (stateName === '昏睡') bgColor = '#a71e1e';
+            else if (stateName === '戦闘勝利') bgColor = '#bf790d';
+            else if (stateName === '戦闘敗北') bgColor = '#40435d';
+            else if (stateName === '敵襲来') bgColor = '#962d22'; // 敵襲来の色を追加
+            
+            return `<span style="background-color: ${bgColor}; color: #ffffff; padding: 1px 4px; border-radius: 2px; font-size: 8px; display: inline-block; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${stateName}</span>`;
+        };
+
+        if (history.timeline && history.timeline.length > 0) {
+            let currentGroupType = null;
+            let groupItems = [];
+            let inItems = [];
+            let outItems = [];
+            
+            const renderGroup = () => {
+                if (groupItems.length === 0) return '';
+                let result = '';
+                
+                if (currentGroupType === 'EVENT') {
+                    let eventBadges = groupItems.map(item => {
+                        if (item.category === 'states') {
+                            return renderStateBadge(item.data);
+                        } else if (item.category === 'event') {
+                            return `<span style="background-color: #555555; color: #ffffff; padding: 1px 4px; border-radius: 2px; font-size: 8px; display: inline-block; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${item.data}</span>`;
+                        }
+                    }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
+
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px;">
+                                <span style="${labelStyle}">EVENT</span>
+                                ${eventBadges}
+                             </div>`;
+                } else if (currentGroupType === 'USE') {
+                    groupItems.forEach(item => {
+                        let c = item.data;
+                        let targetSuffix = '';
+                        if (c.type === 'harm') {
+                            if (c.target === 'master') targetSuffix = '（主人）';
+                            else if (c.target === 'battle') targetSuffix = '（敵）';
+                        }
+                        result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                                    <span style="${labelStyle}">USE</span>
+                                    <div style="display: flex; align-items: center; margin-top: 1px;">
+                                        <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
+                                        <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${targetSuffix}</span>
+                                    </div>
+                                 </div>`;
+                    });
+                }
+                
+                groupItems = [];
+                return result;
+            };
+
+            const renderInOut = () => {
+                let result = '';
+                if (inItems.length > 0) {
+                    let mixedCards = inItems.map(item => {
+                        let c = item.data;
+                        let suffix = item.category === 'obtained' ? '（入）' : '（購）';
+                        return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
+                                    <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
+                                    <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${suffix}</span>
+                                </div>`;
+                    }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
+                    
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                                <span style="${labelStyle}">IN</span>
+                                <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
+                                    ${mixedCards}
+                                </div>
+                             </div>`;
+                }
+                if (outItems.length > 0) {
+                    let mixedCards = outItems.map(item => {
+                        let c = item.data;
+                        let suffix = item.category === 'sold' ? '（売）' : '（処）';
+                        return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
+                                    <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
+                                    <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${suffix}</span>
+                                </div>`;
+                    }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
+                    
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                                <span style="${labelStyle}">OUT</span>
+                                <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
+                                    ${mixedCards}
+                                </div>
+                             </div>`;
+                }
+                inItems = [];
+                outItems = [];
+                return result;
+            };
+
+            history.timeline.forEach(event => {
+                let groupType = null;
+                if (event.category === 'states' || event.category === 'event') {
+                    groupType = 'EVENT';
+                } else if (event.category === 'used') {
+                    groupType = 'USE';
+                } else if (event.category === 'obtained' || event.category === 'bought') {
+                    groupType = 'IN';
+                } else if (event.category === 'disposed' || event.category === 'sold') {
+                    groupType = 'OUT';
+                }
+                
+                if (groupType === 'IN') {
+                    inItems.push(event);
+                } else if (groupType === 'OUT') {
+                    outItems.push(event);
+                } else {
+                    // イベントや使用行動が来たタイミングで、溜まっていた IN / OUT を一括出力
+                    if (inItems.length > 0 || outItems.length > 0) {
+                        html += renderInOut();
+                    }
+                    if (currentGroupType !== groupType) {
+                        html += renderGroup();
+                        currentGroupType = groupType;
+                    }
+                    groupItems.push(event);
+                }
+            });
+            // 最後に残っているイベントや使用行動を出力
+            html += renderGroup(); 
+            // 最後に残っている IN / OUT（購入売却フェーズの履歴）を一括出力
+            html += renderInOut(); 
+        }
+
+        html += `</div>`;
+    }
+    
+    // ★追加：最終デッキ構成を詳細履歴の最後に表示
+    let allCards = [...state.deck, ...state.hand, ...state.discard];
+    if (allCards && allCards.length > 0) {
+        html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
+        html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ 最終デッキ構成</div>`;
+        
+        let finalDeckCounts = {};
+        const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
+        
+        allCards.forEach(c => {
+            if(!c) return;
+            let key = `${c.type}_${c.name}`;
+            if (!finalDeckCounts[key]) finalDeckCounts[key] = { count: 0, card: c };
+            finalDeckCounts[key].count++;
+        });
+        
+        let sortedFinalDeck = Object.values(finalDeckCounts).sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
+        
+        let deckCardsHTML = sortedFinalDeck.map(item => {
+            return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
+                        <span class="card-type type-${item.card.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[item.card.type] || '不明'}</span>
+                        <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${item.card.name}（${item.count}）</span>
+                    </div>`;
+        }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
+        
+       html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                    <span style="${labelStyle}">DECK</span>
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
+                        ${deckCardsHTML}
+                    </div>
+                 </div>`;
+        html += `</div>`;
+    }
+
+    // ★追加：カード使用比率ゲージを一番下に追加
+    let totalPlayed = state.totalPlayedCardsList ? state.totalPlayedCardsList.length : 0;
+    if (totalPlayed > 0) {
+        let typeCounts = { direct: 0, indirect: 0, cold: 0, harm: 0, season: 0, obstacle: 0, attachment: 0 };
+        state.totalPlayedCardsList.forEach(c => {
+            if(!c) return;
+            typeCounts[c.type]++;
+        });
+        
+        const typeColors = { direct: '#7d1f18', indirect: '#1e5a34', cold: '#1f4a63', harm: '#964b15', season: '#b3860f', obstacle: '#444444', attachment: '#ad5c77' };
+        
+        let bars = Object.keys(typeCounts).map(type => {
+            let count = typeCounts[type];
+            if (count > 0) {
+                let percent = (count / totalPlayed) * 100;
+                return `<div style="height: 100%; width: ${percent}%; background-color: ${typeColors[type]};" title="${typeNames[type]}: ${Math.round(percent)}%"></div>`;
+            }
+            return '';
+        }).join('');
+        
+        html += `<div style="margin-bottom: 8px; font-size: 11px; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
+        html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ カード使用比率（全${totalPlayed}回）</div>`;
+        html += `<div style="display: flex; height: 10px; width: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 4px; border: 1px solid #444;">
+                    ${bars}
+                 </div>`;
+        html += `</div>`;
+    }
+
+    return html;
+}
+
+
+        function checkEndGame(isSurvivalClear, condition = "") {
+            document.getElementById('phase-start-container').style.display = 'none';
+            document.getElementById('phase-main-container').style.display = 'none';
+            document.getElementById('phase-shop-container').style.display = 'none';
+            const endContainer = document.getElementById('phase-end-container');
+            const title = document.getElementById('end-title'); const desc = document.getElementById('end-description');
+            endContainer.style.display = 'block';
+            
+            // --- 四季の記憶のHTML生成 ---
+            let memoryCount = state.achievements.length;
+            let seasonMemoryHTML = "";
+            
+            // 季節カードの使用履歴がある場合のみHTMLを生成
+            if (memoryCount > 0) {
+                let seasonText = "";
+                if (state.achievements.includes("夏")) seasonText += "夏：焼け付くような日差しを逃れ、涼やかな木陰で寄り添った。<br>";
+                if (state.achievements.includes("秋")) seasonText += "秋：祭りの喧騒を遠くに聞きながら、二人だけの静かな時を過ごした。<br>";
+                if (state.achievements.includes("冬")) seasonText += "冬：揺れるキャンドルの灯りに、互いの孤独を温め合った。<br>";
+                if (state.achievements.includes("春")) seasonText += "春：舞い込む桜の花びらに、いつか来る穏やかな日々を夢見た。<br>";
+                
+                if (memoryCount === 4) {
+                    seasonText += "<br><span style='color:#f1c40f;'><b>【四季の巡り】<br>全てを乗り越え、移ろいゆく季節を彼と共に生きた証がここに刻まれている。</b></span>";
+                }
+                
+                seasonMemoryHTML = `
+                    <details style="border: 1px solid #2a2a2a;  padding: 6px; background-color: #151515;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #d4af37; font-size: 12px; outline: none;">過ごした四季の記憶</summary>
+                        <div style="margin-top: 8px; font-size: 12px; line-height: 1.5; color: #e5e5e5;">
+                            ${seasonText}
+                        </div>
+                    </details>
+                `;
+            }
+
+           // --- ここから追加：ターンごとの履歴のHTML生成 ---
+let turnHistoryHTML = '';
+if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
+    let contentHTML = generateTurnHistoryHTML();
+    if (contentHTML) {
+        turnHistoryHTML = `
+            <details style="border: 1px solid #2a2a2a; padding: 6px; background-color: #151515;" onclick="event.preventDefault(); openHistoryModal();">
+                <summary style="cursor: pointer; font-weight: bold; color: #d4af37; font-size: 12px; outline: none;">ターンごとの詳細履歴</summary>
+            </details>
+        `;
+    }
+}
+
+            // HTMLに結合
+            let memoryText = `
+                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
+                    ${seasonMemoryHTML}
+
+                ${turnHistoryHTML} <!-- ★追加：ターンごとの履歴 -->
+                </div>
+            `;
+
+            let endingText = ""; // ログに出力するためのエンディングテキスト
+
+// 1. 各分岐でエンディングテキストのみを設定する
+            if (condition === "assassination") {
+                title.innerText = "【END 6】復讐の終止符";
+                endingText = `――特等席は永久に失われた。`;
+            } else if (condition === "killed_by_master") {
+                title.innerText = "【DEAD END】代償";
+                endingText = `彼はあなたが贈り物を処分した事に気づき、裏切られたと感じたようだ。彼に深く刺された箇所から命が流れ出ていく。`;
+            } else if (condition === "double_suicide") {
+                title.innerText = "【DEAD END】無理心中";
+                endingText = `狂気に苛まれた彼は、突如として錯乱した。刃はあなたを貫き、そして彼自身の胸にも突き立てられた。`;
+            } else if (condition === "dead") {
+                title.innerText = "【GAME OVER】主人の死";
+                endingText = `彼は過酷な環境に耐えかね、息を引き取った。`;
+            } else if (isSurvivalClear) {
+              let requiredCount = 10;
+                let hasLetterAtEnd = [...state.deck, ...state.hand, ...state.discard].some(c => c && c.name === '手紙');
+
+                // ★追加：「手紙」を所持し、かつ関係性50以上
+                if (hasLetterAtEnd && state.relation >= 50) {
+                    title.innerText = "【END 9】鳥籠の外へ";
+                    endingText = `ずっと渡さずにいた手紙を彼に渡した。二人で旅行する日も遠くないかもしれない。`;
+                 } else if (!state.hasDisposedObstacle) {
+                    title.innerText = "【END 8】絆";
+                    endingText = `あなたも彼も、何一つ手放せないでいる。いつか、この痛みごと愛おしくなる時がくるのだろうか。`;
+                } else if (activeBuffs.isMadness || state.specialCareCount >= requiredCount) {
+                    title.innerText = "【END 7】壊れゆく自我";
+                    endingText = `劇薬が着実に彼から正気と知性を奪っている。それでも、彼との日常は続く。`;
+                } else if (state.relation >= 85) {
+                    title.innerText = "【END 4】信頼と矜持";
+                    endingText = `自尊心と矜持を取り戻したからこそ、彼はあなたを信頼することを選んだ。`;
+                } else if (state.relation >= 45) {
+                    title.innerText = "【END 3】主従関係";
+                    endingText = `多少の歪みを伴いながらも、互いに互いを必要としている。`;
+                } else if (state.relation > -45) {
+                    title.innerText = "【END 1】日常";
+                    endingText = `特筆すべき変化はない。二人の生活はこれからも続く。`;
+                } else if (state.relation > -85) {
+                    title.innerText = "【END 2】深みに嵌まる";
+                    endingText = `彼はあなたへの依存を深めていく。その執着に、あなたも薄暗い喜びを抱きだしている。`;
+                } else {
+                    title.innerText = "【END 5】共依存";
+                    endingText = `彼はあなたに存在意義のすべてを委ねている。そして、あなたも彼がいなければ存在意義を保てない。`;
+                }
+            }
+
+            // 2. エンディングのテキスト（物語の結末）はログエリアに出力
+            const logArea = document.getElementById('log-area');
+            if (endingText !== "") {
+                // フレーバーテキストと同時に出ないよう、少し遅延させて追加
+                setTimeout(() => {
+                    const endingEntry = document.createElement('div');
+                    endingEntry.className = 'log-entry log-flavor'; 
+                    endingEntry.innerHTML = endingText; 
+                    logArea.appendChild(endingEntry);
+                    
+                    // ログの最下部へスクロール
+                    logArea.scrollTop = logArea.scrollHeight;
+                }, 600); // ここで表示をズラす
+            }
+
+            // 3. 使用したカード履歴・最終デッキ内容（memoryText）はエンディング部分（desc）に残す
+            if (memoryText && memoryText !== "") {
+                // desc（エンディングテキスト枠）を表示状態にする
+                desc.style.display = "block"; 
+                
+                // ログエリア内のデザインと合わせるため、log-entryクラスを付与したdivで囲んで表示する
+                desc.innerHTML = `<div class="log-entry" style="text-align: left; margin-top: 15px;">${memoryText}</div>`;
+            } else {
+                // memoryTextが存在しない場合のみ非表示にする
+                desc.innerHTML = "";
+                desc.style.display = "none";
+            }
+        }
+function startGame() {
+            // タイトル画面を非表示にする
+            document.getElementById('title-screen').style.display = 'none';
+            // ゲーム画面（ヘッダーとメイン）を表示する
+            document.getElementById('game-header').style.display = 'block';
+            document.getElementById('game-main').style.display = 'flex';
+            
+            // 最初の準備フェーズを裏で処理し、第1ターンの行動フェーズから開始する
+            processWeekStart();
+        }
+        initDeck();
+        updateUI();
+
+
+function openManual() {
+            document.getElementById('manual-modal').style.display = 'flex';
+        }
+
+        function closeManual() {
+            document.getElementById('manual-modal').style.display = 'none';
+        }
+
+        // --- 追加：履歴モーダルの開閉関数 ---
+        function openHistoryModal() {
+            const modalContent = document.getElementById('history-modal-content');
+            modalContent.innerHTML = generateTurnHistoryHTML();
+            document.getElementById('history-modal').style.display = 'flex';
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('history-modal').style.display = 'none';
+        }
+
+
+// ==========================================
+// 画面全体のどこをクリックしても波紋を出す処理
+// ==========================================
+let lastRippleTime = 0;
+const RIPPLE_COOLDOWN = 100; // 波紋が出る最小間隔（ミリ秒）。好みに応じて 400 や 500 に増やすとより数が絞られます
+
+document.addEventListener('pointerdown', function(e) {
+    const now = Date.now();
+    if (now - lastRippleTime < RIPPLE_COOLDOWN) return;
+    lastRippleTime = now;
+
+    const ripple = document.createElement('span');
+    ripple.className = 'click-ripple';
+
+    // PCでの中央寄せレイアウトに対応するため、body要素の左上端を基準とした座標に補正
+    const rect = document.body.getBoundingClientRect();
+    ripple.style.left = `${e.clientX - rect.left}px`;
+    ripple.style.top = `${e.clientY - rect.top}px`;
+
+    document.body.appendChild(ripple);
+
+    setTimeout(() => {
+        ripple.remove();
+    }, 1400);
+});
+
+function updateBuffDebuffDetails() {
+    let html = "";
+    
+    // HTML属性の中で途切れないようシングルクォーテーションで囲む
+    const lineStyle = "color: #bbbbbb; margin-bottom: 2px; font-family: 'Zen Kaku Gothic New', sans-serif !important;";
+    
+    let hasTemporary = (state.temporaryEffects && state.temporaryEffects.length > 0) || (state.endOfTurnEffects && state.endOfTurnEffects.length > 0);
+
+    if (hasTemporary) {
+        html += `<div style="font-weight:bold; color:#d4af37; margin-bottom: 2px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【一時的な効果・発生イベント】</div>`;
+        if (state.temporaryEffects) {
+            state.temporaryEffects.forEach(effect => {
+                html += `<div style="${lineStyle}">・${effect}</div>`;
+            });
+        }
+        if (state.endOfTurnEffects) {
+            state.endOfTurnEffects.forEach(effect => {
+                html += `<div style="${lineStyle}">・${effect}</div>`;
+            });
+        }
+        html += `<div style="margin-bottom: 6px;"></div>`;
+    }
+
+    // テンプレートリテラル(バッククォート)を使い、内部のstyle記述を安全にする
+    html += `<div style="font-weight:bold; margin-bottom: 4px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【継続効果】</div>`;
+
+    if (state.debuff !== 'none') {
+        let debuffNames = { light: '歩行困難 (COST+1)', medium: '頭痛 (DRAW-1)', heavy: '昏睡 (AP固定1)' };
+        html += `<div style="${lineStyle}">・主人の体調: ${debuffNames[state.debuff]}</div>`;
+    }
+    
+    if (activeBuffs.scentDuration > 0) {
+        html += `<div style="${lineStyle}">・香炉: ターン開始時ストレス-5 (残り${activeBuffs.scentDuration}ターン)</div>`;
+    }
+    if (activeBuffs.waterStressDuration > 0) {
+        html += `<div style="${lineStyle}">・闇医者の副作用: ターン開始時ストレス+15 (残り${activeBuffs.waterStressDuration}ターン)</div>`;
+    }
+    if (activeBuffs.nextTurnAPMod !== 0) {
+        let sign = activeBuffs.nextTurnAPMod > 0 ? '+' : '';
+        html += `<div style="${lineStyle}">・次ターン初期AP: ${sign}${activeBuffs.nextTurnAPMod}</div>`;
+    }
+    if (activeBuffs.nextTurnDrawMod !== 0) {
+        let sign = activeBuffs.nextTurnDrawMod > 0 ? '+' : '';
+        html += `<div style="${lineStyle}">・次ターンドロー枚数: ${sign}${activeBuffs.nextTurnDrawMod}</div>`;
+    }
+    if (activeBuffs.threatReduction > 0) {
+        html += `<div style="${lineStyle}">・次戦闘の脅威度低下: -${activeBuffs.threatReduction}</div>`;
+    }
+    if (activeBuffs.isMadness) {
+        html += `<div style="${lineStyle} font-weight: bold;">・発狂: すべてのカードによる関係性の増減がランダム</div>`;
+    }
+    if (activeBuffs.hasKnife) {
+        html += `<div style="${lineStyle}">・自衛: 次の戦闘失敗時、ダメージを一度だけ無効化</div>`;
+    }
+    
+    let allCards = [...state.deck, ...state.hand, ...state.discard];
+    let hasLetter = allCards.some(c => c && c.name === "手紙");
+    let hasGift = allCards.some(c => c && c.name === "贈り物");
+    
+    if (hasLetter) {
+        html += `<div style="${lineStyle}">・手紙: 関係性+の時、毎ターン開始時ストレス+5</div>`;
+    }
+    if (hasGift) {
+        html += `<div style="${lineStyle}">・贈り物: ターン開始時ストレス-5</div>`;
+    }
+    if (state.seasonEventTriggered) {
+        html += `<div style="${lineStyle}">・季節イベント: 次回購入フェーズで季節カード確定出現</div>`;
+    }
+    
+    let mannerismCards = [];
+    if (state.playedCardsList) {
+        let cardCounts = {};
+        state.playedCardsList.forEach(c => {
+            if (c && ['direct', 'indirect'].includes(c.type)) {
+                cardCounts[c.name] = (cardCounts[c.name] || 0) + 1;
+            }
+        });
+        for (let name in cardCounts) {
+            // 5回以上使用でマンネリ効果発動
+            if (cardCounts[name] >= 5) {
+                mannerismCards.push(name);
+            }
+        }
+    }
+    if (mannerismCards.length > 0) {
+        html += `<div style="${lineStyle}">・マンネリ状態 (${mannerismCards.join(', ')}): 回復・ストレス軽減が半減</div>`;
+    }
+    
+    if (state.relation >= 0) {
+        html += `<div style="${lineStyle}">・矜持状態(関係性+): 直接ケア時ストレス増加 / 関係性上昇半減</div>`;
+    } else {
+        html += `<div style="${lineStyle}">・依存状態(関係性-): 直接ケア時関係性低下 / 間接ケア時回復半減・ストレス+10</div>`;
+    }
+
+
+    document.querySelectorAll('.buff-debuff-details').forEach(el => {
+        el.innerHTML = html;
+        el.style.color = '#bbbbbb'; // 枠自体の色も統一
+    });
+}
+
+function toggleBuffDebuffDetails() {
+    document.querySelectorAll('.buff-debuff-details').forEach(el => {
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    });
+}
+    </script>
+
+<style>
+    /* モーダル内専用のスタイル定義 */
+    #manual-modal-content {
+        background-color: #151515;
+        color: #e5e5e5;
+        font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif;
+        line-height: 1.7;
+        font-size: 13px;
+        padding: 30px 20px;
+    }
+    #manual-modal-content .ornament-line {
+        text-align: center;
+        margin: 25px 0;
+        color: #d4af37;
+        font-size: 18px;
+        letter-spacing: 5px;
+    }
+    #manual-modal-content .ornament-line::before, #manual-modal-content .ornament-line::after {
+        content: "";
+        display: inline-block;
+        width: 25%;
+        height: 1px;
+        background-color: #d4af37;
+        vertical-align: middle;
+        margin: 0 10px;
+    }
+    #manual-modal-content .catchphrase {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        color: #d4af37;
+        margin-bottom: 30px;
+        line-height: 1.5;
+        padding: 15px;
+        border-top: 1px dashed #d4af37;
+        border-bottom: 1px dashed #d4af37;
+    }
+    #manual-modal-content .story-section {
+        background-color: rgba(255, 255, 255, 0.05);
+        padding: 12px;
+        font-size: 12px;
+        
+        border-left: 3px solid #d4af37;
+        margin-bottom: 40px;
+        font-style: italic;
+    }
+    #manual-modal-content h1 {
+        text-align: center;
+        font-size: 24px;
+        color: #d4af37;
+        margin-bottom: 10px;
+        letter-spacing: 2px;
+    }
+    #manual-modal-content h2 {
+        font-size: 18px;
+        color: #d4af37;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #d4af37;
+    }
+    #manual-modal-content h3 {
+        font-size: 14px;
+        color: #d4af37;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    #manual-modal-content .status-resource-grid, 
+    #manual-modal-content .card-types-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    #manual-modal-content .status-card,
+    #manual-modal-content .card-type-box {
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid #444;
+        
+        padding: 15px;
+    }
+    #manual-modal-content .status-card {
+        border-left: 4px solid #d4af37;
+    }
+    #manual-modal-content .status-card-title {
+        font-weight: bold;
+        color: #d4af37;
+        font-size: 14px;
+        margin-bottom: 8px;
+        border-bottom: 1px dashed rgba(214, 175, 87, 0.3);
+        padding-bottom: 4px;
+    }
+    #manual-modal-content .status-card-desc,
+    #manual-modal-content .card-type-desc {
+        font-size: 12px;
+        color: #ccc;
+        line-height: 1.6;
+    }
+    #manual-modal-content .card-type-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 4px;
+    }
+    #manual-modal-content .card-type-label {
+        font-size: 11px;
+        font-weight: bold;
+        color: #fff;
+        padding: 2px 6px;
+          border-radius: 3px;  
+    }
+#manual-modal-content .type-tag-direct { background-color: #7d1f18; }
+    #manual-modal-content .type-tag-indirect { background-color: #1e5a34; }
+    #manual-modal-content .type-tag-cold { background-color: #1f4a63; }
+    #manual-modal-content .type-tag-harm { background-color: #964b15; }
+    #manual-modal-content .type-tag-season { background-color: #b3860f; }
+    #manual-modal-content .type-tag-obstacle { background-color: #444444; }
+    #manual-modal-content .card-type-title { font-size: 14px; font-weight: bold; color: #fff; }
+    
+    #manual-modal-content .flow-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin: 25px 0;
+        border-radius: 3px;
+    }
+    #manual-modal-content .flow-step {
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid #444;
+        border-radius: 0px;
+        padding: 15px;
+    }
+    #manual-modal-content .flow-step-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+    }
+    #manual-modal-content .flow-step-num {
+        background-color: #d4af37;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #manual-modal-content .flow-step-title { font-weight: bold; color: #fff; font-size: 14px; }
+    #manual-modal-content .flow-step-body { font-size: 12px; color: #ccc; line-height: 1.5; }
+
+    @media (min-width: 768px) {
+        /* PC画面では1列×1行のグリッドにして崩れを防ぐ */
+        #manual-modal-content .flow-container { 
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 15px;
+        }
+        #manual-modal-content .flow-step { margin-right: 0; height: 100%; }
+        #manual-modal-content .flow-step:not(:last-child) { margin-right: 0; }
+    }
+
+    #manual-modal-content ul { padding-left: 20px; margin-bottom: 15px; }
+    #manual-modal-content ul li { margin-bottom: 6px; color: #ccc; }
+    #manual-modal-content strong { color: #fff; }
+    #manual-modal-content .ui-explain-list { list-style: none; padding-left: 0; }
+    #manual-modal-content .ui-explain-list li { border-left: 3px solid #d4af37; padding-left: 10px; margin-bottom: 12px; }
+    #manual-modal-content .ui-explain-tag { font-weight: bold; color: #d4af37; }
+</style>
+
+<div id="manual-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; padding: 20px;">
+    <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 480px; max-height: 80vh; overflow-y: auto;  box-shadow: 0 0 20px rgba(212,175,55,0.3); display: flex; flex-direction: column;">
+        
+        <div style="padding: 15px; border-bottom: 1px solid #444; display: flex; justify-content: space-between; align-items: center; background: #111;">
+            <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 16px;">説明書</span>
+    
+        </div>
+
+        <div id="manual-modal-content" style="flex: 1; overflow-y: auto;">
+            <h1>特等席</h1>
+            <p style="text-align: center; font-size: 13px; color: #d4af37; letter-spacing: 1px;">— 雰囲気ローグライクSLG —</p>
+            
+            <div class="ornament-line">◆</div>
+
+            <div class="catchphrase">
+              <img src="catch.png" alt="キャッチコピー" style="width: 80%; max-width: 250px; height: auto; margin-bottom: -4px;"></div>
+
+            <div class="story-section">
+                あなたは、幼い主人に仕える使用人だ。<br><br>
+
+                心身を蝕まれている主人に寄り添うこと。<br>
+                それが、あなたが自らに課した役割。<br><br>
+
+                移ろう季節の中。<br>
+                二人の関係は静かに、しかし確実に変わってゆく。<br><br>
+
+                これは、二人きりの箱庭の中で紡がれる、主と従僕の日々の記録。
+            </div>
+
+            <div class="ornament-line">◆</div>
+
+            <h2>1. ゲームの目的</h2>
+            <p>
+                プレイヤーの目的は、<strong>全30ターンの間</strong>、主人の体調を管理し、外部の襲撃を退けながら無事に生き延びることです。<br>
+                日々のあなたの行動（カードの選択）によって主人の心身のステータスが細かく変動し、30ターン目が終了した時点でエンディングになります。
+            </p>
+
+            <h2>2. 主なステータスとリソース</h2>
+            
+            <h3>【主人の状態】</h3>
+            <div class="status-resource-grid">
+                <div class="status-card">
+                    <div class="status-card-title">健康度</div>
+                    <div class="status-card-desc">
+                        主人の身体的な体力です。<br>あなたの行動や、防衛の失敗などによって減少します。<br>健康度が０になると、その時点でゲームは強制終了します。
+                    </div>
+                </div>
+                <div class="status-card">
+                    <div class="status-card-title">ストレス</div>
+                    <div class="status-card-desc">
+                        主人の精神的な負荷です。<br>一定値を超えた状態でターンを開始すると主人は体調を崩し、デバフが付与されます。<br>（デバフ内容がヘッダーに表示されます）<br>
+                    </div>
+                </div>
+                <div class="status-card">
+                    <div class="status-card-title">関係性</div>
+                    <div class="status-card-desc">
+                        二人の心の距離を示しています。<br>関係性の値が＋の場合は【矜持状態】、－の場合は【依存状態】状態です。<br>この値がどちらに傾いているかによって、同じ行動でも主人の反応が変化します。<br>詳しい変化は【3.カードの種類】で説明します。<br>
+                    </div>
+                </div>
+            </div>
+
+            <h3>【プレイヤーのリソース】</h3>
+            <div class="status-resource-grid">
+                <div class="status-card">
+                    <div class="status-card-title">AP（アクションポイント）</div>
+                    <div class="status-card-desc">
+                        あなたが毎ターン自由に使用できる行動力です。<br>手札の行動（カード）をプレイするたびに消費されます。使い残したまま精算フェーズに入ると、厳しい資金ペナルティや主人のストレス蓄積を招くため、すべて使い切ることが基本となります。
+                    </div>
+                </div>
+                <div class="status-card">
+                    <div class="status-card-title">資金（G）</div>
+                    <div class="status-card-desc">
+                       カードの売却、または戦闘を無事に切り抜けた際に入手できます。<br>購入・売却フェーズにおいて、新しい強力なカードの購入や、不要になった行動の処分、または特別なカードを使用するために消費します。
+                   </div>
+                </div>
+            </div>
+
+            <h2>3. カードの種類</h2>
+            <div class="card-types-grid">
+                <div class="card-type-box">
+                    <div class="card-type-header">
+                        <span class="card-type-title">直接ケア</span>
+                        <span class="card-type-label type-tag-direct">直接</span>
+                    </div>
+                    <div class="card-type-desc">
+                        身体に直接触れる行動です。<br>矜持状態（<span style="color: #bb9244">▼</span>）: ストレスが増加する効果になり、関係性はカードに書かれた数値の半分だけ矜持（+）に傾きます。ただし、主人が昏睡状態のときはカードに書かれた通りの効果になります。<br>依存状態（<span style="color: #754f87" >▲</span>）: 関係性がカードに書かれた数値分、依存（-）に傾きます。</div>
+                </div>
+                <div class="card-type-box">
+                    <div class="card-type-header">
+                        <span class="card-type-title">間接ケア</span>
+                        <span class="card-type-label type-tag-indirect">間接</span>
+                    </div>
+                    <div class="card-type-desc">
+                        周囲の環境を整える行動です。<br>現在の関係性に関わらず、安定して矜持（+）に傾きます。<br>
+しかし、依存状態（<span style="color: #754f87">▼</span>）時には健康度の回復が半減し、カードにストレス減少がある場合は記載に関わらず10増加します。
+
+                    </div>
+                </div>
+                <div class="card-type-box">
+                    <div class="card-type-header">
+                        <span class="card-type-title">冷淡</span>
+                        <span class="card-type-label type-tag-cold">冷淡</span>
+                    </div>
+                    <div class="card-type-desc">
+                        あえて刺々しい態度を取ったり無視をしたり、冷たい関係性を築く行動です。<br>関係性を依存（-）に傾け、ストレスを増加させます。
+                    </div>
+                </div>
+                <div class="card-type-box">
+                    <div class="card-type-header">
+                        <span class="card-type-title">攻撃 / 戦闘</span>
+                        <span class="card-type-label type-tag-harm">攻撃</span>
+                    </div>
+                    <div class="card-type-desc">
+                        外部から迫る襲撃者を排除するための武力行動です。<br>基本的には戦闘発生時の対処に用います。<br>主人の体調が極めて悪い時に限り、消費APが1になります。
+                    </div>
+                </div>
+                <div class="card-type-box">
+                    <div class="card-type-header">
+                        <span class="card-type-title">季節</span>
+                        <span class="card-type-label type-tag-season">季節</span>
+                    </div>
+                    <div class="card-type-desc">
+                        各の季節（秋、冬、春、夏）の期間内のみにできる限定行動です。<br>主人のストレスを大幅に軽減する非常に強力な効果を持ちますが、使用後は不用品カードが残ります。
+                    </div>
+                </div>
+                <div class="card-type-box">
+                    <div class="card-type-header">
+                        <span class="card-type-title">不用品</span>
+                        <span class="card-type-label type-tag-obstacle">不用品</span>
+                    </div>
+                    <div class="card-type-desc">
+                        行動力を消費しても使用することができないカードです。<br>手札や山札に混入すると行動が著しく阻害されるため、ショップ等で処分する必要があります。
+                    </div>
+                </div>
+            </div>
+
+            <h2>4. ターンの流れ</h2>
+            <p>ゲームは1ターンの中で、以下のステップに沿って進行します。</p>
+
+            <div class="flow-container">
+                <div class="flow-step">
+                    <div class="flow-step-header">
+                        <div class="flow-step-num">1</div>
+                        <div class="flow-step-title">準備</div>
+                    </div>
+                    <div class="flow-step-body">
+                        デッキからカードがドローされ、このターンのデバフ状態や、戦闘アラートなどが通知されます。
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-header">
+                        <div class="flow-step-num">2</div>
+                        <div class="flow-step-title">行動</div>
+                    </div>
+                    <div class="flow-step-body">
+                        手札からAPを消費してカードを使用します。
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-header">
+                        <div class="flow-step-num">3</div>
+                        <div class="flow-step-title">精算</div>
+                    </div>
+                    <div class="flow-step-body">
+                        余ったAPによるペナルティの計算や、戦闘の勝敗判定が行われます。
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-header">
+                        <div class="flow-step-num">4</div>
+                        <div class="flow-step-title">購入・売却</div>
+                    </div>
+                    <div class="flow-step-body">
+                        4ターン毎に資金を消費して行動カードを購入・処分できます。<br>購入売却後は、手札が残っている場合もすべてデッキに戻し、カードの配り直しが行われます。
+                    </div>
+                </div>
+            </div>
+
+            <h2>5. 快適なプレイのためのヒント</h2>
+            <ul>
+                <li><strong>カードの値について：</strong> カードに記載されている固定値は「現在の値から数値がそのまま増減」します。％表記は「現在値から（現在値の●％）が増減」します。</li>
+                <li><strong>主人の心境の変化：</strong> 関係性の傾き方によって、同じカードでも効果が反転・半減したり、フレーバーテキストが変化します。</li>
+                <li><strong>戦闘への対処：</strong> 戦闘に敗北すると手痛い被害を受けます。攻撃カードを使用して、敵の脅威度を下げましょう。</li>
+                <li><strong>デッキの圧縮の活用：</strong> 手札の巡りを良くするためには、ショップでのカード処分が不可欠です。現在の関係性に合わない不要なカードはどんどん処分しましょう。</li>
+<li><strong>使い込まれたカードの価値：</strong>同じケアを繰り返していると、マンネリ状態（<span style="color: #aaaaaa">▼</span>）になり健康度・ストレス回復効果が半減します。また、一定回数以上使ったカードを手放す際、通常の売却・処分よりも少しだけ高価で売却できます。</li>
+ <li><strong>愛着の芽生え：</strong> 冷淡な気持ちがなくなっている時、稀に愛情のような感情が芽生えます。愛着行動は主人が昏睡状態の時のみ使用できます。</li>
+                <li><strong>エンディング分岐：</strong>ゲームオーバーとゲームクリア（6種）以外に、特殊なエンディング（4種）があります。
+            </ul>
+
+
+
+            <div class="ornament-line">◆</div>
+            <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
+                特等席の設定は砂上さんの三次創作です。<br>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.6</p>
+
+
+<details>
+  <summary style="font-size: 10px;">更新履歴</summary>
+      <p style="font-size: 9px;">■ver 0.6<br>
+・ランダムイベントを12種実装しました。<br>
+・ターンの詳細履歴に初期デッキと最終デッキを記載しました。<br>
+・ターンの詳細履歴の表示を時系列順にしました。<br>
+・初手の不用品をランダムにしました。<br>
+・一部のテキスト・UIを変更しました。
+</p>
+
+      <p style="font-size: 9px;">■ver 0.5<br>
+・リザルト画面にすべての「ターンごとの詳細履歴」を追加しました。<br>
+・一部のカードに特定の条件を満たしている時に、特別な処理が発生する効果を追加しました。<br>
+・一部のテキスト・UIを変更しました。
+</p>
+
+        <p style="font-size: 10px;">■ver 0.48<br>
+・特殊エンド2種追加しました。<br>
+・カードを3枚追加しました。<br>
+・一部のカードに特定の条件を満たしている時に、特別な処理が発生する効果を追加しました。
+</p>
+      <p style="font-size: 10px;">■ver 0.47<br>
+・攻撃カードに関係性増減値をつけました。<br>
+・一部のカードの効果・フレーバーテキストを変更しました。
+</p>
+    <p style="font-size: 10px;">■ver 0.46<br>
+・襲撃時、勝利時、敗北時、体調不良時のフレーバーテキストをランダム表示されるようにしました。<br>
+・不用品獲得時のフレーバーテキストの一部に昏睡時用のテキストを追加しました。<br>
+・一部のカードの効果を変更しました。
+</p>
+  <p style="font-size: 10px;">■ver 0.45<br>
+・購入フェーズにて季節カードが優先選出されないようにしました。<br>
+・売却フェーズにて使用回数が多いほどカードが高価で売却できるようにしました。<br>
+・一部のカードや獲得資金の調整を行いました。<br>
+・各カードにデバフなどがアイコンでわかるようにしました。
+</p>
+<p style="font-size: 10px;">■ver 0.44<br>
+・攻撃カードで健康度が０になった場合のEND分岐を変更しました。<br>
+・カードのAPの表記やUIを調整しました。
+</p>
+
+<p style="font-size: 10px;">■ver 0.43<br>
+・不用品を入手した際にフレーバーテキストを表示するようにしました。
+</p>
+
+ <p style="font-size: 10px;">■ver 0.42<br>
+・一定回数以上使用したカードの回復効果が半減するようにしました。<br>（ターン終盤に極端な関係性の時に不用品が混入する処理を削除しました）<br>
+・一定回数以上使用したカードを他より高く売却できるようにしました。<br>
+・タップ、クリックした際のアニメーションを付けました。<br>
+・一部のテキスト・UIを変更しました。<br>
+</p>
+
+ <p style="font-size: 10px;">■ver 0.41<br>
+・リザルト画面に使用カード・最終デッキの一覧を表示させるようにしました。<br>
+・一部のテキスト・UIを変更しました。<br>
+</p>
+
+ <p style="font-size: 10px;">■ver 0.40<br>
+・カードを1枚追加しました。<br>
+・カードで獲得できる資金をランダムにしました。<br>
+・一部のテキスト・UIを変更しました。<br>
+</p>
+
+  <p style="font-size: 10px;">■ver 0.39<br>
+・EDを一種追加しました。<br>
+・昏睡状態のときのフレーバーテキストを追加しました。<br>
+・アニメーション演出をつけました。<br>
+</p>
+
+  <p style="font-size: 10px;">■ver 0.38<br>
+・愛着システムを追加しました。<br>
+・カードを３枚追加しました。<br>
+・一部のテキスト・UIを変更しました。<br>
+</p>
+
+  <p style="font-size: 10px;">■ver 0.37<br>
+・トップ画面をつくりました。<br>
+・カードを３枚追加しました。<br>
+</p>
+
+  <p style="font-size: 10px;">■ver 0.36<br>
+・一部のカード効果を変更しました。<br>
+・一部のテキスト・UIを変更しました。<br>
+</p>
+
+  <p style="font-size: 10px;">■ver 0.35<br>
+・カード購入時に新しいカードが補充されるようにしました。<br>
+・カード購入時に季節カードがランダム出現するようにしました。<br>
+・戦闘終了時のフレーバーテキストが表示されるようになりました。<br>
+・一部のテキスト・UIを変更しました。<br>
+</p>
+
+  <p style="font-size: 10px;">■ver 0.33<br>
+・カードの処理を全体的に修正しました。<br>
+・使用できるカードを３枚増やしました。<br>
+・体調不良時のフレーバーテキストを3種に増やしました。<br>
+・ターンと季節の表記を変更しました。<br>
+・ショップ欄のボタンが2行になるのを修正しました。<br>
+・説明書をページ内部で読めるようにしました。<br>
+└説明書の表記がゲーム内容と異なっていた部分を直しました。</p>
+</details>
+
+        </div>
+            <div style="padding: 10px; border-top: 1px solid #444; text-align: center; background: #111;">
+            <button onclick="closeManual()" style="background: #d4af37; color: #000; border: none; padding: 6px 25px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 13px;">説明書を閉じる</button>
+        </div>
+       
+
+    </div>
+</div>
+
+<!-- 追加：ターン履歴全画面用モーダル -->
+<div id="history-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 300; justify-content: center; align-items: center; padding: 20px;">
+    <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 480px; height: 90vh; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(212,175,55,0.3);">
+        <div style="padding: 15px; border-bottom: 1px solid #444; display: flex; justify-content: space-between; align-items: center; background: #111;">
+            <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 11px;">ターンごとの詳細履歴</span>
+        </div>
+        <div id="history-modal-content" style="flex: 1; overflow-y: auto; padding: 20px; color: #e5e5e5; font-size: 12px; line-height: 1.5;">
+            <!-- ここに履歴が挿入される -->
+        </div>
+        <div style="padding: 10px; border-top: 1px solid #444; text-align: center; background: #111;">
+            <button onclick="closeHistoryModal()" style="background: #d4af37; color: #000; border: none; padding: 6px 25px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 13px;">閉じる</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
