@@ -1830,7 +1830,6 @@ function processWeekStart() {
             if (activeBuffs.scentDuration > 0) {
                 state.stress = Math.max(0, state.stress - 5);
                 activeBuffs.scentDuration--;
-                state.temporaryEffects.push("香炉: ストレス-5");
             }
 
             if (activeBuffs.waterStressDuration > 0) {
@@ -1838,7 +1837,6 @@ function processWeekStart() {
                 state.stress = Math.min(100, state.stress + 15);
                 activeBuffs.waterStressDuration--;
                 turnLogs.push("副作用(ストレス増)"); // ターン開始時のログに表示
-                state.temporaryEffects.push("闇医者の副作用: ストレス+15");
             }
 
             // ★追加：「手紙」の所持判定とストレス処理
@@ -1847,15 +1845,11 @@ function processWeekStart() {
 
             if (hasLetter && state.relation >= 0) {
                 state.stress = Math.min(100, state.stress + 5);
-                turnLogs.push("手紙の存在(ストレス増)");
-                state.temporaryEffects.push("手紙: ストレス+5");
             }
 
             let hasGift = allCardsForLetter.some(c => c && c.name === "贈り物");
             if (hasGift) {
                 state.stress = Math.max(0, state.stress - 5);
-                turnLogs.push("贈り物の存在(ストレス減)");
-                state.temporaryEffects.push("贈り物: ストレス-5");
             }
 
             let roll = Math.random() * 100;
