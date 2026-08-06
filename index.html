@@ -3185,16 +3185,16 @@ let baseDisposeCost = 10;
             document.getElementById('phase-start-container').style.display = 'block';
         }
 
-// ★追加：整理されたターン履歴のHTMLを生成する関数
-function generateTurnHistoryHTML() {
+// ★変更：整理されたターン履歴のHTMLを生成する関数（抽出範囲を指定可能に）
+function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn) {
     let html = '';
     const typeNames = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' };
     
     // 見出しラベルのデザイン
     const labelStyle = "background: #080808; color: #736e5d; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-right: 6px; display: inline-flex; align-items: center; justify-content: center; width: 45px; flex-shrink: 0; font-family: 'Zen Kaku Gothic New', sans-serif !important;";
 
-    // ★追加：初期デッキ構成を詳細履歴の最初に表示
-    if (state.initialDeck && state.initialDeck.length > 0) {
+    // ★変更：初期デッキ構成を詳細履歴の最初に表示 (開始ターンが1の時のみ)
+    if (startTurn === 1 && state.initialDeck && state.initialDeck.length > 0) {
         html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
         html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
         html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ 初期デッキ構成</div>`;
@@ -3227,7 +3227,8 @@ function generateTurnHistoryHTML() {
         html += `</div>`;
     }
 
-    for (let turn = 1; turn <= state.turn; turn++) {
+    // ★変更：指定範囲のターンのみループ
+    for (let turn = startTurn; turn <= Math.min(state.turn, endTurn); turn++) {
         let history = state.turnHistory[turn];
         if (!history) continue;
 
@@ -3378,11 +3379,13 @@ function generateTurnHistoryHTML() {
             html += renderInOut(); 
         }
 
-        html += `</div>`;
+       html += `</div>`;
     }
     
-    // ★追加：最終デッキ構成を詳細履歴の最後に表示
-    let allCards = [...state.deck, ...state.hand, ...state.discard];
+    // ★変更：最終デッキ構成等は、指定範囲に現在のターンが含まれる場合のみ表示
+    if (endTurn >= state.turn) {
+        // ★追加：最終デッキ構成を詳細履歴の最後に表示
+        let allCards = [...state.deck, ...state.hand, ...state.discard];
     if (allCards && allCards.length > 0) {
         html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
         html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ 最終デッキ構成</div>`;
@@ -3450,8 +3453,9 @@ function generateTurnHistoryHTML() {
         html += `<div style="color: #e5e5e5; font-size: 11px; line-height: 1.6;">${state.endingText}</div>`;
         html += `</div>`;
     } else {
-        html += `<div style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-weight: bold; color: #d4af37; font-size: 12px; font-family: 'Zen Old Mincho', serif; letter-spacing: 2px;">END</div>`;
-    }
+            html += `<div style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-weight: bold; color: #d4af37; font-size: 12px; font-family: 'Zen Old Mincho', serif; letter-spacing: 2px;">END</div>`;
+        }
+    } // ← ★追加：if (endTurn >= state.turn) の閉じカッコ
 
     return html;
 }
@@ -3618,7 +3622,13 @@ function openManual() {
         // --- 追加：履歴モーダルの開閉関数 ---
         function openHistoryModal() {
             const modalContent = document.getElementById('history-modal-content');
-            modalContent.innerHTML = generateTurnHistoryHTML();
+            modalContent.innerHTML = generateTurnHistoryHTML(); // 引数なしで全表示
+            
+            // 現在のターン数に応じて保存ボタンの表示を切り替え
+            document.getElementById('btn-download-1-10').style.display = state.turn >= 1 ? 'inline-block' : 'none';
+            document.getElementById('btn-download-11-20').style.display = state.turn >= 11 ? 'inline-block' : 'none';
+            document.getElementById('btn-download-21-30').style.display = state.turn >= 21 ? 'inline-block' : 'none';
+
             document.getElementById('history-modal').style.display = 'flex';
         }
 
@@ -3626,13 +3636,10 @@ function openManual() {
             document.getElementById('history-modal').style.display = 'none';
         }
 
-        // ★追加：履歴を画像化してダウンロードする関数
-        function downloadHistoryImage(event) {
-            const originalTarget = document.getElementById('history-modal-content');
-            
-            // ボタンを一時的に無効化して連打（フリーズの原因）を防ぐ
+        // ★変更：指定した範囲のターン履歴のみをHTML生成して1枚の画像で保存する関数
+        async function downloadSpecificHistoryImage(event, startTurn, endTurn) {
             let downloadBtn = null;
-            let originalBtnText = "画像で保存";
+            let originalBtnText = "";
             if (event && event.currentTarget) {
                 downloadBtn = event.currentTarget;
                 originalBtnText = downloadBtn.innerText;
@@ -3641,110 +3648,90 @@ function openManual() {
                 downloadBtn.style.opacity = "0.5";
             }
             
-            // スクロール等で見切れるのを防ぐため、要素のクローンを画面外に作成して高さ制限を解除する
-            const clone = originalTarget.cloneNode(true);
-            clone.id = 'history-modal-content-clone'; // 画面上の元の要素にスタイル干渉しないようIDを変更
+            // 指定範囲のHTMLを生成
+            const targetHTML = generateTurnHistoryHTML(startTurn, endTurn);
             
-            clone.style.position = 'absolute';
-            clone.style.top = '-9999px'; // 画面外に配置
-            clone.style.left = '0';
-            clone.style.width = originalTarget.offsetWidth + 'px'; // 元の幅を維持
-            clone.style.height = 'auto'; // 高さを中身に合わせて拡張
-            clone.style.overflow = 'visible';
-            clone.style.maxHeight = 'none';
-            clone.style.flex = 'none';
+            // 描画用の一時コンテナを作成
+            const clone = document.createElement('div');
+            clone.style.position = 'fixed';
+            clone.style.top = '0';
+            clone.style.left = '200vw'; // 画面外に配置
+            clone.style.zIndex = '-9999';
+            clone.style.width = document.getElementById('history-modal-content').offsetWidth + 'px'; 
+            clone.style.height = 'auto'; 
             clone.style.backgroundColor = '#151515';
+            clone.style.padding = '20px'; 
+            clone.style.color = '#e5e5e5';
+            clone.style.fontSize = '12px';
+            clone.style.lineHeight = '1.5';
+            clone.innerHTML = targetHTML;
             
-            // ▼追加：html2canvasでの文字下ズレ(baselineずれ)を修正する専用スタイル
+            // html2canvasでの文字下ズレを修正する専用スタイル
             const fixStyle = document.createElement('style');
             fixStyle.innerHTML = `
-                /* 背景色を持つバッジ要素（ラベルやタグ）特有のズレ調整 */
-                #history-modal-content-clone span[style*="background"], 
-                #history-modal-content-clone span.card-type {
+                div > span[style*="background"], 
+                div > span.card-type {
                     display: inline-block !important;
                     line-height: 1.2 !important;
                     padding-top: 1px !important;
-                    padding-bottom: 3px !important; /* html2canvas特有の文字下ズレを相殺するため下部余白を少し増やす */
+                    padding-bottom: 3px !important;
                     vertical-align: middle !important;
                 }
-                
-                /* 幅指定のあるラベル(DECK, STATUS等)の中央揃えをinline-block用に修正 */
-                #history-modal-content-clone span[style*="width: 45px"] {
+                div > span[style*="width: 45px"] {
                     text-align: center !important;
                 }
             `;
             clone.appendChild(fixStyle);
-            // ▲ここまで
-            
-            // クローンをbodyに追加
             document.body.appendChild(clone);
             
-            // 処理完了後の復帰処理
-            const cleanup = () => {
-                if (document.body.contains(clone)) {
-                    document.body.removeChild(clone);
+            try {
+                const canvas = await html2canvas(clone, {
+                    backgroundColor: '#151515',
+                    scale: 2 // 高画質化
+                });
+                
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                const actualEndTurn = Math.min(endTurn, state.turn);
+                const filename = `turn_history_${startTurn}-${actualEndTurn}.png`;
+                
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                if (isMobile && navigator.share && navigator.canShare) {
+                    const file = new File([blob], filename, { type: 'image/png' });
+                    if (navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({ files: [file] });
+                        } catch (err) {
+                            console.log("共有メニューがキャンセルされました", err);
+                        }
+                    } else {
+                        fallbackDownload(blob, null, filename);
+                    }
+                } else {
+                    fallbackDownload(blob, null, filename);
                 }
+            } catch (err) {
+                console.error("画像化に失敗しました", err);
+                showCustomAlert("画像の保存に失敗しました。");
+            } finally {
+                document.body.removeChild(clone);
                 if (downloadBtn) {
                     downloadBtn.innerText = originalBtnText;
                     downloadBtn.disabled = false;
                     downloadBtn.style.opacity = "1";
                 }
-            };
-            
-            // 描画が完了してから削除するため、少し遅延させる
-            setTimeout(() => {
-                html2canvas(clone, {
-                    backgroundColor: '#151515',
-                    scale: 2 // 高画質化
-                }).then(canvas => {
-                    // スマホでの長すぎるDataURLによるクラッシュ対策としてBlobに変換
-                    canvas.toBlob(blob => {
-                        if (!blob) {
-                            console.error("Blobへの変換に失敗しました");
-                            cleanup();
-                            return;
-                        }
-
-                        // モバイル端末（スマホ・タブレット）かどうかを判定
-                        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-                        // スマホ環境かつ Web Share API が使用可能な場合はOSの共有メニューを呼び出す
-                        if (isMobile && navigator.share && navigator.canShare) {
-                            const file = new File([blob], 'turn_history.png', { type: 'image/png' });
-                            if (navigator.canShare({ files: [file] })) {
-                                navigator.share({
-                                    files: [file]
-                                }).then(() => {
-                                    cleanup();
-                                }).catch((err) => {
-                                    console.log("共有メニューがキャンセルされたため、通常のダウンロードを試みます。", err);
-                                    fallbackDownload(blob, cleanup);
-                                });
-                                return; // 共有メニューが開けた場合はここで終了
-                            }
-                        }
-
-                        // PCなどの環境は直接ファイルとしてダウンロード
-                        fallbackDownload(blob, cleanup);
-                    }, 'image/png');
-                }).catch(err => {
-                    console.error("画像化に失敗しました", err);
-                    cleanup();
-                });
-            }, 100);
+            }
         }
 
         // 共通のダウンロード処理
-        function fallbackDownload(blob, callback) {
+        function fallbackDownload(blob, callback, filename = 'turn_history.png') {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = url;
-            a.download = 'turn_history.png';
+            a.download = filename;
             document.body.appendChild(a);
             a.click();
             
-            // すぐにrevokeするとiOS等で失敗することがあるため少し遅延させる
             setTimeout(() => {
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
@@ -4386,10 +4373,16 @@ function toggleBuffDebuffDetails() {
         <div id="history-modal-content" style="flex: 1; overflow-y: auto; padding: 20px; color: #e5e5e5; font-size: 12px; line-height: 1.5; background: #151515;">
             <!-- ここに履歴が挿入される -->
         </div>
-        <!-- ★変更：ボタンを2つ並べるレイアウトに変更し、保存ボタンを追加 -->
-        <div style="padding: 10px; border-top: 1px solid #444; text-align: center; background: #111; display: flex; justify-content: center; gap: 10px;">
-            <button onclick="downloadHistoryImage(event)" style="background: #2a2a2a; color: #d4af37; border: 1px solid #d4af37; padding: 6px 15px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 13px;">画像で保存</button>
-            <button onclick="closeHistoryModal()" style="background: #d4af37; color: #000; border: none; padding: 6px 25px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 13px;">閉じる</button>
+        <!-- ★変更：保存ボタンをターンごとに分割 -->
+        <div style="padding: 10px; border-top: 1px solid #444; text-align: center; background: #111; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: center; gap: 5px; flex-wrap: wrap;">
+                <button id="btn-download-1-10" onclick="downloadSpecificHistoryImage(event, 1, 10)" style="background: #2a2a2a; color: #d4af37; border: 1px solid #d4af37; padding: 6px 10px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 11px;">1〜10T 保存</button>
+                <button id="btn-download-11-20" onclick="downloadSpecificHistoryImage(event, 11, 20)" style="background: #2a2a2a; color: #d4af37; border: 1px solid #d4af37; padding: 6px 10px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 11px; display: none;">11〜20T 保存</button>
+                <button id="btn-download-21-30" onclick="downloadSpecificHistoryImage(event, 21, 30)" style="background: #2a2a2a; color: #d4af37; border: 1px solid #d4af37; padding: 6px 10px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 11px; display: none;">21〜30T 保存</button>
+            </div>
+            <div style="display: flex; justify-content: center;">
+                <button onclick="closeHistoryModal()" style="background: #d4af37; color: #000; border: none; padding: 6px 25px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 13px;">閉じる</button>
+            </div>
         </div>
     </div>
 </div>
