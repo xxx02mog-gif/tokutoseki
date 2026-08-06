@@ -695,6 +695,8 @@ display: flex;
 
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
+<!-- 画像化用ライブラリ html2canvas の読み込み -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <!-- カスタムアラートモーダル（黒×ゴールド仕様） -->
@@ -869,7 +871,9 @@ display: flex;
             hasEncounteredLetter: false, // 追加：手紙イベント発生済みフラグ
             hasEncounteredGift: false, // 追加：贈り物イベント発生済みフラグ
             temporaryEffects: [], // 追加：一時的な効果の表示用
-            endOfTurnEffects: [] // 追加：ターン終了時の効果の表示用
+            endOfTurnEffects: [], // 追加：ターン終了時の効果の表示用
+            endingTitle: "", // 追加：エンディングのタイトル
+            endingText: "" // 追加：エンディングのテキスト
         };
 
 // 直前のステータスを保持するオブジェクト
@@ -3438,6 +3442,16 @@ function generateTurnHistoryHTML() {
         html += `</div>`;
     }
 
+    // ★追加：履歴の末尾にエンディングを記載
+    if (state.endingTitle && state.endingText) {
+        html += `<div style="margin-top: 10px; margin-bottom: 10px; padding: 15px; text-align: center; font-family: 'Zen Old Mincho', serif;">`;
+        html += `<div style="font-weight: bold; color: #d4af37; font-size: 12px; margin-bottom: 10px;">${state.endingTitle}</div>`;
+        html += `<div style="color: #e5e5e5; font-size: 11px; line-height: 1.6;">${state.endingText}</div>`;
+        html += `</div>`;
+    } else {
+        html += `<div style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-weight: bold; color: #d4af37; font-size: 12px; font-family: 'Zen Old Mincho', serif; letter-spacing: 2px;">END</div>`;
+    }
+
     return html;
 }
 
@@ -3499,19 +3513,20 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
             `;
 
             let endingText = ""; // ログに出力するためのエンディングテキスト
+            let endingTitle = ""; // 追加：エンディングタイトル
 
 // 1. 各分岐でエンディングテキストのみを設定する
             if (condition === "assassination") {
-                title.innerText = "【END 6】復讐の終止符";
+                endingTitle = "【END 6】復讐の終止符";
                 endingText = `――特等席は永久に失われた。`;
             } else if (condition === "killed_by_master") {
-                title.innerText = "【DEAD END】代償";
+                endingTitle = "【DEAD END】代償";
                 endingText = `彼はあなたが贈り物を処分した事に気づき、裏切られたと感じたようだ。彼に深く刺された箇所から命が流れ出ていく。`;
             } else if (condition === "double_suicide") {
-                title.innerText = "【DEAD END】無理心中";
+                endingTitle = "【DEAD END】無理心中";
                 endingText = `狂気に苛まれた彼は突如として錯乱した。刃はあなたを貫き、そして彼自身の胸にも突き立てられた。`;
             } else if (condition === "dead") {
-                title.innerText = "【GAME OVER】主人の死";
+                endingTitle = "【GAME OVER】主人の死";
                 endingText = `彼は過酷な環境に耐えかね、息を引き取った。`;
             } else if (isSurvivalClear) {
               let requiredCount = 10;
@@ -3519,31 +3534,35 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
 
                 // ★追加：「手紙」を所持し、かつ関係性50以上
                 if (hasLetterAtEnd && state.relation >= 50) {
-                    title.innerText = "【END 9】鳥籠の外へ";
+                    endingTitle = "【END 9】鳥籠の外へ";
                     endingText = `ずっと渡さずにいた手紙を彼に渡した。二人で旅行する日も遠くないかもしれない。`;
                  } else if (!state.hasDisposedObstacle) {
-                    title.innerText = "【END 8】絆";
+                    endingTitle = "【END 8】絆";
                     endingText = `あなたも彼も、何一つ手放せないでいる。いつか、この痛みごと愛おしくなる時がくるのだろうか。`;
                 } else if (activeBuffs.isMadness || state.specialCareCount >= requiredCount) {
-                    title.innerText = "【END 7】壊れゆく自我";
+                    endingTitle = "【END 7】壊れゆく自我";
                     endingText = `劇薬が着実に彼から正気と知性を奪っている。それでも、彼との日常は続く。`;
                 } else if (state.relation >= 85) {
-                    title.innerText = "【END 4】信頼と矜持";
+                    endingTitle = "【END 4】信頼と矜持";
                     endingText = `自尊心と矜持を取り戻したからこそ、彼はあなたを信頼することを選んだ。`;
                 } else if (state.relation >= 45) {
-                    title.innerText = "【END 3】主従関係";
+                    endingTitle = "【END 3】主従関係";
                     endingText = `多少の歪みを伴いながらも、互いに互いを必要としている。`;
                 } else if (state.relation > -45) {
-                    title.innerText = "【END 1】日常";
+                    endingTitle = "【END 1】日常";
                     endingText = `特筆すべき変化はない。二人の生活はこれからも続く。`;
                 } else if (state.relation > -85) {
-                    title.innerText = "【END 2】深みに嵌まる";
+                    endingTitle = "【END 2】深みに嵌まる";
                     endingText = `彼はあなたへの依存を深めていく。その執着に、あなたも薄暗い喜びを抱きだしている。`;
                 } else {
-                    title.innerText = "【END 5】共依存";
+                    endingTitle = "【END 5】共依存";
                     endingText = `彼はあなたに存在意義のすべてを委ねている。そして、あなたも彼がいなければ存在意義を保てない。`;
                 }
             }
+            
+            title.innerText = endingTitle;
+            state.endingTitle = endingTitle;
+            state.endingText = endingText;
 
             // 2. エンディングのテキスト（物語の結末）はログエリアに出力
             const logArea = document.getElementById('log-area');
@@ -3604,6 +3623,74 @@ function openManual() {
 
         function closeHistoryModal() {
             document.getElementById('history-modal').style.display = 'none';
+        }
+
+        // ★追加：履歴を画像化してダウンロードする関数
+        function downloadHistoryImage() {
+            const originalTarget = document.getElementById('history-modal-content');
+            
+            // スクロール等で見切れるのを防ぐため、要素のクローンを画面外に作成して高さ制限を解除する
+            const clone = originalTarget.cloneNode(true);
+            clone.id = 'history-modal-content-clone'; // 画面上の元の要素にスタイル干渉しないようIDを変更
+            
+            clone.style.position = 'absolute';
+            clone.style.top = '-9999px'; // 画面外に配置
+            clone.style.left = '0';
+            clone.style.width = originalTarget.offsetWidth + 'px'; // 元の幅を維持
+            clone.style.height = 'auto'; // 高さを中身に合わせて拡張
+            clone.style.overflow = 'visible';
+            clone.style.maxHeight = 'none';
+            clone.style.flex = 'none';
+            clone.style.backgroundColor = '#151515';
+            
+            // ▼追加：html2canvasでの文字下ズレ(baselineずれ)を修正する専用スタイル
+            const fixStyle = document.createElement('style');
+            fixStyle.innerHTML = `
+                /* 背景色を持つバッジ要素（ラベルやタグ）特有のズレ調整 */
+                #history-modal-content-clone span[style*="background"], 
+                #history-modal-content-clone span.card-type {
+                    display: inline-block !important;
+                    line-height: 1.2 !important;
+                    padding-top: 1px !important;
+                    padding-bottom: 3px !important; /* html2canvas特有の文字下ズレを相殺するため下部余白を少し増やす */
+                    vertical-align: middle !important;
+                }
+                
+                /* 幅指定のあるラベル(DECK, STATUS等)の中央揃えをinline-block用に修正 */
+                #history-modal-content-clone span[style*="width: 45px"] {
+                    text-align: center !important;
+                }
+            `;
+            clone.appendChild(fixStyle);
+            // ▲ここまで
+            
+            // クローンをbodyに追加
+            document.body.appendChild(clone);
+            
+            // 描画が完了してから削除するため、少し遅延させる
+            setTimeout(() => {
+                html2canvas(clone, {
+                    backgroundColor: '#151515',
+                    scale: 2 // 高画質化
+                }).then(canvas => {
+                    // 画像データURLを取得
+                    let imgData = canvas.toDataURL('image/png');
+                    
+                    // ダウンロード用リンクを生成してクリックさせる
+                    let a = document.createElement('a');
+                    a.href = imgData;
+                    a.download = 'turn_history.png'; // ダウンロード時のファイル名
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    // 作業用のクローンを削除
+                    document.body.removeChild(clone);
+                }).catch(err => {
+                    console.error("画像化に失敗しました", err);
+                    document.body.removeChild(clone);
+                });
+            }, 100);
         }
 
 
@@ -4115,9 +4202,10 @@ function toggleBuffDebuffDetails() {
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
-<p style="font-size: 9px;">■ver 0.6<br>
+<p style="font-size: 9px;">■ver 0.7<br>
 ・イベントを3種、カードを2種、エンディングを2種追加しました。<br>
-・現在の状態やカード効果以外での数値変動がわかるアラートタブを追加しました。
+・現在の状態やカード効果以外での数値変動がわかるアラートタブを追加しました。<br>
+・ターンの詳細履歴を画像として出力できるようにしました。<br>
 </p>
 
       <p style="font-size: 9px;">■ver 0.6<br>
@@ -4235,10 +4323,13 @@ function toggleBuffDebuffDetails() {
         <div style="padding: 15px; border-bottom: 1px solid #444; display: flex; justify-content: space-between; align-items: center; background: #111;">
             <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 11px;">ターンごとの詳細履歴</span>
         </div>
-        <div id="history-modal-content" style="flex: 1; overflow-y: auto; padding: 20px; color: #e5e5e5; font-size: 12px; line-height: 1.5;">
+        <!-- ★変更：画像化時に背景が透過しないよう background: #151515; を追加 -->
+        <div id="history-modal-content" style="flex: 1; overflow-y: auto; padding: 20px; color: #e5e5e5; font-size: 12px; line-height: 1.5; background: #151515;">
             <!-- ここに履歴が挿入される -->
         </div>
-        <div style="padding: 10px; border-top: 1px solid #444; text-align: center; background: #111;">
+        <!-- ★変更：ボタンを2つ並べるレイアウトに変更し、保存ボタンを追加 -->
+        <div style="padding: 10px; border-top: 1px solid #444; text-align: center; background: #111; display: flex; justify-content: center; gap: 10px;">
+            <button onclick="downloadHistoryImage()" style="background: #2a2a2a; color: #d4af37; border: 1px solid #d4af37; padding: 6px 15px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 13px;">画像で保存</button>
             <button onclick="closeHistoryModal()" style="background: #d4af37; color: #000; border: none; padding: 6px 25px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 13px;">閉じる</button>
         </div>
     </div>
