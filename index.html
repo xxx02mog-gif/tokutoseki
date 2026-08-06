@@ -2347,8 +2347,8 @@ function executeCard(target) {
     // ★変更：カードの使用を履歴に記録
     addTurnHistory('used', { type: card.type, name: card.name, target: target });
 
-    // 「闇医者を呼ぶ」または 特殊版「水を与える」（昏睡付与の重度デバフを持つもの）を判定
-    if (card.name === "闇医者を呼ぶ" || (card.name === "水を与える" && card.actions && card.actions.some(a => a.type === "set_debuff" && a.value === "heavy"))) {
+    // 「闇医者を呼ぶ」または 特殊版「水を与える」（昏睡付与 または 関係性リセット）を判定
+    if (card.name === "闇医者を呼ぶ" || (card.name === "水を与える" && card.actions && card.actions.some(a => (a.type === "set_debuff" && a.value === "heavy") || a.type === "set_relation_zero"))) {
         state.specialCareCount++;
     }
 
@@ -3524,10 +3524,10 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
                 endingTitle = "【END 6】復讐の終止符";
                 endingText = `――特等席は永久に失われた。`;
             } else if (condition === "killed_by_master") {
-                endingTitle = "【DEAD END】代償";
+                endingTitle = "【END 10】代償";
                 endingText = `彼はあなたが贈り物を処分した事に気づき、裏切られたと感じたようだ。彼に深く刺された箇所から命が流れ出ていく。`;
             } else if (condition === "double_suicide") {
-                endingTitle = "【DEAD END】無理心中";
+                endingTitle = "【END 11】無理心中";
                 endingText = `狂気に苛まれた彼は突如として錯乱した。刃はあなたを貫き、そして彼自身の胸にも突き立てられた。`;
             } else if (condition === "dead") {
                 endingTitle = "【GAME OVER】主人の死";
