@@ -3196,6 +3196,7 @@ function generateTurnHistoryHTML() {
     // ★追加：初期デッキ構成を詳細履歴の最初に表示
     if (state.initialDeck && state.initialDeck.length > 0) {
         html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
+        html += `<div style="margin-bottom: 8px; font-size: 11px; border-bottom: 1px dashed #444; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
         html += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ 初期デッキ構成</div>`;
         
         let initDeckCounts = {};
@@ -3704,8 +3705,11 @@ function openManual() {
                             return;
                         }
 
-                        // Web Share API が使用可能な環境（主にスマホ）ではOSの共有メニューを呼び出す
-                        if (navigator.share && navigator.canShare) {
+                        // モバイル端末（スマホ・タブレット）かどうかを判定
+                        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+                        // スマホ環境かつ Web Share API が使用可能な場合はOSの共有メニューを呼び出す
+                        if (isMobile && navigator.share && navigator.canShare) {
                             const file = new File([blob], 'turn_history.png', { type: 'image/png' });
                             if (navigator.canShare({ files: [file] })) {
                                 navigator.share({
@@ -3720,7 +3724,7 @@ function openManual() {
                             }
                         }
 
-                        // 共有APIが使えないPCなどの環境は通常のBlobダウンロード
+                        // PCなどの環境は直接ファイルとしてダウンロード
                         fallbackDownload(blob, cleanup);
                     }, 'image/png');
                 }).catch(err => {
