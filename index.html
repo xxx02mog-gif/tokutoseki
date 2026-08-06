@@ -743,7 +743,6 @@ display: flex;
             <div class="value" id="stat-relation">0</div>
         </div>
     </div>
- </div>
     <div id="debuff-bar" style="font-size: 11px; color: #ff4d4d; margin-top: 4px; text-align: center; display: none;">
         主人の様態: <span id="debuff-name">なし</span>
     </div>
@@ -759,7 +758,11 @@ display: flex;
         
         <div id="phase-start-container">
             <div class="phase-scroll-area">
-                <div class="last-action-display"></div>
+                <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                    <div class="last-action-display" style="flex: 1; margin-bottom: 0;"></div>
+                    <div style="background-color: #0f0f0f; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
+                </div>
+                <div class="buff-debuff-details" style="display: none; background-color: #111; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
                 
             </div>
             <div class="phase-button-area">
@@ -769,7 +772,11 @@ display: flex;
 
         <div id="phase-main-container" style="display: none;">
             <div class="phase-scroll-area">
-                <div class="last-action-display"></div>
+                <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                    <div class="last-action-display" style="flex: 1; margin-bottom: 0;"></div>
+                    <div style="background-color: #0f0f0f; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
+                </div>
+                <div class="buff-debuff-details" style="display: none; background-color: #111; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
                 
                 <div class="section-title">
                     <span>行動フェーズ</span>
@@ -853,11 +860,16 @@ display: flex;
             shopBuyCount: 0,
             shopSellCount: 0,
             specialCareCount: 0,
-          playedCardsList: [], // 追加：使用したカードの記録用（マンネリ判定・売却ボーナス用。処分時にリセット）
+            playedCardsList: [], // 追加：使用したカードの記録用（マンネリ判定・売却ボーナス用。処分時にリセット）
             totalPlayedCardsList: [], // ★追加：リザルト画面集計用（リセットされない）
             hasDisposedObstacle: false, // ★追加：不用品を一度でも処理したかの判定用フラグ
             turnHistory: {}, // ★追加：ターンごとのプレイ履歴記録用
-            initialDeck: [] // ★追加：初期デッキ構成の保存用
+            initialDeck: [], // ★追加：初期デッキ構成の保存用
+            seasonEventTriggered: false, // 季節イベントの発生記録用
+            hasEncounteredLetter: false, // 追加：手紙イベント発生済みフラグ
+            hasEncounteredGift: false, // 追加：贈り物イベント発生済みフラグ
+            temporaryEffects: [], // 追加：一時的な効果の表示用
+            endOfTurnEffects: [] // 追加：ターン終了時の効果の表示用
         };
 
 // 直前のステータスを保持するオブジェクト
@@ -1005,10 +1017,10 @@ stressChange: -10,
     actions: [
         {type: "gold", value: -20}, 
         { type: "heal", value: 50, isFixed: true },  
-        // 修正：3種類のキーを配列で指定し、ここからランダム抽選させるようにします
-        {type: "add_special_card", key: ["water_coma", "water_reset", "water_normal"]},
+        // 通常版(発狂版)の確率を下げるため、配列の偏りを変更
+        {type: "add_special_card", key: ["water_coma", "water_coma", "water_coma", "water_reset", "water_reset", "water_normal"]},
         {type: "consume"}
-    ], 
+    ],
     desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)",
 flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさせた。彼は医師のことを訝しんでいるようだ。", dependence: "彼と医者を残して、あなたは部屋を出る。震え声が、扉が閉まる音でかき消された。",
             heavy_trust: "外部から怪しげな医者を呼び、眠っている間に治療を受けさせた。",
@@ -1238,24 +1250,25 @@ const SPECIAL_CARDS = {
         } 
     },
 
-    // ▼追加：水を与える（サンプル２）通常版
+    // ▼追加：水を与える（サンプル２）発狂版
     water_normal: { 
         name: "水を与える", 
         type: "direct", 
-        value: 2, 
+        value: 0, 
         cost: 1, 
         valType: "flat", 
-        stressChange: -10, 
         actions: [
-            {type: "heal", value: 5}, 
-            {type: "stress_direct", value: 10}
+            {type: "heal", value: 30}, 
+            {type: "stress", value: -30},
+            {type: "set_madness"},
+            {type: "consume"}
         ], 
-        desc: "健康+5。ストレス-10。関係性+2。", 
+        desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる。(使い切り)", 
         flavor: { 
-            trust: "口元へコップを運ぶと、彼に途中でコップを奪われてしまった。", 
-            dependence: "彼は、あなたが手ずから水を飲ませてくれることが嬉しいようだ。",
-            heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
-            heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が彼の頬を伝い落ちていった。"
+            trust: "彼はその水を飲み干した。目が、異様な光を帯びている。", 
+            dependence: "彼は水を飲み干すと、虚空を見つめながら意味不明な言葉を呟き始めた。",
+            heavy_trust: "彼をそっと抱き起こし、水を飲ませた。彼の体温が異常に上昇していく。",
+            heavy_dependence: "彼に水を飲ませた。彼の体が小さく痙攣している。"
         } 
     },
 
@@ -1317,7 +1330,7 @@ const SPECIAL_CARDS = {
 
     },
 
-    letter_from_old_friend: { 
+letter_from_old_friend: { 
         name: "手紙", 
         type: "obstacle", 
         cost: 0, 
@@ -1327,6 +1340,17 @@ const SPECIAL_CARDS = {
             dependence: "昔馴染からの手紙。今の彼にとっては、もう、どうでもいいものだ。",
             heavy_trust: "宛名には彼の名が書かれている。だが、彼がこの封を切ることはないだろう。",
             heavy_dependence: "彼に外や過去との繋がりが必要かどうかは、彼自身ではなくあなたが決める。"
+        } 
+    },
+
+    gift: { 
+        name: "贈り物", 
+        type: "obstacle", 
+        cost: 0, 
+        desc: "持っているとターン開始時ストレス-5。使用不可", 
+        flavor: { 
+            trust: "信頼の証が、あなたの手の中で輝いている。彼は照れくさいのか、顔をそむけている。", 
+            dependence: "彼は、あなたに「それ」を肌見放さず持っていてもらいたいようだ。"
         } 
     }
 };
@@ -1338,8 +1362,10 @@ const SPECIAL_CARDS = {
             nextTurnAPMod: 0,
             nextTurnDrawMod: 0,
             threatReduction: 0,
-           scentDuration: 0,
-            waterStressDuration: 0
+            scentDuration: 0,
+            waterStressDuration: 0,
+            isMadness: false, // 状態異常：発狂
+            hasKnife: false   // 状態：自衛
         };
 
         function getRandomCard(type) {
@@ -1532,6 +1558,7 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
                     nextBtn.style.color = "";
                 }
             }
+            updateBuffDebuffDetails();
         }
 
 
@@ -1620,8 +1647,9 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
 const RANDOM_EVENTS = [
     {
         title: "夏日",
+        effectText: "ストレス-10",
         condition: (state) => getSeasonByTurn(state.turn) === "夏",
-        effect: (state) => { state.stress = Math.max(0, state.stress - 10); },
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
             trust: "窓の外からの眩しい日差しに、彼は静かに目を細めた。",
             dependence: "まばゆい光が窓から差し込む。しかし、彼は外に興味がないようだ。",
@@ -1631,8 +1659,9 @@ const RANDOM_EVENTS = [
     },
     {
         title: "紅葉",
+        effectText: "ストレス-10",
         condition: (state) => getSeasonByTurn(state.turn) === "秋",
-        effect: (state) => { state.stress = Math.max(0, state.stress - 10); },
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
             trust: "窓から色づいた葉が舞い込んだ。彼はそれを手に取り、秋の訪れを感じている。",
             dependence: "秋の景色よりも、あなたの存在を眺め続けている。",
@@ -1642,8 +1671,9 @@ const RANDOM_EVENTS = [
     },
     {
         title: "初雪",
+        effectText: "ストレス-10",
         condition: (state) => getSeasonByTurn(state.turn) === "冬",
-        effect: (state) => { state.stress = Math.max(0, state.stress - 10); },
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
             trust: "窓の外に白い雪が舞い始めた。彼は静かに外を眺めている。",
             dependence: "凍えるような寒さの中、彼はあなたから与えられる熱だけを求めている。",
@@ -1653,8 +1683,9 @@ const RANDOM_EVENTS = [
     },
     {
         title: "春風",
+        effectText: "ストレス-10",
         condition: (state) => getSeasonByTurn(state.turn) === "春",
-        effect: (state) => { state.stress = Math.max(0, state.stress - 10); },
+        effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
             trust: "暖かな春風が部屋を吹き抜けた。彼の表情に、ほんの少しだけ生気が戻った気がする。",
             dependence: "命吹く春の陽気の中でも、彼はあなたがいなければ生きられない。",
@@ -1664,6 +1695,7 @@ const RANDOM_EVENTS = [
     },
     {
         title: "遠くの鐘の音",
+        effectText: "ストレス-5",
         condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
         flavor: {
@@ -1675,6 +1707,7 @@ const RANDOM_EVENTS = [
     },
     {
         title: "探し物",
+        effectText: "AP-1 / 関係性+2",
         condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.relation = Math.min(100, state.relation + 2); },
         flavor: {
@@ -1684,6 +1717,7 @@ const RANDOM_EVENTS = [
     },
     {
         title: "身支度",
+        effectText: "ストレス-5 / 関係性+1",
         condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); state.relation = Math.min(100, state.relation + 1); },
         flavor: {
@@ -1693,6 +1727,7 @@ const RANDOM_EVENTS = [
     },
     {
         title: "お仕事",
+        effectText: "資金+20 / ストレス+5",
         condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.gold += 20; state.stress = Math.min(100, state.stress + 5); },
         flavor: {
@@ -1702,6 +1737,7 @@ const RANDOM_EVENTS = [
     },
     {
         title: "もぬけの殻",
+        effectText: "AP-1 / ストレス+15",
         condition: (state, currentLogDelay) => state.debuff === "none" && currentLogDelay === 0,
         effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.stress = Math.min(100, state.stress + 15); },
         flavor: {
@@ -1711,6 +1747,7 @@ const RANDOM_EVENTS = [
     },
     {
         title: "差入れ",
+        effectText: "資金+10 / 健康+5",
         condition: (state) => true,
         effect: (state) => { state.gold += 10; state.health = Math.min(100, state.health + 5); },
         flavor: {
@@ -1722,6 +1759,7 @@ const RANDOM_EVENTS = [
     },
     {
         title: "小鳥",
+        effectText: "ストレス-5",
         condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
         flavor: {
@@ -1733,15 +1771,39 @@ const RANDOM_EVENTS = [
     },
     {
         title: "悪夢",
+        effectText: "ストレス+10",
         condition: (state) => state.debuff === "heavy",
         effect: (state) => { state.stress = Math.min(100, state.stress + 10); },
         flavor: {
             heavy_trust: "深い微睡みの淵で、彼は苦しげに顔を歪めている。",
             heavy_dependence: "彼は悪夢にうなされている。あなただけが、彼をそこから救い出せるのかもしれない。"
         }
+    },
+    {
+        title: "祈り",
+        effectText: "ストレス-15",
+        condition: (state) => true,
+        effect: (state) => { state.stress = Math.max(0, state.stress - 15); },
+        flavor: {
+            trust: "彼は目を閉じ、静かに何かを祈っている。",
+            dependence: "彼はあなたに向かって、縋るように祈りを捧げている。",
+            heavy_trust: "微睡みの中、彼はうわ言のように祈りの言葉を紡いでいる。",
+            heavy_dependence: "意識のない彼の唇が震え、祈りの言葉を漏らしている。"
+        }
+    },
+    {
+        title: "自衛",
+        effectText: "自衛状態付与",
+        condition: (state) => state.debuff !== "heavy",
+        effect: (state) => { activeBuffs.hasKnife = true; },
+        flavor: {
+            trust: "ふと見ると、彼が枕の下にナイフを隠すのが見えた。",
+            dependence: "彼は何かを握りしめ、周囲を警戒している。"
+        }
     }
 ];
-// ▲ ここまで
+// ▲ ここまで (RANDOM_EVENTS の末尾)
+
 
 function processWeekStart() {
             state.turn++;
@@ -1758,19 +1820,25 @@ function processWeekStart() {
             state.turnPlayedCount = 0;
             state.lastPlayedType = null;
             
+            // 次のターンに行ったタイミングで一時効果をすべてクリア
+            state.temporaryEffects = [];
+            state.endOfTurnEffects = [];
+            
             let turnLogs = [];
             let currentLogDelay = 0; // ログ表示の遅延時間を管理する変数を追加
 
             if (activeBuffs.scentDuration > 0) {
                 state.stress = Math.max(0, state.stress - 5);
                 activeBuffs.scentDuration--;
+                state.temporaryEffects.push("香炉: ストレス-5");
             }
 
-if (activeBuffs.waterStressDuration > 0) {
+            if (activeBuffs.waterStressDuration > 0) {
                 // ストレスを15増加（上限100を超えないように設定）
                 state.stress = Math.min(100, state.stress + 15);
                 activeBuffs.waterStressDuration--;
                 turnLogs.push("副作用(ストレス増)"); // ターン開始時のログに表示
+                state.temporaryEffects.push("闇医者の副作用: ストレス+15");
             }
 
             // ★追加：「手紙」の所持判定とストレス処理
@@ -1780,14 +1848,24 @@ if (activeBuffs.waterStressDuration > 0) {
             if (hasLetter && state.relation >= 0) {
                 state.stress = Math.min(100, state.stress + 5);
                 turnLogs.push("手紙の存在(ストレス増)");
+                state.temporaryEffects.push("手紙: ストレス+5");
+            }
+
+            let hasGift = allCardsForLetter.some(c => c && c.name === "贈り物");
+            if (hasGift) {
+                state.stress = Math.max(0, state.stress - 5);
+                turnLogs.push("贈り物の存在(ストレス減)");
+                state.temporaryEffects.push("贈り物: ストレス-5");
             }
 
             let roll = Math.random() * 100;
-       let threshold = Math.max(5, Math.min(95, state.stress));
-           if (roll < threshold) {
+            let threshold = Math.max(5, Math.min(95, state.stress));
+            if (roll < threshold) {
                 let debuffs = ['light', 'medium', 'heavy'];
                 state.debuff = debuffs[Math.floor(Math.random() * debuffs.length)];
                 
+                let debuffNames = { light: '歩行困難(COST+1)', medium: '頭痛(DRAW-1)', heavy: '昏睡(AP固定1)' };
+               
                 let debuffFlavor = "";
                 if (state.debuff === 'light') {
                     const lightTexts = [
@@ -1819,6 +1897,7 @@ if (Math.random() < obstacleRates[state.debuff]) {
     state.discard.push(obstacle);
     turnLogs.push("体調悪化(不用品混入)");
     addTurnHistory('obtained', { type: obstacle.type, name: obstacle.name });
+    state.temporaryEffects.push(`不用品混入: ${obstacle.name}`); // ★追加: 一時的な効果・発生イベントに表示
 
                     // 1. デバフ状態（体調不良）のフレーバーテキストを先に出力する
                     setTimeout(() => {
@@ -1849,8 +1928,8 @@ if (state.debuff === 'heavy') {
                 }
                 
                 // ★追加：体調不良を履歴に記録
-                let debuffNames = { light: '歩行困難', medium: '頭痛', heavy: '昏睡' };
-                addTurnHistory('states', debuffNames[state.debuff]);
+                let historyDebuffNames = { light: '歩行困難', medium: '頭痛', heavy: '昏睡' };
+                addTurnHistory('states', historyDebuffNames[state.debuff]);
             } else {
                 state.debuff = 'none';
             }
@@ -1895,12 +1974,15 @@ if (state.debuff === 'heavy') {
                 addTurnHistory('states', '敵襲来'); // 戦闘発生を履歴に記録
             }
 
-           // ▼ 追加：ランダムイベント処理
+          // ▼ 追加：ランダムイベント処理
+            let eventOccurred = false; // イベント発生フラグを追加
             if (!state.battleActive && Math.random() < 0.30) {
                 let availableEvents = RANDOM_EVENTS.filter(ev => ev.condition(state, currentLogDelay));
                 if (availableEvents.length > 0) {
                     let ev = availableEvents[Math.floor(Math.random() * availableEvents.length)];
                     ev.effect(state);
+                    
+                    state.temporaryEffects.push(`${ev.title}: ${ev.effectText}`);
 
                     let eventFlavor = "";
                     if (state.debuff === 'heavy') {
@@ -1920,15 +2002,10 @@ if (state.debuff === 'heavy') {
 
                     turnLogs.push(ev.title);
                     addTurnHistory('event', ev.title);
+                    eventOccurred = true; // イベントが発生したことを記録
                 }
             }
             // ▲ ここまで
-
-            if (turnLogs.length > 0) {
-                setLastAction(turnLogs.join(" / "));
-            } else {
-                setLastAction("　");
-            }
 
             let drawCount = state.debuff === 'medium' ? 4 : 5;
             if (activeBuffs.nextTurnDrawMod !== 0) {
@@ -1957,27 +2034,32 @@ if (state.debuff === 'heavy') {
                     const attachmentKeys = ['secret_attachment_1', 'secret_attachment_2', 'secret_attachment_3'];
                     const chosenKey = attachmentKeys[Math.floor(Math.random() * attachmentKeys.length)];
                 
-                    if (SPECIAL_CARDS[chosenKey]) {
+                   if (SPECIAL_CARDS[chosenKey]) {
                         let newCard = { 
                             ...SPECIAL_CARDS[chosenKey], 
                             id: Date.now() + Math.random() 
                         };
                         state.hand.push(newCard);
                        addTurnHistory('obtained', { type: newCard.type, name: newCard.name });
+                       state.temporaryEffects.push(`カード入手: ${newCard.name}`);
                     }
                 }
             }
 
            // ★追加：「手紙」のランダム追加処理
-            // 未所持で、手札上限(6枚)未満の場合、1.5%の確率で追加
-            if (!hasLetter && state.hand.length < 6) {
+            // 未発生、手札上限未満、かつ他のイベントが発生していない場合
+            if (!eventOccurred && !state.hasEncounteredLetter && state.hand.length < 6) {
                 if (Math.random() < 0.01) {
                     let letterCard = {
                         ...SPECIAL_CARDS['letter_from_old_friend'],
                         id: Date.now() + Math.random()
                     };
                     state.hand.push(letterCard);
-                   addTurnHistory('event', '手紙入手');
+                   addTurnHistory('event', '手紙');
+                   turnLogs.push("手紙"); // アラートに追加
+                   eventOccurred = true; // 他のイベントと排他にする
+                   state.hasEncounteredLetter = true; // 追加：発生済みフラグをオン
+                   state.temporaryEffects.push(`カード入手: ${letterCard.name}`);
 
                     // ★フレーバーテキストの出力処理を追加
                     let flavorText = "";
@@ -1996,6 +2078,40 @@ if (state.debuff === 'heavy') {
                 }
             }
 
+            // ★追加：「贈り物」のランダム追加処理
+            // 昏睡(heavy)時には発生させないよう条件を追加
+            if (!eventOccurred && !state.hasEncounteredGift && state.hand.length < 6 && state.debuff !== 'heavy') {
+                if (Math.random() < 0.02) { // 2%の確率で出現
+                    let price = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+                    let giftCard = {
+                        ...SPECIAL_CARDS['gift'],
+                        sellPrice: price,
+                        id: Date.now() + Math.random()
+                    };
+                    state.hand.push(giftCard);
+                    addTurnHistory('event', '贈り物');
+                    turnLogs.push("贈り物"); // アラートに追加
+                    eventOccurred = true; // 他のイベントと排他にする
+                    state.hasEncounteredGift = true; // 追加：発生済みフラグをオン
+                    state.temporaryEffects.push(`カード入手: ${giftCard.name}`);
+                    
+
+                    // 手紙入手時と同じように、フレーバーテキストを出し分ける
+                    let flavorText = state.relation >= 0 ? giftCard.flavor.trust : giftCard.flavor.dependence;
+                    
+                    setTimeout(() => {
+                        addLog(flavorText, "log-flavor");
+                    }, currentLogDelay);
+                        currentLogDelay += 600;
+                }
+            }
+
+            // 前方から移動したアラート(setLastAction)の反映処理
+            if (turnLogs.length > 0) {
+                setLastAction(turnLogs.join(" / "));
+            } else {
+                setLastAction("　");
+            }
 
             document.getElementById('phase-start-container').style.display = 'none';
             document.getElementById('phase-main-container').style.display = 'block';
@@ -2066,6 +2182,11 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                     if (sameCardCount >= 4) { // 次に使った時点で5回目になるため、4回の時点で予告表示する
                         debuffIconsHTML += `<span style="color: #aaaaaa; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="マンネリ：回復・ストレス軽減が半減">▼</span>`;
                     }
+                }
+
+                // 4. 発狂（赤の▼）：発狂状態の場合、すべてのカードに適用
+                if (activeBuffs.isMadness) {
+                    debuffIconsHTML += `<span style="color: #e74c3c; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="発狂状態：関係性の増減がランダム">▼</span>`;
                 }
 
                 grid.appendChild(cardEl);
@@ -2204,7 +2325,7 @@ function executeCard(target) {
         return; // ★state.selectedCardIndex = null; を削除し、選択を維持
     }
 
-    if (target === 'master' && card.goldCost && state.gold < card.goldCost) {
+   if (target === 'master' && card.goldCost && state.gold < card.goldCost) {
         showCustomAlert(`資金が足りないため使用できません。`);
         return; // ★cancelTargetSelect(); を削除し、選択を維持
     }
@@ -2341,11 +2462,15 @@ let calcRelationDelta = function(targetCard, currentTarget) {
         return delta;
     };
     
-    let rDelta = calcRelationDelta(card, target);
+ let rDelta = calcRelationDelta(card, target);
+    if (activeBuffs.isMadness) {
+        rDelta = Math.floor(Math.random() * 101) - 50; // -50〜+50
+    }
     state.relation = Math.min(100, Math.max(-100, state.relation + rDelta));
 
-   let keepInHand = false; // 使用後に手札に残すかどうかのフラグ
+  let keepInHand = false; // 使用後に手札に残すかどうかのフラグ
     let isConsumed = false; // 【修正】使い切り判定の変数を事前宣言
+    let isGameOverByGift = false; // ★追加：贈り物処分によるゲームオーバー判定
 
     // --- アクション(効果)の宣言的実行 ---
     if (card.actions) {
@@ -2355,7 +2480,7 @@ let calcRelationDelta = function(targetCard, currentTarget) {
 
             switch (action.type) {
                 case "heal":
-                    let healVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? action.trust : action.dep);
+                    let healVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? (action.trust || 0) : (action.dep || 0));
                     if (card.type === 'indirect' && state.relation < 0 && healVal > 0 && !action.isFixed) {
                         healVal = Math.floor(healVal / 2);
                     }
@@ -2367,7 +2492,7 @@ let calcRelationDelta = function(targetCard, currentTarget) {
                     break;
 
                 case "stress":
-                    let stressVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? action.trust : action.dep);
+                    let stressVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? (action.trust || 0) : (action.dep || 0));
                     if (card.type === 'indirect' && state.relation < 0 && stressVal < 0) {
                         stressVal = 10;
                     }
@@ -2439,7 +2564,7 @@ case "add_special_card":
         ? action.key[Math.floor(Math.random() * action.key.length)] 
         : action.key;
 
-    if (SPECIAL_CARDS[targetKey]) {
+     if (SPECIAL_CARDS[targetKey]) {
         // 特殊カードをコピーして手札(hand)に加える
         // idが被らないよう Date.now() と乱数を組み合わせる
         let newCard = { 
@@ -2448,9 +2573,13 @@ case "add_special_card":
         };
         state.hand.push(newCard); // ★state. を追加
         addTurnHistory('obtained', { type: newCard.type, name: newCard.name });
+        state.temporaryEffects.push(`カード入手: ${newCard.name}`);
     }
     break;
 
+case "set_madness":
+    activeBuffs.isMadness = true;
+    break;
 
                     
              case "banish_random_hand":
@@ -2488,6 +2617,7 @@ case "add_special_card":
                         let randIdx = targetIndices[Math.floor(Math.random() * targetIndices.length)];
                         let cleanCard = CARD_POOL.indirect.find(c => c.name === action.resultName);
                         state.hand[randIdx] = JSON.parse(JSON.stringify(cleanCard));
+                        state.temporaryEffects.push(`カード変化: ${cleanCard.name}`);
                     }
                     break;
 
@@ -2497,15 +2627,22 @@ case "add_special_card":
                         let removed = state.hand.splice(obsIdx, 1)[0];
                         state.hasDisposedObstacle = true; // ★追加：カード効果で不用品を廃棄した記録
                         addTurnHistory('disposed', { type: removed.type, name: removed.name }); // 売却フェーズ以外は（処）として記録
+                        if (removed.name === "贈り物" && state.relation <= -75) {
+                            if (Math.random() < 0.3) {
+                                isGameOverByGift = true;
+                            }
+                        }
                     }
                     break;
 
                 case "remove_all_obstacles":
                     let removedCount = 0;
+                    let giftDisposed = false;
 
                     // デッキから不用品をすべて除外（削除時に配列がずれないよう、後ろからループ処理します）
                     for (let i = state.deck.length - 1; i >= 0; i--) {
                         if (state.deck[i] && state.deck[i].type === 'obstacle') {
+                            if (state.deck[i].name === "贈り物") giftDisposed = true;
                             state.deck.splice(i, 1);
                             removedCount++;
                         }
@@ -2514,6 +2651,7 @@ case "add_special_card":
                     // 捨て札から不用品をすべて除外
                     for (let i = state.discard.length - 1; i >= 0; i--) {
                         if (state.discard[i] && state.discard[i].type === 'obstacle') {
+                            if (state.discard[i].name === "贈り物") giftDisposed = true;
                             state.discard.splice(i, 1);
                             removedCount++;
                         }
@@ -2522,6 +2660,7 @@ case "add_special_card":
                     // 手札から不用品をすべて除外
                     for (let i = state.hand.length - 1; i >= 0; i--) {
                         if (state.hand[i] && state.hand[i].type === 'obstacle') {
+                            if (state.hand[i].name === "贈り物") giftDisposed = true;
                             state.hand.splice(i, 1);
                             removedCount++;
                         }
@@ -2533,6 +2672,12 @@ case "add_special_card":
                         state.relation = Math.trunc(state.relation * (1 - reductionRatio));
                         state.hasDisposedObstacle = true; // ★不用品を廃棄した記録を残す
                         addTurnHistory('disposed', { type: 'obstacle', name: `不用品すべて(計${removedCount}枚)` });
+                    }
+                    
+                    if (giftDisposed && state.relation <= -75) {
+                        if (Math.random() < 0.3) {
+                            isGameOverByGift = true;
+                        }
                     }
                     break;
 
@@ -2577,6 +2722,19 @@ case "add_special_card":
         });
     }
 
+// ★追加：贈り物処分によるゲームオーバー処理
+    if (isGameOverByGift) {
+        cancelTargetSelect();
+        renderHand();
+        updateUI();
+        if (activeBuffs.isMadness) {
+            checkEndGame(false, "double_suicide");
+        } else {
+            checkEndGame(false, "killed_by_master");
+        }
+        return;
+    }
+
     // --- 使用済みカードの廃棄処理 ---
 
     if (!keepInHand) {
@@ -2605,6 +2763,10 @@ case "add_special_card":
 }
         function processWeekEnd() {
 cancelTargetSelect();
+            // ターン内に発生した一時効果をターン終了時にクリアする
+            state.temporaryEffects = [];
+            state.endOfTurnEffects = []; // 次ターンに持ち越さないようここでクリアする
+
             let endLogs = [];
             if (state.ap > 0) {
                 let penaltyGold = state.ap * 10;
@@ -2619,18 +2781,32 @@ cancelTargetSelect();
                 } else if (state.relation < 0) {
                     state.relation = Math.min(0, state.relation + pullCount);
                 }
+                
+                state.endOfTurnEffects.push(`AP未消費ペナルティ(残りAP${state.ap}): 資金-${penaltyGold} / ストレス+${penaltyStress} / 関係性が0に近づいた`);
             }
 
 if (state.battleActive) {
                 let diceRoll = Math.random() * 100;
                 
                 if (diceRoll < state.threat) {
-                    state.health = Math.max(0, state.health - 20);
-                    state.stress = Math.min(100, state.stress + 30);
-                    endLogs.push("防衛突破され被害");
-                    addTurnHistory('states', '戦闘敗北'); // ★修正：カッコを外す
-                    
-                    // 防衛失敗時の情景描写
+                    // ★追加：自衛状態の判定
+                    if (activeBuffs.hasKnife && state.debuff !== 'heavy') {
+                        activeBuffs.hasKnife = false;
+                        addTurnHistory('states', '戦闘防衛(自衛)');
+                        state.endOfTurnEffects.push(`戦闘結果: 自衛により被害を無効化`);
+                        if (state.relation >= 0) {
+                            addLog("彼は、隠し持っていたナイフで敵を退けた。", "log-flavor");
+                        } else {
+                            addLog("彼は狂乱したようにナイフを振り回し敵を退けた。その手はひどく震えている。", "log-flavor");
+                        }
+                    } else {
+                        state.health = Math.max(0, state.health - 20);
+                        state.stress = Math.min(100, state.stress + 30);
+                        endLogs.push("防衛突破され被害");
+                        addTurnHistory('states', '戦闘敗北'); 
+                        state.endOfTurnEffects.push(`戦闘敗北: 健康-20 / ストレス+30`);
+                        
+                        // 防衛失敗時の情景描写
                     if (state.debuff === 'heavy') {
                         if (state.relation >= 0) {
                             const failHeavyTrust = [
@@ -2646,7 +2822,7 @@ if (state.battleActive) {
                             addLog(failHeavyDep[Math.floor(Math.random() * failHeavyDep.length)], "log-flavor");
                         }
                     } else {
-                        if (state.relation >= 0) {
+                       if (state.relation >= 0) {
                             const failTrust = [
                                 "彼はあなたを庇おうと敵の前に立ちはだかり、傷を負った。",
                                 "己の無力さを呪うように、彼は床に伏しながら血を吐き出した。"
@@ -2660,10 +2836,12 @@ if (state.battleActive) {
                             addLog(failDep[Math.floor(Math.random() * failDep.length)], "log-flavor");
                         }
                     }
+                }
                 } else {
                     let reward = 15 + Math.floor(state.turn * 0.5);
                     state.gold += reward;
                     addTurnHistory('states', '戦闘勝利'); // 
+                    state.endOfTurnEffects.push(`戦闘勝利: 資金+${reward}G`);
                     
                     // 防衛成功時の情景描写
                     if (state.debuff === 'heavy') {
@@ -2698,9 +2876,10 @@ if (state.battleActive) {
                 }
             }
 
-            if (state.stress >= 70) {
+           if (state.stress >= 70) {
                 state.health = Math.max(0, state.health - 10);
                 endLogs.push("高ストレスで体力減");
+                state.endOfTurnEffects.push(`高ストレスペナルティ: 健康-10`);
             }
 
             if (endLogs.length > 0) {
@@ -2743,13 +2922,16 @@ function openShop() {
                 availableCards.push(...cards);
             });
             
-            // 未獲得の場合のみ、季節カードをプールに1枚追加
-            if (!state.achievements.includes(nextTurnSeason)) {
+            // 未獲得の場合、または季節イベントが発生した場合、季節カードを追加
+            if (state.seasonEventTriggered) {
+                state.shopCards.push(JSON.parse(JSON.stringify(CARD_POOL.season[nextTurnSeason])));
+                state.seasonEventTriggered = false; // フラグ消費
+            } else if (!state.achievements.includes(nextTurnSeason)) {
                 availableCards.push(CARD_POOL.season[nextTurnSeason]);
             }
             
-            // 4枠すべてを同一のプールからフラットに抽選
-            for (let i = 0; i < 4; i++) {
+            let needed = 4 - state.shopCards.length;
+            for (let i = 0; i < needed; i++) {
                 if (availableCards.length === 0) break;
                 
                 let randomIndex = Math.floor(Math.random() * availableCards.length);
@@ -2875,7 +3057,11 @@ function buyCard(idx, cost, btnEl) {
               let bonusGold = calculateBonusGold(card.name);
                 
                 let btnText = ""; let btnClass = "";
-                if (state.shopSellCount === 0) {
+                if (card.name === "贈り物") {
+                    let sPrice = card.sellPrice || 5000;
+                    btnText = `売却(+${sPrice}G)`; 
+                    btnClass = "btn-primary";
+                } else if (state.shopSellCount === 0) {
                     btnText = `売却(+${20 + bonusGold}G)`; 
                     btnClass = "btn-primary";
                 } else {
@@ -2920,13 +3106,16 @@ function calculateBonusGold(cardName) {
             let targetCard = combinedIdx < state.deck.length ? state.deck[combinedIdx] : state.discard[combinedIdx - state.deck.length];
             let bonusGold = calculateBonusGold(targetCard.name);
             
-            let baseDisposeCost = 10; // 2回目のコストを緩和（30から10に）
-            let costIncrease = 20; // 上り幅を緩和（30から20に）
+let baseDisposeCost = 10;
+            let costIncrease = 20;
             let actionType = '処分';
             
             let netCost = 0;
-            if (state.shopSellCount === 0) {
-                netCost = -(20 + bonusGold); // マイナスは収入扱いとする
+            if (targetCard.name === "贈り物") {
+                netCost = -(targetCard.sellPrice || 5000); // 売値がそのまま収入になる
+                actionType = '売却';
+            } else if (state.shopSellCount === 0) {
+                netCost = -(20 + bonusGold);
                 actionType = '売却';
             } else {
                 netCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease) - bonusGold;
@@ -2950,10 +3139,22 @@ function calculateBonusGold(cardName) {
                 }
 
                 let removed;
-                if (combinedIdx < state.deck.length) {
+                 if (combinedIdx < state.deck.length) {
                     removed = state.deck.splice(combinedIdx, 1)[0];
                 } else {
                     removed = state.discard.splice(combinedIdx - state.deck.length, 1)[0];
+                }
+
+               // ★追加：贈り物売却によるDEAD END判定
+                if (removed.name === "贈り物" && state.relation <= -75) {
+                    if (Math.random() < 0.3) {
+                        if (activeBuffs.isMadness) {
+                            checkEndGame(false, "double_suicide");
+                        } else {
+                            checkEndGame(false, "killed_by_master");
+                        }
+                        return; // 処理を中断
+                    }
                 }
 
                 // ★追加：処分したカードが不用品だった場合の記録
@@ -3302,27 +3503,33 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
 
             let endingText = ""; // ログに出力するためのエンディングテキスト
 
-            // 1. 各分岐でエンディングテキストのみを設定する
+// 1. 各分岐でエンディングテキストのみを設定する
             if (condition === "assassination") {
                 title.innerText = "【END 6】復讐の終止符";
                 endingText = `――特等席は永久に失われた。`;
+            } else if (condition === "killed_by_master") {
+                title.innerText = "【DEAD END】代償";
+                endingText = `彼はあなたが贈り物を処分した事に気づき、裏切られたと感じたようだ。彼に深く刺された箇所から命が流れ出ていく。`;
+            } else if (condition === "double_suicide") {
+                title.innerText = "【DEAD END】無理心中";
+                endingText = `狂気に苛まれた彼は、突如として錯乱した。刃はあなたを貫き、そして彼自身の胸にも突き立てられた。`;
             } else if (condition === "dead") {
                 title.innerText = "【GAME OVER】主人の死";
                 endingText = `彼は過酷な環境に耐えかね、息を引き取った。`;
             } else if (isSurvivalClear) {
-                let requiredCount = 10;
+              let requiredCount = 10;
                 let hasLetterAtEnd = [...state.deck, ...state.hand, ...state.discard].some(c => c && c.name === '手紙');
 
                 // ★追加：「手紙」を所持し、かつ関係性50以上
                 if (hasLetterAtEnd && state.relation >= 50) {
                     title.innerText = "【END 9】鳥籠の外へ";
                     endingText = `ずっと渡さずにいた手紙を彼に渡した。二人で旅行する日も遠くないかもしれない。`;
-                } else if (!state.hasDisposedObstacle) {
+                 } else if (!state.hasDisposedObstacle) {
                     title.innerText = "【END 8】絆";
                     endingText = `あなたも彼も、何一つ手放せないでいる。いつか、この痛みごと愛おしくなる時がくるのだろうか。`;
-                } else if (state.specialCareCount >= requiredCount) {
+                } else if (activeBuffs.isMadness || state.specialCareCount >= requiredCount) {
                     title.innerText = "【END 7】壊れゆく自我";
-                    endingText = `非合法な薬物の常用が、着実に彼から正気と知性を奪っている。それでも、彼との日常は続く。`;
+                    endingText = `劇薬が着実に彼から正気と知性を奪っている。それでも、彼との日常は続く。`;
                 } else if (state.relation >= 85) {
                     title.innerText = "【END 4】信頼と矜持";
                     endingText = `自尊心と矜持を取り戻したからこそ、彼はあなたを信頼することを選んだ。`;
@@ -3428,6 +3635,113 @@ document.addEventListener('pointerdown', function(e) {
         ripple.remove();
     }, 1400);
 });
+
+function updateBuffDebuffDetails() {
+    let html = "";
+    
+    // HTML属性の中で途切れないようシングルクォーテーションで囲む
+    const lineStyle = "color: #bbbbbb; margin-bottom: 2px; font-family: 'Zen Kaku Gothic New', sans-serif !important;";
+    
+    let hasTemporary = (state.temporaryEffects && state.temporaryEffects.length > 0) || (state.endOfTurnEffects && state.endOfTurnEffects.length > 0);
+
+    if (hasTemporary) {
+        html += `<div style="font-weight:bold; color:#d4af37; margin-bottom: 2px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【一時的な効果・発生イベント】</div>`;
+        if (state.temporaryEffects) {
+            state.temporaryEffects.forEach(effect => {
+                html += `<div style="${lineStyle}">・${effect}</div>`;
+            });
+        }
+        if (state.endOfTurnEffects) {
+            state.endOfTurnEffects.forEach(effect => {
+                html += `<div style="${lineStyle}">・${effect}</div>`;
+            });
+        }
+        html += `<div style="margin-bottom: 6px;"></div>`;
+    }
+
+    // テンプレートリテラル(バッククォート)を使い、内部のstyle記述を安全にする
+    html += `<div style="font-weight:bold; margin-bottom: 4px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【継続効果】</div>`;
+
+    if (state.debuff !== 'none') {
+        let debuffNames = { light: '歩行困難 (COST+1)', medium: '頭痛 (DRAW-1)', heavy: '昏睡 (AP固定1)' };
+        html += `<div style="${lineStyle}">・主人の体調: ${debuffNames[state.debuff]}</div>`;
+    }
+    
+    if (activeBuffs.scentDuration > 0) {
+        html += `<div style="${lineStyle}">・香炉: ターン開始時ストレス-5 (残り${activeBuffs.scentDuration}ターン)</div>`;
+    }
+    if (activeBuffs.waterStressDuration > 0) {
+        html += `<div style="${lineStyle}">・闇医者の副作用: ターン開始時ストレス+15 (残り${activeBuffs.waterStressDuration}ターン)</div>`;
+    }
+    if (activeBuffs.nextTurnAPMod !== 0) {
+        let sign = activeBuffs.nextTurnAPMod > 0 ? '+' : '';
+        html += `<div style="${lineStyle}">・次ターン初期AP: ${sign}${activeBuffs.nextTurnAPMod}</div>`;
+    }
+    if (activeBuffs.nextTurnDrawMod !== 0) {
+        let sign = activeBuffs.nextTurnDrawMod > 0 ? '+' : '';
+        html += `<div style="${lineStyle}">・次ターンドロー枚数: ${sign}${activeBuffs.nextTurnDrawMod}</div>`;
+    }
+    if (activeBuffs.threatReduction > 0) {
+        html += `<div style="${lineStyle}">・次戦闘の脅威度低下: -${activeBuffs.threatReduction}</div>`;
+    }
+    if (activeBuffs.isMadness) {
+        html += `<div style="${lineStyle} font-weight: bold;">・発狂: すべてのカードによる関係性の増減がランダム</div>`;
+    }
+    if (activeBuffs.hasKnife) {
+        html += `<div style="${lineStyle}">・自衛: 次の戦闘失敗時、ダメージを一度だけ無効化</div>`;
+    }
+    
+    let allCards = [...state.deck, ...state.hand, ...state.discard];
+    let hasLetter = allCards.some(c => c && c.name === "手紙");
+    let hasGift = allCards.some(c => c && c.name === "贈り物");
+    
+    if (hasLetter) {
+        html += `<div style="${lineStyle}">・手紙: 関係性+の時、毎ターン開始時ストレス+5</div>`;
+    }
+    if (hasGift) {
+        html += `<div style="${lineStyle}">・贈り物: ターン開始時ストレス-5</div>`;
+    }
+    if (state.seasonEventTriggered) {
+        html += `<div style="${lineStyle}">・季節イベント: 次回購入フェーズで季節カード確定出現</div>`;
+    }
+    
+    let mannerismCards = [];
+    if (state.playedCardsList) {
+        let cardCounts = {};
+        state.playedCardsList.forEach(c => {
+            if (c && ['direct', 'indirect'].includes(c.type)) {
+                cardCounts[c.name] = (cardCounts[c.name] || 0) + 1;
+            }
+        });
+        for (let name in cardCounts) {
+            // 5回以上使用でマンネリ効果発動
+            if (cardCounts[name] >= 5) {
+                mannerismCards.push(name);
+            }
+        }
+    }
+    if (mannerismCards.length > 0) {
+        html += `<div style="${lineStyle}">・マンネリ状態 (${mannerismCards.join(', ')}): 回復・ストレス軽減が半減</div>`;
+    }
+    
+    if (state.relation >= 0) {
+        html += `<div style="${lineStyle}">・矜持状態(関係性+): 直接ケア時ストレス増加 / 関係性上昇半減</div>`;
+    } else {
+        html += `<div style="${lineStyle}">・依存状態(関係性-): 直接ケア時関係性低下 / 間接ケア時回復半減・ストレス+10</div>`;
+    }
+
+
+    document.querySelectorAll('.buff-debuff-details').forEach(el => {
+        el.innerHTML = html;
+        el.style.color = '#bbbbbb'; // 枠自体の色も統一
+    });
+}
+
+function toggleBuffDebuffDetails() {
+    document.querySelectorAll('.buff-debuff-details').forEach(el => {
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    });
+}
     </script>
 
 <style>
