@@ -1865,6 +1865,8 @@ function processWeekStart() {
                 state.debuff = debuffs[Math.floor(Math.random() * debuffs.length)];
                 
                 let debuffNames = { light: '歩行困難(COST+1)', medium: '頭痛(DRAW-1)', heavy: '昏睡(AP固定1)' };
+                let debuffNamesForEffect = { light: '歩行困難 (COST+1)', medium: '頭痛 (DRAW-1)', heavy: '昏睡 (AP固定1)' };
+                state.temporaryEffects.push(`主人の体調: ${debuffNamesForEffect[state.debuff]}`);
                
                 let debuffFlavor = "";
                 if (state.debuff === 'light') {
@@ -1936,12 +1938,13 @@ if (state.debuff === 'heavy') {
 
             state.maxAp = 3;
             state.ap = state.maxAp;
-            if (state.debuff === 'heavy') state.ap = 1;
             
             if (activeBuffs.nextTurnAPMod !== 0) {
                 state.ap = Math.max(1, state.ap + activeBuffs.nextTurnAPMod);
                 activeBuffs.nextTurnAPMod = 0; 
             }
+
+            if (state.debuff === 'heavy') state.ap = 1;
 
             state.battleActive = Math.random() < 0.25;
             if (state.battleActive) {
@@ -3642,53 +3645,48 @@ function updateBuffDebuffDetails() {
     // HTML属性の中で途切れないようシングルクォーテーションで囲む
     const lineStyle = "color: #bbbbbb; margin-bottom: 2px; font-family: 'Zen Kaku Gothic New', sans-serif !important;";
     
-    let hasTemporary = (state.temporaryEffects && state.temporaryEffects.length > 0) || (state.endOfTurnEffects && state.endOfTurnEffects.length > 0);
-
-    if (hasTemporary) {
-        html += `<div style="font-weight:bold; color:#d4af37; margin-bottom: 2px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【一時的な効果・発生イベント】</div>`;
-        if (state.temporaryEffects) {
-            state.temporaryEffects.forEach(effect => {
-                html += `<div style="${lineStyle}">・${effect}</div>`;
-            });
-        }
-        if (state.endOfTurnEffects) {
-            state.endOfTurnEffects.forEach(effect => {
-                html += `<div style="${lineStyle}">・${effect}</div>`;
-            });
-        }
-        html += `<div style="margin-bottom: 6px;"></div>`;
+    let tempEffects = [];
+    
+    if (state.temporaryEffects) {
+        tempEffects.push(...state.temporaryEffects);
     }
-
-    // テンプレートリテラル(バッククォート)を使い、内部のstyle記述を安全にする
-    html += `<div style="font-weight:bold; margin-bottom: 4px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【継続効果】</div>`;
-
-    if (state.debuff !== 'none') {
-        let debuffNames = { light: '歩行困難 (COST+1)', medium: '頭痛 (DRAW-1)', heavy: '昏睡 (AP固定1)' };
-        html += `<div style="${lineStyle}">・主人の体調: ${debuffNames[state.debuff]}</div>`;
+    if (state.endOfTurnEffects) {
+        tempEffects.push(...state.endOfTurnEffects);
     }
     
-    if (activeBuffs.scentDuration > 0) {
-        html += `<div style="${lineStyle}">・香炉: ターン開始時ストレス-5 (残り${activeBuffs.scentDuration}ターン)</div>`;
-    }
-    if (activeBuffs.waterStressDuration > 0) {
-        html += `<div style="${lineStyle}">・闇医者の副作用: ターン開始時ストレス+15 (残り${activeBuffs.waterStressDuration}ターン)</div>`;
-    }
     if (activeBuffs.nextTurnAPMod !== 0) {
         let sign = activeBuffs.nextTurnAPMod > 0 ? '+' : '';
-        html += `<div style="${lineStyle}">・次ターン初期AP: ${sign}${activeBuffs.nextTurnAPMod}</div>`;
+        tempEffects.push(`次ターン初期AP: ${sign}${activeBuffs.nextTurnAPMod}`);
     }
     if (activeBuffs.nextTurnDrawMod !== 0) {
         let sign = activeBuffs.nextTurnDrawMod > 0 ? '+' : '';
-        html += `<div style="${lineStyle}">・次ターンドロー枚数: ${sign}${activeBuffs.nextTurnDrawMod}</div>`;
+        tempEffects.push(`次ターンドロー枚数: ${sign}${activeBuffs.nextTurnDrawMod}`);
+    }
+    
+    if (tempEffects.length > 0) {
+        html += `<div style="font-weight:bold; color:#d4af37; margin-bottom: 2px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【一時的な効果・発生イベント】</div>`;
+        tempEffects.forEach(effect => {
+            html += `<div style="${lineStyle}">・${effect}</div>`;
+        });
+        html += `<div style="margin-bottom: 6px;"></div>`;
+    }
+
+    let continuousEffects = [];
+    
+    if (activeBuffs.scentDuration > 0) {
+        continuousEffects.push(`香炉: ターン開始時ストレス-5 (残り${activeBuffs.scentDuration}ターン)`);
+    }
+    if (activeBuffs.waterStressDuration > 0) {
+        continuousEffects.push(`闇医者の副作用: ターン開始時ストレス+15 (残り${activeBuffs.waterStressDuration}ターン)`);
     }
     if (activeBuffs.threatReduction > 0) {
-        html += `<div style="${lineStyle}">・次戦闘の脅威度低下: -${activeBuffs.threatReduction}</div>`;
+        continuousEffects.push(`次戦闘の脅威度低下: -${activeBuffs.threatReduction}`);
     }
     if (activeBuffs.isMadness) {
-        html += `<div style="${lineStyle} font-weight: bold;">・発狂: すべてのカードによる関係性の増減がランダム</div>`;
+        continuousEffects.push(`<span style="font-weight: bold; color: #e74c3c;">発狂: すべてのカードによる関係性の増減がランダム</span>`);
     }
     if (activeBuffs.hasKnife) {
-        html += `<div style="${lineStyle}">・自衛: 次の戦闘失敗時、ダメージを一度だけ無効化</div>`;
+        continuousEffects.push(`自衛: 次の戦闘失敗時、ダメージを一度だけ無効化`);
     }
     
     let allCards = [...state.deck, ...state.hand, ...state.discard];
@@ -3696,13 +3694,13 @@ function updateBuffDebuffDetails() {
     let hasGift = allCards.some(c => c && c.name === "贈り物");
     
     if (hasLetter) {
-        html += `<div style="${lineStyle}">・手紙: 関係性+の時、毎ターン開始時ストレス+5</div>`;
+        continuousEffects.push(`手紙: 関係性+の時、毎ターン開始時ストレス+5`);
     }
     if (hasGift) {
-        html += `<div style="${lineStyle}">・贈り物: ターン開始時ストレス-5</div>`;
+        continuousEffects.push(`贈り物: ターン開始時ストレス-5`);
     }
     if (state.seasonEventTriggered) {
-        html += `<div style="${lineStyle}">・季節イベント: 次回購入フェーズで季節カード確定出現</div>`;
+        continuousEffects.push(`季節イベント: 次回購入フェーズで季節カード確定出現`);
     }
     
     let mannerismCards = [];
@@ -3721,15 +3719,21 @@ function updateBuffDebuffDetails() {
         }
     }
     if (mannerismCards.length > 0) {
-        html += `<div style="${lineStyle}">・マンネリ状態 (${mannerismCards.join(', ')}): 回復・ストレス軽減が半減</div>`;
+        continuousEffects.push(`マンネリ状態 (${mannerismCards.join(', ')}): 回復・ストレス軽減が半減`);
     }
     
     if (state.relation >= 0) {
-        html += `<div style="${lineStyle}">・矜持状態(関係性+): 直接ケア時ストレス増加 / 関係性上昇半減</div>`;
+        continuousEffects.push(`矜持状態(関係性+): 直接ケア時ストレス増加 / 関係性上昇半減`);
     } else {
-        html += `<div style="${lineStyle}">・依存状態(関係性-): 直接ケア時関係性低下 / 間接ケア時回復半減・ストレス+10</div>`;
+        continuousEffects.push(`依存状態(関係性-): 直接ケア時関係性低下 / 間接ケア時回復半減・ストレス+10`);
     }
 
+    if (continuousEffects.length > 0) {
+        html += `<div style="font-weight:bold; margin-bottom: 4px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【継続効果】</div>`;
+        continuousEffects.forEach(effect => {
+            html += `<div style="${lineStyle}">・${effect}</div>`;
+        });
+    }
 
     document.querySelectorAll('.buff-debuff-details').forEach(el => {
         el.innerHTML = html;
