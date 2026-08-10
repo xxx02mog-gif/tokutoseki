@@ -626,7 +626,7 @@ display: flex;
 
 .phase-button-area .target-selector {
     margin-top: 0px !important;     /* 上の余白を消す */
-    margin-bottom: 8px !important;  /* 下の「精算フェーズへ」ボタンとの間に程よい隙間を作る */
+    margin-bottom: 8px !important;  /* 下の「行動フェーズを終了」ボタンとの間に程よい隙間を作る */
 }
 
 @keyframes fadeIn {
@@ -744,9 +744,6 @@ display: flex;
             <div>関係性</div>
             <div class="value" id="stat-relation">0</div>
         </div>
-    </div>
-    <div id="debuff-bar" style="font-size: 11px; color: #ff4d4d; margin-top: 4px; text-align: center; display: none;">
-        主人の様態: <span id="debuff-name">なし</span>
     </div>
 </header>
 
@@ -870,6 +867,7 @@ display: flex;
             seasonEventTriggered: false, // 季節イベントの発生記録用
             hasEncounteredLetter: false, // 追加：手紙イベント発生済みフラグ
             hasEncounteredGift: false, // 追加：贈り物イベント発生済みフラグ
+            isTantrum: false, // 追加：八つ当たり状態フラグ
             temporaryEffects: [], // 追加：一時的な効果の表示用
             endOfTurnEffects: [], // 追加：ターン終了時の効果の表示用
             endingTitle: "", // 追加：エンディングのタイトル
@@ -889,10 +887,11 @@ function triggerStatAnimation(elementId, oldVal, newVal, type) {
     if (oldVal === newVal) return; // 変化がなければ終了
 
     const el = document.getElementById(elementId);
+    if (!el) return; // 要素が存在しない場合のエラー落ちを防止
     
     // 連続してアニメーションを発火させるため、一度クラスを削除
     el.classList.remove(
-        'anim-health-up', 'anim-health-down', 
+        'anim-health-up', 'anim-health-down',
         'anim-stress-up', 'anim-stress-down', 
         'anim-relation-up', 'anim-relation-down',
         'anim-gold-up', 'anim-gold-down'
@@ -946,321 +945,586 @@ function addTurnHistory(category, data) {
 
 const CARD_POOL = {
     direct: [
-{ 
-    name: "水を与える", 
-    type: "direct", 
-    value: 2, 
-    cost: 1, 
-    valType: "flat", 
-stressChange: -10, 
-    actions: [
-        {type: "heal", value: 5}, 
-  {type: "stress_direct", value: 10}
-    ], 
-    desc: "健康+5。ストレス-10。関係性+2。", 
- flavor: { 
-        trust: "口元へコップを運ぶと、彼に途中でコップを奪われてしまった。", 
-        dependence: "彼は、あなたが手ずから水を飲ませてくれることが嬉しいようだ。",
-        heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
-        heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が彼の頬を伝い落ちていった。"
-    } 
-},
-         { name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { trust: "あなたは彼を気遣って看病した。彼は気まずそうに目を逸らしている。", dependence: "看病を終えて部屋を立ち去ろうとすると、彼はあなたにすがりつくように袖を掴んだ。",
-        heavy_trust: "意識のない彼を看病した。人形のように力の抜けた体は、いつもよりも重く感じる。",
-        heavy_dependence: "あなたが看病すると、彼の苦しげな呼吸が和らいだ。"} },
-        { name: "髪を梳かす", type: "direct", value: 1, cost: 1, valType: "flat", actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+1", flavor: { trust: "あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。", dependence: "あなたの指先が触れると、彼はひどく安心した表情を見せた。",
-        heavy_trust: "あなたは彼の髪を丁寧に梳かした。彼は眠ったまま、されるがままにされている。",
-        heavy_dependence: "あなたの指先が触れても、彼は目を覚まさない。"} },
-        { name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", actions: [{type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "健康+30。ストレス-15。関係性+2", flavor: { trust: "あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた。", dependence: "あなたが与えるものなら、彼はどんなものでも受け入れる。",
-        heavy_trust: "あなたは眠る彼に薬を飲ませた。飲み下せなかった分が口端から溢れる。",
-        heavy_dependence: "無意識状態にあっても、彼はあなたが与える薬を上手に飲み下した。"} },
-        { name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 10}], desc: "健康+20。ストレス-10。関係性+3", flavor: { trust: "彼の体を丁寧に拭き上げた。彼はこうして世話を焼かれることに負い目を感じている。", dependence: "あなたが触れるたび、彼はあなたとの繋がりを見出している。",
-        heavy_trust: "眠ったまま起きる気配のない彼の体を丁寧に拭き上げた。",
-        heavy_dependence: "あなたがどれだけ触れても、彼は反応しない。"} },
-        { name: "深夜の付き添い", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 10},{type: "stress_direct", value: 20}], desc: "健康+10。ストレス-20。関係性+5", flavor: { trust: "夜通し彼の傍にいた。彼はあなたの体調を気遣っている。", dependence: "あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。",
-        heavy_trust: "あなたは、眠ったまま起きる気配のない彼の体を丁寧に拭き上げた。",
-        heavy_dependence: "あなたが触れても、彼は何の反応も返さない。彼は深い微睡みの中に取り残されている。"} },
-        { name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 5}], desc: "健康+15。ストレス-5。関係性+5。", flavor: { trust: "あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめつつも、手当てには感謝している。", dependence: "あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと感じているようだ。",
-        heavy_trust: "あなたは彼の傷口を消毒した。この程度の痛みでは目を覚すことはなさそうだ。",
-        heavy_dependence: "あなたは彼の傷口を消毒した。この程度の痛みで目を覚ますはずはない。"} },
-        { name: "熱を測る", type: "direct", value: 20, cost: 1, valType: "percent", actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+20%。手札の冷淡1枚を『部屋の掃除』に変換", flavor: { trust: "彼の熱を測った。彼は気恥ずかしさと隠しきれない困惑を滲ませている。", dependence: "彼の額に手を当てる。彼はあなたの体温に強い安心感を覚えている。",
-            heavy_trust: "彼の体は熱い。呼吸は浅く、発熱はまだ落ち着きそうにない。",
-        heavy_dependence: "あなたは彼の額に触れた。熱がじわじわと手のひらに伝わってくる。"} },
-        { name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat",  actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", flavor: { trust: "つきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。", dependence: "あなたが手ずから食事を与えれば、彼は雛鳥のように受け入れた。" } },
-        { name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", flavor: { trust: "あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。", dependence: "あなたの血を与えられ、彼はあなたと深く結びついた感覚に酔いしれている。" } },
-        { name: "過呼吸の対処", type: "direct", value: 30, cost: 2, valType: "percent", actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+30%。次ターンの初期AP-1", flavor: { trust: "引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。", dependence: "彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。" } }
+        { 
+            name: "水を与える", type: "direct", value: 2, cost: 1, valType: "flat", stressChange: -10, 
+            actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}], 
+            desc: "健康+5。ストレス-10。関係性+2。", 
+            flavor: { 
+                trust: ["彼の口元へコップを運ぶと、途中でコップを奪われてしまった。"], 
+                high_trust: ["あなたがコップを差し出すと、彼は礼を言い、自分で受け取って飲んだ。"],
+                dependence: ["彼は、あなたが手ずから水を飲ませてくれることが嬉しいようだ。"],
+                mannerism: ["いつものように水を飲ませる。二人の間に言葉はない。"],
+                heavy_trust: ["彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。"],
+                heavy_dependence: ["彼に水を飲ませる。飲み込めずに零れた水滴が彼の頬を伝い落ちていった。"]
+            } 
+        },
+        { 
+            name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}], desc: "健康+15。ストレス-10。関係性+3", 
+            flavor: { 
+                trust: ["あなたは彼を気遣って看病した。彼は気まずそうに目を逸らしている。"], 
+                high_trust: ["あなたの手厚い看病に対して、彼から労いの気持ちが伝わってくる。"],
+                dependence: ["看病を終えて部屋を立ち去ろうとすると、彼はあなたにすがりつくように袖を掴んだ。"],
+                mannerism: ["慣れた手つきで看病をこなす。彼はもう、されるがままになっている。"],
+                heavy_trust: ["意識のない彼を看病した。人形のように力の抜けた体は、いつもよりも重く感じる。"],
+                heavy_dependence: ["あなたが看病すると、彼の苦しげな呼吸が和らいだ。"]
+            } 
+        },
+        { 
+            name: "髪を梳かす", type: "direct", value: 1, cost: 1, valType: "flat", 
+            actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+1", 
+            flavor: { 
+                trust: ["あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。"], 
+                high_trust: ["髪を梳かす。彼はその仕事をあなたに任せている。"],
+                dependence: ["あなたの指先が触れると、彼はひどく安心した表情を見せた。"],
+                mannerism: ["ただ淡々と、髪を梳かしてやった。"],
+                heavy_trust: ["あなたは彼の髪を丁寧に梳かした。彼は眠ったまま、されるがままにされている。"],
+                heavy_dependence: ["あなたの指先が触れても、彼は目を覚まさない。"]
+            } 
+        },
+        { 
+            name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "健康+30。ストレス-15。関係性+2", 
+            flavor: { 
+                trust: ["あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた。"], 
+                high_trust: ["差し出した薬を受け取ると、彼は一瞬眉を顰めてから一息に飲み干した。"],
+                dependence: ["あなたが与えるものなら、彼はどんなものでも受け入れる。"],
+                mannerism: ["時刻通りの投薬。彼は機械的にそれを飲み下した。"],
+                heavy_trust: ["あなたは眠る彼に薬を飲ませた。飲み下せなかった分が口端から溢れる。"],
+                heavy_dependence: ["無意識状態にあっても、彼はあなたが与える薬を上手に飲み下した。"]
+            } 
+        },
+        { 
+            name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 10}], desc: "健康+20。ストレス-10。関係性+3", 
+            flavor: { 
+                trust: ["彼の体を丁寧に拭き上げた。彼はこうして世話を焼かれることに負い目を感じている。"], 
+                high_trust: ["体を拭き終えると、彼は少しだけすっきりしたような表情を見せた。"],
+                dependence: ["あなたが触れるたび、彼はあなたとの繋がりを見出している。"],
+                mannerism: ["手慣れた動作で体を拭く。彼もまた、慣れた様子で身を任せている。"],
+                heavy_trust: ["眠ったまま起きる気配のない彼の体を丁寧に拭き上げた。"],
+                heavy_dependence: ["あなたがどれだけ触れても、彼は反応しない。"]
+            } 
+        },
+        { 
+            name: "深夜の付き添い", type: "direct", value: 5, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 10},{type: "stress_direct", value: 20}], desc: "健康+10。ストレス-20。関係性+5", 
+            flavor: { 
+                trust: ["夜通し彼の傍にいた。彼はあなたの体調を気遣っている。"], 
+                high_trust: ["あなたが傍にいようとしたが、一人で寝ると追い払われてしまった。"],
+                dependence: ["あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。"],
+                mannerism: ["夜通し傍にいるのが当たり前になり、彼も特に反応を示さなくなった。"],
+                heavy_trust: ["あなたは、眠ったまま起きる気配のない彼に寄り添い続けた。"],
+                heavy_dependence: ["あなたが触れても、彼は何の反応も返さない。彼は深い微睡みの中に取り残されている。"]
+            } 
+        },
+        { 
+            name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 5}], desc: "健康+15。ストレス-5。関係性+5。", 
+            flavor: { 
+                trust: ["あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめつつも、手当てには感謝している。"], 
+                high_trust: ["消毒しながら表情を窺うと、彼はどこか誇らしげに微笑んだ。"],
+                dependence: ["あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと感じているようだ。"],
+                mannerism: ["淡々と消毒を済ませる。互いにこの痛みにすら慣れてしまった。"],
+                heavy_trust: ["あなたは彼の傷口を消毒した。この程度の痛みでは目を覚すことはなさそうだ。"],
+                heavy_dependence: ["あなたは彼の傷口を消毒した。この程度の痛みで目を覚ますはずはない。"]
+            } 
+        },
+        { 
+            name: "熱を測る", type: "direct", value: 20, cost: 1, valType: "percent", 
+            actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+20%。手札の冷淡1枚を『部屋の掃除』に変換", 
+            flavor: { 
+                trust: ["彼の熱を測った。彼は気恥ずかしさと隠しきれない困惑を滲ませている。"], 
+                high_trust: ["額に手を当てて熱を測られるのは、子ども扱いされているように感じて不満なようだ。"],
+                dependence: ["彼の額に手を当てる。彼はあなたの体温に強い安心感を覚えている。"],
+                mannerism: ["事務的に熱を測る。彼も特に気にする素振りを見せない。"],
+                heavy_trust: ["彼の体は熱い。呼吸は浅く、発熱はまだ落ち着きそうにない。"],
+                heavy_dependence: ["あなたは彼の額に触れた。熱がじわじわと手のひらに伝わってくる。"]
+            } 
+        },
+        { 
+            name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat",  
+            actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", 
+            flavor: { 
+                trust: ["つきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。"], 
+                high_trust: ["あなたが食事を与えようとすると、彼は食器を寄越すように言った。"],
+                dependence: ["あなたが手ずから食事を与えれば、彼は雛鳥のように受け入れた。"],
+                mannerism: ["黙々と食事を運ぶ。ただ生きるための作業のようだった。"]
+            } 
+        },
+        { 
+            name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", 
+            actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", 
+            flavor: { 
+                trust: ["あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。"], 
+                high_trust: ["彼は、血を分けてくれるあなたの献身に報いなければならないと思っているようだ。"],
+                dependence: ["あなたの血を与えられ、彼はあなたと深く結びついた感覚に酔いしれている。"],
+                mannerism: ["互いの血が混ざり合うことにも、もはや特別な感情は湧かなくなっている。"]
+            } 
+        },
+        { 
+            name: "過呼吸の対処", type: "direct", value: 30, cost: 2, valType: "percent", 
+            actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+30%。次ターンの初期AP-1", 
+            flavor: { 
+                trust: ["引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。"], 
+                high_trust: ["あなたが背中をさすると、彼はすぐに落ち着きを取り戻し、あなたの手に触れた。"],
+                dependence: ["彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。"],
+                mannerism: ["発作に慣れた手つきで対処する。彼もまた、息を整える術を身につけつつある。"]
+            } 
+        }
     ],
     indirect: [
-
-{ 
-            name: "町で仕事を請け負う", 
-            type: "indirect", 
-            value: 3, 
-            cost: 1, 
-            valType: "flat", 
-            actions: [
-               {type: "stress", value: -10}, 
-                { type: "gold_random", min: 5, max: 15 }
-            ], 
+        { 
+            name: "町で仕事を請け負う", type: "indirect", value: 3, cost: 1, valType: "flat", 
+            actions: [ {type: "stress", value: -10}, { type: "gold_random", min: 5, max: 15 } ], 
             desc: "ストレス-10。関係性+3。資金+5~15G", 
             flavor: { 
-                trust: "彼に見送られ、あなたは仕事をこなすために屋敷を出た。", 
-                dependence: "あなたが屋敷を空けることを、彼は快く思っていないようだ。",
-                heavy_trust: "意識のない彼を部屋に残し、あなたは町で日銭を稼いだ。",
-                heavy_dependence: "あなたが町から戻っても、部屋は出発前と変わらぬ静寂に包まれていた。" 
+                trust: ["彼に見送られ、あなたは仕事をこなすために屋敷を出た。"], 
+                high_trust: ["出かけるあなたを彼は送り出す。あなたが不在の間は、彼が屋敷を守る。"],
+                dependence: ["あなたが屋敷を空けることを、彼は快く思っていないようだ。"],
+                mannerism: ["出稼ぎに向かうのも、待つことも、二人の日常の一部にすぎない。"],
+                heavy_trust: ["意識のない彼を部屋に残し、あなたは町で日銭を稼いだ。"],
+                heavy_dependence: ["あなたが町から戻っても、部屋は出発前と変わらぬ静寂に包まれていた。"] 
             } 
         },
-
-{ 
-    name: "闇医者を呼ぶ", 
-    type: "indirect", 
-    value: 5, 
-    cost: 1, 
-    valType: "flat", 
-    goldCost: 20, 
-    actions: [
-        {type: "gold", value: -20}, 
-        { type: "heal", value: 50, isFixed: true },  
-        // 通常版(発狂版)の確率を下げるため、配列の偏りを変更
-        {type: "add_special_card", key: ["water_coma", "water_coma", "water_coma", "water_reset", "water_reset", "water_normal"]},
-        {type: "consume"}
-    ],
-    desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)",
-flavor: { trust: "外部から怪しげな医者を呼び、治療を受けさせた。彼は医師のことを訝しんでいるようだ。", dependence: "彼と医者を残して、あなたは部屋を出る。震え声が、扉が閉まる音でかき消された。",
-            heavy_trust: "外部から怪しげな医者を呼び、眠っている間に治療を受けさせた。",
-        heavy_dependence: "人形のように力なく横たわる彼に、怪しげな医師が処置を施す。彼は何をされても抵抗すらできない。"
-    } 
-},
-
-        { name: "部屋の掃除", type: "indirect", value: 2, cost: 1, valType: "flat", stressChange: -10, actions: [{ type: "heal", value: 10 }, {type: "stress", value: -10}], desc: "健康+10。ストレス-10。関係性+2", flavor: { trust: "綺麗になった部屋を見渡し、彼は小さく息を吐いて肩の力を抜いた。", dependence: "部屋を掃除する間、彼はひたすらにあなたの気配を追っている。",
-            heavy_trust: "部屋を掃除する間、彼は静かに寝息を立てている。",
-        heavy_dependence: "部屋を掃除する間、彼は静かに寝息を立てている。" } },
-        { name: "寝具の天日干し", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -15, actions: [{ type: "heal", value: 20 }, {type: "stress", value: -15}], desc: "健康+20。ストレス-15。関係性+3", flavor: { 
-                trust: "あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。", 
-                dependence: "寝具を整えてやると、彼はあなたの気配を感じて目を閉じた。",
-                heavy_trust: "寝具を整え直しても、彼は微かな寝息を立てたまま目を覚まさない。",
-                heavy_dependence: "太陽の匂いがする清潔な布団で彼を包み込む。彼はあなたの庇護下で眠っている。" 
+        { 
+            name: "闇医者を呼ぶ", type: "indirect", value: 5, cost: 1, valType: "flat", goldCost: 20, 
+            actions: [
+                {type: "gold", value: -20}, 
+                { type: "heal", value: 50, isFixed: true },  
+                {type: "add_special_card", key: ["water_coma", "water_coma", "water_coma", "water_reset", "water_reset", "water_normal"]},
+                {type: "consume"}
+            ],
+            desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)",
+            flavor: { 
+                trust: ["外部から怪しげな医者を呼び、治療を受けさせた。彼は医師のことを訝しんでいるようだ。"], 
+                high_trust: ["怪しげな医者の往診に彼は胡乱な目を向けたが、あなたが選んだのであればと渋々受け入れた。"],
+                dependence: ["彼と医者を残して、あなたは部屋を出る。震え声が、扉が閉まる音でかき消された。"],
+                mannerism: ["慣れた手つきで医者が処置を施す。彼ももう抵抗すらしなくなった。"],
+                heavy_trust: ["外部から怪しげな医者を呼び、眠っている間に治療を受けさせた。"],
+                heavy_dependence: ["人形のように力なく横たわる彼に、怪しげな医師が処置を施す。彼は何をされても抵抗すらできない。"]
             } 
         },
-        { name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -10, actions: [{ type: "heal", value: 15 }, {type: "stress", value: -10}], desc: "健康+15。ストレス-10。関係性+3", flavor: { 
-                trust: "過ごしやすくなった室内に、彼は微かに緊張を解いた様子を見せた。", 
-                dependence: "心地よい室温の中でも、彼はあなたがいなければ寒気を感じてしまうようだ。",
-                heavy_trust: "彼がこれ以上体調を崩さないよう、部屋を快適な温度に調整した。",
-                heavy_dependence: "今ならば何でもできる。彼を生かすも殺すも、あなた次第だ。" 
+        { 
+            name: "部屋の掃除", type: "indirect", value: 2, cost: 1, valType: "flat", stressChange: -10, 
+            actions: [{ type: "heal", value: 10 }, {type: "stress", value: -10}], desc: "健康+10。ストレス-10。関係性+2", 
+            flavor: { 
+                trust: ["綺麗になった部屋を見渡し、彼は小さく息を吐いて肩の力を抜いた。"], 
+                high_trust: ["掃除をするあなたを眺めながら、彼は手持ち無沙汰に何かすることはないかと視線を巡らせている。"],
+                dependence: ["部屋を掃除する間、彼はひたすらにあなたの気配を追っている。"],
+                mannerism: ["定期的な掃除。変わらない光景に、彼は虚ろな視線を向けている。"],
+                heavy_trust: ["部屋を掃除する間、彼は静かに寝息を立てている。"],
+                heavy_dependence: ["部屋を掃除する間、彼は静かに寝息を立てている。"] 
             } 
         },
-        { name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{ type: "heal", value: 30 }, {type: "stress", value: -25}], desc: "健康+30。ストレス-25。関係性+4", flavor: { trust: "栄養のある食事を用意すると、彼は感謝とともにそれを口にした。", dependence: "用意した食事を、彼はあなたのためだけにすべて平らげた。" } },
-        { name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, actions: [{type: "buff", key: "scentDuration", value: 3},{type: "stress", value: -15}], desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", flavor: { 
-                trust: "彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出すようだ。", 
-                dependence: "香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。",
-                heavy_trust: "彼好みの香りを焚く。穏やかな香りが、彼の微睡みを少しでも安らかなものにする。",
-                heavy_dependence: "部屋を満たす香りが、彼をさらに深く、あなただけの世界へと沈めていく。" 
+        { 
+            name: "寝具の天日干し", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -15, 
+            actions: [{ type: "heal", value: 20 }, {type: "stress", value: -15}], desc: "健康+20。ストレス-15。関係性+3", 
+            flavor: { 
+                trust: ["ふかふかの寝具は心地よいようだが、彼はあなたに世話を焼かせすぎていると感じている。"], 
+                high_trust: ["あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。"],
+                dependence: ["寝具を整えてやると、彼はあなたの気配を感じて目を閉じた。"],
+                mannerism: ["寝具を干すという日常の作業。彼も特に気にかめる様子はない。"],
+                heavy_trust: ["寝具を整え直しても、彼は微かな寝息を立てたまま目を覚まさない。"],
+                heavy_dependence: ["太陽の匂いがする清潔な布団で彼を包み込む。彼はあなたの庇護下で眠っている。"] 
             } 
         },
-        { name: "アルバムの整理", type: "indirect", value: 5, cost: 1, valType: "flat", stressChange: -10, actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+5。デッキからカードを1枚手札に加える", flavor: { 
-                trust: "あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。", 
-                dependence: "彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。",
-                heavy_trust: "眠り続ける彼の傍らで、あなたは懐かしいアルバムをめくった。",
-                heavy_dependence: "彼が目を覚まさないのをいいことに、あなたは彼の大切な写真を燃やした。" 
+        { 
+            name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -10, 
+            actions: [{ type: "heal", value: 15 }, {type: "stress", value: -10}], desc: "健康+15。ストレス-10。関係性+3", 
+            flavor: { 
+                trust: ["過ごしやすくなった室内に、彼は微かに緊張を解いた様子を見せた。"], 
+                high_trust: ["彼が快適に過ごせるよう調整すると、彼は安心したように目を閉じた。"],
+                dependence: ["心地よい室温の中でも、彼はあなたがいなければ寒気を感じてしまうようだ。"],
+                mannerism: ["室温を調整する。彼からの反応は特になく、静かな時間が流れる。"],
+                heavy_trust: ["彼がこれ以上体調を崩さないよう、部屋を快適な温度に調整した。"],
+                heavy_dependence: ["今ならば何でもできる。彼を生かすも殺すも、あなた次第だ。"] 
             } 
         },
-        { name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", actions: [{type: "discard_obstacle"},{type: "stress", value: -25}], desc: "ストレス-25。関係性+4。手札の不用品を1枚廃棄する", flavor: { 
-                trust: "彼の好みに合わせた紅茶を淹れると、彼は己の嗜好を把握されていることに複雑な表情を見せた。", 
-                dependence: "あなたが淹れた紅茶を飲むと、彼はあなたの存在だけを鮮明に感じるようだ。"
+        { 
+            name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", 
+            actions: [{ type: "heal", value: 30 }, {type: "stress", value: -25}], desc: "健康+30。ストレス-25。関係性+4", 
+            flavor: { 
+                trust: ["栄養のある食事を用意すると、彼は感謝とともにそれを口にした。"], 
+                high_trust: ["彼の好みに合わせた食事を出す。彼を眺めていると怪訝な目を向けられた。"],
+                dependence: ["用意した食事を、彼はあなたのためだけにすべて平らげた。"],
+                mannerism: ["栄養を摂らせるための食事。彼もただ黙々と口に運ぶだけだ。"]
             } 
         },
-     
-
-       { name: "調度品の買い替え", type: "indirect", value: 50, cost: 1, valType: "percent", goldCost: 50, actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性+50%（使い切り）", flavor: { 
-                trust: "彼は整った室内を見渡し、あなたの細やかな気遣いを感じて小さく息をついた。", 
-                dependence: "彼は新しい家具よりも、あなたが傍にいてくれることだけを望んでいる。",
-                heavy_trust: "新しい家具を揃える間も、彼は眠り続けている。",
-                heavy_dependence: "彼が意識のない間に、あなたは部屋の内装を勝手に新調した。" 
+        { 
+            name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, 
+            actions: [{type: "buff", key: "scentDuration", value: 3},{type: "stress", value: -15}], desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", 
+            flavor: { 
+                trust: ["彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出すようだ。"], 
+                high_trust: ["懐かしい香りに包まれ、彼はかつての威厳を取り戻したかのように落ち着いて座っている。"],
+                dependence: ["香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。"],
+                mannerism: ["部屋に染み付いた香り。もはや特別な安らぎをもたらすことはない。"],
+                heavy_trust: ["彼好みの香りを焚く。穏やかな香りが、彼の微睡みを少しでも安らかなものにする。"],
+                heavy_dependence: ["部屋を満たす香りが、彼をさらに深く、あなただけの世界へと沈めていく。"] 
             } 
         },
-        { name: "中庭の手入れ", type: "indirect", value: 5, cost: 2, valType: "flat", actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアを1枚手札に加える", flavor: { trust: "中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。", dependence: "外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。" }},
-{name: "医者を呼ぶ", type: "indirect", value: 2, cost: 1,valType: "flat",goldCost: 40,actions: [ {type: "gold", value: -40},   { type: "heal", value: 60, isFixed: true },{type: "stress", value: -5},{ type: "consume" }],desc: "資金-40。必ず健康+60。ストレス-5。関係性+2(使い切り)",flavor: {trust: "外部から医者を呼び、適切な治療を受けさせた。体は楽になったようだが、彼はどこか不服そうにしている。", dependence: "彼は他人の手が介入することを激しく拒絶したが、あなたの命令により強引に治療を受けさせた。",
-                heavy_trust: "寝たきり状態の彼のためにあなたは外部から医者を呼び、適切な治療を受けさせた。",
-                heavy_dependence: "外部から医者を呼び、治療を受けさせる。そのことを、あなたは彼に伝えはしない。" }}
-,
-        { name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", actions: [{type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて除外。除外した枚数が多いほど、関係性が0に近付く  (使い切り)", 
-        flavor: { trust: "二人の間のしがらみをまっさらにした。これからは、一人の人間として向き合うために。", 
-        dependence: "互いを縛り付けていたものを手放した。心にぽっかり穴が空いたような気がする。"} }
-
+        { 
+            name: "アルバムの整理", type: "indirect", value: 5, cost: 1, valType: "flat", stressChange: -10, 
+            actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+5。デッキからカードを1枚手札に加える", 
+            flavor: { 
+                trust: ["あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。"], 
+                high_trust: ["彼はアルバムの表紙を、慈しむように撫でた。"],
+                dependence: ["彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。"],
+                mannerism: ["ただ埃を払うためだけの整理。思い出に浸ることもなくなった。"],
+                heavy_trust: ["眠り続ける彼の傍らで、あなたは懐かしいアルバムをめくった。"],
+                heavy_dependence: ["彼が目を覚まさないのをいいことに、あなたは彼の大切な写真を燃やした。"] 
+            } 
+        },
+        { 
+            name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", 
+            actions: [{type: "discard_obstacle"},{type: "stress", value: -25}], desc: "ストレス-25。関係性+4。手札の不用品を1枚廃棄する", 
+            flavor: { 
+                trust: ["彼の好みに合わせた紅茶を淹れると、彼は己の嗜好を把握されていることに複雑な表情を見せた。"], 
+                high_trust: ["淹れたての紅茶を用意すると、彼は素直にカップを受け取った。"],
+                dependence: ["あなたが淹れた紅茶を飲むと、彼はあなたの存在だけを鮮明に感じるようだ。"],
+                mannerism: ["日課となったティータイム。味よりもそこにあることが重要だった。"]
+            } 
+        },
+        { 
+            name: "調度品の買い替え", type: "indirect", value: 50, cost: 1, valType: "percent", goldCost: 50, 
+            actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性+50%（使い切り）", 
+            flavor: { 
+                trust: ["彼は整った室内を見渡し、あなたの細やかな気遣いを感じて小さく息をついた。"], 
+                high_trust: ["新しい調度品を見て、彼はこれからの生活について意見を口にした。"],
+                dependence: ["彼は新しい家具よりも、あなたが傍にいてくれることだけを望んでいる。"],
+                mannerism: ["家具が変わっても、彼の心は何も動かないようだ。"],
+                heavy_trust: ["新しい家具を揃える間も、彼は眠り続けている。"],
+                heavy_dependence: ["彼が意識のない間に、あなたは部屋の内装を勝手に新調した。"] 
+            } 
+        },
+        { 
+            name: "中庭の手入れ", type: "indirect", value: 5, cost: 2, valType: "flat", 
+            actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアを1枚手札に加える", 
+            flavor: { 
+                trust: ["中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。"], 
+                high_trust: ["彼は手入れされた中庭を眺めながら、次に手を入れる箇所を算段している。"],
+                dependence: ["外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。"],
+                mannerism: ["庭の手入れも、もはや時間の経過を知らせる作業に過ぎない。"]
+            }
+        },
+        {
+            name: "医者を呼ぶ", type: "indirect", value: 2, cost: 1,valType: "flat",goldCost: 40,
+            actions: [ {type: "gold", value: -40}, { type: "heal", value: 60, isFixed: true },{type: "stress", value: -5},{ type: "consume" }],desc: "資金-40。必ず健康+60。ストレス-5。関係性+2(使い切り)",
+            flavor: {
+                trust: ["外部から医者を呼び、適切な治療を受けさせた。体は楽になったようだが、彼はどこか不服そうにしている。"], 
+                high_trust: ["医者の診察を受ける彼は、自らの状態を冷静に把握しようとしていた。"],
+                dependence: ["彼は他人の手が介入することを激しく拒絶したが、あなたの命令により強引に治療を受けさせた。"],
+                mannerism: ["定期的な往診。彼にとってそれはただの苦痛な時間でしかない。"],
+                heavy_trust: ["寝たきり状態の彼のためにあなたは外部から医者を呼び、適切な治療を受けさせた。"],
+                heavy_dependence: ["外部から医者を呼び、治療を受けさせる。そのことを、あなたは彼に伝えはしない。"] 
+            }
+        },
+        { 
+            name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", 
+            actions: [{type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて除外。除外した枚数が多いほど、関係性が0に近付く  (使い切り)", 
+            flavor: { 
+                trust: ["二人の間のしがらみをまっさらにした。これからは、一人の人間として向き合うために。"], 
+                high_trust: ["過去の鎖を断ち切り、彼は自らの足であなたと共に歩む未来を見据えている。"],
+                dependence: ["互いを縛り付けていたものを手放した。心にぽっかり穴が空いたような気がする。"],
+                mannerism: ["すべてのしがらみを捨てたはずなのに、空虚さだけが残った。"]
+            } 
+        }
     ],
     cold: [
-        { name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", actions: [{type: "stress", value: 5}], desc: "ストレス+5。関係性-1", flavor: { 
-                trust: "事務的に接すると、彼はただ己の義務を果たそうと努めた。", 
-                dependence: "あなたの冷淡な態度に、彼は激しい不安と孤独感に駆られている。",
-                heavy_trust: "事務的に彼の容態を確認する。彼はまだ目を覚まさない。",
-                heavy_dependence: "意識のない彼に対して、あなたはただ事務的に必要な処置だけをこなした。"
+        { 
+            name: "事務的な態度", type: "cold", value: -1, cost: 1, valType: "flat", 
+            actions: [{type: "stress", value: 5}], desc: "ストレス+5。関係性-1", 
+            flavor: { 
+                trust: ["事務的に接すると、彼はただ己の義務を果たそうと努めた。"], 
+                high_trust: ["彼はあなたの態度を見て、この時間は仕事として割り切って接することにしたようだ。"],
+                dependence: ["あなたの冷淡な態度に、彼は激しい不安と孤独感に駆られている。"],
+                mannerism: ["ただ淡々と作業をこなす。二人にとってこれが最も楽な距離だった。"],
+                heavy_trust: ["事務的に彼の容態を確認する。彼はまだ目を覚まさない。"],
+                heavy_dependence: ["意識のない彼に対して、あなたはただ事務的に必要な処置だけをこなした。"]
             } 
         },
-        { name: "無視", type: "cold", value: -2, cost: 1, valType: "flat", actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-2", flavor: { 
-                trust: "あなたが無視すると、彼はかつての自分の振る舞いを反省した。", 
-                dependence: "あなたに無視され、彼は見捨てられるのではないかと怯えている。",
-                heavy_trust: "あなたがその場を離れても、引き留める声が聞こえることはない。",
-                heavy_dependence: "静寂に包まれた部屋で、あなたは彼を見下ろした。"
-            }},
-        { name: "冷酷な事実", type: "cold", value: -7, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-7", flavor: { 
-                trust: "あなたに事実を淡々と説明され、彼は自分の無力さを実感している。", 
-                dependence: "現実を突きつけられ、彼はあなただけを世界のすべてにしようと逃避している。",
-                heavy_trust: "彼が避け続けている事実を耳元で告げた。届くはずのない言葉が、空虚に響く。",
-                heavy_dependence: "あなたは悪夢にうなされる彼の耳元で、残酷な真実を囁いた。"
+        { 
+            name: "無視", type: "cold", value: -2, cost: 1, valType: "flat", 
+            actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-2", 
+            flavor: { 
+                trust: ["あなたが無視すると、彼はかつての自分の振る舞いを反省した。"], 
+                high_trust: ["あなたが無視をしても、彼はそれに傷付く素振りも咎めることもしない。"],
+                dependence: ["あなたに無視され、彼は見捨てられるのではないかと怯えている。"],
+                mannerism: ["言葉を交わさない時間が、今の二人には当たり前になっていた。"],
+                heavy_trust: ["あなたがその場を離れても、引き留める声が聞こえることはない。"],
+                heavy_dependence: ["静寂に包まれた部屋で、あなたは彼を見下ろした。"]
+            }
+        },
+        { 
+            name: "冷酷な事実", type: "cold", value: -7, cost: 2, valType: "flat", 
+            actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-7", 
+            flavor: { 
+                trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
+                high_trust: ["彼は毅然と事実を受け止めつつ、僅かにあなたへ縋るような視線を向けた。"],
+                dependence: ["現実を突きつけられ、彼はあなただけを世界のすべてにしようと逃避している。"],
+                mannerism: ["事実を突きつけられても、彼の心はもう波立つことすらない。"],
+                heavy_trust: ["彼が避け続けている事実を耳元で告げた。届くはずのない言葉が、空虚に響く。"],
+                heavy_dependence: ["あなたは悪夢にうなされる彼の耳元で、残酷な真実を囁いた。"]
             } 
         },
-        { name: "私物の没収", type: "cold", value: -10, cost: 1, valType: "flat", actions: [{type: "stress", value: 15},     { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-10。資金+5~30G", flavor: { 
-                trust: "あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。", 
-                dependence: "私物を奪われても、彼はあなたに従うこと自体に喜びを見出している。",
-                heavy_trust: "あなたは眠り続ける彼の私物を、ためらいなく処分した。",
-                heavy_dependence: "彼が目を覚まさないのをいいことに、彼の持ち物を好き勝手に売り払った。"
+        { 
+            name: "私物の没収", type: "cold", value: -10, cost: 1, valType: "flat", 
+            actions: [{type: "stress", value: 15}, { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-10。資金+5~30G", 
+            flavor: { 
+                trust: ["あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。"], 
+                high_trust: ["私物を処分したことについて、彼は好きにするよう言った。"],
+                dependence: ["私物を奪われても、彼はあなたに従うこと自体に喜びを見出している。"],
+                mannerism: ["物が減っていく部屋。彼もそれに対して何も言わなくなった。"],
+                heavy_trust: ["あなたは眠り続ける彼の私物を、ためらいなく処分した。"],
+                heavy_dependence: ["彼が目を覚まさないのをいいことに、彼の持ち物を好き勝手に売り払った。"]
             } 
         },
-        { name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-10", flavor: { 
-trust: "片脚が悪い彼は、整備されていない道では歩きにくいようだ。", 
-                dependence: "屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。", 
-               heavy_trust: "彼はしばらく目覚めそうにない。整備などしなくてもいいだろう。",
-                heavy_dependence: "彼が夢の中にいる間も屋敷は荒れていく。あなたさえ居れば、彼はそれで構わないはずだ。",
+        { 
+            name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", 
+            actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-10", 
+            flavor: { 
+                trust: ["片脚が悪い彼は、整備されていない道では歩きにくいようだ。"], 
+                high_trust: ["彼は荒れた屋敷に思うところがあるのか、ふう、とため息を付いた。"],
+                dependence: ["屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。"], 
+                mannerism: ["荒れ果てた屋敷。それが二人の世界のすべてになってしまった。"],
+                heavy_trust: ["彼はしばらく目覚めそうにない。整備などしなくてもいいだろう。"],
+                heavy_dependence: ["彼が夢の中にいる間も屋敷は荒れていく。あなたさえ居れば、彼はそれで構わないはずだ。"]
             } 
         },
-        { name: "鎮痛剤を与えない", type: "cold", value: -4, cost: 2, valType: "flat", actions: [{ type: "heal", value: -25 },{type: "stress", value: 10}], desc: "健康-25。ストレス+10。関係性-4", flavor: { 
-                trust: "あなたが薬を与えなくても、彼は自らの命に対する執着を手放しつつある。", 
-                dependence: "自らの苦痛を、あなたがかつて受けた苦しみの一端だと思って抱きしめている。",
-                heavy_trust: "鎮痛剤を与えないまま放置した。浅い呼吸が、彼の抱える痛みを物語っている。",
-                heavy_dependence: "苦痛に顔を歪める彼を、薬を与えずにただ眺め続けた。"
+        { 
+            name: "鎮痛剤を与えない", type: "cold", value: -4, cost: 2, valType: "flat", 
+            actions: [{ type: "heal", value: -25 },{type: "stress", value: 10}], desc: "健康-25。ストレス+10。関係性-4", 
+            flavor: { 
+                trust: ["あなたが薬を与えなくても、彼は自らの命に対する執着を手放しつつある。"], 
+                high_trust: ["痛みに顔をしかめながらも、彼はあなたを気遣わせまいと強がっている。"],
+                dependence: ["自らの苦痛を、あなたがかつて受けた苦しみの一端だと思って抱きしめている。"],
+                mannerism: ["痛みに苦しむ姿すら、見慣れた光景になってしまった。"],
+                heavy_trust: ["鎮痛剤を与えないまま放置した。浅い呼吸が、彼の抱える痛みを物語っている。"],
+                heavy_dependence: ["苦痛に顔を歪める彼を、薬を与えずにただ眺め続けた。"]
             } 
         },
-
-        { name: "部屋の施錠", type: "cold", value: -10, cost: 2, valType: "flat", actions: [{type: "stress", value: 25}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+25。関係性-10。次ターンのドロー枚数-1", flavor: { trust: "あなたが部屋の鍵を閉めるのを、彼は正当な処置だと考えている。", dependence: "部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。" } },
-        { name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性-15%", flavor: { trust: "食事が遅れても、彼はあなたを不快にさせた自らの落ち度だと受け止めている。", dependence: "食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。" } },
-       { name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", actions: [{type: "stress", value: 30}, {type: "consume"}], desc: "ストレス+30。関係性-30%（使い切り）", flavor: { trust: "あなたが他人の気配を漂わせると、彼はとうとう自分が不要になったのだと悟ったようだ。", dependence: "他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。" } }
+        { 
+            name: "部屋の施錠", type: "cold", value: -10, cost: 2, valType: "flat", 
+            actions: [{type: "stress", value: 25}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+25。関係性-10。次ターンのドロー枚数-1", 
+            flavor: { 
+                trust: ["あなたが部屋の鍵を閉めるのを、彼は正当な処置だと考えている。"], 
+                high_trust: ["閉じ込められることに納得いかないようだが、あなたに免じて従うようだ。"],
+                dependence: ["部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。"],
+                mannerism: ["閉ざされた扉。それが開かないことは彼もよく分かっている。"]
+            } 
+        },
+        { 
+            name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", 
+            actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性-15%", 
+            flavor: { 
+                trust: ["食事が遅れても、彼はあなたを不快にさせた自らの落ち度だと受け止めている。"], 
+                high_trust: ["食事が遅れても、彼はあなたにも都合があるのだろうと気長に待っている。"],
+                dependence: ["食事が与えられない間、彼はあなたへの飢餓感をますます募らせていった。"],
+                mannerism: ["空腹に耐える時間すら、彼にとって単調な日常の一部だ。"]
+            } 
+        },
+        { 
+            name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", 
+            actions: [{type: "stress", value: 30}, {type: "consume"}], desc: "ストレス+30。関係性-30%（使い切り）", 
+            flavor: { 
+                trust: ["あなたが他人の気配を漂わせると、彼はとうとう自分が不要になったのだと悟ったようだ。"], 
+                high_trust: ["他人の気配を感じても、彼はあなたとの絆を疑うことはなかった。"],
+                dependence: ["他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。"],
+                mannerism: ["誰かの気配を匂わせても、彼は一切の無関心を貫いている。"]
+            } 
+        }
     ],
     harm: [
-        
-        { name: "毒の調合", type: "harm", 
-            masterValue: -10, // 主人に使用した際の関係性変動量
-            battleValue: 1,   // 戦闘で使用した際の関係性変動量
-            cost: 1, valType: "flat", isMasterAlways: true, actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}], desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", flavor: { 
-                trust: "苦い薬を食事に混ぜても、彼は何も言わずにそれを飲み干す。", 
-                dependence: "身体の不調を感じながらも、彼はあなたから与えられるものを甘んじて享受している。", 
-                battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。",
-                heavy_trust: "彼の口に少量の毒を流し込んだ。彼がそれに気づくことはないだろう。",
-                heavy_dependence: "彼の生命を、あなたの毒がゆっくりと蝕んでいく。",
-                heavy_battle: "あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"
+        { 
+            name: "毒の調合", type: "harm", masterValue: -10, battleValue: 1, cost: 1, valType: "flat", isMasterAlways: true, 
+            actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}], 
+            desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", 
+            flavor: { 
+                trust: ["苦い薬を食事に混ぜても、彼は何も言わずにそれを飲み干す。"], 
+                high_trust: ["彼はそれが毒だと知りながら、黙って飲み込む。信頼という名の圧力を感じる。"],
+                dependence: ["身体の不調を感じながらも、彼はあなたから与えられるものを甘んじて享受している。"], 
+                mannerism: ["見慣れた薬瓶。彼は思考を放棄してそれを飲み下した。"],
+                battle: ["あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"],
+                heavy_trust: ["彼の口に少量の毒を流し込んだ。彼がそれに気づくことはないだろう。"],
+                heavy_dependence: ["彼の生命を、あなたの毒がゆっくりと蝕んでいく。"],
+                heavy_battle: ["あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"]
             } 
         },
-        { name: "首を絞める", type: "harm", 
-            masterValue: -50, // 主人に使用した際の関係性変動量
-            battleValue: 10,   // 戦闘で使用した際の関係性変動量 
-            cost: 2, valType: "percent", isMasterAlways: false, actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {type: "consume"}], desc: "敵脅威度-20。関係性+10%/ 【対主人】健康-30。ストレス+30。関係性-50%（使い切り）", flavor: { 
-                trust: "　", 
-                dependence: "　", 
-                battle: "あなたは襲い来る敵の首を締め、無力化させた。",
-                heavy_trust: "彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。",
-                heavy_dependence: "横たわる主人の首に手をかける。薄く開いた彼の目が僅かに微笑んだように感じる。"
+        { 
+            name: "首を絞める", type: "harm", masterValue: -50, battleValue: 10, cost: 2, valType: "percent", isMasterAlways: false, 
+            actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {type: "consume"}], 
+            desc: "敵脅威度-20。関係性+10%/ 【対主人】健康-30。ストレス+30。関係性-50%（使い切り）", 
+            flavor: { 
+                trust: ["彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。"], 
+                high_trust: ["彼は喉を締め上げられても決して目を逸らさず、あなたの意図を探ろうとしている。"],
+                dependence: ["横たわる主人の首に手をかける。薄く開いた彼の目が僅かに微笑んだように感じる。"], 
+                mannerism: ["首を絞める手に力がこもらない。彼も抵抗する気力がないようだ。"],
+                battle: ["あなたは襲い来る敵の首を締め、無力化させた。"],
+                heavy_battle: ["虫の居所が悪かったあなたは、気まぐれに既に戦闘不能になっている敵の首を締めた。"]
             } 
         },
-       { name: "見せしめの拷問", type: "harm", 
-            masterValue: -20, // 主人に使用した際の関係性変動量
-            battleValue: -10,   // 戦闘で使用した際の関係性変動量 
-             cost: 2, valType: "percent", isMasterAlways: false, actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"},  {type: "consume"} ], desc: "敵脅威度を強制的に0にする。関係性-10% / 【対主人】ストレス+40。関係性-20%（使い切り）", flavor: { 
-                trust: " ", 
-                dependence: " ", 
-                battle: "捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。",
-                heavy_trust: "あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。",
-                heavy_dependence: "庭先に惨たらしい魔物の死体を吊るした。彼が目覚めた時のことを考え、ほくそ笑む。"
-            } },
-        { name: "形見の宝刀", type: "harm", 
-            masterValue: 0, // 主人に使用した際の関係性変動量
-            battleValue: 10,   // 戦闘で使用した際の関係性変動量 
-              cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}], desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", flavor: { 
-                trust: "あなたは形見の宝刀を構え、因縁に終止符を打った。", 
-                dependence: "あなたが宝刀を向けると、彼はあなたの手によって終われることに安堵の表情を浮かべた。", 
-                battle: "形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。"
+        { 
+            name: "見せしめの拷問", type: "harm", masterValue: -20, battleValue: -10, cost: 2, valType: "percent", isMasterAlways: false, 
+            actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"},  {type: "consume"} ], 
+            desc: "敵脅威度を強制的に0にする。関係性-10% / 【対主人】ストレス+40。関係性-20%（使い切り）", 
+            flavor: { 
+                trust: ["あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。"], 
+                high_trust: ["悲惨な光景に目を背けながらも、彼はその意図を汲み取り、顛末を見届けている。"],
+                dependence: ["庭先に惨たらしい魔物の死体を吊るした。彼が目覚めた時のことを考え、ほくそ笑む。"], 
+                mannerism: ["惨たらしい死体を見ても、もはや何の感情も湧かないようだ。"],
+                battle: ["捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。"],
+                heavy_battle: ["捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。"]
             } 
         },
-        { name: "罠を配置する", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。関係性+2。次ターンの初期APを+1", flavor: { trust: "周囲に罠を仕掛けた。屋敷の安全を万全にする。", dependence: "屋敷への侵入者を拒むための罠を張った。" } },
-        { name: "硝煙の盾", type: "harm", value: 1, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "stress", value: -15}], desc: "敵脅威度-15。ストレス-15。関係性+1", flavor: { 
-                trust: "火薬を使って敵を足止めした。彼は、あなたへの心配で胸を痛めている。", 
-                dependence: "外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。",
-                heavy_battle: "火薬の煙が立ち込める。深い眠りの中にいる彼に外の喧騒は届かない。"
+        { 
+            name: "形見の宝刀", type: "harm", masterValue: 0, battleValue: 10, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, 
+            actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}], 
+            desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", 
+            flavor: { 
+                trust: ["あなたは形見の宝刀を構え、因縁に終止符を打った。"], 
+                dependence: ["あまりにあっけなく、復讐は終わった。"], 
+                mannerism: ["血塗られた宝刀。これもまた日常を象徴するものの一つだ。"],
+                battle: ["形見の宝刀を抜き放ち、あなたは迫り来る敵を容赦なく斬り捨てた。"],
+                heavy_battle: ["彼に近づけまいと必死になっている自分への嫌悪。それを拭うため、あなたはひたすら宝刀を振るう。"]
             } 
         },
-        { name: "威嚇射撃", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。関係性+2。資金+10~15G", flavor: { trust: "威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。", dependence: "あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。" } },
-        { name: "容赦なき追撃", type: "harm", value: 3, cost: 1, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+3", flavor: { 
-                trust: "あなたは、撤退してゆく敵を追い詰めた。", 
-                dependence: "あなたは敵を徹底的に排除した。障害はすべて取り除くという執念を感じさせる。"
+        { 
+            name: "罠を配置する", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, 
+            actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。関係性+2。次ターンの初期APを+1", 
+            flavor: { 
+                trust: ["周囲に罠を仕掛けた。屋敷の安全を万全にする。"], 
+                high_trust: ["仕掛けられた罠の配置を確認し、彼はより効果的な防衛策を提案した。"],
+                dependence: ["屋敷への侵入者を拒むための罠を張った。"],
+                mannerism: ["罠を張り巡らせる。だが、もう誰が来ることもないかもしれない。"]
             } 
         },
-        { name: "捨て身の迎撃", type: "harm", value: -10, cost: 2, valType: "flat", isBattleOnly: true, actions: [{context: "battle", type: "threat_clear"}, {context: "battle", type: "heal", value: -10}, {context: "battle", type: "stress", value: 20},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。健康-10。ストレス+20。関係性-10。手札（冷淡・不用品以外）を1枚除外", flavor: { 
-                trust: "身を挺して敵の攻撃を防いだ。彼は己の無力さとあなたを危険に晒したことを悔いている。", 
-                dependence: "あなたは自らを犠牲にして彼を守った。その姿に彼は心酔している。",
-                heavy_battle: "あなたは傷を負いながら無防備な彼を守り抜いた。"
+        { 
+            name: "硝煙の盾", type: "harm", value: 1, cost: 1, valType: "flat", isBattleOnly: true, 
+            actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "stress", value: -15}], desc: "敵脅威度-15。ストレス-15。関係性+1", 
+            flavor: { 
+                trust: ["火薬を使って敵を足止めした。彼は、あなたへの心配で胸を痛めている。"], 
+                high_trust: ["火薬の匂いが立ち込める中、彼は自らも周囲の警戒を怠らなかった。"],
+                dependence: ["外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。"],
+                mannerism: ["火薬の匂いにも慣れた。外の喧噪はただの雑音に過ぎない。"],
+                heavy_battle: ["火薬の煙が立ち込める。深い眠りの中にいる彼に外の喧騒は届かない。"]
+            } 
+        },
+        { 
+            name: "威嚇射撃", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, 
+            actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。関係性+2。資金+10~15G", 
+            flavor: { 
+                trust: ["威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。"], 
+                high_trust: ["彼は銃声に肩を揺らしたが、すぐに状況を見極めようと気を引き締めた。"],
+                dependence: ["あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。"],
+                mannerism: ["乾いた銃声。それすらも生活音の一部になりつつある。"]
+            } 
+        },
+        { 
+            name: "容赦なき追撃", type: "harm", value: 3, cost: 1, valType: "flat", isBattleOnly: true, 
+            actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+3", 
+            flavor: { 
+                trust: ["あなたは、撤退してゆく容赦なく敵を追い詰めた。"], 
+                high_trust: ["危険な役割を担うあなたを、彼は痛ましく思いながら見守っている。"],
+                dependence: ["あなたは敵を徹底的に排除した。障害はすべて取り除くという執念を感じさせる。"],
+                mannerism: ["ただ敵を排除する。感情のない作業に成り下がっていた。"]
+            } 
+        },
+        { 
+            name: "捨て身の迎撃", type: "harm", value: -10, cost: 2, valType: "flat", isBattleOnly: true, 
+            actions: [{context: "battle", type: "threat_clear"}, {context: "battle", type: "heal", value: -10}, {context: "battle", type: "stress", value: 20},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。健康-10。ストレス+20。関係性-10。手札（冷淡・不用品以外）を1枚除外", 
+            flavor: { 
+                trust: ["身を挺して敵の攻撃を防いだ。彼は己の無力さとあなたを危険に晒したことを悔いている。"], 
+                high_trust: ["自分を庇ったあなたに対し、彼は感謝よりも先に無茶な立ち回りをたしなめた。"],
+                dependence: ["あなたは自らを犠牲にして彼を守った。その姿に彼は心酔している。"],
+                mannerism: ["傷を負うことにも慣れた。彼もそれを黙って見ているだけだ。"],
+                heavy_battle: ["あなたは傷を負いながら無防備な彼を守り抜いた。"]
             } 
         }
     ],
     season: {
-        "秋": { name: "収穫祭の思い出", type: "season", season: "秋", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "外から祭りの音が聞こえる。彼はかつてあなたと過ごした賑やかな日々を懐かしんでいるようだ。", dependence: "外の喧噪よりも、彼はあなたが給仕してくれる時間だけを欲している。" } },
-        "冬": { name: "聖夜の灯火", type: "season", season: "冬", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "窓辺のキャンドルが、彼の凍てついた心をほのかに照らす。彼はあなたの優しさに感謝した。", dependence: "小さな灯りを見つめる彼は、あなたへの想いで胸を焦がしているようだ。" } },
-        "春": { name: "薄紅の散策", type: "season", season: "春", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "風に乗って桜が舞い込んだ。彼はいつかまた、あなたと共に歩ける日を夢見ている。", dependence: "美しい花よりも、彼はあなたから与えられる朧げな愛情に強く惹かれている。" } },
-        "夏": { name: "盛夏の木陰", type: "season", season: "夏", value: 5, cost: 2, valType: "flat", actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "夏限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", flavor: { trust: "眩い日差しの中、木陰で過ごした。彼は目を細めてあなたを見つめていた。", dependence: "夏の暑さも忘れるほど、彼はあなたへの強い思いに囚われ続けている。" } }
+        "秋": { 
+            name: "収穫祭の思い出", type: "season", season: "秋", value: 5, cost: 2, valType: "flat", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", 
+            flavor: { 
+                trust: ["彼は、収穫祭の賑やかさをポツリと語った。はるか過去のことを話すような口ぶりだった。"], 
+                high_trust: ["外から祭りの音が聞こえる。彼はかつての賑やかな日々を懐かしんでいるようだ。"],
+                dependence: ["外の喧噪よりも、彼はあなたが給仕してくれる時間だけを欲している。"],
+                mannerism: ["祭りの名残を見る。過去の記憶も、今となっては遠い昔のことだ。"]
+            } 
+        },
+        "冬": { 
+            name: "聖夜の灯火", type: "season", season: "冬", value: 5, cost: 2, valType: "flat", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", 
+            flavor: { 
+                trust: ["窓辺のキャンドルが、彼の凍てついた心をほのかに照らす。"], 
+                high_trust: ["揺れる炎を前に、彼はあなたへの信頼を静かに口にした。"],
+                dependence: ["小さな灯りを見つめる彼は、あなたへの想いで胸を焦がしているようだ。"],
+                mannerism: ["灯りを見つめても、心に温かいものが灯ることはもうない。"]
+            } 
+        },
+        "春": { 
+            name: "薄紅の散策", type: "season", season: "春", value: 5, cost: 2, valType: "flat", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", 
+            flavor: { 
+                trust: ["風に乗って桜が舞い込んだ。彼はいつか、あなたと共に歩ける日を夢見ている。"], 
+                high_trust: ["舞い散る花びらを眺める彼の背筋は、凛と伸びている。"],
+                dependence: ["美しい花よりも、彼はあなたから与えられる朧げな愛情に強く惹かれている。"],
+                mannerism: ["散る桜を見ても、来年も同じ光景が繰り返されるとしか思えない。"]
+            } 
+        },
+        "夏": { 
+            name: "盛夏の木陰", type: "season", season: "夏", value: 5, cost: 2, valType: "flat", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "夏限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", 
+            flavor: { 
+                trust: ["眩い日差しの中、木陰で過ごした。彼は目を細めてあなたを見つめていた。"], 
+                high_trust: ["木陰で涼む彼の佇まいには、以前のような余裕が戻りつつある。"],
+                dependence: ["夏の暑さも忘れるほど、彼はあなたへの強い思いに囚われ続けている。"],
+                mannerism: ["焼け付く暑さも、退屈な日常のスパイスにはならなかった。"]
+            } 
+        }
     }
 };
 
 // 通常ドローされないイベント用・特殊カード群
 const SPECIAL_CARDS = {
     water_coma: { 
-        name: "水を与える", 
-        type: "direct", 
-        value: 2, // 関係性の上昇量
-        cost: 1, 
-        valType: "flat", 
+        name: "水を与える", type: "direct", value: 2, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 30}, 
             {type: "stress", value: -30}, 
-            {type: "set_debuff", value: "heavy"}, // 即座に昏睡状態へ
-            {type: "buff", key: "waterStressDuration", value: 3} // 3ターン継続の副作用
-            
+            {type: "set_debuff", value: "heavy"},
+            {type: "buff", key: "waterStressDuration", value: 3}
         ], 
         desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間ストレス+15", 
         flavor: { 
-        trust: "その水を飲んだ彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。", 
-        dependence: "あなたが与えた水を飲み干すと、彼は身をまかせるように意識を手放した。",
-        heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
-        heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、彼の頬を伝い落ちていった。"
-    } 
-},
-
-// ▼追加：水を与える（サンプル１）関係性0リセット
+            trust: ["その水を飲んだ彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。"], 
+            high_trust: ["迷いなく杯を空けた直後、彼の身体から急激に力が抜けていく。"],
+            dependence: ["あなたが与えた水を飲み干すと、彼は身をまかせるように意識を手放した。"],
+            mannerism: ["いつものように薬の入った水を飲ませる。彼は呆気なく意識を手放した。"],
+            heavy_trust: ["彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。"],
+            heavy_dependence: ["彼に水を飲ませる。飲み込めずに零れた水滴が、彼の頬を伝い落ちていった。"]
+        } 
+    },
     water_reset: { 
-        name: "水を与える", 
-        type: "direct", 
-        value: 0, // 関係性を強制的に0にするため、基礎上昇量は0
-        cost: 1, 
-        valType: "flat", 
+        name: "水を与える", type: "direct", value: 0, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 30}, 
             {type: "stress", value: -30}, 
-            {type: "buff", key: "waterStressDuration", value: 3}, // 3ターン継続の副作用
-            {type: "set_relation_zero"} // 追加：関係性を0にする新規アクション
-           
+            {type: "buff", key: "waterStressDuration", value: 3},
+            {type: "set_relation_zero"}
         ], 
         desc: "健康+30。必ずストレス-30。関係性を0にする。3ターンの間ストレス+15", 
         flavor: { 
-            trust: "何かを諦めたように目を閉じ、彼はその水を飲み干した。", 
-            dependence: "水を飲ませてから暫く経っても、彼はまだ空っぽになったコップを虚ろな目で見つめている。",
-            heavy_trust: "彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。",
-            heavy_dependence: "彼に水を飲ませる。飲み込めずに零れた水滴が、彼の頬を伝い落ちていった。"
+            trust: ["何かを諦めたように目を閉じ、彼はその水を飲み干した。"], 
+            high_trust: ["彼は生唾を飲み込んだ後、意を決したようにあなたから受け取った水を飲んだ。"],
+            dependence: ["水を飲ませてから暫く経っても、彼はまだ空っぽになったコップを虚ろな目で見つめている。"],
+            mannerism: ["静かに水を飲み干した彼の瞳から、一切の感情が抜け落ちていた。"],
+            heavy_trust: ["彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。"],
+            heavy_dependence: ["彼に水を飲ませる。飲み込めずに零れた水滴が、彼の頬を伝い落ちていった。"]
         } 
     },
-
-    // ▼追加：水を与える（サンプル２）発狂版
     water_normal: { 
-        name: "水を与える", 
-        type: "direct", 
-        value: 0, 
-        cost: 1, 
-        valType: "flat", 
+        name: "水を与える", type: "direct", value: 0, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 30}, 
             {type: "stress", value: -30},
@@ -1269,92 +1533,73 @@ const SPECIAL_CARDS = {
         ], 
         desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる。(使い切り)", 
         flavor: { 
-            trust: "彼はその水を飲み干した。目が、異様な光を帯びている。", 
-            dependence: "彼は水を飲み干すと、虚空を見つめながら意味不明な言葉を呟き始めた。",
-            heavy_trust: "彼をそっと抱き起こし、水を飲ませた。彼の体温が異常に上昇していく。",
-            heavy_dependence: "彼に水を飲ませた。彼の体が小さく痙攣している。"
+            trust: ["彼はその水を飲み干した。目が、異様な光を帯びている。"], 
+            high_trust: ["かつての矜持を取り戻しかけていた彼の心を、その水は容易に壊してしまった。"],
+            dependence: ["彼は水を飲み干すと、虚空を見つめながら意味不明な言葉を呟き始めた。"],
+            mannerism: ["慣れた手つきで水を飲ませたはずが、彼の様子が急変し始めた。"],
+            heavy_trust: ["彼をそっと抱き起こし、水を飲ませた。彼の体温が異常に上昇していく。"],
+            heavy_dependence: ["彼に水を飲ませた。彼の体が小さく痙攣している。"]
         } 
     },
-
     secret_attachment_1: { 
-        name: "手を握って付き添う", 
-        type: "attachment", 
-        isMasterAlways: false,
-        value: 15, 
-        cost: 1, 
-        valType: "flat", 
+        name: "手を握って付き添う", type: "attachment", isMasterAlways: false, value: 15, cost: 1, valType: "flat", 
         actions: [
             {type: "stress", value: -35}, 
             {type: "consume"} 
         ], 
         desc: "ストレス-35。関係性+15（使い切り）", 
         flavor: { 
-            trust: "あなたは彼の手をそっと握った。彼は目を覚まさないまま、眉間の皺をわずかに緩めた。", 
-            dependence: "命の危機に瀕する彼を見て、彼を失うことへの恐怖と歪な執着が湧き上がった。" 
+            trust: ["あなたは彼の手をそっと握った。彼は目を覚まさないまま、眉間の皺をわずかに緩めた。"], 
+            high_trust: ["起きている時態度とは裏腹に、彼の指先はあなたの手をそっと握り返してきた。"],
+            dependence: ["命の危機に瀕する彼を見て、彼を失うことへの恐怖と歪な執着が湧き上がった。"],
         } 
     },
-
     secret_attachment_2: { 
-        name: "頭を撫でる", 
-        type: "attachment", 
-        isMasterAlways: false,
-        value: 10, 
-        cost: 1, 
-        valType: "flat", 
+        name: "頭を撫でる", type: "attachment", isMasterAlways: false, value: 10, cost: 1, valType: "flat", 
         actions: [
-         {type: "heal", value: 25}, 
+            {type: "heal", value: 25}, 
             {type: "stress", value: -45}, 
             {type: "consume"} 
         ], 
         desc: "健康+25。ストレス-45。関係性+10（使い切り）", 
         flavor: { 
-      trust: "彼の前髪をそっとかき分けて、頭を撫でた。微睡みの中にいる彼の顔は、いつもよりも幼く見える。", 
-        dependence: "疲れ切り、眠り続ける彼の頭を撫でる。無防備な彼の姿に思わず笑みが溢れた。" 
+            trust: ["彼の前髪をそっとかき分けて、頭を撫でた。微睡みの中にいる彼の顔は、いつもよりも幼く見える。"], 
+            high_trust: ["彼が起きていれば窘められそうだが、今は素直に心地よさそうにしている。"],
+            dependence: ["疲れ切り、眠り続ける彼の頭を撫でる。無防備な彼の姿に思わず笑みが溢れた。"],
         } 
     },
-
     secret_attachment_3: { 
-        name: "じっと見守る", 
-        type: "attachment", 
-        isMasterAlways: false,
-        value: 25, 
-        cost: 1, 
-        valType: "flat", 
+        name: "じっと見守る", type: "attachment", isMasterAlways: false, value: 25, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 25}, 
             {type: "stress", value: -20}, 
             {type: "consume"} 
         ], 
         desc: "健康+25。ストレス-20。関係性+25（使い切り）", 
-          flavor: { 
-        trust: "ベッドに腰掛け、深い眠りの中、時折小さく身じろぎする彼をぼんやりと眺めて過ごした。", 
-        dependence: "彼をじっと見つめ続ける。あなたは自問した。いつまでこんなことを続けるつもりなのか、と。" 
-
-    } 
-
-    },
-
-letter_from_old_friend: { 
-        name: "手紙", 
-        type: "obstacle", 
-        cost: 0, 
-        desc: "所持している間、関係値+の時に毎ターンストレス+5。使用不可", 
         flavor: { 
-            trust: "彼は、自分宛ての手紙をあなたが隠し持っていることに気付いている。", 
-            dependence: "昔馴染からの手紙。今の彼にとっては、もう、どうでもいいものだ。",
-            heavy_trust: "宛名には彼の名が書かれている。だが、彼がこの封を切ることはないだろう。",
-            heavy_dependence: "彼に外や過去との繋がりが必要かどうかは、彼自身ではなくあなたが決める。"
+            trust: ["ベッドに腰掛け、深い眠りの中、時折小さく身じろぎする彼をぼんやりと眺めて過ごした。"], 
+            high_trust: ["穏やかな寝息を立てる彼を見つめる。その表情はあどけなく、無防備だった。"],
+            dependence: ["彼をじっと見つめ続ける。あなたは自問した。いつまでこんなことを続けるつもりなのか、と。"],
         } 
     },
-
+    letter_from_old_friend: { 
+        name: "手紙", type: "obstacle", cost: 0, 
+        desc: "所持している間、関係値+の時に毎ターンストレス+5。使用不可", 
+        flavor: { 
+            trust: ["彼は、自分宛ての手紙をあなたが隠し持っていることに気付いている。"], 
+            high_trust: ["あなたが隠した手紙に気づいているはずだが、彼は決してそれを問い詰めようとはしない。"],
+            dependence: ["昔馴染からの手紙。今の彼にとっては、もう、どうでもいいものだ。"],
+            heavy_trust: ["宛名には彼の名が書かれている。だが、彼がこの封を切ることはないだろう。"],
+            heavy_dependence: ["彼に外や過去との繋がりが必要かどうかは、彼自身ではなくあなたが決める。"]
+        } 
+    },
     gift: { 
-        name: "贈り物", 
-        type: "obstacle", 
-        cost: 0, 
+        name: "贈り物", type: "obstacle", cost: 0, 
         desc: "持っているとターン開始時ストレス-5。使用不可", 
         flavor: { 
-            trust: "信頼の証が、あなたの手の中で輝いている。彼は照れくさいのか、顔をそむけている。", 
-            dependence: "彼は、あなたに「それ」を肌見放さず持っていてもらいたいようだ。"
+            trust: ["贈り物を唐突に渡された。何の意図があるのか尋ねても、彼は答えなかった。"], 
+            high_trust: ["信頼の証があなたの手の中で輝いている。彼は照れくさいのか、顔をそむけている。"],
+            dependence: ["彼は、あなたに「それ」を肌見放さず持っていてもらいたいようだ。"]          
         } 
     }
 };
@@ -1568,246 +1813,359 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
 
         // 不用品プール
         const OBSTACLE_POOL = [
-            { 
-                name: "過去のトラウマ", 
-                type: "obstacle", 
-                cost: 0, 
-                desc: "過去のあやまちが心を蝕む。使用不可", 
-                flavor: { 
-                    trust: "消えない記憶が、二人の間に重い影を落としている。", 
-                    dependence: "忌まわしい過去だけが、彼とあなたを繋ぐ絆だ。",
-                    heavy_trust: "夢の中に逃避してもなお、消えない記憶が疼く。",
-                    heavy_dependence: "このまま彼が目覚めなければ、この痛みとも決別できる。"
-                } 
-            },
-            { 
-                name: "不信感", 
-                type: "obstacle", 
-                cost: 0, 
-                desc: "拭えない疑念。使用不可", 
-                flavor: { 
-                    trust: "彼の瞳の奥に、ふとした瞬間の迷いが見え隠れする。", 
-                    dependence: "疑うことさえ忘れてしまえば楽になれる。しかし、彼に残された誇りがそれを許さない。",
-                    heavy_trust: "彼がどれだけ疑いを抱いていても、微睡みの中ではあなたを拒絶できない。",
-                    heavy_dependence: "たとえ全てを信じられなくても、彼はあなただけは正しいと定義しようとしている。"
-                } 
-            },
-            { 
-                name: "色褪せた写真", 
-                type: "obstacle", 
-                cost: 0, 
-                desc: "幸福だった頃の遺物。使用不可", 
-                flavor: { 
-                    trust: "あたたかかった日だまりが、今の閉ざされた部屋を嘲笑う。", 
-                    dependence: "あなたが見つめてくれるなら、彼は記憶など必要ないようだ。",
-                    heavy_dependence: "時が経つにつれ、過去の残骸が無価値になっていく。"
-                } 
-            },
-            { 
-                name: "壊れた時計", 
-                type: "obstacle", 
-                cost: 0, 
-                desc: "止まってしまった時間。使用不可", 
-                flavor: { 
-                    trust: "秒針の動かない時計。二人の未来がここで足踏みしている。", 
-                    dependence: "時間が止まってしまえば、この特等席は永遠になる。"
-                } 
-            },
-            { 
-                name: "不和", 
-                type: "obstacle", 
-                cost: 0, 
-                desc: "重く、軋む空気。使用不可", 
-                flavor: { 
-                    trust: "言葉を交わすほどに、すれ違う心が痛みを伴う。", 
-                    dependence: "いくら冷たく突き放されようと、彼にはあなたしかいない。",
-                    heavy_trust: "沈黙すら彼とあなたの関係を軋ませる。",
-                    heavy_dependence: "何も喋らずただ横たわるだけの彼は、あなたの神経を逆撫ですることもない。"
-                } 
-            },
-            { 
-                name: "割れた食器", 
-                type: "obstacle", 
-                cost: 0, 
-                desc: "砕け散った日常の破片。使用不可", 
-                flavor: { 
-                    trust: "床に散らばる破片は、まるで彼そのものだ。もう元の形には戻らない。", 
-                    dependence: "砕け散った思い出を握りしめ、痛みを共有することでしか繋がれない。"
-                } 
-            },
-            { 
-                name: "埃被った記憶", 
-                type: "obstacle", 
-                cost: 0, 
-                desc: "忘却の彼方に沈む残骸。使用不可", 
-                flavor: { 
-                    trust: "触れれば壊れてしまいそうな遠い昔の記憶が、部屋の隅で眠っている。", 
-                    dependence: "すべての記憶が埃に埋もれても、彼はあなたの名前だけは忘れない。"
-                } 
-            }
-        ];
+    { 
+        name: "過去のトラウマ", type: "obstacle", cost: 0, 
+        desc: "過去のあやまちが心を蝕む。使用不可", 
+        flavor: { 
+            trust: ["消えない記憶が、二人の間に重い影を落としている。"], 
+            high_trust: ["信じようとしても、消えない過去が追い縋る。"],
+            dependence: ["忌まわしい過去だけが、彼とあなたを繋ぐ絆だ。"],
+            mannerism: ["過去の痛みにすら慣れてしまった。だがそれは確実に心を蝕んでいる。"],
+            heavy_trust: ["夢の中に逃避してもなお、消えない記憶が疼く。"],
+            heavy_dependence: ["このまま彼が目覚めなければ、この痛みとも決別できる。"]
+        } 
+    },
+    { 
+        name: "不信感", type: "obstacle", cost: 0, 
+        desc: "拭えない疑念。使用不可", 
+        flavor: { 
+            trust: ["彼の瞳の奥に、ふとした瞬間の迷いが見え隠れする。"], 
+            high_trust: ["信じたいのに信じきれない、そんな彼の苦悩が痛いほど伝わってくる。"],
+            dependence: ["疑うことさえ忘れてしまえば楽になれる。しかし、彼に残された誇りがそれを許さない。"],
+            mannerism: ["拭いきれない疑念も、今や日常の景色として定着してしまった。"],
+            heavy_trust: ["彼がどれだけ疑いを抱いていても、微睡みの中ではあなたを拒絶できない。"],
+            heavy_dependence: ["たとえ全てを信じられなくても、彼はあなただけは正しいと定義しようとしている。"]
+        } 
+    },
+    { 
+        name: "色褪せた写真", type: "obstacle", cost: 0, 
+        desc: "幸福だった頃の遺物。使用不可", 
+        flavor: { 
+            trust: ["あたたかかった日だまりが、今の閉ざされた部屋を嘲笑う。"], 
+            high_trust: ["写真の中の自分達が今の自分達を見たら、一体どう感じるのだろうか。"],
+            dependence: ["あなたが見つめてくれるなら、彼は記憶など必要ないようだ。"],
+            mannerism: ["何度も見返してすっかり色褪せた写真。過去の輝きはもう失われている。"],
+            heavy_trust: ["色褪せた写真だけが、二人の過去を静かに証明している。"],
+            heavy_dependence: ["時が経つにつれ、過去の残骸が無価値になっていく。"]
+        } 
+    },
+    { 
+        name: "壊れた時計", type: "obstacle", cost: 0, 
+        desc: "止まってしまった時間。使用不可", 
+        flavor: { 
+            trust: ["秒針の動かない時計。二人の未来がここで足踏みしている。"], 
+            high_trust: ["壊れた時計を前に、彼は物思いに耽っている。"],
+            dependence: ["時間が止まってしまえば、この特等席は永遠になる。"],
+            mannerism: ["動かない時計を見るのが日常になった。時間などとうに意味を成していない。"],
+            heavy_trust: ["止まった時計の針は、彼の眠り続ける姿とどこか重なる。"],
+            heavy_dependence: ["壊れた時計が象徴するように、この部屋の時間は完全に停止している。"]
+        } 
+    },
+    { 
+        name: "不和", type: "obstacle", cost: 0, 
+        desc: "重く、軋む空気。使用不可", 
+        flavor: { 
+            trust: ["言葉を交わすほどに、すれ違う心が痛みを伴う。"], 
+            high_trust: ["相手を思いやっているつもりでも、所詮は自己満足に過ぎない。"],
+            dependence: ["いくら冷たく突き放されようと、彼にはあなたしかいない。"],
+            mannerism: ["慢性的な不和。この重苦しい空気さえも二人の当たり前になっている。"],
+            heavy_trust: ["沈黙すら彼とあなたの関係を軋ませる。"],
+            heavy_dependence: ["何も喋らずただ横たわるだけの彼は、あなたの神経を逆撫ですることもない。"]
+        } 
+    },
+    { 
+        name: "割れた食器", type: "obstacle", cost: 0, 
+        desc: "砕け散った日常の破片。使用不可", 
+        flavor: { 
+            trust: ["床に散らばる破片は、まるで彼そのものだ。もう元の形には戻らない。"], 
+            high_trust: ["不注意で割れた食器。ただそれだけ。"],
+            dependence: ["砕け散った思い出を握りしめ、痛みを共有することでしか繋がれない。"],
+            mannerism: ["割れた破片を片付けるのも何度目だろうか。"],
+            heavy_trust: ["砕け散った日常の破片が、ただそこにある。"],
+            heavy_dependence: ["壊れた食器のように、彼もまた元には戻らない。"]
+        } 
+    },
+    { 
+        name: "埃被った記憶", type: "obstacle", cost: 0, 
+        desc: "忘却の彼方に沈む残骸。使用不可", 
+        flavor: { 
+            trust: ["触れれば壊れてしまいそうな遠い昔の記憶が、部屋の隅で眠っている。"], 
+            high_trust: ["埃を被った記憶を辿ることに、意味があるのかはわからない。"],
+            dependence: ["すべての記憶が埃に埋もれても、彼はあなたの名前だけは忘れない。"],
+            mannerism: ["忘れたい記憶には蓋をして、日常をやり過ごすことにした。"],
+            heavy_trust: ["埃に埋もれた記憶とともに、彼もまた深い眠りの中に沈んでいる。"],
+            heavy_dependence: ["彼が目覚めない限り、すべての記憶は埃に塗れて消えていくだけだ。"]
+        } 
+    }
+];
 
-// ▼ 追加：ターン開始時のランダムイベント用データ
+
+// ▼ 追加：ターン開始時のランダムイベント用データ（重み付け統合版）
 const RANDOM_EVENTS = [
     {
-        title: "夏日",
-        effectText: "ストレス-10",
-        condition: (state) => getSeasonByTurn(state.turn) === "夏",
+        title: "夏日", effectText: "ストレス-10", weight: 30, condition: (state) => getSeasonByTurn(state.turn) === "夏",
         effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
-            trust: "窓の外からの眩しい日差しに、彼は静かに目を細めた。",
-            dependence: "まばゆい光が窓から差し込む。しかし、彼は外に興味がないようだ。",
-            heavy_trust: "微睡みの中にいる彼の頬を、夏の日差しが照らす。",
-            heavy_dependence: "薄暗い部屋の中に、焼け付くような光が差し込む。"
+            trust: ["窓の外からの眩しい日差しに、彼は静かに目を細めた。"],
+            high_trust: ["降り注ぐ夏の日差しを浴びて、彼は薄っすらと汗をかいている。"],
+            dependence: ["まばゆい光が窓から差し込む。しかし、彼は外に興味がないようだ。"],
+            mannerism: ["容赦のない夏の日差しにも、二人はすっかり慣れきっていた。"],
+            heavy_trust: ["微睡みの中にいる彼の頬を、夏の日差しが照らす。"],
+            heavy_dependence: ["薄暗い部屋の中に、焼け付くような光が差し込む。"]
         }
     },
     {
-        title: "紅葉",
-        effectText: "ストレス-10",
-        condition: (state) => getSeasonByTurn(state.turn) === "秋",
+        title: "紅葉", effectText: "ストレス-10", weight: 30, condition: (state) => getSeasonByTurn(state.turn) === "秋",
         effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
-            trust: "窓から色づいた葉が舞い込んだ。彼はそれを手に取り、秋の訪れを感じている。",
-            dependence: "秋の景色よりも、あなたの存在を眺め続けている。",
-            heavy_trust: "窓から吹き込んだ秋風が部屋を満たす。",
-            heavy_dependence: "色づいた落ち葉が彼の枕元に落ちた。"
+            trust: ["窓から色づいた葉が舞い込んだ。彼はそれを手に取り、秋の訪れを感じている。"],
+            high_trust: ["舞い込んだ紅葉を、彼は大切そうに手帳の間に挟み込んだ。"],
+            dependence: ["秋の景色よりも、あなたの存在を眺め続けている。"],
+            mannerism: ["落ち葉が舞い込む。季節の変わり目すら単調な繰り返しのようだ。"],
+            heavy_trust: ["窓から吹き込んだ秋風が部屋を満たす。"],
+            heavy_dependence: ["色づいた落ち葉が彼の枕元に落ちた。"]
         }
     },
     {
-        title: "初雪",
-        effectText: "ストレス-10",
-        condition: (state) => getSeasonByTurn(state.turn) === "冬",
+        title: "初雪", effectText: "ストレス-10", weight: 30, condition: (state) => getSeasonByTurn(state.turn) === "冬",
         effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
-            trust: "窓の外に白い雪が舞い始めた。彼は静かに外を眺めている。",
-            dependence: "凍えるような寒さの中、彼はあなたから与えられる熱だけを求めている。",
-            heavy_trust: "音もなく雪が降り積もる。彼の寝息だけが部屋に響いている。",
-            heavy_dependence: "窓の外は銀世界だ。彼をこの部屋に閉じ込めておくにはちょうどいい。"
+            trust: ["窓の外に白い雪が舞い始めた。彼は静かに外を眺めている。"],
+            high_trust: ["雪に心なしか浮かれている彼の姿は、久し振りに童心に帰ったようだった。"],
+            dependence: ["凍えるような寒さの中、彼はあなたから与えられる熱だけを求めている。"],
+            mannerism: ["また冬が来た。深々と降る雪が、時間を覆い隠していく。"],
+            heavy_trust: ["音もなく雪が降り積もる。彼の寝息だけが部屋に響いている。"],
+            heavy_dependence: ["窓の外は銀世界だ。彼をこの部屋に閉じ込めておくにはちょうどいい。"]
         }
     },
     {
-        title: "春風",
-        effectText: "ストレス-10",
-        condition: (state) => getSeasonByTurn(state.turn) === "春",
+        title: "春風", effectText: "ストレス-10", weight: 30, condition: (state) => getSeasonByTurn(state.turn) === "春",
         effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
-            trust: "暖かな春風が部屋を吹き抜けた。彼の表情に、ほんの少しだけ生気が戻った気がする。",
-            dependence: "命吹く春の陽気の中でも、彼はあなたがいなければ生きられない。",
-            heavy_trust: "穏やかな陽気が、深い眠りの中にいる彼を優しく包み込んでいる。",
-            heavy_dependence: "外の世界がどれだけ色付いても、彼はあなただけのものだ。"
+            trust: ["暖かな春風が部屋を吹き抜けた。彼の表情に、ほんの少しだけ生気が戻った気がする。"],
+            high_trust: ["春風に揺れる彼の髪が、あたたかな日差しの下で柔らかく輝いている。"],
+            dependence: ["命吹く春の陽気の中でも、彼はあなたがいなければ生きられない。"],
+            mannerism: ["春が来ても、この閉ざされた空間の空気は変わらない。"],
+            heavy_trust: ["穏やかな陽気が、深い眠りの中にいる彼を優しく包み込んでいる。"],
+            heavy_dependence: ["外の世界がどれだけ色付いても、彼はあなただけのものだ。"]
         }
     },
     {
-        title: "遠くの鐘の音",
-        effectText: "ストレス-5",
-        condition: (state) => true,
+        title: "遠くの鐘の音", effectText: "ストレス-5", weight: 30, condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
         flavor: {
-            trust: "遠くの町から鐘の音が響く。彼は、何かを思い出すように耳を澄ませた。",
-            dependence: "鐘の音が外の世界を知らせる。彼は忌々しそうに眉を顰めた。",
-            heavy_trust: "遠くで鐘が鳴っている。その音が彼の眠りを妨げることはない。",
-            heavy_dependence: "一時間ごとに響く鐘の音。外の世界では、時が進んでいる。"
+            trust: ["遠くの町から鐘の音が響く。彼は、何かを思い出すように耳を澄ませた。"],
+            high_trust: ["平和を告げる鐘の音に、彼は安堵したようにあなたの顔を見つめた。"],
+            dependence: ["鐘の音が外の世界の存在を知らせる。彼はうるさいと言いたげに眉を顰めた。"],
+            mannerism: ["定期的に鳴る鐘の音。時間の経過を知らせるだけの無機質な響きだ。"],
+            heavy_trust: ["遠くで鐘が鳴っている。その音が彼の眠りを妨げることはない。"],
+            heavy_dependence: ["一時間ごとに響く鐘の音。外の世界では、時が進んでいる。"]
         }
     },
     {
-        title: "探し物",
-        effectText: "AP-1 / 関係性+2",
-        condition: (state) => state.debuff !== "heavy",
+        title: "探し物", effectText: "AP-1 / 関係性+2", weight: 30, condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.relation = Math.min(100, state.relation + 2); },
         flavor: {
-            trust: "彼が棚を探っている。声をかけるかどうか、しばらく様子を窺うことにした。",
-            dependence: "何かを探していた彼は、あなたの視線に気づいて手を止めた。"
+            trust: ["彼が棚を探っている。声をかけるかどうか、しばらく様子を窺うことにした。"],
+            high_trust: ["探し物を見つけて手渡すと、彼は何故か納得行かなそうな素振りを見せた。"],
+            dependence: ["何かを探していた彼は、あなたの視線に気づいて手を止めた。"],
+            mannerism: ["また何かを探しているようだ。あなたは黙ってそれを見過ごした。"]
         }
     },
     {
-        title: "身支度",
-        effectText: "ストレス-5 / 関係性+1",
-        condition: (state) => state.debuff !== "heavy",
+        title: "身支度", effectText: "ストレス-5 / 関係性+1", weight: 30, condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); state.relation = Math.min(100, state.relation + 1); },
         flavor: {
-            trust: "彼はあなたの手を借りず、自分で身支度を整えた。",
-            dependence: "彼は一人で身支度をしているが、上手くボタンを止められないでいる。"
+            trust: ["彼はあなたの手を借りず、自分で身支度を整えた。"],
+            high_trust: ["あなたが部屋に入ったときには、既に彼は完璧に身支度を終えていた。"],
+            dependence: ["彼は一人で身支度をしているが、上手くボタンを止められないでいる。"],
+            mannerism: ["決まりきった朝の身支度。彼もあなたも無言のままこなしていく。"]
         }
     },
     {
-        title: "お仕事",
-        effectText: "資金+20 / ストレス+5",
-        condition: (state) => state.debuff !== "heavy",
+        title: "お仕事", effectText: "資金+20 / ストレス+5", weight: 30, condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.gold += 20; state.stress = Math.min(100, state.stress + 5); },
         flavor: {
-            trust: "彼は机に向かい、黙々と主人としての書類仕事をこなしている。",
-            dependence: "彼は書簡をぱらぱらと捲り、判を押す。ただ、あなたがそれを取りに来ることを待っている。"
+            trust: ["彼は机に向かい、黙々と主人としての書類仕事をこなしている。"],
+            high_trust: ["仕事に打ち込む彼の姿は、頼もしさと疲れが入り混じっていた。"],
+            dependence: ["彼は書簡をぱらぱらと捲り、判を押す。ただ、あなたがそれを取りに来ることを待っている。"],
+            mannerism: ["積まれた書類を機械的に処理する。彼にとってそれはただの作業でしかない。"]
         }
     },
     {
-        title: "もぬけの殻",
-        effectText: "AP-1 / ストレス+15",
-        condition: (state, currentLogDelay) => state.debuff === "none" && currentLogDelay === 0,
+        title: "もぬけの殻", effectText: "AP-1 / ストレス+15", weight: 30, condition: (state, currentLogDelay) => state.debuff === "none" && currentLogDelay === 0,
         effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.stress = Math.min(100, state.stress + 15); },
         flavor: {
-            trust: "部屋を不在にしていたことについて、彼は何も語ろうとしなかった。",
-            dependence: "部屋に彼の姿がない。屋敷中を探し回ると、彼は暗い廊下の隅で蹲っていた。"
+            trust: ["部屋を不在にしていたことについて、彼は何も語ろうとしなかった。"],
+            high_trust: ["無断でいなくなった事を咎めても彼は仏頂面だったが、内心穏やかでないようだ。"],
+            dependence: ["部屋に彼の姿がない。屋敷中を探し回ると、彼は暗い廊下の隅で蹲っていた。"],
+            mannerism: ["また居なくなった。あなたが探しに来るのを待つのが日課になっているようだ。"]
         }
     },
     {
-        title: "差入れ",
-        effectText: "資金+10 / 健康+5",
-        condition: (state) => true,
+        title: "支援物資", effectText: "資金+10 / 健康+5", weight: 30, condition: (state) => true,
         effect: (state) => { state.gold += 10; state.health = Math.min(100, state.health + 5); },
         flavor: {
-            trust: "宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
-            dependence: "彼は匿名で届いた荷物を酷く警戒している。",
-            heavy_trust: "宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。",
-            heavy_dependence: "荷物が届いた。誰からの物なのかも、何の目的なのかもわからない。"
+            trust: ["宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。"],
+            high_trust: ["物資を品定めをしていると、彼がその中の一つをあなたに引き取るように指示してきた。"],
+            dependence: ["彼は匿名で届いた荷物を酷く警戒している。"],
+            mannerism: ["定期的に届く支援物資。中身を確認して機械的に備蓄に加えた。"],
+            heavy_trust: ["宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。"],
+            heavy_dependence: ["荷物が届いた。誰からの物なのかも、何の目的なのかもわからない。"]
         }
     },
     {
-        title: "小鳥",
-        effectText: "ストレス-5",
-        condition: (state) => true,
+        title: "小鳥", effectText: "ストレス-5", weight: 30, condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
         flavor: {
-            trust: "翼を広げて飛び去る小鳥を、彼はどこか羨ましそうに眺めている。",
-            dependence: "窓辺に一羽の白い小鳥が降り立った。彼はその鳥から目を逸らしている。",
-            heavy_trust: "窓の外で小鳥がさえずっている。",
-            heavy_dependence: "あなたは窓辺に止まった小鳥を無感情に追い払った。"
+            trust: ["翼を広げて飛び去る小鳥を、彼はどこか羨ましそうに眺めている。"],
+            high_trust: ["彼は窓辺の小鳥に目を留めると、その姿をあなたに見せようと手招きした。"],
+            dependence: ["窓辺に一羽の白い小鳥が降り立った。彼はその鳥から目を逸らしている。"],
+            mannerism: ["小鳥が訪れても、彼の感情が動くことはもうない。"],
+            heavy_trust: ["窓の外で小鳥がさえずっている。"],
+            heavy_dependence: ["あなたは窓辺に止まった小鳥を無感情に追い払った。"]
         }
     },
     {
-        title: "悪夢",
-        effectText: "ストレス+10",
-        condition: (state) => state.debuff === "heavy",
+        title: "悪夢", effectText: "ストレス+10", weight: 50, condition: (state) => state.debuff === "heavy",
         effect: (state) => { state.stress = Math.min(100, state.stress + 10); },
         flavor: {
-            heavy_trust: "深い微睡みの淵で、彼は苦しげに顔を歪めている。",
-            heavy_dependence: "彼は悪夢にうなされている。あなただけが、彼をそこから救い出せるのかもしれない。"
+            heavy_trust: ["深い微睡みの淵で、彼は苦しげに顔を歪めている。"],
+            heavy_dependence: ["彼は悪夢にうなされている。あなただけが、彼をそこから救い出せるのかもしれない。"]
         }
     },
     {
-        title: "祈り",
-        effectText: "ストレス-15",
-        condition: (state) => true,
+        title: "祈り", effectText: "ストレス-15", weight: 30, condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 15); },
         flavor: {
-            trust: "彼は目を閉じ、静かに何かを祈っている。",
-            dependence: "彼はあなたに向かって、縋るように祈りを捧げている。",
-            heavy_trust: "微睡みの中、彼はうわ言のように祈りの言葉を紡いでいる。",
-            heavy_dependence: "意識のない彼の唇が震え、祈りの言葉を漏らしている。"
+            trust: ["彼は目を閉じ、静かに何かを祈っている。"],
+            high_trust: ["彼の祈りは、一種の瞑想に昇華されているように感じる。"],
+            dependence: ["彼は震える指を組んで、縋るように祈りを捧げている。"],
+            mannerism: ["習慣となった祈り。それが誰に向けられているのか、もう分からない。"],
+            heavy_trust: ["微睡みの中、彼はうわ言のように祈りの言葉を紡いでいる。"],
+            heavy_dependence: ["意識のない彼の唇が震え、祈りの言葉を漏らしている。"]
         }
     },
     {
-        title: "自衛",
-        effectText: "自衛状態付与",
-        condition: (state) => state.debuff !== "heavy",
+        title: "自衛", effectText: "自衛状態付与", weight: 30, condition: (state) => state.debuff !== "heavy",
         effect: (state) => { activeBuffs.hasKnife = true; },
         flavor: {
-            trust: "ふと見ると、彼が枕の下にナイフを隠すのが見えた。",
-            dependence: "彼は何かを握りしめ、周囲を警戒している。"
+            trust: ["ふと見ると、彼が枕の下にナイフを隠すのが見えた。"],
+            high_trust: ["彼は自らも戦う意志を示すように、ナイフをしっかりと握りしめた。"],
+            dependence: ["彼は何かを握りしめ、周囲を警戒している。"],
+            mannerism: ["枕の下のナイフの存在は、互いに暗黙の了解となっていた。"]
+        }
+    },
+    // ここから下が統合用に追加されたイベント
+    {
+        title: "なし", weight: 1000, condition: (state) => true, // 何も起こらないハズレ枠
+        effect: (state) => {},
+        flavor: null
+    },
+    {
+        title: "手紙", effectText: "カード入手", weight: 15,
+        condition: (state) => !state.hasEncounteredLetter && state.hand.length < 6,
+        effect: (state) => {
+            let letterCard = { ...SPECIAL_CARDS['letter_from_old_friend'], id: Date.now() + Math.random() };
+            state.hand.push(letterCard);
+            state.hasEncounteredLetter = true;
+            state.temporaryEffects.push(`カード入手: ${letterCard.name}`);
+        },
+        flavor: SPECIAL_CARDS['letter_from_old_friend'].flavor
+    },
+    {
+        title: "贈り物", effectText: "カード入手", weight: 30,
+        condition: (state) => !state.hasEncounteredGift && state.hand.length < 6 && state.debuff !== 'heavy',
+        effect: (state) => {
+            let price = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+            let giftCard = { ...SPECIAL_CARDS['gift'], sellPrice: price, id: Date.now() + Math.random() };
+            state.hand.push(giftCard);
+            state.hasEncounteredGift = true;
+            state.temporaryEffects.push(`カード入手: ${giftCard.name}`);
+        },
+        flavor: SPECIAL_CARDS['gift'].flavor
+    },
+    {
+        title: "八つ当たり", effectText: "八つ当たり状態付与", weight: 200,
+        condition: (state) => state.stress >= 70 && state.debuff !== 'heavy' && !state.isTantrum,
+        effect: (state) => {
+            state.isTantrum = true;
+        },
+        flavor: {
+            trust: ["蓄積したストレスが限界を超え、彼はあなたに対して声を荒げた。", "我慢の限界を迎えたのか、彼は感情のままにあなたへ八つ当たりをした。"],
+            high_trust: ["張り詰めていた糸が切れたように、彼は声を荒げて不満をぶちまけた。", "らしくもなく、彼は怒りを全てあなたにぶつけた。"],
+            dependence: ["彼は何かに怯えるように取り乱し、あなたに当たり散らしている。", "見捨てられる不安からか、彼は泣き叫ぶようにあなたを責め立てた。"],
+            mannerism: ["抑えきれない苛立ちが爆発し、彼はあなたを理不尽になじった。", "鬱積した感情が突如として溢れ出し、彼は露骨に不機嫌な態度を取った。"]
         }
     }
 ];
 // ▲ ここまで (RANDOM_EVENTS の末尾)
 
+// ★追加：フレーバーテキスト取得用ヘルパー関数
+function getRandomFlavor(flavorObj, state, context, isMannerism) {
+    if (!flavorObj) return "";
+
+    // ヘルパー: 配列ならランダム抽出、文字列ならそのまま返す
+    const pickText = (texts) => {
+        if (Array.isArray(texts) && texts.length > 0) {
+            return texts[Math.floor(Math.random() * texts.length)];
+        } else if (typeof texts === 'string') {
+            return texts;
+        }
+        return "";
+    };
+
+    // 1. マンネリ判定
+    if (isMannerism && flavorObj.mannerism) {
+        let text = pickText(flavorObj.mannerism);
+        if (text) return text;
+    }
+
+    let isHeavy = state.debuff === 'heavy';
+    let isBattle = context === 'battle';
+    
+    // 昏睡用テキストが定義されているかチェック
+    let hasHeavyTrust = !!(flavorObj.heavy_trust && (Array.isArray(flavorObj.heavy_trust) ? flavorObj.heavy_trust.length > 0 : true));
+    let hasHeavyDep = !!(flavorObj.heavy_dependence && (Array.isArray(flavorObj.heavy_dependence) ? flavorObj.heavy_dependence.length > 0 : true));
+    
+    let prob = Math.abs(state.relation) / 100;
+    let selectedKey = "";
+
+    // 中間キーの設定（heavy_trustがあればそれ、無ければ通常のtrust）
+    let middleKey = (isHeavy && hasHeavyTrust) ? 'heavy_trust' : 'trust';
+
+    if (isBattle) {
+        // 戦闘時
+        selectedKey = isHeavy ? 'heavy_battle' : 'battle';
+        let texts = flavorObj[selectedKey];
+        if (!texts || (Array.isArray(texts) && texts.length === 0)) {
+            selectedKey = middleKey;
+        }
+    } else {
+        // 通常時・昏睡時
+        if (state.relation > 0) {
+            let upperKey = (isHeavy && hasHeavyTrust) ? 'heavy_trust' : 'high_trust';
+            selectedKey = Math.random() < prob ? upperKey : middleKey;
+        } else if (state.relation < 0) {
+            let lowerKey = (isHeavy && hasHeavyDep) ? 'heavy_dependence' : 'dependence';
+            selectedKey = Math.random() < prob ? lowerKey : middleKey;
+        } else {
+            selectedKey = middleKey;
+        }
+    }
+
+    // 4. フォールバック (抽選したキーが存在しないか空の場合)
+    let texts = flavorObj[selectedKey];
+    if (!texts || (Array.isArray(texts) && texts.length === 0)) {
+        selectedKey = middleKey;
+        texts = flavorObj[selectedKey];
+        if (!texts || (Array.isArray(texts) && texts.length === 0)) {
+            selectedKey = 'trust';
+        }
+    }
+
+    return pickText(flavorObj[selectedKey]);
+}
 
 function processWeekStart() {
             state.turn++;
@@ -1906,17 +2264,10 @@ if (Math.random() < obstacleRates[state.debuff]) {
                     currentLogDelay += 600;
 
                     // 2. 時間差をつけて不用品混入時のランダムテキストと、カード固有のフレーバーを組み合わせて出力する
-let flavorText = "";
-if (state.debuff === 'heavy') {
-    flavorText = state.relation >= 0 
-        ? (obstacle.flavor.heavy_trust || obstacle.flavor.trust) 
-        : (obstacle.flavor.heavy_dependence || obstacle.flavor.dependence);
-} else {
-    flavorText = state.relation >= 0 ? obstacle.flavor.trust : obstacle.flavor.dependence;
-}
+                    let flavorText = getRandomFlavor(obstacle.flavor, state, 'master', false);
                     setTimeout(() => {
-                        addLog(`${flavorText}`, "log-flavor");
-                    }, currentLogDelay); 
+                        if (flavorText) addLog(flavorText, "log-flavor");
+                    }, currentLogDelay);
                     currentLogDelay += 600;
                 } else {
                     turnLogs.push("体調悪化");
@@ -1975,40 +2326,7 @@ if (state.debuff === 'heavy') {
                 addTurnHistory('states', '敵襲来'); // 戦闘発生を履歴に記録
             }
 
-          // ▼ 追加：ランダムイベント処理
-            let eventOccurred = false; // イベント発生フラグを追加
-            if (!state.battleActive && Math.random() < 0.30) {
-                let availableEvents = RANDOM_EVENTS.filter(ev => ev.condition(state, currentLogDelay));
-                if (availableEvents.length > 0) {
-                    let ev = availableEvents[Math.floor(Math.random() * availableEvents.length)];
-                    ev.effect(state);
-                    
-                    state.temporaryEffects.push(`${ev.title}: ${ev.effectText}`);
-
-                    let eventFlavor = "";
-                    if (state.debuff === 'heavy') {
-                        eventFlavor = state.relation >= 0 ? 
-                            (ev.flavor.heavy_trust || ev.flavor.trust) : 
-                            (ev.flavor.heavy_dependence || ev.flavor.dependence);
-                    } else {
-                        eventFlavor = state.relation >= 0 ? ev.flavor.trust : ev.flavor.dependence;
-                    }
-
-                    if (eventFlavor) {
-                        setTimeout(() => {
-                            addLog(eventFlavor, "log-flavor");
-                        }, currentLogDelay);
-                        currentLogDelay += 600;
-                    }
-
-                    turnLogs.push(ev.title);
-                    addTurnHistory('event', ev.title);
-                    eventOccurred = true; // イベントが発生したことを記録
-                }
-            }
-            // ▲ ここまで
-
-            let drawCount = state.debuff === 'medium' ? 4 : 5;
+          let drawCount = state.debuff === 'medium' ? 4 : 5;
             if (activeBuffs.nextTurnDrawMod !== 0) {
                 drawCount = Math.max(1, drawCount + activeBuffs.nextTurnDrawMod);
                 activeBuffs.nextTurnDrawMod = 0;
@@ -2046,66 +2364,49 @@ if (state.debuff === 'heavy') {
                     }
                 }
             }
+// --- 隠しカード追加処理（ここまで） ---
 
-           // ★追加：「手紙」のランダム追加処理
-            // 未発生、手札上限未満、かつ他のイベントが発生していない場合
-            if (!eventOccurred && !state.hasEncounteredLetter && state.hand.length < 6) {
-                if (Math.random() < 0.01) {
-                    let letterCard = {
-                        ...SPECIAL_CARDS['letter_from_old_friend'],
-                        id: Date.now() + Math.random()
-                    };
-                    state.hand.push(letterCard);
-                   addTurnHistory('event', '手紙');
-                   turnLogs.push("手紙"); // アラートに追加
-                   eventOccurred = true; // 他のイベントと排他にする
-                   state.hasEncounteredLetter = true; // 追加：発生済みフラグをオン
-                   state.temporaryEffects.push(`カード入手: ${letterCard.name}`);
+            // ▼変更：重み付けランダムイベント処理（手紙・贈り物・八つ当たり統合版）
+            if (!state.battleActive) {
+                // 発生条件を満たしているイベントのみを抽出
+                let availableEvents = RANDOM_EVENTS.filter(ev => ev.condition(state, currentLogDelay));
 
-                    // ★フレーバーテキストの出力処理を追加
-                    let flavorText = "";
-                    if (state.debuff === 'heavy') {
-                        // 昏睡（重度）時のテキスト分岐
-                        flavorText = state.relation >= 0 ? letterCard.flavor.heavy_trust : letterCard.flavor.heavy_dependence;
-                    } else {
-                        // 通常時のテキスト分岐
-                        flavorText = state.relation >= 0 ? letterCard.flavor.trust : letterCard.flavor.dependence;
+                if (availableEvents.length > 0) {
+                    // 抽出されたイベントの重み（weight）の合計を計算
+                    let totalWeight = availableEvents.reduce((sum, ev) => sum + ev.weight, 0);
+                    let randomValue = Math.random() * totalWeight;
+                    
+                    let selectedEvent = null;
+                    for (let ev of availableEvents) {
+                        randomValue -= ev.weight;
+                        if (randomValue <= 0) {
+                            selectedEvent = ev;
+                            break;
+                        }
                     }
-                    
-                    setTimeout(() => {
-                        addLog(flavorText, "log-flavor");
-                    }, currentLogDelay);
-                    currentLogDelay += 600;
+
+                    // ハズレ（タイトルが"なし"）以外が選ばれた場合のみ実行
+                    if (selectedEvent && selectedEvent.title !== "なし") {
+                        selectedEvent.effect(state);
+                        
+                        if (selectedEvent.effectText) {
+                            state.temporaryEffects.push(`${selectedEvent.title}: ${selectedEvent.effectText}`);
+                        }
+
+                        let eventFlavor = getRandomFlavor(selectedEvent.flavor, state, 'master', false);
+                        if (eventFlavor) {
+                            setTimeout(() => {
+                                addLog(eventFlavor, "log-flavor");
+                            }, currentLogDelay);
+                            currentLogDelay += 600;
+                        }
+
+                        turnLogs.push(selectedEvent.title);
+                        addTurnHistory('event', selectedEvent.title);
+                    }
                 }
             }
-
-            // ★追加：「贈り物」のランダム追加処理
-            // 昏睡(heavy)時には発生させないよう条件を追加
-            if (!eventOccurred && !state.hasEncounteredGift && state.hand.length < 6 && state.debuff !== 'heavy') {
-                if (Math.random() < 0.02) { // 2%の確率で出現
-                    let price = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
-                    let giftCard = {
-                        ...SPECIAL_CARDS['gift'],
-                        sellPrice: price,
-                        id: Date.now() + Math.random()
-                    };
-                    state.hand.push(giftCard);
-                    addTurnHistory('event', '贈り物');
-                    turnLogs.push("贈り物"); // アラートに追加
-                    eventOccurred = true; // 他のイベントと排他にする
-                    state.hasEncounteredGift = true; // 追加：発生済みフラグをオン
-                    state.temporaryEffects.push(`カード入手: ${giftCard.name}`);
-                    
-
-                    // 手紙入手時と同じように、フレーバーテキストを出し分ける
-                    let flavorText = state.relation >= 0 ? giftCard.flavor.trust : giftCard.flavor.dependence;
-                    
-                    setTimeout(() => {
-                        addLog(flavorText, "log-flavor");
-                    }, currentLogDelay);
-                        currentLogDelay += 600;
-                }
-            }
+            // ▲ ここまで
 
             // 前方から移動したアラート(setLastAction)の反映処理
             if (turnLogs.length > 0) {
@@ -2163,31 +2464,40 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                 // デバフアイコン（▼）の判定と生成
                 let debuffIconsHTML = '';
 
-                // 1. 矜持（黄色の▼）：関係性0以上かつ直接カードの場合（昏睡時は無効）
-                if (state.relation >= 0 && card.type === 'direct' && state.debuff !== 'heavy') {
-                    debuffIconsHTML += `<span style="color: #bb9244; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="矜持状態：関係性上昇半減・ストレスの-が+に反転">▼</span>`;
-                }
-
-                // 2. 依存（紫の▼）：関係性0未満の場合
-                if (state.relation < 0) {
-                    if (card.type === 'direct') {
-                        debuffIconsHTML += `<span style="color: #754f87; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="依存状態：関係性の+が-に反転">▲</span>`;
-                    } else if (card.type === 'indirect') {
-                        debuffIconsHTML += `<span style="color: #754f87; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="依存状態：回復量半減・カードの値を問わず、ストレスが+10">▼</span>`;
-                    }
-                }
-
-                // 3. マンネリ（灰色の▼）：次に使うと同名カードの使用回数が5回目に達する場合
-                if (['direct', 'indirect'].includes(card.type)) {
-                    let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
-                    if (sameCardCount >= 4) { // 次に使った時点で5回目になるため、4回の時点で予告表示する
-                        debuffIconsHTML += `<span style="color: #aaaaaa; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="マンネリ：回復・ストレス軽減が半減">▼</span>`;
-                    }
-                }
-
-                // 4. 発狂（赤の▼）：発狂状態の場合、すべてのカードに適用
                 if (activeBuffs.isMadness) {
-                    debuffIconsHTML += `<span style="color: #e74c3c; margin-left: 3px; font-size: 7px; cursor: help;margin-top: 8px;" title="発狂状態：関係性の増減がランダム">▼</span>`;
+                    // 4. 発狂（赤の▼）：発狂状態の場合、他の状態を上書きしてこれだけを表示
+                    debuffIconsHTML = `<span style="color: #e74c3c; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="発狂状態：関係性の増減がランダム">▼</span>`;
+                } else {
+                    // 1. 矜持（黄色の▼）：関係性0以上かつ直接カードの場合（昏睡時は無効）
+                    if (state.relation >= 0 && card.type === 'direct' && state.debuff !== 'heavy') {
+                        debuffIconsHTML += `<span style="color: #bb9244; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="矜持状態：関係性上昇半減・ストレスの-が+に反転">▼</span>`;
+                    }
+
+                    // 2. 依存（紫の▼）：関係性0未満の場合
+                    if (state.relation < 0) {
+                        if (card.type === 'direct') {
+                            debuffIconsHTML += `<span style="color: #754f87; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="依存状態：関係性の+が-に反転">▲</span>`;
+                        } else if (card.type === 'indirect') {
+                            debuffIconsHTML += `<span style="color: #754f87; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="依存状態：回復量半減・カードの値を問わず、ストレスが+10">▼</span>`;
+                        }
+                    }
+
+                    // 3. マンネリ（灰色の▼）：次に使うと同名カードの使用回数が5回目に達する場合
+                    if (['direct', 'indirect'].includes(card.type)) {
+                        let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
+                        if (sameCardCount >= 4) { // 次に使った時点で5回目になるため、4回の時点で予告表示する
+                            debuffIconsHTML += `<span style="color: #aaaaaa; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="マンネリ：回復・ストレス軽減が半減">▼</span>`;
+                        }
+                    }
+                }
+                
+                // 5. 八つ当たり状態のアイコン（浅い青）
+                if (state.isTantrum) {
+                    if (['direct', 'indirect', 'season'].includes(card.type)) {
+                        debuffIconsHTML += `<span style="color: #59829e; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="八つ当たり：関係性が依存(-)に反転">▼</span>`;
+                    } else if (card.type === 'cold' || card.type === 'harm') {
+                        debuffIconsHTML += `<span style="color: #59829e; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="八つ当たり：関係性が矜持(+)に反転。対敵に使用する場合はカードの記載通りに増減。">▲</span>`;
+                    }
                 }
 
                 grid.appendChild(cardEl);
@@ -2370,32 +2680,44 @@ function executeCard(target) {
     }
     setLastAction(actionText);
 
-    // --- フレーバーテキスト表示 ---
-    if (card.flavor) {
-        let text = "";
-        
-        if (target === 'battle') {
-            // 対象が戦闘の場合
-            if (state.debuff === 'heavy') {
-                // 昏睡時は heavy_battle を優先し、無ければ heavy_trust等へフォールバック
-                text = card.flavor.heavy_battle || 
-                       (state.relation >= 0 ? card.flavor.heavy_trust : card.flavor.heavy_dependence) || 
-                       card.flavor.battle || 
-                       (state.relation >= 0 ? card.flavor.trust : card.flavor.dependence);
-            } else {
-                // 通常時は battle を優先し、無ければ trust等へフォールバック
-                text = card.flavor.battle || 
-                       (state.relation >= 0 ? card.flavor.trust : card.flavor.dependence);
+    // --- フレーバーテキスト表示 & 八つ当たり専用処理 ---
+    let extraLog = "";
+    let isTantrumActive = (state.isTantrum && state.debuff !== 'heavy');
+
+    if (isTantrumActive) {
+        if (target === 'master') {
+            if (card.type === 'direct') {
+                if (state.relation >= 0) {
+                    extraLog = "宥めるように優しくしてやれば、彼はバツが悪そうに唇を噛み締めた。";
+                } else {
+                    extraLog = "機嫌が悪い彼をいつも以上に甘やかすと、次第にしおらしくなった。";
+                }
+            } else if (['indirect', 'season'].includes(card.type)) {
+                if (state.relation >= 0) {
+                    extraLog = "あなたに何事もなかったのように振る舞われ、彼は己の愚かさを恥じ入っている。";
+                } else {
+                    extraLog = "理不尽な態度を咎められなかったことに、彼は安堵と滲ませた。";
+                }
+            } else if (card.type === 'cold' || card.type === 'harm') {
+                if (state.relation >= 0) {
+                    extraLog = "冷めた視線と態度を向けると、彼はハッと我に返り口を噤んだ。";
+                } else {
+                    extraLog = "あなたに冷たく突き放され、彼はあからさまに動揺している。";
+                }
             }
-        } else {
-            // 対象が主人の場合
-            if (state.debuff === 'heavy') {
-                text = (state.relation >= 0) ? (card.flavor.heavy_trust || card.flavor.trust) : (card.flavor.heavy_dependence || card.flavor.dependence);
-            } else {
-                text = (state.relation >= 0) ? card.flavor.trust : card.flavor.dependence;
-            }
+        } else if (target === 'battle' && card.type === 'harm') {
+            extraLog = "あなたは襲撃の対処に向かう。先程の無様な行いを咎められなかったことに、彼はひそかに安堵した。";
         }
-        
+        // 次の行動時（または戦闘対処時）で八つ当たり状態は終了
+        state.isTantrum = false; 
+    }
+
+    if (extraLog) {
+        // 八つ当たり状態の場合は、カード固有のテキストを上書きして反応のみを表示する
+        addLog(extraLog, "log-flavor");
+    } else if (card.flavor) {
+        // 通常時はカード固有のテキストを表示する
+        let text = getRandomFlavor(card.flavor, state, target === 'battle' ? 'battle' : 'master', isMannerism);
         if (text) addLog(text, "log-flavor");
     }
 
@@ -2464,6 +2786,22 @@ let calcRelationDelta = function(targetCard, currentTarget) {
     };
     
  let rDelta = calcRelationDelta(card, target);
+
+    if (isTantrumActive) {
+        let absDelta = Math.abs(rDelta);
+        if (['direct', 'indirect', 'season'].includes(card.type)) {
+            rDelta = -absDelta; // ケアをした場合は依存(-)に傾く
+        } else if (card.type === 'cold' || (card.type === 'harm' && target === 'master')) {
+            // 冷淡、および主人に対する攻撃は矜持(+)に傾く
+            rDelta = absDelta; 
+        }
+        // target === 'battle' の harm は分岐から外れるため、元の rDelta（記載通りの増減）が維持される
+
+        // ※コード解析用注記※
+        // obstacle(不用品)は使用不可、attachment(愛着)は昏睡時専用のため
+        // 八つ当たり状態(非昏睡時)のここには到達しない。意図的な分岐除外です。
+    }
+
     if (activeBuffs.isMadness) {
         rDelta = Math.floor(Math.random() * 101) - 50; // -50〜+50
     }
@@ -2714,7 +3052,7 @@ case "set_madness":
                     if (currentIdx !== -1) {
                         state.hand[currentIdx] = {
                             name: "祭りの名残", type: "obstacle", cost: 0, desc: "過去の行事のゴミ。使用不可",
-                            flavor: { trust: "お祭りの華やかさは去り、手元には虚しい残骸だけが残された。", dependence: "祭りの熱狂などどうでもいい。残ったゴミのように、あなたに執着していたい。" }
+                            flavor: { trust: ["お祭りの華やかさは去り、手元には虚しい残骸だけが残された。"], dependence: ["祭りの熱狂などどうでもいい。残ったゴミのように、あなたに執着していたい。"] }
                         };
                     }
                     keepInHand = true;
@@ -2808,35 +3146,30 @@ if (state.battleActive) {
                         state.endOfTurnEffects.push(`戦闘敗北: 健康-20 / ストレス+30`);
                         
                         // 防衛失敗時の情景描写
-                    if (state.debuff === 'heavy') {
-                        if (state.relation >= 0) {
-                            const failHeavyTrust = [
-                                "意識のない彼は身を守る術を持たず、理不尽な暴力に晒されてしまった。",
-                                "彼を守り切れなかった。まっさらなシーツに鮮血が染み込んでいく。"
-                            ];
-                            addLog(failHeavyTrust[Math.floor(Math.random() * failHeavyTrust.length)], "log-flavor");
-                        } else {
-                            const failHeavyDep = [
-                                "彼の体についた無惨な傷。あなたの胸中に、激しい衝動が湧き上がる。",
-                                "所有物が他人に傷つけられた。その事実が、あなたの支配欲をさらに刺激する。"
-                            ];
-                            addLog(failHeavyDep[Math.floor(Math.random() * failHeavyDep.length)], "log-flavor");
-                        }
-                    } else {
-                       if (state.relation >= 0) {
-                            const failTrust = [
-                                "彼はあなたを庇おうと敵の前に立ちはだかり、傷を負った。",
-                                "己の無力さを呪うように、彼は床に伏しながら血を吐き出した。"
-                            ];
-                            addLog(failTrust[Math.floor(Math.random() * failTrust.length)], "log-flavor");
-                        } else {
-                            const failDep = [
-                                "彼は痛みに悶えながらも、助けを求めるように手を伸ばしている。",
-                                "傷の痛みよりも、見捨てられるかもしれないという恐怖が彼を支配しているようだ。"
-                            ];
-                            addLog(failDep[Math.floor(Math.random() * failDep.length)], "log-flavor");
-                        }
-                    }
+                    const battleFailFlavor = {
+                        trust: [
+                            "彼はあなたを庇おうと敵の前に立ちはだかり、傷を負った。",
+                            "己の無力さを呪うように、彼は床に伏しながら血を吐き出した。"
+                        ],
+                        high_trust: [
+                            "彼は主人として従者であるあなたを守るため、自ら盾となった。",
+                            "敵の凶刃からあなたを庇い、彼は苦痛に顔を歪めながらも迎撃した。"
+                        ],
+                        dependence: [
+                            "彼は痛みに悶えながらも、助けを求めるように手を伸ばしている。",
+                            "傷の痛みよりも、見捨てられるかもしれないという恐怖が彼を支配しているようだ。"
+                        ],
+                        heavy_trust: [
+                            "意識のない彼は身を守る術を持たず、理不尽な暴力に晒されてしまった。",
+                            "彼を守り切れなかった。まっさらなシーツに鮮血が染み込んでいく。"
+                        ],
+                        heavy_dependence: [
+                            "彼の体についた無惨な傷。あなたの胸中に、激しい衝動が湧き上がる。",
+                            "所有物が他人に傷つけられた。その事実が、あなたの支配欲をさらに刺激する。"
+                        ]
+                    };
+                    let failLog = getRandomFlavor(battleFailFlavor, state, 'master', false);
+                    if (failLog) addLog(failLog, "log-flavor");
                 }
                 } else {
                     let reward = 15 + Math.floor(state.turn * 0.5);
@@ -2845,35 +3178,30 @@ if (state.battleActive) {
                     state.endOfTurnEffects.push(`戦闘勝利: 資金+${reward}G`);
                     
                     // 防衛成功時の情景描写
-                    if (state.debuff === 'heavy') {
-                        if (state.relation >= 0) {
-                            const winHeavyTrust = [
-                                "血に濡れて戻ったあなたを、ただ静かな寝息だけが出迎えた。",
-                                "敵の排除を終え部屋に戻ったが、彼が目を覚ます気配はない。"
-                            ];
-                            addLog(winHeavyTrust[Math.floor(Math.random() * winHeavyTrust.length)], "log-flavor");
-                        } else {
-                            const winHeavyDep = [
-                                "外の惨状も知らず、彼は部屋で眠り続けている。",
-                                "彼の寝顔を眺める。これを傷つけていいのは、あなただけだ。"
-                            ];
-                            addLog(winHeavyDep[Math.floor(Math.random() * winHeavyDep.length)], "log-flavor");
-                        }
-                    } else {
-                        if (state.relation >= 0) {
-                            const winTrust = [
-                                "敵を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。",
-                                "戦いから戻ったあなたを見て、彼は自らが負担になっている現実に顔を歪めた。"
-                            ];
-                            addLog(winTrust[Math.floor(Math.random() * winTrust.length)], "log-flavor");
-                        } else {
-                            const winDep = [
-                                "圧倒的な暴力で敵を蹂躙するあなたを見て、彼は胸を撫でおろした。",
-                                "彼は、返り血を浴びたあなたに心酔しているようだ。"
-                            ];
-                            addLog(winDep[Math.floor(Math.random() * winDep.length)], "log-flavor");
-                        }
-                    }
+                    const battleWinFlavor = {
+                        trust: [
+                            "敵を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。",
+                            "戦いから戻ったあなたを見て、彼は自らが負担になっている現実に顔を歪めた。"
+                        ],
+                        high_trust: [
+                            "敵を撃退し戻ると、彼は主人としてあなたの働きを労った。",
+                            "彼は血に濡れたあなたを案じている。返り血であることを確認し、ようやく安堵の表情を浮かべた。"
+                        ],
+                        dependence: [
+                            "圧倒的な暴力で敵を蹂躙するあなたを見て、彼は胸を撫でおろした。",
+                            "彼は、返り血を浴びたあなたに心酔しているようだ。"
+                        ],
+                        heavy_trust: [
+                            "血に濡れて戻ったあなたを、ただ静かな寝息だけが出迎えた。",
+                            "敵の排除を終え部屋に戻ったが、彼が目を覚ます気配はない。"
+                        ],
+                        heavy_dependence: [
+                            "外の惨状も知らず、彼は部屋で眠り続けている。",
+                            "彼の寝顔を眺める。これを傷つけていいのは、あなただけだ。"
+                        ]
+                    };
+                    let winLog = getRandomFlavor(battleWinFlavor, state, 'master', false);
+                    if (winLog) addLog(winLog, "log-flavor");
                 }
             }
 
@@ -2964,7 +3292,7 @@ function openShop() {
             state.shopCards.forEach((card, idx) => {
                 if (!card) return;
                 const item = document.createElement('div'); item.className = 'shop-item';
-let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', attachment: '愛着' }[card.type];                
+let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' }[card.type];                
                 item.innerHTML = `<div>
                         <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
                             <span class="card-type type-${card.type}" style="margin-bottom: 0;">${typeN}</span>
@@ -3298,9 +3626,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
         if (history.timeline && history.timeline.length > 0) {
             let currentGroupType = null;
             let groupItems = [];
-            let inItems = [];
-            let outItems = [];
-            
+
             const renderGroup = () => {
                 if (groupItems.length === 0) return '';
                 let result = '';
@@ -3319,31 +3645,27 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                                 ${eventBadges}
                              </div>`;
                 } else if (currentGroupType === 'USE') {
-                    groupItems.forEach(item => {
+                    let useCards = groupItems.map(item => {
                         let c = item.data;
                         let targetSuffix = '';
                         if (c.type === 'harm') {
                             if (c.target === 'master') targetSuffix = '（主人）';
                             else if (c.target === 'battle') targetSuffix = '（敵）';
                         }
-                        result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
-                                    <span style="${labelStyle}">USE</span>
-                                    <div style="display: flex; align-items: center; margin-top: 1px;">
-                                        <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
-                                        <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${targetSuffix}</span>
-                                    </div>
-                                 </div>`;
-                    });
-                }
-                
-                groupItems = [];
-                return result;
-            };
+                        return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
+                                    <span class="card-type type-${c.type}" style="margin-bottom: 0; margin-right: 3px; font-size: 7px; padding: 1px 3px; font-family: 'Zen Kaku Gothic New', sans-serif !important; font-weight: normal;">${typeNames[c.type] || '不明'}</span>
+                                    <span style="font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${c.name}${targetSuffix}</span>
+                                </div>`;
+                    }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
 
-            const renderInOut = () => {
-                let result = '';
-                if (inItems.length > 0) {
-                    let mixedCards = inItems.map(item => {
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
+                                <span style="${labelStyle}">USE</span>
+                                <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
+                                    ${useCards}
+                                </div>
+                             </div>`;
+                } else if (currentGroupType === 'IN') {
+                    let inCards = groupItems.map(item => {
                         let c = item.data;
                         let suffix = item.category === 'obtained' ? '（入）' : '（購）';
                         return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
@@ -3355,12 +3677,11 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                     result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
                                 <span style="${labelStyle}">IN</span>
                                 <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
-                                    ${mixedCards}
+                                    ${inCards}
                                 </div>
                              </div>`;
-                }
-                if (outItems.length > 0) {
-                    let mixedCards = outItems.map(item => {
+                } else if (currentGroupType === 'OUT') {
+                    let outCards = groupItems.map(item => {
                         let c = item.data;
                         let suffix = item.category === 'sold' ? '（売）' : '（処）';
                         return `<div style="display: inline-flex; align-items: center; white-space: nowrap;">
@@ -3372,12 +3693,12 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                     result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
                                 <span style="${labelStyle}">OUT</span>
                                 <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
-                                    ${mixedCards}
+                                    ${outCards}
                                 </div>
                              </div>`;
                 }
-                inItems = [];
-                outItems = [];
+                
+                groupItems = [];
                 return result;
             };
 
@@ -3393,26 +3714,14 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                     groupType = 'OUT';
                 }
                 
-                if (groupType === 'IN') {
-                    inItems.push(event);
-                } else if (groupType === 'OUT') {
-                    outItems.push(event);
-                } else {
-                    // イベントや使用行動が来たタイミングで、溜まっていた IN / OUT を一括出力
-                    if (inItems.length > 0 || outItems.length > 0) {
-                        html += renderInOut();
-                    }
-                    if (currentGroupType !== groupType) {
-                        html += renderGroup();
-                        currentGroupType = groupType;
-                    }
-                    groupItems.push(event);
+                if (currentGroupType !== groupType && groupItems.length > 0) {
+                    html += renderGroup();
                 }
+                currentGroupType = groupType;
+                groupItems.push(event);
             });
-            // 最後に残っているイベントや使用行動を出力
+            // 最後に残っているものを出力
             html += renderGroup(); 
-            // 最後に残っている IN / OUT（購入売却フェーズの履歴）を一括出力
-            html += renderInOut(); 
         } // end if (history.timeline && history.timeline.length > 0)
 
        html += `</div>`;
@@ -3878,10 +4187,13 @@ function updateBuffDebuffDetails() {
         continuousEffects.push(`次戦闘の脅威度低下: -${activeBuffs.threatReduction}`);
     }
     if (activeBuffs.isMadness) {
-        continuousEffects.push(`<span style="font-weight: bold; color: #e74c3c;">発狂: すべてのカードによる関係性の増減がランダム</span>`);
+        continuousEffects.push(`<span style="font-weight: bold; color: #e74c3c; font-family: 'Zen Kaku Gothic New', sans-serif !important;">発狂: すべてのカードによる関係性の増減がランダム</span>`);
     }
-    if (activeBuffs.hasKnife) {
+   if (activeBuffs.hasKnife) {
         continuousEffects.push(`自衛: 次の戦闘失敗時、ダメージを一度だけ無効化`);
+    }
+  if (state.isTantrum) {
+        continuousEffects.push(`八つ当たり状態: 次カードを使用する(昏睡時を除く）と解除。ケア・季節は依存(-)に、冷淡・主人へ攻撃は矜持(+)に傾く。`);
     }
     
     let allCards = [...state.deck, ...state.hand, ...state.discard];
@@ -3917,10 +4229,12 @@ function updateBuffDebuffDetails() {
         continuousEffects.push(`マンネリ状態 (${mannerismCards.join(', ')}): 回復・ストレス軽減が半減`);
     }
     
-    if (state.relation >= 0) {
-        continuousEffects.push(`矜持状態(関係性+): 直接ケア時ストレス増加 / 関係性上昇半減`);
-    } else {
-        continuousEffects.push(`依存状態(関係性-): 直接ケア時関係性低下 / 間接ケア時回復半減・ストレス+10`);
+    if (!activeBuffs.isMadness) {
+        if (state.relation >= 0) {
+            continuousEffects.push(`矜持状態(関係性+): 直接ケア時ストレス増加 / 関係性上昇半減`);
+        } else {
+            continuousEffects.push(`依存状態(関係性-): 直接ケア時関係性低下 / 間接ケア時回復半減・ストレス+10`);
+        }
     }
 
     if (continuousEffects.length > 0) {
@@ -4167,7 +4481,7 @@ function toggleBuffDebuffDetails() {
                 <div class="status-card">
                     <div class="status-card-title">ストレス</div>
                     <div class="status-card-desc">
-                        主人の精神的な負荷です。<br>一定値を超えた状態でターンを開始すると主人は体調を崩し、デバフが付与されます。<br>（デバフ内容がヘッダーに表示されます）<br>
+                        主人の精神的な負荷です。<br>一定値を超えた状態でターンを開始すると健康度が減少するペナルティが発生します。また、ストレスが高くなるほど主人は体調を崩しやすくなり、デバフが付与される場合が上がります。<br>
                     </div>
                 </div>
                 <div class="status-card">
@@ -4263,7 +4577,7 @@ function toggleBuffDebuffDetails() {
                         <div class="flow-step-title">準備</div>
                     </div>
                     <div class="flow-step-body">
-                        デッキからカードがドローされ、このターンのデバフ状態や、戦闘アラートなどが通知されます。
+                        デッキからカードがドローされ、このターンのデバフ状態や、戦闘アラートなどが通知されます。<br>また、季節の変化や主人の様子など、ランダムなイベントが発生することがあります。
                     </div>
                 </div>
                 <div class="flow-step">
@@ -4311,11 +4625,19 @@ function toggleBuffDebuffDetails() {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.7</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.8</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+<p style="font-size: 9px;">■ver 0.8<br>
+・通常状態のフレーバーテキストを全カードに追加しました。<br>
+・フレーバーテキストの表示方法を変更し、関係性の偏りが高いほど矜持・依存のテキストが出るようにしました。<br>
+・イベント及び状態異常を一種追加しました。<br>
+</p>
+
+
+
 <p style="font-size: 9px;">■ver 0.7<br>
 ・イベントを3種、カードを2種、エンディングを2種追加しました。<br>
 ・現在の状態やカード効果以外での数値変動がわかるアラートタブを追加しました。<br>
