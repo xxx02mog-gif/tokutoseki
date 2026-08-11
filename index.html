@@ -950,8 +950,8 @@ const CARD_POOL = {
             actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}], 
             desc: "健康+5。ストレス-10。関係性+2。", 
             flavor: { 
-                trust: ["彼の口元へコップを運ぶと、途中でコップを奪われてしまった。"], 
-                high_trust: ["あなたがコップを差し出すと、彼は礼を言い、自分で受け取って飲んだ。"],
+                trust: ["口元へコップを運ぶと、途中で彼にコップを奪われてしまった。"], 
+                high_trust: ["あなたがコップを差し出すと、彼は礼を言い、自ら受け取って飲んだ。"],
                 dependence: ["彼は、あなたが手ずから水を飲ませてくれることが嬉しいようだ。"],
                 mannerism: ["いつものように水を飲ませる。二人の間に言葉はない。"],
                 heavy_trust: ["彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。"],
@@ -1053,8 +1053,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", 
-            actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", 
+            name: "輸血を行う", type: "direct", value: 15, cost: 2, valType: "flat", 
+            actions: [{type: "heal", value: 50}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+50。関係性+15。次ターンの初期AP-1（使い切り）", 
             flavor: { 
                 trust: ["あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。"], 
                 high_trust: ["彼は、血を分けてくれるあなたの献身に報いなければならないと思っているようだ。"],
@@ -1064,7 +1064,7 @@ const CARD_POOL = {
         },
         { 
             name: "過呼吸の対処", type: "direct", value: 30, cost: 2, valType: "percent", 
-            actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+30%。次ターンの初期AP-1", 
+            actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。ストレス-20。関係性+30%。次ターンの初期AP-1", 
             flavor: { 
                 trust: ["引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。"], 
                 high_trust: ["あなたが背中をさすると、彼はすぐに落ち着きを取り戻し、あなたの手に触れた。"],
@@ -1491,7 +1491,7 @@ const SPECIAL_CARDS = {
         name: "水を与える", type: "direct", value: 2, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 30}, 
-            {type: "stress", value: -30}, 
+            {type: "stress", value: -30, isFixed: true}, 
             {type: "set_debuff", value: "heavy"},
             {type: "buff", key: "waterStressDuration", value: 3}
         ], 
@@ -1509,7 +1509,7 @@ const SPECIAL_CARDS = {
         name: "水を与える", type: "direct", value: 0, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 30}, 
-            {type: "stress", value: -30}, 
+            {type: "stress", value: -30, isFixed: true}, 
             {type: "buff", key: "waterStressDuration", value: 3},
             {type: "set_relation_zero"}
         ], 
@@ -1527,11 +1527,11 @@ const SPECIAL_CARDS = {
         name: "水を与える", type: "direct", value: 0, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 30}, 
-            {type: "stress", value: -30},
+            {type: "stress", value: -30, isFixed: true},
             {type: "set_madness"},
             {type: "consume"}
         ], 
-        desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる。(使い切り)", 
+        desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる。(使い切り)",
         flavor: { 
             trust: ["彼はその水を飲み干した。目が、異様な光を帯びている。"], 
             high_trust: ["かつての矜持を取り戻しかけていた彼の心を、その水は容易に壊してしまった。"],
@@ -2824,7 +2824,7 @@ let calcRelationDelta = function(targetCard, currentTarget) {
                         healVal = Math.floor(healVal / 2);
                     }
                     // マンネリ減衰処理を追加
-                    if (isMannerism && healVal > 0) {
+                    if (isMannerism && healVal > 0 && !action.isFixed) {
                         healVal = Math.floor(healVal / 2);
                     }
                     state.health = Math.min(100, Math.max(0, state.health + healVal));
@@ -2832,11 +2832,11 @@ let calcRelationDelta = function(targetCard, currentTarget) {
 
                 case "stress":
                     let stressVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? (action.trust || 0) : (action.dep || 0));
-                    if (card.type === 'indirect' && state.relation < 0 && stressVal < 0) {
+                    if (card.type === 'indirect' && state.relation < 0 && stressVal < 0 && !action.isFixed) {
                         stressVal = 10;
                     }
                     // マンネリ減衰処理を追加（ストレス減少効果のみ減衰させる）
-                    if (isMannerism && stressVal < 0) {
+                    if (isMannerism && stressVal < 0 && !action.isFixed) {
                         stressVal = Math.floor(stressVal / 2);
                     }
                     state.stress = Math.min(100, Math.max(0, state.stress + stressVal));
