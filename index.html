@@ -1256,8 +1256,8 @@ const CARD_POOL = {
             }
         },
         { 
-            name: "冷酷な事実", type: "cold", value: -7, cost: 2, valType: "flat", 
-            actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-7", 
+            name: "冷酷な事実", type: "cold", value: -5, cost: 2, valType: "flat", 
+            actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-5", 
             flavor: { 
                 trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
                 high_trust: ["彼は毅然と事実を受け止めつつ、僅かにあなたへ縋るような視線を向けた。"],
@@ -1268,8 +1268,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "私物の没収", type: "cold", value: -10, cost: 1, valType: "flat", 
-            actions: [{type: "stress", value: 15}, { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-10。資金+5~30G", 
+            name: "私物の没収", type: "cold", value: -40, cost: 1, valType: "flat", 
+            actions: [{type: "stress", value: 15}, { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-4。資金+5~30G", 
             flavor: { 
                 trust: ["あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。"], 
                 high_trust: ["私物を処分したことについて、彼は好きにするよう言った。"],
@@ -1280,8 +1280,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", 
-            actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-10", 
+            name: "整備を意図的に怠る", type: "cold", value: -2, cost: 1, valType: "flat", 
+            actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-2。次の戦闘時、脅威度を-10", 
             flavor: { 
                 trust: ["片脚が悪い彼は、整備されていない道では歩きにくいようだ。"], 
                 high_trust: ["彼は荒れた屋敷に思うところがあるのか、ふう、とため息を付いた。"],
@@ -1336,9 +1336,9 @@ const CARD_POOL = {
     ],
     harm: [
         { 
-            name: "毒の調合", type: "harm", masterValue: -10, battleValue: 1, cost: 1, valType: "flat", isMasterAlways: true, 
+            name: "毒の調合", type: "harm", masterValue: -5, battleValue: 1, cost: 1, valType: "flat", isMasterAlways: true, 
             actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}], 
-            desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", 
+            desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-5", 
             flavor: { 
                 trust: ["苦い薬を食事に混ぜても、彼は何も言わずにそれを飲み干す。"], 
                 high_trust: ["彼はそれが毒だと知りながら、黙って飲み込む。信頼という名の圧力を感じる。"],
@@ -1410,8 +1410,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "威嚇射撃", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。関係性+2。資金+10~15G", 
+            name: "威嚇射撃", type: "harm", value: 3, cost: 1, valType: "flat", isBattleOnly: true, 
+            actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。関係性+3。資金+10~15G", 
             flavor: { 
                 trust: ["威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。"], 
                 high_trust: ["彼は銃声に肩を揺らしたが、すぐに状況を見極めようと気を引き締めた。"],
@@ -1420,8 +1420,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "容赦なき追撃", type: "harm", value: 3, cost: 1, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+3", 
+            name: "容赦なき追撃", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, 
+            actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+2", 
             flavor: { 
                 trust: ["あなたは、撤退してゆく容赦なく敵を追い詰めた。"], 
                 high_trust: ["危険な役割を担うあなたを、彼は痛ましく思いながら見守っている。"],
@@ -1542,12 +1542,12 @@ const SPECIAL_CARDS = {
         } 
     },
     secret_attachment_1: { 
-        name: "手を握って付き添う", type: "attachment", isMasterAlways: false, value: 15, cost: 1, valType: "flat", 
+        name: "手を握って付き添う", type: "attachment", isMasterAlways: false, value: 25, cost: 1, valType: "flat", 
         actions: [
             {type: "stress", value: -35}, 
             {type: "consume"} 
         ], 
-        desc: "ストレス-35。関係性+15（使い切り）", 
+        desc: "ストレス-35。関係性+25（使い切り）", 
         flavor: { 
             trust: ["あなたは彼の手をそっと握った。彼は目を覚まさないまま、眉間の皺をわずかに緩めた。"], 
             high_trust: ["起きている時態度とは裏腹に、彼の指先はあなたの手をそっと握り返してきた。"],
@@ -1558,10 +1558,10 @@ const SPECIAL_CARDS = {
         name: "頭を撫でる", type: "attachment", isMasterAlways: false, value: 10, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 25}, 
-            {type: "stress", value: -45}, 
+            {type: "stress", value: -25}, 
             {type: "consume"} 
         ], 
-        desc: "健康+25。ストレス-45。関係性+10（使い切り）", 
+        desc: "健康+25。ストレス-25。関係性+10（使い切り）", 
         flavor: { 
             trust: ["彼の前髪をそっとかき分けて、頭を撫でた。微睡みの中にいる彼の顔は、いつもよりも幼く見える。"], 
             high_trust: ["彼が起きていれば窘められそうだが、今は素直に心地よさそうにしている。"],
@@ -1569,13 +1569,13 @@ const SPECIAL_CARDS = {
         } 
     },
     secret_attachment_3: { 
-        name: "じっと見守る", type: "attachment", isMasterAlways: false, value: 25, cost: 1, valType: "flat", 
+        name: "じっと見守る", type: "attachment", isMasterAlways: false, value: 15, cost: 1, valType: "flat", 
         actions: [
-            {type: "heal", value: 25}, 
+            {type: "heal", value: 35}, 
             {type: "stress", value: -20}, 
             {type: "consume"} 
         ], 
-        desc: "健康+25。ストレス-20。関係性+25（使い切り）", 
+        desc: "健康+35。ストレス-20。関係性+15（使い切り）", 
         flavor: { 
             trust: ["ベッドに腰掛け、深い眠りの中、時折小さく身じろぎする彼をぼんやりと眺めて過ごした。"], 
             high_trust: ["穏やかな寝息を立てる彼を見つめる。その表情はあどけなく、無防備だった。"],
