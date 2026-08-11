@@ -813,7 +813,7 @@ display: flex;
                 </div>
                 <div class="tab-area">
                     <div class="tab-btn active" id="tab-buy" onclick="switchShopTab('buy')">カード購入</div>
-                    <div class="tab-btn" id="tab-dispose" onclick="switchShopTab('dispose')">カード処分</div>
+                    <div class="tab-btn" id="tab-dispose" onclick="switchShopTab('dispose')">カード売却</div>
                 </div>
                 
                 <div id="shop-buy-view" class="shop-layout"></div>
@@ -3364,13 +3364,13 @@ function buyCard(idx, cost, btnEl) {
                 headerText = "各月の1回目の売却：カードを売って 資金(+20G) を得られます。";
             } else {
                 let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
-                headerText = `2回目以降の処分：廃棄コストとして 資金(-${nextCost}G) を消費します。`;
+                headerText = `2回目以降の売却：売却コストとして 資金(-${nextCost}G) を消費します。`;
             }
             
             view.innerHTML = `<div style="font-size:10px; color:#aaa; margin-bottom:4px; font-family: 'Zen Kaku Gothic New', sans-serif;">${headerText}</div>`;
             
             let rawCards = [...state.deck, ...state.discard];
-            if (rawCards.length === 0) { view.innerHTML += '<div>処分できるカードがありません。</div>'; return; }
+            if (rawCards.length === 0) { view.innerHTML += '<div>売却できるカードがありません。</div>'; return; }
             
             // 元のインデックスを保持した上で種類ごとにソート（★attachmentを追加）
             const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
@@ -3397,11 +3397,11 @@ function buyCard(idx, cost, btnEl) {
                     let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
                     let netCost = nextCost - bonusGold;
                     if (netCost <= 0) {
-                        // ボーナスが処分コストを上回る場合は資金増（青ボタン）にする
-                        btnText = `処分(+${Math.abs(netCost)}G)`; 
+                        // ボーナスが売却コストを上回る場合は資金増（青ボタン）にする
+                        btnText = `売却(+${Math.abs(netCost)}G)`; 
                         btnClass = "btn-primary";
                     } else {
-                        btnText = `処分(-${netCost}G)`; 
+                        btnText = `売却(-${netCost}G)`; 
                         btnClass = "btn-danger";
                     }
                 }
@@ -3427,7 +3427,7 @@ function calculateBonusGold(cardName) {
         function disposeCard(combinedIdx, btnEl) {
             let allCards = [...state.deck, ...state.discard];
             if (allCards.length <= 1) {
-                showCustomAlert("デッキの最小枚数（1枚）を下回るため、これ以上処分できません。");
+                showCustomAlert("デッキの最小枚数（1枚）を下回るため、これ以上売却できません。");
                 return;
             }
             
@@ -3437,7 +3437,7 @@ function calculateBonusGold(cardName) {
             
 let baseDisposeCost = 10;
             let costIncrease = 20;
-            let actionType = '処分';
+            let actionType = '売却';
             
             let netCost = 0;
             if (targetCard.name === "贈り物") {
@@ -3451,7 +3451,7 @@ let baseDisposeCost = 10;
             }
 
             if (netCost > 0 && state.gold < netCost) { 
-                showCustomAlert("処分費用が足りません。"); 
+                showCustomAlert("売却費用が足りません。"); 
                 return; 
             }
 
@@ -3486,12 +3486,12 @@ let baseDisposeCost = 10;
                     }
                 }
 
-                // ★追加：処分したカードが不用品だった場合の記録
+                // 売却したカードが不用品だった場合の記録
                 if (removed.type === 'obstacle') {
                     state.hasDisposedObstacle = true;
                 }
 
-                // 処分したカードの名前を playedCardsList からすべて削除（カウントリセット）
+                // 売却したカードの名前を playedCardsList からすべて削除（カウントリセット）
                 if (state.playedCardsList) {
                     state.playedCardsList = state.playedCardsList.filter(c => c && c.name !== removed.name);
                 }
