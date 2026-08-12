@@ -1204,7 +1204,7 @@ const CARD_POOL = {
                 trust: ["中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。"], 
                 high_trust: ["彼は手入れされた中庭を眺めながら、次に手を入れる箇所を算段している。"],
                 dependence: ["外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。"],
-                mannerism: ["庭の手入れも、もはや時間の経過を知らせる作業に過ぎない。"]
+                mannerism: ["庭の手入れをしている姿は、すっかり景色に馴染んでいる。"]
             }
         },
         {
@@ -1370,7 +1370,6 @@ const CARD_POOL = {
                 trust: ["あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。"], 
                 high_trust: ["悲惨な光景に目を背けながらも、彼はその意図を汲み取り、顛末を見届けている。"],
                 dependence: ["庭先に惨たらしい魔物の死体を吊るした。彼が目覚めた時のことを考え、ほくそ笑む。"], 
-                mannerism: ["惨たらしい死体を見ても、もはや何の感情も湧かないようだ。"],
                 battle: ["捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。"],
                 heavy_battle: ["捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。"]
             } 
@@ -1382,9 +1381,12 @@ const CARD_POOL = {
             flavor: { 
                 trust: ["あなたは形見の宝刀を構え、因縁に終止符を打った。"], 
                 dependence: ["あまりにあっけなく、復讐は終わった。"], 
-                mannerism: ["こんなものばかり斬っていても、意味がない。","他に、斬らなければいけないものがあるはずだ。"],
-                battle: ["形見の宝刀を抜き放ち、あなたは迫り来る敵を容赦なく斬り捨てた。"],
-                heavy_battle: ["他人を彼に近づけまいと必死になっている自分への嫌悪。あなたはひたすら宝刀を振るう。"]
+                mannerism: {
+                    battle: ["こんなものばかり斬っていても意味がない。","あなたには、他に斬らなければいけないものがあるはずだ。"],
+                    master: ["宝刀で彼の体を貫く。あなたはようやく本懐を遂げた。"]
+                },
+                battle: ["形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。"],
+                heavy_battle: ["他人を彼に近づけまいと必死になっている自分への嫌悪を抱えながら、あなたはひたすら宝刀を振るう。"]
             } 
         },
         { 
@@ -2112,7 +2114,14 @@ function getRandomFlavor(flavorObj, state, context, isMannerism) {
 
     // 1. マンネリ判定
     if (isMannerism && flavorObj.mannerism) {
-        let text = pickText(flavorObj.mannerism);
+        let text = "";
+        // mannerismがオブジェクトで定義されている場合、コンテキスト(battle/master)に応じて出し分ける
+        if (!Array.isArray(flavorObj.mannerism) && typeof flavorObj.mannerism === 'object') {
+            let contextKey = context === 'battle' ? 'battle' : 'master';
+            text = pickText(flavorObj.mannerism[contextKey]);
+        } else {
+            text = pickText(flavorObj.mannerism);
+        }
         if (text) return text;
     }
 
