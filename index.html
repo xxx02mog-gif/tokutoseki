@@ -2479,7 +2479,7 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                     }
 
                     // 3. マンネリ（灰色の▼）：次に使うと同名カードの使用回数が5回目に達する場合
-                    if (['direct', 'indirect'].includes(card.type)) {
+                    if (['direct', 'indirect', 'cold', 'harm'].includes(card.type)) {
                         let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
                         if (sameCardCount >= 4) { // 次に使った時点で5回目になるため、4回の時点で予告表示する
                             debuffIconsHTML += `<span style="color: #aaaaaa; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="マンネリ：回復・ストレス軽減が半減">▼</span>`;
@@ -2660,8 +2660,8 @@ function executeCard(target) {
 
     // --- マンネリ（効果減衰）の判定 ---
     let isMannerism = false;
-    // 戦闘用(harm)や季節限定(season)は対象外とする
-    if (['direct', 'indirect'].includes(card.type)) {
+    // 季節限定(season)・不用品・愛着は対象外とする
+    if (['direct', 'indirect', 'cold', 'harm'].includes(card.type)) {
         // 関係性の条件を撤廃し、使用回数のみで判定する
         let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
         if (sameCardCount >= 5) { // ★ 3 から 5 に変更
@@ -4210,7 +4210,7 @@ function updateBuffDebuffDetails() {
     if (state.playedCardsList) {
         let cardCounts = {};
         state.playedCardsList.forEach(c => {
-            if (c && ['direct', 'indirect'].includes(c.type)) {
+            if (c && ['direct', 'indirect', 'cold', 'harm'].includes(c.type)) {
                 cardCounts[c.name] = (cardCounts[c.name] || 0) + 1;
             }
         });
