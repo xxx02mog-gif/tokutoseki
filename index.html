@@ -50,17 +50,15 @@ html, body, * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            /* 高級感と洗練された印象を与える高品位なサンセリフ・セリフ体の組み合わせ */
-     font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif;
-
+            font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif;
         }
 html {
-    background-color: #0b0b0b;
+    background-color: #070707;
 }
 body {
-    background-color: #0b0b0b;
-    background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
-    color: #e5e5e5;
+    background-color: #070707;
+    background-image: none;
+    color: #e0e0e0;
     display: flex;
     flex-direction: column;
     /* 変更箇所: min-height: 100vh; を以下の2行に変更 */
@@ -80,13 +78,13 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    /* 深い黒の背景に、繊細なゴールドの枠線 */
-    background-color: rgba(20, 20, 20, 0.95);
-    border: 1px solid #d4af37;
-    padding: 10px;
+    background-color: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(212, 175, 55, 0.25);
     border-bottom: none;
-    margin-bottom: -10px; /* 変更①: 10pxから0に変更し、隙間をなくす */
-    /* 変更②: 下のメイン要素と一体化させるため、ヘッダー個別の影を削除 */
+    padding: 12px 10px 5px;
+    margin-bottom: 0;
 }
         
         .info-row {
@@ -135,10 +133,10 @@ body {
         }
         .status-bar-bg {
             width: 100%;
-            height: 6px;
+            height: 3px;
             border-radius: 0px;
-            background-color: #0b0b0b;
-            border: 1px solid #444;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
             overflow: hidden;
             position: relative;
         }
@@ -278,13 +276,12 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: #141414;
-    
-    border: 1px solid #d4af37;
-    border-top: none; /* 変更③: 枠線が二重になるのを防ぐため、上の枠線を消す */
+    background-color: #0a0a0a;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-top: 0px solid rgba(255, 255, 255, 0.05);
     padding: 10px;
     overflow: hidden;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+    box-shadow: none;
 }
 
         #log-area {
@@ -403,38 +400,36 @@ body {
     padding: 2px;
 }
 
-        /* カードデザイン：艶のある黒に細い金枠 */
+        /* カードデザイン：フラットで洗練されたマットな質感 */
         .game-card {
-            background: linear-gradient(135deg, #222222 0%, #151515 100%);
-            border: 1px solid #444444;
-            padding: 6px 6px 8px 6px;
+            background-color: #121212;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 8px 10px 8px;
             text-align: left;
-            color: #ffffff;
+            color: #eeeeee;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             min-height: 65px;
-            height: 100%; /* ← この行を追加 */
-            transition: all 0.2s;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+            height: 100%;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            box-shadow: none;
             position: relative; 
         }
         .game-card:hover {
-            border-color: #8c7c4a;
+            border-color: rgba(212, 175, 55, 0.5);
+            background-color: #161616;
         }
         .game-card:active {
-            background: #2a2a2a;
+            background-color: #0f0f0f;
         }
         
 .game-card.selected-card {
-    border: 1px solid #d4af37 !important;
-    
-    /* 12px → 6px に変更して発光を小さくする */
-    box-shadow: 0 0 2px rgba(212, 175, 55, 0.8); 
-    
-    background: linear-gradient(135deg, #2a2820 0%, #1a1915 100%);
-    position: relative; /* カード同士の重なりを防ぐため念のため残しておくのがおすすめです */
+    border: 1px solid rgba(212, 175, 55, 0.9) !important;
+    box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.2);
+    background-color: #171510;
+    position: relative;
     z-index: 10;
 }
 
@@ -496,41 +491,59 @@ body {
             color: #0b0b0b;
         }
 
-        /* ボタンデザインの変更 */
+        /* ボタンデザイン：シャドウを排除し、タイポグラフィと枠線で魅せる */
         .btn {
             display: block;
             width: 100%;
-            background-color: #1f1f1f;
+            background-color: transparent;
             color: #d4af37;
-            border: 0px solid #d4af37;
-            padding: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            padding: 12px 10px;
             margin-top: 6px;
-            border-radius: 1px;
-            font-weight: bold;
-            font-size: 14px;
+            border-radius: 0;
+            font-family: 'Zen Old Mincho', serif;
+            letter-spacing: 2px;
+            font-size: 13px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        white-space: nowrap;
-    flex-shrink: 0;}
-        .btn:active { 
-            background-color: #2a2a2a; 
+            transition: all 0.2s ease;
+            box-shadow: none;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
-        /* 主要ボタンは金ベースに黒文字 */
+        .btn:hover {
+            background-color: rgba(212, 175, 55, 0.05);
+            border-color: rgba(212, 175, 55, 0.8);
+        }
+        .btn:active { 
+            background-color: rgba(212, 175, 55, 0.1); 
+        }
+        /* 主要ボタン */
         .btn-primary { 
-            background-color: #d4af37; 
-            color: #0b0b0b;
+            background-color: rgba(212, 175, 55, 0.85); 
+            color: #050505;
+            border: 1px solid transparent;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            background-color: #d4af37;
+            border-color: transparent;
         }
         .btn-primary:active { 
             background-color: #bfa343; 
         }
+        /* 危険ボタン */
         .btn-danger { 
-            background-color: #7d1f18; 
-            color: #ffffff;
+            background-color: transparent;
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.4);
+        }
+        .btn-danger:hover {
+            background-color: rgba(231, 76, 60, 0.05);
+            border-color: rgba(231, 76, 60, 0.8);
         }
         .btn-danger:active {
-            background-color: #96251d;
+            background-color: rgba(231, 76, 60, 0.1);
         }
         
         .target-selector {
@@ -662,22 +675,22 @@ display: flex;
 
 
 /* ==========================================
-   ボタン等の押し込み・沈み込み演出（維持）
+   ボタン等の押し込み演出（モダンに最適化）
    ========================================== */
 .btn, .game-card, .target-btn, .tab-btn {
-    transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), 
-                box-shadow 0.2s ease, 
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), 
                 border-color 0.2s ease,
-                background-color 0.2s ease;
+                background-color 0.2s ease,
+                opacity 0.2s ease;
     user-select: none;
-    -webkit-tap-highlight-color: transparent; /* スマホタップ時の青枠を消す */
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* 押し込んだ瞬間：微小に沈み込み、ほんのり発光 */
+/* 押し込んだ瞬間：過剰なエフェクトを消し、純粋な沈み込みと透過のみで表現 */
 .btn:active, .game-card:active, .target-btn:active, .tab-btn:active {
-    transform: scale(0.99) !important;
-    box-shadow: 0 0 0px rgba(212, 175, 55, 0.35), 
-                inset 0 0 8px rgba(212, 175, 55, 0.2) !important;
+    transform: scale(0.98) !important;
+    box-shadow: none !important;
+    opacity: 0.8;
 }
 
 /* ==========================================
