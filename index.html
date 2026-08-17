@@ -303,8 +303,7 @@ body {
             color: #aaaaaa; 
             font-style: italic; 
             font-size: 11px; 
-            padding-left: 6px; 
-            border-left: 2px solid #d4af37; 
+            padding-left: 3px; 
             font-family: 'Zen Old Mincho', serif;
         }
 
@@ -328,8 +327,7 @@ body {
         }
 
 #action-area {
-    background-color: #1a1a1a;
-    padding: 8px;
+
     
     
     /* 以下の4行を追加 */
@@ -363,8 +361,6 @@ body {
         }
 
         .battle-phase-alert {
-            background-color: #1a1a1a;
-            border: 0px solid #962d22;
             color: #e74c3c;
             padding: 0px;
             font-size: 10px;
@@ -778,7 +774,7 @@ display: flex;
                 <div class="buff-debuff-details" style="display: none; background-color: #111; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
                 
                 <div class="section-title">
-                    <span>行動フェーズ</span>
+                    <span></span>
                     <div style="display: flex; gap: 8px; font-size: 12px; color: #e5e5e5; font-weight: normal; align-items: center;">
                         <span>AP: <strong id="stat-ap" style="color:#f1c40f;">3/3</strong></span>
                         <span>資金: <strong id="stat-gold" style="color:#b57c1e;">100</strong></span>
@@ -798,14 +794,14 @@ display: flex;
                     <div class="target-btn" style="background-color:#1a1a1a;" onclick="cancelTargetSelect()">キャンセル</div>
                 </div>
 
-                <button class="btn" id="end-week-btn" onclick="processWeekEnd()">行動フェーズを終了</button>
+                <button class="btn" id="end-week-btn" onclick="processWeekEnd()">行動を終了</button>
             </div>
         </div>
 
        <div id="phase-shop-container" style="display: none;">
             <div class="phase-scroll-area">
                 <div class="section-title">
-                    <span>購入・売却フェーズ</span>
+                    <span></span>
                     <div style="display: flex; gap: 8px; font-size: 12px; color: #e5e5e5; font-weight: normal; align-items: center;">
                         <span>AP: <strong id="stat-ap-shop" style="color:#f1c40f;">3/3</strong></span>
                         <span>資金: <strong id="stat-gold-shop" style="color:#b57c1e;">100</strong></span>
@@ -813,14 +809,14 @@ display: flex;
                 </div>
                 <div class="tab-area">
                     <div class="tab-btn active" id="tab-buy" onclick="switchShopTab('buy')">カード購入</div>
-                    <div class="tab-btn" id="tab-dispose" onclick="switchShopTab('dispose')">カード売却</div>
+                    <div class="tab-btn" id="tab-dispose" onclick="switchShopTab('dispose')">カード処分</div>
                 </div>
                 
                 <div id="shop-buy-view" class="shop-layout"></div>
                 <div id="shop-dispose-view" class="shop-layout" style="display:none;"></div>
             </div>
             <div class="phase-button-area">
-                <button class="btn btn-primary" onclick="closeShop()">購入・売却フェーズを終了</button>
+                <button class="btn btn-primary" onclick="closeShop()">購入・売却を終了</button>
             </div>
         </div>
 
@@ -950,10 +946,10 @@ const CARD_POOL = {
             actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}], 
             desc: "健康+5。ストレス-10。関係性+2。", 
             flavor: { 
-                trust: ["口元へコップを運ぶと、途中で彼にコップを奪われてしまった。"], 
-                high_trust: ["あなたがコップを差し出すと、彼は小さく礼を言って受け取った。"],
+                trust: ["彼の口元へコップを運ぶと、途中でコップを奪われてしまった。"], 
+                high_trust: ["あなたがコップを差し出すと、彼は礼を言い、自分で受け取って飲んだ。"],
                 dependence: ["彼は、あなたが手ずから水を飲ませてくれることが嬉しいようだ。"],
-                mannerism: ["いつものように彼に水を飲ませた。"],
+                mannerism: ["いつものように水を飲ませる。二人の間に言葉はない。"],
                 heavy_trust: ["彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。"],
                 heavy_dependence: ["彼に水を飲ませる。飲み込めずに零れた水滴が彼の頬を伝い落ちていった。"]
             } 
@@ -965,7 +961,7 @@ const CARD_POOL = {
                 trust: ["あなたは彼を気遣って看病した。彼は気まずそうに目を逸らしている。"], 
                 high_trust: ["あなたの手厚い看病に対して、彼から労いの気持ちが伝わってくる。"],
                 dependence: ["看病を終えて部屋を立ち去ろうとすると、彼はあなたにすがりつくように袖を掴んだ。"],
-                mannerism: ["あなたは慣れた手つきで彼の看病をこなした。"],
+                mannerism: ["慣れた手つきで看病をこなす。彼はもう、されるがままになっている。"],
                 heavy_trust: ["意識のない彼を看病した。人形のように力の抜けた体は、いつもよりも重く感じる。"],
                 heavy_dependence: ["あなたが看病すると、彼の苦しげな呼吸が和らいだ。"]
             } 
@@ -977,7 +973,7 @@ const CARD_POOL = {
                 trust: ["あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。"], 
                 high_trust: ["髪を梳かす。彼はその仕事をあなたに任せている。"],
                 dependence: ["あなたの指先が触れると、彼はひどく安心した表情を見せた。"],
-                mannerism: ["ただ淡々と彼の髪を梳かしてやった。"],
+                mannerism: ["ただ淡々と、髪を梳かしてやった。"],
                 heavy_trust: ["あなたは彼の髪を丁寧に梳かした。彼は眠ったまま、されるがままにされている。"],
                 heavy_dependence: ["あなたの指先が触れても、彼は目を覚まさない。"]
             } 
@@ -1001,7 +997,7 @@ const CARD_POOL = {
                 trust: ["彼の体を丁寧に拭き上げた。彼はこうして世話を焼かれることに負い目を感じている。"], 
                 high_trust: ["体を拭き終えると、彼は少しだけすっきりしたような表情を見せた。"],
                 dependence: ["あなたが触れるたび、彼はあなたとの繋がりを見出している。"],
-                mannerism: ["体を拭く。彼もまた、慣れた様子で身を任せている。"],
+                mannerism: ["手慣れた動作で体を拭く。彼もまた、慣れた様子で身を任せている。"],
                 heavy_trust: ["眠ったまま起きる気配のない彼の体を丁寧に拭き上げた。"],
                 heavy_dependence: ["あなたがどれだけ触れても、彼は反応しない。"]
             } 
@@ -1010,8 +1006,8 @@ const CARD_POOL = {
             name: "深夜の付き添い", type: "direct", value: 5, cost: 1, valType: "flat", 
             actions: [{type: "heal", value: 10},{type: "stress_direct", value: 20}], desc: "健康+10。ストレス-20。関係性+5", 
             flavor: { 
-                trust: ["夜通し彼の傍にいた。目覚めた彼は、あなたの体調を気遣っている。"], 
-                high_trust: ["あなたは彼が眠るまで傍にいようとしたが、一人で寝ると追い払われてしまった。"],
+                trust: ["夜通し彼の傍にいた。彼はあなたの体調を気遣っている。"], 
+                high_trust: ["あなたが傍にいようとしたが、一人で寝ると追い払われてしまった。"],
                 dependence: ["あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。"],
                 mannerism: ["夜通し傍にいるのが当たり前になり、彼も特に反応を示さなくなった。"],
                 heavy_trust: ["あなたは、眠ったまま起きる気配のない彼に寄り添い続けた。"],
@@ -1025,7 +1021,7 @@ const CARD_POOL = {
                 trust: ["あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめつつも、手当てには感謝している。"], 
                 high_trust: ["消毒しながら表情を窺うと、彼はどこか誇らしげに微笑んだ。"],
                 dependence: ["あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと感じているようだ。"],
-                mannerism: ["決まった時間に彼の傷の消毒を行った。"],
+                mannerism: ["淡々と消毒を済ませる。互いにこの痛みにすら慣れてしまった。"],
                 heavy_trust: ["あなたは彼の傷口を消毒した。この程度の痛みでは目を覚すことはなさそうだ。"],
                 heavy_dependence: ["あなたは彼の傷口を消毒した。この程度の痛みで目を覚ますはずはない。"]
             } 
@@ -1037,7 +1033,7 @@ const CARD_POOL = {
                 trust: ["彼の熱を測った。彼は気恥ずかしさと隠しきれない困惑を滲ませている。"], 
                 high_trust: ["額に手を当てて熱を測られるのは、子ども扱いされているように感じて不満なようだ。"],
                 dependence: ["彼の額に手を当てる。彼はあなたの体温に強い安心感を覚えている。"],
-                mannerism: ["熱を測る。毎日のように計測され、彼もすっかり慣れたようだ。"],
+                mannerism: ["事務的に熱を測る。彼も特に気にする素振りを見せない。"],
                 heavy_trust: ["彼の体は熱い。呼吸は浅く、発熱はまだ落ち着きそうにない。"],
                 heavy_dependence: ["あなたは彼の額に触れた。熱がじわじわと手のひらに伝わってくる。"]
             } 
@@ -1049,12 +1045,12 @@ const CARD_POOL = {
                 trust: ["つきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。"], 
                 high_trust: ["あなたが食事を与えようとすると、彼は食器を寄越すように言った。"],
                 dependence: ["あなたが手ずから食事を与えれば、彼は雛鳥のように受け入れた。"],
-                mannerism: ["黙々と彼の口に食事を運ぶ。ただ生かすためだけの作業のように感じた。"]
+                mannerism: ["黙々と食事を運ぶ。ただ生きるための作業のようだった。"]
             } 
         },
         { 
-            name: "輸血を行う", type: "direct", value: 15, cost: 2, valType: "flat", 
-            actions: [{type: "heal", value: 50}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+50。関係性+15。次ターンの初期AP-1（使い切り）", 
+            name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", 
+            actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", 
             flavor: { 
                 trust: ["あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。"], 
                 high_trust: ["彼は、血を分けてくれるあなたの献身に報いなければならないと思っているようだ。"],
@@ -1064,10 +1060,10 @@ const CARD_POOL = {
         },
         { 
             name: "過呼吸の対処", type: "direct", value: 30, cost: 2, valType: "percent", 
-            actions: [{type: "heal", value: 15},{type: "stress_direct", value: 20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。ストレス-20。関係性+30%。次ターンの初期AP-1", 
+            actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+30%。次ターンの初期AP-1", 
             flavor: { 
                 trust: ["引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。"], 
-                high_trust: ["あなたが背中をさすってやると、彼はすぐに落ち着きを取り戻した。"],
+                high_trust: ["あなたが背中をさすると、彼はすぐに落ち着きを取り戻し、あなたの手に触れた。"],
                 dependence: ["彼はあなたに抱き支えられ、どうにか喘鳴をやり過ごそうとしている。"],
                 mannerism: ["発作に慣れた手つきで対処する。彼もまた、息を整える術を身につけつつある。"]
             } 
@@ -1082,7 +1078,7 @@ const CARD_POOL = {
                 trust: ["彼に見送られ、あなたは仕事をこなすために屋敷を出た。"], 
                 high_trust: ["出かけるあなたを彼は送り出す。あなたが不在の間は、彼が屋敷を守る。"],
                 dependence: ["あなたが屋敷を空けることを、彼は快く思っていないようだ。"],
-                mannerism: ["出稼ぎに向かうのも、屋敷で待つことも、二人の日常の一部だ。"],
+                mannerism: ["出稼ぎに向かうのも、待つことも、二人の日常の一部にすぎない。"],
                 heavy_trust: ["意識のない彼を部屋に残し、あなたは町で日銭を稼いだ。"],
                 heavy_dependence: ["あなたが町から戻っても、部屋は出発前と変わらぬ静寂に包まれていた。"] 
             } 
@@ -1100,7 +1096,7 @@ const CARD_POOL = {
                 trust: ["外部から怪しげな医者を呼び、治療を受けさせた。彼は医師のことを訝しんでいるようだ。"], 
                 high_trust: ["怪しげな医者の往診に彼は胡乱な目を向けたが、あなたが選んだのであればと渋々受け入れた。"],
                 dependence: ["彼と医者を残して、あなたは部屋を出る。震え声が、扉が閉まる音でかき消された。"],
-                mannerism: ["慣れた手つきで医者が処置を施す。彼ももう抵抗しない。"],
+                mannerism: ["慣れた手つきで医者が処置を施す。彼ももう抵抗すらしなくなった。"],
                 heavy_trust: ["外部から怪しげな医者を呼び、眠っている間に治療を受けさせた。"],
                 heavy_dependence: ["人形のように力なく横たわる彼に、怪しげな医師が処置を施す。彼は何をされても抵抗すらできない。"]
             } 
@@ -1112,7 +1108,7 @@ const CARD_POOL = {
                 trust: ["綺麗になった部屋を見渡し、彼は小さく息を吐いて肩の力を抜いた。"], 
                 high_trust: ["掃除をするあなたを眺めながら、彼は手持ち無沙汰に何かすることはないかと視線を巡らせている。"],
                 dependence: ["部屋を掃除する間、彼はひたすらにあなたの気配を追っている。"],
-                mannerism: ["定期的な掃除。変わらない光景に、彼はぼんやり視線を向けている。"],
+                mannerism: ["定期的な掃除。変わらない光景に、彼は虚ろな視線を向けている。"],
                 heavy_trust: ["部屋を掃除する間、彼は静かに寝息を立てている。"],
                 heavy_dependence: ["部屋を掃除する間、彼は静かに寝息を立てている。"] 
             } 
@@ -1124,7 +1120,7 @@ const CARD_POOL = {
                 trust: ["ふかふかの寝具は心地よいようだが、彼はあなたに世話を焼かせすぎていると感じている。"], 
                 high_trust: ["あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。"],
                 dependence: ["寝具を整えてやると、彼はあなたの気配を感じて目を閉じた。"],
-                mannerism: ["天気が良いときにあなたが寝具を干すのは、すでに日常の風景になっている。"],
+                mannerism: ["寝具を干すという日常の作業。彼も特に気にかめる様子はない。"],
                 heavy_trust: ["寝具を整え直しても、彼は微かな寝息を立てたまま目を覚まさない。"],
                 heavy_dependence: ["太陽の匂いがする清潔な布団で彼を包み込む。彼はあなたの庇護下で眠っている。"] 
             } 
@@ -1136,7 +1132,7 @@ const CARD_POOL = {
                 trust: ["過ごしやすくなった室内に、彼は微かに緊張を解いた様子を見せた。"], 
                 high_trust: ["彼が快適に過ごせるよう調整すると、彼は安心したように目を閉じた。"],
                 dependence: ["心地よい室温の中でも、彼はあなたがいなければ寒気を感じてしまうようだ。"],
-                mannerism: ["いつも通りに室温を調整する。彼も当然のこととして気に留めていない。"],
+                mannerism: ["室温を調整する。彼からの反応は特になく、静かな時間が流れる。"],
                 heavy_trust: ["彼がこれ以上体調を崩さないよう、部屋を快適な温度に調整した。"],
                 heavy_dependence: ["今ならば何でもできる。彼を生かすも殺すも、あなた次第だ。"] 
             } 
@@ -1148,7 +1144,7 @@ const CARD_POOL = {
                 trust: ["栄養のある食事を用意すると、彼は感謝とともにそれを口にした。"], 
                 high_trust: ["彼の好みに合わせた食事を出す。彼を眺めていると怪訝な目を向けられた。"],
                 dependence: ["用意した食事を、彼はあなたのためだけにすべて平らげた。"],
-                mannerism: ["栄養を摂らせるための食事。彼もただ口に運ぶだけだ。"]
+                mannerism: ["栄養を摂らせるための食事。彼もただ黙々と口に運ぶだけだ。"]
             } 
         },
         { 
@@ -1158,7 +1154,7 @@ const CARD_POOL = {
                 trust: ["彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出すようだ。"], 
                 high_trust: ["懐かしい香りに包まれ、彼はかつての威厳を取り戻したかのように落ち着いて座っている。"],
                 dependence: ["香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。"],
-                mannerism: ["部屋に染み付いた香りは、すでに特別なものから日常になっていた。"],
+                mannerism: ["部屋に染み付いた香り。もはや特別な安らぎをもたらすことはない。"],
                 heavy_trust: ["彼好みの香りを焚く。穏やかな香りが、彼の微睡みを少しでも安らかなものにする。"],
                 heavy_dependence: ["部屋を満たす香りが、彼をさらに深く、あなただけの世界へと沈めていく。"] 
             } 
@@ -1168,7 +1164,7 @@ const CARD_POOL = {
             actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+5。デッキからカードを1枚手札に加える", 
             flavor: { 
                 trust: ["あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。"], 
-                high_trust: ["彼はアルバムの表紙を慈しむように撫でている。"],
+                high_trust: ["彼はアルバムの表紙を、慈しむように撫でた。"],
                 dependence: ["彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。"],
                 mannerism: ["ただ埃を払うためだけの整理。思い出に浸ることもなくなった。"],
                 heavy_trust: ["眠り続ける彼の傍らで、あなたは懐かしいアルバムをめくった。"],
@@ -1204,7 +1200,7 @@ const CARD_POOL = {
                 trust: ["中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。"], 
                 high_trust: ["彼は手入れされた中庭を眺めながら、次に手を入れる箇所を算段している。"],
                 dependence: ["外の景色が綺麗になっても、彼の目にはあなたの姿しか映っていない。"],
-                mannerism: ["あなたが庭の手入れをしている姿は、すっかり景色に馴染んでいる。"]
+                mannerism: ["庭の手入れも、もはや時間の経過を知らせる作業に過ぎない。"]
             }
         },
         {
@@ -1256,8 +1252,8 @@ const CARD_POOL = {
             }
         },
         { 
-            name: "冷酷な事実", type: "cold", value: -5, cost: 2, valType: "flat", 
-            actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-5", 
+            name: "冷酷な事実", type: "cold", value: -7, cost: 2, valType: "flat", 
+            actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-7", 
             flavor: { 
                 trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
                 high_trust: ["彼は毅然と事実を受け止めつつ、僅かにあなたへ縋るような視線を向けた。"],
@@ -1268,8 +1264,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "私物の没収", type: "cold", value: -4, cost: 1, valType: "flat", 
-            actions: [{type: "stress", value: 15}, { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-4。資金+5~30G", 
+            name: "私物の没収", type: "cold", value: -10, cost: 1, valType: "flat", 
+            actions: [{type: "stress", value: 15}, { type: "gold_random", min: 5, max: 30 }], desc: "ストレス+15。関係性-10。資金+5~30G", 
             flavor: { 
                 trust: ["あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。"], 
                 high_trust: ["私物を処分したことについて、彼は好きにするよう言った。"],
@@ -1280,13 +1276,13 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "整備を意図的に怠る", type: "cold", value: -2, cost: 1, valType: "flat", 
-            actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-2。次の戦闘時、脅威度を-10", 
+            name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", 
+            actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-10", 
             flavor: { 
                 trust: ["片脚が悪い彼は、整備されていない道では歩きにくいようだ。"], 
                 high_trust: ["彼は荒れた屋敷に思うところがあるのか、ふう、とため息を付いた。"],
                 dependence: ["屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。"], 
-                mannerism: ["屋敷が綺麗だった頃の姿を、彼もあなたも思い出せなくなっている。"],
+                mannerism: ["荒れ果てた屋敷。それが二人の世界のすべてになってしまった。"],
                 heavy_trust: ["彼はしばらく目覚めそうにない。整備などしなくてもいいだろう。"],
                 heavy_dependence: ["彼が夢の中にいる間も屋敷は荒れていく。あなたさえ居れば、彼はそれで構わないはずだ。"]
             } 
@@ -1298,7 +1294,7 @@ const CARD_POOL = {
                 trust: ["あなたが薬を与えなくても、彼は自らの命に対する執着を手放しつつある。"], 
                 high_trust: ["痛みに顔をしかめながらも、彼はあなたを気遣わせまいと強がっている。"],
                 dependence: ["自らの苦痛を、あなたがかつて受けた苦しみの一端だと思って抱きしめている。"],
-                mannerism: ["彼が痛みを耐える姿すら、見慣れた光景になってしまった。"],
+                mannerism: ["痛みに苦しむ姿すら、見慣れた光景になってしまった。"],
                 heavy_trust: ["鎮痛剤を与えないまま放置した。浅い呼吸が、彼の抱える痛みを物語っている。"],
                 heavy_dependence: ["苦痛に顔を歪める彼を、薬を与えずにただ眺め続けた。"]
             } 
@@ -1328,7 +1324,7 @@ const CARD_POOL = {
             actions: [{type: "stress", value: 30}, {type: "consume"}], desc: "ストレス+30。関係性-30%（使い切り）", 
             flavor: { 
                 trust: ["あなたが他人の気配を漂わせると、彼はとうとう自分が不要になったのだと悟ったようだ。"], 
-                high_trust: ["あなたと他人に関わりがあることを、彼は納得しつつも寂しさを感じている"],
+                high_trust: ["他人の気配を感じても、彼はあなたとの絆を疑うことはなかった。"],
                 dependence: ["他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。"],
                 mannerism: ["誰かの気配を匂わせても、彼は一切の無関心を貫いている。"]
             } 
@@ -1336,14 +1332,14 @@ const CARD_POOL = {
     ],
     harm: [
         { 
-            name: "毒の調合", type: "harm", masterValue: -5, battleValue: 1, cost: 1, valType: "flat", isMasterAlways: true, 
+            name: "毒の調合", type: "harm", masterValue: -10, battleValue: 1, cost: 1, valType: "flat", isMasterAlways: true, 
             actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}], 
-            desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-5", 
+            desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", 
             flavor: { 
                 trust: ["苦い薬を食事に混ぜても、彼は何も言わずにそれを飲み干す。"], 
                 high_trust: ["彼はそれが毒だと知りながら、黙って飲み込む。信頼という名の圧力を感じる。"],
                 dependence: ["身体の不調を感じながらも、彼はあなたから与えられるものを甘んじて享受している。"], 
-                mannerism: ["見慣れた薬。彼は流れ作業のようにそれを飲み下した。"],
+                mannerism: ["見慣れた薬瓶。彼は思考を放棄してそれを飲み下した。"],
                 battle: ["あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"],
                 heavy_trust: ["彼の口に少量の毒を流し込んだ。彼がそれに気づくことはないだろう。"],
                 heavy_dependence: ["彼の生命を、あなたの毒がゆっくりと蝕んでいく。"],
@@ -1356,8 +1352,9 @@ const CARD_POOL = {
             desc: "敵脅威度-20。関係性+10%/ 【対主人】健康-30。ストレス+30。関係性-50%（使い切り）", 
             flavor: { 
                 trust: ["彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。"], 
-                high_trust: ["指に力を込め、彼の喉を潰すつもりで締め上げた。"],
+                high_trust: ["彼は喉を締め上げられても決して目を逸らさず、あなたの意図を探ろうとしている。"],
                 dependence: ["横たわる主人の首に手をかける。薄く開いた彼の目が僅かに微笑んだように感じる。"], 
+                mannerism: ["首を絞める手に力がこもらない。彼も抵抗する気力がないようだ。"],
                 battle: ["あなたは襲い来る敵の首を締め、無力化させた。"],
                 heavy_battle: ["虫の居所が悪かったあなたは、気まぐれに既に戦闘不能になっている敵の首を締めた。"]
             } 
@@ -1370,6 +1367,7 @@ const CARD_POOL = {
                 trust: ["あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。"], 
                 high_trust: ["悲惨な光景に目を背けながらも、彼はその意図を汲み取り、顛末を見届けている。"],
                 dependence: ["庭先に惨たらしい魔物の死体を吊るした。彼が目覚めた時のことを考え、ほくそ笑む。"], 
+                mannerism: ["惨たらしい死体を見ても、もはや何の感情も湧かないようだ。"],
                 battle: ["捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。"],
                 heavy_battle: ["捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。"]
             } 
@@ -1381,12 +1379,9 @@ const CARD_POOL = {
             flavor: { 
                 trust: ["あなたは形見の宝刀を構え、因縁に終止符を打った。"], 
                 dependence: ["あまりにあっけなく、復讐は終わった。"], 
-                mannerism: {
-                    battle: ["こんなものばかり斬っていても意味がない。","あなたには、他に斬らなければいけないものがあるはずだ。"],
-                    master: ["宝刀で彼の体を貫く。あなたはようやく本懐を遂げた。"]
-                },
-                battle: ["形見の宝刀を抜き放ち、迫り来る敵を容赦なく斬り捨てた。"],
-                heavy_battle: ["他人を彼に近づけまいと必死になっている自分への嫌悪を抱えながら、あなたはひたすら宝刀を振るう。"]
+                mannerism: ["血塗られた宝刀。これもまた日常を象徴するものの一つだ。"],
+                battle: ["形見の宝刀を抜き放ち、あなたは迫り来る敵を容赦なく斬り捨てた。"],
+                heavy_battle: ["彼に近づけまいと必死になっている自分への嫌悪。それを拭うため、あなたはひたすら宝刀を振るう。"]
             } 
         },
         { 
@@ -1396,7 +1391,7 @@ const CARD_POOL = {
                 trust: ["周囲に罠を仕掛けた。屋敷の安全を万全にする。"], 
                 high_trust: ["仕掛けられた罠の配置を確認し、彼はより効果的な防衛策を提案した。"],
                 dependence: ["屋敷への侵入者を拒むための罠を張った。"],
-                mannerism: ["首尾よく罠を張り巡らせる。効率化され、手際が良くなっている。"]
+                mannerism: ["罠を張り巡らせる。だが、もう誰が来ることもないかもしれない。"]
             } 
         },
         { 
@@ -1411,23 +1406,23 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "威嚇射撃", type: "harm", value: 3, cost: 1, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。関係性+3。資金+10~15G", 
+            name: "威嚇射撃", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, 
+            actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。関係性+2。資金+10~15G", 
             flavor: { 
                 trust: ["威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。"], 
                 high_trust: ["彼は銃声に肩を揺らしたが、すぐに状況を見極めようと気を引き締めた。"],
                 dependence: ["あなたは近付く敵を容赦なく追い払った。彼はあなたに頼り切っている。"],
-                mannerism: ["乾いた銃声すら生活音の一部になりつつある。"]
+                mannerism: ["乾いた銃声。それすらも生活音の一部になりつつある。"]
             } 
         },
         { 
-            name: "容赦なき追撃", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+2", 
+            name: "容赦なき追撃", type: "harm", value: 3, cost: 1, valType: "flat", isBattleOnly: true, 
+            actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+3", 
             flavor: { 
                 trust: ["あなたは、撤退してゆく容赦なく敵を追い詰めた。"], 
                 high_trust: ["危険な役割を担うあなたを、彼は痛ましく思いながら見守っている。"],
                 dependence: ["あなたは敵を徹底的に排除した。障害はすべて取り除くという執念を感じさせる。"],
-                mannerism: ["ただ敵を排除する。続く非日常も、感情のない作業に成り下がっていた。"]
+                mannerism: ["ただ敵を排除する。感情のない作業に成り下がっていた。"]
             } 
         },
         { 
@@ -1449,7 +1444,8 @@ const CARD_POOL = {
             flavor: { 
                 trust: ["彼は、収穫祭の賑やかさをポツリと語った。はるか過去のことを話すような口ぶりだった。"], 
                 high_trust: ["外から祭りの音が聞こえる。彼はかつての賑やかな日々を懐かしんでいるようだ。"],
-                dependence: ["外の喧噪よりも、彼はあなたが給仕してくれる時間だけを欲している。"]
+                dependence: ["外の喧噪よりも、彼はあなたが給仕してくれる時間だけを欲している。"],
+                mannerism: ["祭りの名残を見る。過去の記憶も、今となっては遠い昔のことだ。"]
             } 
         },
         "冬": { 
@@ -1458,7 +1454,8 @@ const CARD_POOL = {
             flavor: { 
                 trust: ["窓辺のキャンドルが、彼の凍てついた心をほのかに照らす。"], 
                 high_trust: ["揺れる炎を前に、彼はあなたへの信頼を静かに口にした。"],
-                dependence: ["小さな灯りを見つめる彼は、あなたへの想いで胸を焦がしているようだ。"]
+                dependence: ["小さな灯りを見つめる彼は、あなたへの想いで胸を焦がしているようだ。"],
+                mannerism: ["灯りを見つめても、心に温かいものが灯ることはもうない。"]
             } 
         },
         "春": { 
@@ -1467,7 +1464,8 @@ const CARD_POOL = {
             flavor: { 
                 trust: ["風に乗って桜が舞い込んだ。彼はいつか、あなたと共に歩ける日を夢見ている。"], 
                 high_trust: ["舞い散る花びらを眺める彼の背筋は、凛と伸びている。"],
-                dependence: ["美しい花よりも、彼はあなたから与えられる朧げな愛情に強く惹かれている。"]
+                dependence: ["美しい花よりも、彼はあなたから与えられる朧げな愛情に強く惹かれている。"],
+                mannerism: ["散る桜を見ても、来年も同じ光景が繰り返されるとしか思えない。"]
             } 
         },
         "夏": { 
@@ -1476,7 +1474,8 @@ const CARD_POOL = {
             flavor: { 
                 trust: ["眩い日差しの中、木陰で過ごした。彼は目を細めてあなたを見つめていた。"], 
                 high_trust: ["木陰で涼む彼の佇まいには、以前のような余裕が戻りつつある。"],
-                dependence: ["夏の暑さも忘れるほど、彼はあなたへの強い思いに囚われ続けている。"]
+                dependence: ["夏の暑さも忘れるほど、彼はあなたへの強い思いに囚われ続けている。"],
+                mannerism: ["焼け付く暑さも、退屈な日常のスパイスにはならなかった。"]
             } 
         }
     }
@@ -1488,7 +1487,7 @@ const SPECIAL_CARDS = {
         name: "水を与える", type: "direct", value: 2, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 30}, 
-            {type: "stress", value: -30, isFixed: true}, 
+            {type: "stress", value: -30}, 
             {type: "set_debuff", value: "heavy"},
             {type: "buff", key: "waterStressDuration", value: 3}
         ], 
@@ -1506,7 +1505,7 @@ const SPECIAL_CARDS = {
         name: "水を与える", type: "direct", value: 0, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 30}, 
-            {type: "stress", value: -30, isFixed: true}, 
+            {type: "stress", value: -30}, 
             {type: "buff", key: "waterStressDuration", value: 3},
             {type: "set_relation_zero"}
         ], 
@@ -1524,27 +1523,27 @@ const SPECIAL_CARDS = {
         name: "水を与える", type: "direct", value: 0, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 30}, 
-            {type: "stress", value: -30, isFixed: true},
+            {type: "stress", value: -30},
             {type: "set_madness"},
             {type: "consume"}
         ], 
-        desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる。(使い切り)",
+        desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる。(使い切り)", 
         flavor: { 
             trust: ["彼はその水を飲み干した。目が、異様な光を帯びている。"], 
             high_trust: ["かつての矜持を取り戻しかけていた彼の心を、その水は容易に壊してしまった。"],
             dependence: ["彼は水を飲み干すと、虚空を見つめながら意味不明な言葉を呟き始めた。"],
-            mannerism: ["慣れた手つきで水を飲ませた。途端、彼の様子が急変し始めた。"],
+            mannerism: ["慣れた手つきで水を飲ませたはずが、彼の様子が急変し始めた。"],
             heavy_trust: ["彼をそっと抱き起こし、水を飲ませた。彼の体温が異常に上昇していく。"],
             heavy_dependence: ["彼に水を飲ませた。彼の体が小さく痙攣している。"]
         } 
     },
     secret_attachment_1: { 
-        name: "手を握って付き添う", type: "attachment", isMasterAlways: false, value: 25, cost: 1, valType: "flat", 
+        name: "手を握って付き添う", type: "attachment", isMasterAlways: false, value: 15, cost: 1, valType: "flat", 
         actions: [
             {type: "stress", value: -35}, 
             {type: "consume"} 
         ], 
-        desc: "ストレス-35。関係性+25（使い切り）", 
+        desc: "ストレス-35。関係性+15（使い切り）", 
         flavor: { 
             trust: ["あなたは彼の手をそっと握った。彼は目を覚まさないまま、眉間の皺をわずかに緩めた。"], 
             high_trust: ["起きている時態度とは裏腹に、彼の指先はあなたの手をそっと握り返してきた。"],
@@ -1555,10 +1554,10 @@ const SPECIAL_CARDS = {
         name: "頭を撫でる", type: "attachment", isMasterAlways: false, value: 10, cost: 1, valType: "flat", 
         actions: [
             {type: "heal", value: 25}, 
-            {type: "stress", value: -25}, 
+            {type: "stress", value: -45}, 
             {type: "consume"} 
         ], 
-        desc: "健康+25。ストレス-25。関係性+10（使い切り）", 
+        desc: "健康+25。ストレス-45。関係性+10（使い切り）", 
         flavor: { 
             trust: ["彼の前髪をそっとかき分けて、頭を撫でた。微睡みの中にいる彼の顔は、いつもよりも幼く見える。"], 
             high_trust: ["彼が起きていれば窘められそうだが、今は素直に心地よさそうにしている。"],
@@ -1566,13 +1565,13 @@ const SPECIAL_CARDS = {
         } 
     },
     secret_attachment_3: { 
-        name: "じっと見守る", type: "attachment", isMasterAlways: false, value: 15, cost: 1, valType: "flat", 
+        name: "じっと見守る", type: "attachment", isMasterAlways: false, value: 25, cost: 1, valType: "flat", 
         actions: [
-            {type: "heal", value: 35}, 
+            {type: "heal", value: 25}, 
             {type: "stress", value: -20}, 
             {type: "consume"} 
         ], 
-        desc: "健康+35。ストレス-20。関係性+15（使い切り）", 
+        desc: "健康+25。ストレス-20。関係性+25（使い切り）", 
         flavor: { 
             trust: ["ベッドに腰掛け、深い眠りの中、時折小さく身じろぎする彼をぼんやりと眺めて過ごした。"], 
             high_trust: ["穏やかな寝息を立てる彼を見つめる。その表情はあどけなく、無防備だった。"],
@@ -1896,11 +1895,10 @@ const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した
     }
 ];
 
-
-// ▼ 追加：ターン開始時のランダムイベント用データ（重み付け統合版）
+// ▼ 追加：ターン開始時のランダムイベント用データ
 const RANDOM_EVENTS = [
     {
-        title: "夏日", effectText: "ストレス-10", weight: 30, condition: (state) => getSeasonByTurn(state.turn) === "夏",
+        title: "夏日", effectText: "ストレス-10", condition: (state) => getSeasonByTurn(state.turn) === "夏",
         effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
             trust: ["窓の外からの眩しい日差しに、彼は静かに目を細めた。"],
@@ -1912,7 +1910,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "紅葉", effectText: "ストレス-10", weight: 30, condition: (state) => getSeasonByTurn(state.turn) === "秋",
+        title: "紅葉", effectText: "ストレス-10", condition: (state) => getSeasonByTurn(state.turn) === "秋",
         effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
             trust: ["窓から色づいた葉が舞い込んだ。彼はそれを手に取り、秋の訪れを感じている。"],
@@ -1924,11 +1922,11 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "初雪", effectText: "ストレス-10", weight: 30, condition: (state) => getSeasonByTurn(state.turn) === "冬",
+        title: "初雪", effectText: "ストレス-10", condition: (state) => getSeasonByTurn(state.turn) === "冬",
         effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
             trust: ["窓の外に白い雪が舞い始めた。彼は静かに外を眺めている。"],
-            high_trust: ["雪に心なしか浮かれている彼の姿は、久し振りに童心に帰ったようだった。"],
+            high_trust: ["雪にこころなしか浮かれている彼の姿は、まるで童心に帰ったようだった。"],
             dependence: ["凍えるような寒さの中、彼はあなたから与えられる熱だけを求めている。"],
             mannerism: ["また冬が来た。深々と降る雪が、時間を覆い隠していく。"],
             heavy_trust: ["音もなく雪が降り積もる。彼の寝息だけが部屋に響いている。"],
@@ -1936,7 +1934,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "春風", effectText: "ストレス-10", weight: 30, condition: (state) => getSeasonByTurn(state.turn) === "春",
+        title: "春風", effectText: "ストレス-10", condition: (state) => getSeasonByTurn(state.turn) === "春",
         effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
             trust: ["暖かな春風が部屋を吹き抜けた。彼の表情に、ほんの少しだけ生気が戻った気がする。"],
@@ -1948,7 +1946,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "遠くの鐘の音", effectText: "ストレス-5", weight: 30, condition: (state) => true,
+        title: "遠くの鐘の音", effectText: "ストレス-5", condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
         flavor: {
             trust: ["遠くの町から鐘の音が響く。彼は、何かを思い出すように耳を澄ませた。"],
@@ -1960,7 +1958,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "探し物", effectText: "AP-1 / 関係性+2", weight: 30, condition: (state) => state.debuff !== "heavy",
+        title: "探し物", effectText: "AP-1 / 関係性+2", condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.relation = Math.min(100, state.relation + 2); },
         flavor: {
             trust: ["彼が棚を探っている。声をかけるかどうか、しばらく様子を窺うことにした。"],
@@ -1970,7 +1968,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "身支度", effectText: "ストレス-5 / 関係性+1", weight: 30, condition: (state) => state.debuff !== "heavy",
+        title: "身支度", effectText: "ストレス-5 / 関係性+1", condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); state.relation = Math.min(100, state.relation + 1); },
         flavor: {
             trust: ["彼はあなたの手を借りず、自分で身支度を整えた。"],
@@ -1980,7 +1978,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "お仕事", effectText: "資金+20 / ストレス+5", weight: 30, condition: (state) => state.debuff !== "heavy",
+        title: "お仕事", effectText: "資金+20 / ストレス+5", condition: (state) => state.debuff !== "heavy",
         effect: (state) => { state.gold += 20; state.stress = Math.min(100, state.stress + 5); },
         flavor: {
             trust: ["彼は机に向かい、黙々と主人としての書類仕事をこなしている。"],
@@ -1990,7 +1988,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "もぬけの殻", effectText: "AP-1 / ストレス+15", weight: 30, condition: (state, currentLogDelay) => state.debuff === "none" && currentLogDelay === 0,
+        title: "もぬけの殻", effectText: "AP-1 / ストレス+15", condition: (state, currentLogDelay) => state.debuff === "none" && currentLogDelay === 0,
         effect: (state) => { state.ap = Math.max(0, state.ap - 1); state.stress = Math.min(100, state.stress + 15); },
         flavor: {
             trust: ["部屋を不在にしていたことについて、彼は何も語ろうとしなかった。"],
@@ -2000,7 +1998,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "支援物資", effectText: "資金+10 / 健康+5", weight: 30, condition: (state) => true,
+        title: "支援物資", effectText: "資金+10 / 健康+5", condition: (state) => true,
         effect: (state) => { state.gold += 10; state.health = Math.min(100, state.health + 5); },
         flavor: {
             trust: ["宛名のない荷物が置かれていた。中には食料と僅かな金貨が入っている。"],
@@ -2012,7 +2010,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "小鳥", effectText: "ストレス-5", weight: 30, condition: (state) => true,
+        title: "小鳥", effectText: "ストレス-5", condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 5); },
         flavor: {
             trust: ["翼を広げて飛び去る小鳥を、彼はどこか羨ましそうに眺めている。"],
@@ -2024,7 +2022,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "悪夢", effectText: "ストレス+10", weight: 50, condition: (state) => state.debuff === "heavy",
+        title: "悪夢", effectText: "ストレス+10", condition: (state) => state.debuff === "heavy",
         effect: (state) => { state.stress = Math.min(100, state.stress + 10); },
         flavor: {
             heavy_trust: ["深い微睡みの淵で、彼は苦しげに顔を歪めている。"],
@@ -2032,7 +2030,7 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "祈り", effectText: "ストレス-15", weight: 30, condition: (state) => true,
+        title: "祈り", effectText: "ストレス-15", condition: (state) => true,
         effect: (state) => { state.stress = Math.max(0, state.stress - 15); },
         flavor: {
             trust: ["彼は目を閉じ、静かに何かを祈っている。"],
@@ -2044,55 +2042,13 @@ const RANDOM_EVENTS = [
         }
     },
     {
-        title: "自衛", effectText: "自衛状態付与", weight: 30, condition: (state) => state.debuff !== "heavy",
+        title: "自衛", effectText: "自衛状態付与", condition: (state) => state.debuff !== "heavy",
         effect: (state) => { activeBuffs.hasKnife = true; },
         flavor: {
             trust: ["ふと見ると、彼が枕の下にナイフを隠すのが見えた。"],
             high_trust: ["彼は自らも戦う意志を示すように、ナイフをしっかりと握りしめた。"],
             dependence: ["彼は何かを握りしめ、周囲を警戒している。"],
             mannerism: ["枕の下のナイフの存在は、互いに暗黙の了解となっていた。"]
-        }
-    },
-    // ここから下が統合用に追加されたイベント
-    {
-        title: "なし", weight: 1000, condition: (state) => true, // 何も起こらないハズレ枠
-        effect: (state) => {},
-        flavor: null
-    },
-    {
-        title: "手紙", effectText: "カード入手", weight: 15,
-        condition: (state) => !state.hasEncounteredLetter && state.hand.length < 6,
-        effect: (state) => {
-            let letterCard = { ...SPECIAL_CARDS['letter_from_old_friend'], id: Date.now() + Math.random() };
-            state.hand.push(letterCard);
-            state.hasEncounteredLetter = true;
-            state.temporaryEffects.push(`カード入手: ${letterCard.name}`);
-        },
-        flavor: SPECIAL_CARDS['letter_from_old_friend'].flavor
-    },
-    {
-        title: "贈り物", effectText: "カード入手", weight: 30,
-        condition: (state) => !state.hasEncounteredGift && state.hand.length < 6 && state.debuff !== 'heavy',
-        effect: (state) => {
-            let price = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
-            let giftCard = { ...SPECIAL_CARDS['gift'], sellPrice: price, id: Date.now() + Math.random() };
-            state.hand.push(giftCard);
-            state.hasEncounteredGift = true;
-            state.temporaryEffects.push(`カード入手: ${giftCard.name}`);
-        },
-        flavor: SPECIAL_CARDS['gift'].flavor
-    },
-    {
-        title: "八つ当たり", effectText: "八つ当たり状態付与", weight: 200,
-        condition: (state) => state.stress >= 70 && state.debuff !== 'heavy' && !state.isTantrum,
-        effect: (state) => {
-            state.isTantrum = true;
-        },
-        flavor: {
-            trust: ["蓄積したストレスが限界を超え、彼はあなたに対して声を荒げた。", "我慢の限界を迎えたのか、彼は感情のままにあなたへ八つ当たりをした。"],
-            high_trust: ["張り詰めていた糸が切れたように、彼は声を荒げて不満をぶちまけた。", "らしくもなく、彼は怒りを全てあなたにぶつけた。"],
-            dependence: ["彼は何かに怯えるように取り乱し、あなたに当たり散らしている。", "見捨てられる不安からか、彼は泣き叫ぶようにあなたを責め立てた。"],
-            mannerism: ["抑えきれない苛立ちが爆発し、彼はあなたを理不尽になじった。", "鬱積した感情が突如として溢れ出し、彼は露骨に不機嫌な態度を取った。"]
         }
     }
 ];
@@ -2114,14 +2070,7 @@ function getRandomFlavor(flavorObj, state, context, isMannerism) {
 
     // 1. マンネリ判定
     if (isMannerism && flavorObj.mannerism) {
-        let text = "";
-        // mannerismがオブジェクトで定義されている場合、コンテキスト(battle/master)に応じて出し分ける
-        if (!Array.isArray(flavorObj.mannerism) && typeof flavorObj.mannerism === 'object') {
-            let contextKey = context === 'battle' ? 'battle' : 'master';
-            text = pickText(flavorObj.mannerism[contextKey]);
-        } else {
-            text = pickText(flavorObj.mannerism);
-        }
+        let text = pickText(flavorObj.mannerism);
         if (text) return text;
     }
 
@@ -2330,7 +2279,33 @@ if (Math.random() < obstacleRates[state.debuff]) {
                 addTurnHistory('states', '敵襲来'); // 戦闘発生を履歴に記録
             }
 
-          let drawCount = state.debuff === 'medium' ? 4 : 5;
+          // ▼ 追加：ランダムイベント処理
+            let eventOccurred = false; // イベント発生フラグを追加
+            if (!state.battleActive && Math.random() < 0.30) {
+                let availableEvents = RANDOM_EVENTS.filter(ev => ev.condition(state, currentLogDelay));
+                if (availableEvents.length > 0) {
+                    let ev = availableEvents[Math.floor(Math.random() * availableEvents.length)];
+                    ev.effect(state);
+                    
+                    state.temporaryEffects.push(`${ev.title}: ${ev.effectText}`);
+
+                    let eventFlavor = getRandomFlavor(ev.flavor, state, 'master', false);
+
+                    if (eventFlavor) {
+                        setTimeout(() => {
+                            addLog(eventFlavor, "log-flavor");
+                        }, currentLogDelay);
+                        currentLogDelay += 600;
+                    }
+
+                    turnLogs.push(ev.title);
+                    addTurnHistory('event', ev.title);
+                    eventOccurred = true; // イベントが発生したことを記録
+                }
+            }
+            // ▲ ここまで
+
+            let drawCount = state.debuff === 'medium' ? 4 : 5;
             if (activeBuffs.nextTurnDrawMod !== 0) {
                 drawCount = Math.max(1, drawCount + activeBuffs.nextTurnDrawMod);
                 activeBuffs.nextTurnDrawMod = 0;
@@ -2368,49 +2343,86 @@ if (Math.random() < obstacleRates[state.debuff]) {
                     }
                 }
             }
-// --- 隠しカード追加処理（ここまで） ---
 
-            // ▼変更：重み付けランダムイベント処理（手紙・贈り物・八つ当たり統合版）
-            if (!state.battleActive) {
-                // 発生条件を満たしているイベントのみを抽出
-                let availableEvents = RANDOM_EVENTS.filter(ev => ev.condition(state, currentLogDelay));
+           // ★追加：「手紙」のランダム追加処理
+            // 未発生、手札上限未満、かつ他のイベントが発生していない場合
+            if (!eventOccurred && !state.hasEncounteredLetter && state.hand.length < 6) {
+                if (Math.random() < 0.01) {
+                    let letterCard = {
+                        ...SPECIAL_CARDS['letter_from_old_friend'],
+                        id: Date.now() + Math.random()
+                    };
+                    state.hand.push(letterCard);
+                   addTurnHistory('event', '手紙');
+                   turnLogs.push("手紙"); // アラートに追加
+                   eventOccurred = true; // 他のイベントと排他にする
+                   state.hasEncounteredLetter = true; // 追加：発生済みフラグをオン
+                   state.temporaryEffects.push(`カード入手: ${letterCard.name}`);
 
-                if (availableEvents.length > 0) {
-                    // 抽出されたイベントの重み（weight）の合計を計算
-                    let totalWeight = availableEvents.reduce((sum, ev) => sum + ev.weight, 0);
-                    let randomValue = Math.random() * totalWeight;
+                    // ★フレーバーテキストの出力処理を追加
+                    let flavorText = getRandomFlavor(letterCard.flavor, state, 'master', false);
                     
-                    let selectedEvent = null;
-                    for (let ev of availableEvents) {
-                        randomValue -= ev.weight;
-                        if (randomValue <= 0) {
-                            selectedEvent = ev;
-                            break;
-                        }
-                    }
-
-                    // ハズレ（タイトルが"なし"）以外が選ばれた場合のみ実行
-                    if (selectedEvent && selectedEvent.title !== "なし") {
-                        selectedEvent.effect(state);
-                        
-                        if (selectedEvent.effectText) {
-                            state.temporaryEffects.push(`${selectedEvent.title}: ${selectedEvent.effectText}`);
-                        }
-
-                        let eventFlavor = getRandomFlavor(selectedEvent.flavor, state, 'master', false);
-                        if (eventFlavor) {
-                            setTimeout(() => {
-                                addLog(eventFlavor, "log-flavor");
-                            }, currentLogDelay);
-                            currentLogDelay += 600;
-                        }
-
-                        turnLogs.push(selectedEvent.title);
-                        addTurnHistory('event', selectedEvent.title);
-                    }
+                    setTimeout(() => {
+                        if (flavorText) addLog(flavorText, "log-flavor");
+                    }, currentLogDelay);
+                    currentLogDelay += 600;
                 }
             }
-            // ▲ ここまで
+
+            // ★追加：「贈り物」のランダム追加処理
+            // 昏睡(heavy)時には発生させないよう条件を追加
+            if (!eventOccurred && !state.hasEncounteredGift && state.hand.length < 6 && state.debuff !== 'heavy') {
+                if (Math.random() < 0.02) { // 2%の確率で出現
+                    let price = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+                    let giftCard = {
+                        ...SPECIAL_CARDS['gift'],
+                        sellPrice: price,
+                        id: Date.now() + Math.random()
+                    };
+                    state.hand.push(giftCard);
+                    addTurnHistory('event', '贈り物');
+                    turnLogs.push("贈り物"); // アラートに追加
+                    eventOccurred = true; // 他のイベントと排他にする
+                    state.hasEncounteredGift = true; // 追加：発生済みフラグをオン
+                    state.temporaryEffects.push(`カード入手: ${giftCard.name}`);
+                    
+
+                    // 手紙入手時と同じように、フレーバーテキストを出し分ける
+                    let flavorText = getRandomFlavor(giftCard.flavor, state, 'master', false);
+                    
+                    setTimeout(() => {
+                        if (flavorText) addLog(flavorText, "log-flavor");
+                    }, currentLogDelay);
+                        currentLogDelay += 600;
+                }
+            }
+
+            // ★追加：八つ当たりイベント（高ストレス時に確率で発生）
+            if (state.stress >= 70 && state.debuff !== 'heavy' && !state.isTantrum && !eventOccurred && !state.battleActive) {
+                if (Math.random() < 0.35) { // 35%で発生
+                    state.isTantrum = true;
+                    turnLogs.push("八つ当たり");
+                    addTurnHistory('event', '八つ当たり');
+                    eventOccurred = true;
+                    state.temporaryEffects.push(`八つ当たり: 八つ当たり状態付与`);
+                    
+                    const tantrumFlavor = {
+                        trust: ["蓄積したストレスが限界を超え、彼はあなたに対して声を荒げた。",
+                            "我慢の限界を迎えたのか、彼は感情のままにあなたへ八つ当たりをした。"],
+                        high_trust: ["張り詰めていた糸が切れたように、彼は声を荒げて不満をぶちまけた。",
+                            "溜め込んでいた感情が爆発し、彼はらしくもなく怒りをあなたにぶつけた。"],
+                        dependence: [ "彼は何かに怯えるように取り乱し、あなたに当たり散らしている。",
+                            "見捨てられる不安からか、彼は泣き叫ぶようにあなたを責め立てた。"],
+                        mannerism: [ "抑えきれない苛立ちが爆発し、彼はあなたを理不尽になじった。",
+                            "鬱積した感情が突如として溢れ出し、彼は露骨に不機嫌な態度を取った。"]
+                    };
+                    let flavorText = getRandomFlavor(tantrumFlavor, state, 'master', false);
+                    setTimeout(() => {
+                        if (flavorText) addLog(flavorText, "log-flavor");
+                    }, currentLogDelay);
+                    currentLogDelay += 600;
+                }
+            }
 
             // 前方から移動したアラート(setLastAction)の反映処理
             if (turnLogs.length > 0) {
@@ -2487,7 +2499,7 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                     }
 
                     // 3. マンネリ（灰色の▼）：次に使うと同名カードの使用回数が5回目に達する場合
-                    if (['direct', 'indirect', 'cold', 'harm'].includes(card.type)) {
+                    if (['direct', 'indirect'].includes(card.type)) {
                         let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
                         if (sameCardCount >= 4) { // 次に使った時点で5回目になるため、4回の時点で予告表示する
                             debuffIconsHTML += `<span style="color: #aaaaaa; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="マンネリ：回復・ストレス軽減が半減">▼</span>`;
@@ -2668,8 +2680,8 @@ function executeCard(target) {
 
     // --- マンネリ（効果減衰）の判定 ---
     let isMannerism = false;
-    // 季節限定(season)・不用品・愛着は対象外とする
-    if (['direct', 'indirect', 'cold', 'harm'].includes(card.type)) {
+    // 戦闘用(harm)や季節限定(season)は対象外とする
+    if (['direct', 'indirect'].includes(card.type)) {
         // 関係性の条件を撤廃し、使用回数のみで判定する
         let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
         if (sameCardCount >= 5) { // ★ 3 から 5 に変更
@@ -2704,9 +2716,9 @@ function executeCard(target) {
                 }
             } else if (card.type === 'cold' || card.type === 'harm') {
                 if (state.relation >= 0) {
-                    extraLog = "彼の態度に冷ややかな視線を向けると、彼はハッと我に返った。";
+                    extraLog = "冷めた視線と態度を向けると、彼はハッと我に返り口を噤んだ。";
                 } else {
-                    extraLog = "あなたに突き放され、彼はあからさまに動揺している。";
+                    extraLog = "あなたに冷たく突き放され、彼はあからさまに動揺している。";
                 }
             }
         } else if (target === 'battle' && card.type === 'harm') {
@@ -2828,7 +2840,7 @@ let calcRelationDelta = function(targetCard, currentTarget) {
                         healVal = Math.floor(healVal / 2);
                     }
                     // マンネリ減衰処理を追加
-                    if (isMannerism && healVal > 0 && !action.isFixed) {
+                    if (isMannerism && healVal > 0) {
                         healVal = Math.floor(healVal / 2);
                     }
                     state.health = Math.min(100, Math.max(0, state.health + healVal));
@@ -2836,11 +2848,11 @@ let calcRelationDelta = function(targetCard, currentTarget) {
 
                 case "stress":
                     let stressVal = action.value !== undefined ? action.value : ((state.relation >= 0) ? (action.trust || 0) : (action.dep || 0));
-                    if (card.type === 'indirect' && state.relation < 0 && stressVal < 0 && !action.isFixed) {
+                    if (card.type === 'indirect' && state.relation < 0 && stressVal < 0) {
                         stressVal = 10;
                     }
                     // マンネリ減衰処理を追加（ストレス減少効果のみ減衰させる）
-                    if (isMannerism && stressVal < 0 && !action.isFixed) {
+                    if (isMannerism && stressVal < 0) {
                         stressVal = Math.floor(stressVal / 2);
                     }
                     state.stress = Math.min(100, Math.max(0, state.stress + stressVal));
@@ -3368,13 +3380,13 @@ function buyCard(idx, cost, btnEl) {
                 headerText = "各月の1回目の売却：カードを売って 資金(+20G) を得られます。";
             } else {
                 let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
-                headerText = `2回目以降の売却：売却コストとして 資金(-${nextCost}G) を消費します。`;
+                headerText = `2回目以降の処分：廃棄コストとして 資金(-${nextCost}G) を消費します。`;
             }
             
             view.innerHTML = `<div style="font-size:10px; color:#aaa; margin-bottom:4px; font-family: 'Zen Kaku Gothic New', sans-serif;">${headerText}</div>`;
             
             let rawCards = [...state.deck, ...state.discard];
-            if (rawCards.length === 0) { view.innerHTML += '<div>売却できるカードがありません。</div>'; return; }
+            if (rawCards.length === 0) { view.innerHTML += '<div>処分できるカードがありません。</div>'; return; }
             
             // 元のインデックスを保持した上で種類ごとにソート（★attachmentを追加）
             const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
@@ -3401,11 +3413,11 @@ function buyCard(idx, cost, btnEl) {
                     let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
                     let netCost = nextCost - bonusGold;
                     if (netCost <= 0) {
-                        // ボーナスが売却コストを上回る場合は資金増（青ボタン）にする
-                        btnText = `売却(+${Math.abs(netCost)}G)`; 
+                        // ボーナスが処分コストを上回る場合は資金増（青ボタン）にする
+                        btnText = `処分(+${Math.abs(netCost)}G)`; 
                         btnClass = "btn-primary";
                     } else {
-                        btnText = `売却(-${netCost}G)`; 
+                        btnText = `処分(-${netCost}G)`; 
                         btnClass = "btn-danger";
                     }
                 }
@@ -3431,7 +3443,7 @@ function calculateBonusGold(cardName) {
         function disposeCard(combinedIdx, btnEl) {
             let allCards = [...state.deck, ...state.discard];
             if (allCards.length <= 1) {
-                showCustomAlert("デッキの最小枚数（1枚）を下回るため、これ以上売却できません。");
+                showCustomAlert("デッキの最小枚数（1枚）を下回るため、これ以上処分できません。");
                 return;
             }
             
@@ -3441,7 +3453,7 @@ function calculateBonusGold(cardName) {
             
 let baseDisposeCost = 10;
             let costIncrease = 20;
-            let actionType = '売却';
+            let actionType = '処分';
             
             let netCost = 0;
             if (targetCard.name === "贈り物") {
@@ -3455,7 +3467,7 @@ let baseDisposeCost = 10;
             }
 
             if (netCost > 0 && state.gold < netCost) { 
-                showCustomAlert("売却費用が足りません。"); 
+                showCustomAlert("処分費用が足りません。"); 
                 return; 
             }
 
@@ -3490,12 +3502,12 @@ let baseDisposeCost = 10;
                     }
                 }
 
-                // 売却したカードが不用品だった場合の記録
+                // ★追加：処分したカードが不用品だった場合の記録
                 if (removed.type === 'obstacle') {
                     state.hasDisposedObstacle = true;
                 }
 
-                // 売却したカードの名前を playedCardsList からすべて削除（カウントリセット）
+                // 処分したカードの名前を playedCardsList からすべて削除（カウントリセット）
                 if (state.playedCardsList) {
                     state.playedCardsList = state.playedCardsList.filter(c => c && c.name !== removed.name);
                 }
@@ -4218,7 +4230,7 @@ function updateBuffDebuffDetails() {
     if (state.playedCardsList) {
         let cardCounts = {};
         state.playedCardsList.forEach(c => {
-            if (c && ['direct', 'indirect', 'cold', 'harm'].includes(c.type)) {
+            if (c && ['direct', 'indirect'].includes(c.type)) {
                 cardCounts[c.name] = (cardCounts[c.name] || 0) + 1;
             }
         });
@@ -4485,7 +4497,7 @@ function toggleBuffDebuffDetails() {
                 <div class="status-card">
                     <div class="status-card-title">ストレス</div>
                     <div class="status-card-desc">
-                        主人の精神的な負荷です。<br>一定値を超えた状態でターンを開始すると健康度が減少するペナルティが発生します。また、ストレスが高くなるほど主人は体調を崩しやすくなり、デバフが付与される場合が上がります。<br>
+                        主人の精神的な負荷です。<br>一定値を超えた状態でターンを開始すると主人は体調を崩し、デバフが付与されます。<br>（デバフ内容がヘッダーに表示されます）<br>
                     </div>
                 </div>
                 <div class="status-card">
@@ -4581,7 +4593,7 @@ function toggleBuffDebuffDetails() {
                         <div class="flow-step-title">準備</div>
                     </div>
                     <div class="flow-step-body">
-                        デッキからカードがドローされ、このターンのデバフ状態や、戦闘アラートなどが通知されます。<br>また、季節の変化や主人の様子など、ランダムなイベントが発生することがあります。
+                        デッキからカードがドローされ、このターンのデバフ状態や、戦闘アラートなどが通知されます。
                     </div>
                 </div>
                 <div class="flow-step">
