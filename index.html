@@ -3508,7 +3508,7 @@ let baseDisposeCost = 10;
 
                // ★追加：贈り物売却によるDEAD END判定
                 if (removed.name === "贈り物" && state.relation <= -75) {
-                    if (Math.random() < 0.3) {
+                    if (Math.random() < 0.8) {
                         if (activeBuffs.isMadness) {
                             checkEndGame(false, "double_suicide");
                         } else {
@@ -3576,7 +3576,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
         
         usageRatioHTML += `<div style="margin-bottom: 8px; font-size: 11px; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
         usageRatioHTML += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ カード使用比率（全${totalPlayed}回）</div>`;
-        usageRatioHTML += `<div style="display: flex; height: 10px; width: 100%; border-radius: 2px; overflow: hidden; margin-bottom: 4px; border: 1px solid #444;">
+        usageRatioHTML += `<div style="display: flex; height: 8px; width: 100%; border-radius: 0px; overflow: hidden; margin-bottom: 4px; border: 0px solid #444;">
                     ${bars}
                  </div>`;
         usageRatioHTML += `</div>`;
