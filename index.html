@@ -93,37 +93,65 @@ body {
             display: flex;
             justify-content: space-between;
             margin-bottom: 5px;
-            font-size: 9px;
+            font-size: 10px;
             color: #d4af37; /* テキストをゴールドに変更 */
             font-weight: bold;
             
             padding-bottom: 3px;
         }
         .status-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 8px;
             margin-top: 5px;
+            padding: 8px 5px;
+            border-radius: 2px;
         }
-        .status-box {
-            background-color: #151515;
-            padding: 6px;
-            
-            text-align: center;
-            font-size: 11px;
-            border: 1px solid #2a2a2a;
+        .status-row {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 4px;
+            font-size: 10px;
         }
-        .status-box .value {
-            font-size: 15px;
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-label {
+            text-align: left;
+            color: #bbbbbb;
             font-weight: bold;
-            margin-top: 0px;
-            margin-bottom: 3px;
-            color: #ffffff;
-        display: inline-block;}
+            font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif !important;
+        }
+        .status-value {
+            text-align: right;
+            font-weight: bold;
+            font-size: 12px;
+            color: #bbbbbb;
+            font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif !important;
+        }
+        .status-bar-bg {
+            width: 100%;
+            height: 6px;
+            border-radius: 0px;
+            background-color: #0b0b0b;
+            border: 1px solid #444;
+            overflow: hidden;
+            position: relative;
+        }
+        .status-bar-fill {
+            height: 100%;
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 0;
+        }
 
 @keyframes bounce-green {
     0% { transform: translateY(0); color: #ffffff; }
-    50% { transform: translateY(-3px); color: #55b773; }
+    50% { transform: translateY(-3px); color: #7dad8c; }
     100% { transform: translateY(0); color: #ffffff; }
 }
 @keyframes bounce-red {
@@ -134,7 +162,7 @@ body {
 
 @keyframes bounce-green2 {
     0% { transform: translateY(0); color: #b57c1e; }
-    50% { transform: translateY(-3px); color: #55b773; }
+    50% { transform: translateY(-3px); color: #7dad8c; }
     100% { transform: translateY(0); color: #b57c1e; }
 }
 @keyframes bounce-red2 {
@@ -145,12 +173,12 @@ body {
 
 @keyframes bounce-yellow {
     0% { transform: translateY(0); color: #ffffff; }
-    50% { transform: translateY(-3px); color: #f1c40f; }
+    50% { transform: translateY(-3px); color: #b9a44d; }
     100% { transform: translateY(0); color: #ffffff; }
 }
 @keyframes bounce-purple {
     0% { transform: translateY(0); color: #ffffff; }
-    50% { transform: translateY(-3px); color: #9b59b6; }
+    50% { transform: translateY(-3px); color: #754f87; }
     100% { transform: translateY(0); color: #ffffff; }
 }
 
@@ -220,10 +248,7 @@ body {
 }
 
 
-        /* 高級感のあるダークトーンのステータスカラー */
-        .status-box.health { border-left: 4px solid #7d3a3a; }
-        .status-box.stress { border-left: 4px solid #85612f; }
-        .status-box.relation { border-left: 4px solid #55445d; }
+        
         
         .player-status {
             display: flex;
@@ -382,7 +407,7 @@ body {
         .game-card {
             background: linear-gradient(135deg, #222222 0%, #151515 100%);
             border: 1px solid #444444;
-            padding: 4px 6px 8px 6px;
+            padding: 6px 6px 8px 6px;
             text-align: left;
             color: #ffffff;
             cursor: pointer;
@@ -422,7 +447,7 @@ body {
 .card-type {
             font-size: 9px;
             padding: 1px 4px;
-            border-radius: 3px;
+            border-radius: 2px;
             width: fit-content;
             margin-bottom: 3px;
             color: #fff;
@@ -477,10 +502,10 @@ body {
             width: 100%;
             background-color: #1f1f1f;
             color: #d4af37;
-            border: 1px solid #d4af37;
+            border: 0px solid #d4af37;
             padding: 10px;
             margin-top: 6px;
-            border-radius: 3px;
+            border-radius: 1px;
             font-weight: bold;
             font-size: 14px;
             text-align: center;
@@ -496,7 +521,6 @@ body {
         .btn-primary { 
             background-color: #d4af37; 
             color: #0b0b0b;
-            border: 1px solid #aa7c11;
         }
         .btn-primary:active { 
             background-color: #bfa343; 
@@ -504,7 +528,6 @@ body {
         .btn-danger { 
             background-color: #7d1f18; 
             color: #ffffff;
-            border: 1px solid #5c140f;
         }
         .btn-danger:active {
             background-color: #96251d;
@@ -719,26 +742,56 @@ display: flex;
 
 <!-- idと初期非表示スタイルを追加したヘッダー -->
 <header id="game-header" style="display: none;">
-    <div class="info-row">
-        <div style="display: flex; gap: 5px; align-items: center; flex-wrap: wrap;">
-            <span id="display-time">【 1 / 30 ターン 】</span>
-            <span id="display-season">季節: 夏</span>
-            <span id="display-debuff" style="display: none;"></span>
+    <div class="info-row" style="align-items: center;">
+        <!-- flex-wrap: nowrap と white-space: nowrap で段落ちを完全に禁止 -->
+        <!-- 各項目を flex: 1 にすることで幅を均等に4分割し、桁数が増減しても仕切り線の位置を完全に固定します -->
+        <div style="display: flex; gap: 4px; align-items: center; justify-content: space-between; flex-wrap: nowrap; flex: 1; white-space: nowrap;">
+            <span id="display-time" style="flex: 1; text-align: center;">1 / 30 ターン</span>
+            
+            <div style="width: 1px; height: 25px; background-color: #d4af37; opacity: 0.5; flex-shrink: 0;"></div>
+            
+            <span id="display-season" style="flex: 1; text-align: center;">季節：夏</span>
+            
+            <div style="width: 1px; height: 25px; background-color: #d4af37; opacity: 0.5; flex-shrink: 0;"></div>
+            
+            <span id="display-gold-header" style="flex: 1; text-align: center;">資金: 100G</span>
+            
+            <div style="width: 1px; height: 25px; background-color: #d4af37; opacity: 0.5; flex-shrink: 0;"></div>
+            
+            <span id="display-ap-header" style="flex: 1; text-align: left;padding-left:20px;">AP:■■■</span>
         </div>
-        <button onclick="openManual()" style="background: none; border: 1px solid #d4af37; color: #d4af37; padding: 2px 8px; cursor: pointer; font-size: 11px; font-family: serif; flex-shrink: 0;">説明書</button>
+        
+        <!-- ボタンも縮んで改行されないように nowrap と flex-shrink: 0 を付与 -->
+        <button onclick="openManual()" style="background: none; border: 1px solid #d4af37; color: #d4af37; padding: 2px 6px; cursor: pointer; font-size: 11px; font-family: serif; flex-shrink: 0; margin-left: 6px; white-space: nowrap;">説明書</button>
+    </div>
     </div>
     <div class="status-container">
-        <div class="status-box health">
-            <div>健康度</div>
-            <div class="value" id="stat-health">100</div>
+        <div class="status-row">
+            <div class="status-header">
+                <div class="status-label">健康度</div>
+                <div class="status-value" id="stat-health">100</div>
+            </div>
+            <div class="status-bar-bg">
+                <div id="bar-health" class="status-bar-fill" style="width: 100%; background-color: #7d3a3a; left: 0;"></div>
+            </div>
         </div>
-        <div class="status-box stress">
-            <div>ストレス</div>
-            <div class="value" id="stat-stress">0</div>
+        <div class="status-row">
+            <div class="status-header">
+                <div class="status-label">ストレス</div>
+                <div class="status-value" id="stat-stress">0</div>
+            </div>
+            <div class="status-bar-bg">
+                <div id="bar-stress" class="status-bar-fill" style="width: 0%; background-color: #71695f; left: 0;"></div>
+            </div>
         </div>
-        <div class="status-box relation">
-            <div>関係性</div>
-            <div class="value" id="stat-relation">0</div>
+        <div class="status-row">
+            <div class="status-header">
+                <div class="status-label">関係性</div>
+                <div class="status-value" id="stat-relation">0</div>
+            </div>
+            <div class="status-bar-bg">
+                <div id="bar-relation" class="status-bar-fill" style="width: 0%; background-color: #b9a44d; left: 0;"></div>
+            </div>
         </div>
     </div>
 </header>
@@ -761,7 +814,7 @@ display: flex;
                 
             </div>
             <div class="phase-button-area">
-                <button id="next-turn-btn" class="btn btn-primary" onclick="processWeekStart()">次へ進む</button>
+                <button id="next-turn-btn" class="btn" onclick="processWeekStart()">次へ進む</button>
             </div>
         </div>
 
@@ -776,13 +829,10 @@ display: flex;
                 <div class="section-title">
                     <span></span>
                     <div style="display: flex; gap: 8px; font-size: 12px; color: #e5e5e5; font-weight: normal; align-items: center;">
-                        <span>AP: <strong id="stat-ap" style="color:#f1c40f;">3/3</strong></span>
-                        <span>資金: <strong id="stat-gold" style="color:#b57c1e;">100</strong></span>
+                        <!-- APと資金の表示はヘッダーに移動したため削除 -->
                     </div>
                 </div>
-                <div class="battle-phase-alert" id="battle-alert-bar">
-    【戦闘発生中！】敵の脅威度: <span id="battle-threat-value">0</span>% 
-</div>
+                <!-- 戦闘アラートは詳細メニュー内に移動したため削除 -->
                 <div class="card-grid" id="hand-cards"></div>
             </div>
 
@@ -800,11 +850,17 @@ display: flex;
 
        <div id="phase-shop-container" style="display: none;">
             <div class="phase-scroll-area">
+                <!-- 購入・売却フェーズでも last-action-display と詳細ダウンメニューを表示 -->
+                <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                    <div class="last-action-display" style="flex: 1; margin-bottom: 0;"></div>
+                    <div style="background-color: #0f0f0f; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
+                </div>
+                <div class="buff-debuff-details" style="display: none; background-color: #111; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
+
                 <div class="section-title">
                     <span></span>
                     <div style="display: flex; gap: 8px; font-size: 12px; color: #e5e5e5; font-weight: normal; align-items: center;">
-                        <span>AP: <strong id="stat-ap-shop" style="color:#f1c40f;">3/3</strong></span>
-                        <span>資金: <strong id="stat-gold-shop" style="color:#b57c1e;">100</strong></span>
+                        <!-- APと資金の表示はヘッダーに移動したため削除 -->
                     </div>
                 </div>
                 <div class="tab-area">
@@ -816,7 +872,7 @@ display: flex;
                 <div id="shop-dispose-view" class="shop-layout" style="display:none;"></div>
             </div>
             <div class="phase-button-area">
-                <button class="btn btn-primary" onclick="closeShop()">購入・売却を終了</button>
+                <button class="btn" onclick="closeShop()">購入・売却を終了</button>
             </div>
         </div>
 
@@ -1686,114 +1742,61 @@ function setLastAction(text) {
 
  function updateUI() {
             let currentTurn = state.turn === 0 ? 1 : state.turn;
+
+          // 中央寄せのヘッダーテキストを更新
             let season = getSeasonByTurn(state.turn);
+            document.getElementById('display-time').innerText = `${currentTurn} / 30 ターン`;
+            document.getElementById('display-season').innerText = `季節：${season}`;
+            document.getElementById('display-ap-header').innerText = `AP:${'■'.repeat(state.ap)}`;
+            document.getElementById('display-gold-header').innerText = `資金: ${state.gold}G`;
 
-            document.getElementById('display-time').innerText = `【 ${currentTurn} / 30 ターン 】`;
-            
-            // ヘッダーのテキストと色を更新
-const displaySeason = document.getElementById('display-season');
-            displaySeason.innerText = `季節: ${season}`;
-            
-            // 現在より少し淡い色（パステル調）のカラーコードに変更
-            const colors = { 
-"夏": "#948238", // くすんだ芥子色
-                "秋": "#965b36", // 落ち着いたレンガ色
-                "冬": "#4a6b82", // 彩度を落とした灰青色
-                "春": "#94636b"  // 暗めのオールドローズ
-            };
-            
-            // 背景色を季節の色で塗りつぶす
-            displaySeason.style.backgroundColor = colors[season];
-            
-            // 文字色を黒に固定する
-            displaySeason.style.color = "#000000"; 
-            
-            // 枠線指定を解除し、内側の余白と角丸を設定してラベル状に整える
-            displaySeason.style.border = "none";
-            displaySeason.style.padding = "1px 4px";
-            displaySeason.style.borderRadius = "3px";
-            displaySeason.style.fontSize = "10px";
-
-    const displayDebuff = document.getElementById('display-debuff');
-            if (displayDebuff) {
-                if (state.debuff !== 'none') {
-                    // スマホ用に「（重さ）：（効果）」の簡潔な表記に変更
-                    let debuffTexts = { 
-                        light: '歩行困難：COST+1', 
-                        medium: '頭痛：DRAW-1', 
-                        heavy: '昏睡：AP 固定1' 
-                    };
-                    
-         let debuffColors = {
-                        light: '#7b4141',  // 軽度：彩度の低いくすんだ赤茶
-                        medium: '#9f3434', // 中度：彩度を少し上げた暗い赤
-                        heavy: '#a71e1e'   // 重度：高彩度で警告を示す強い赤
-                    };
-
-                    displayDebuff.innerText = debuffTexts[state.debuff];
-                    displayDebuff.style.backgroundColor = debuffColors[state.debuff];
-                    
-                   // 季節の枠とスタイルを完全に一致させる
-                    displayDebuff.style.color = "#000000"; // 黒文字
-                    displayDebuff.style.border = "none";
-                    displayDebuff.style.padding = "1px 4px";
-                    displayDebuff.style.borderRadius = "3px";
-
-                    displayDebuff.style.fontSize = "10px"; // 文字サイズ
-                    
-                    displayDebuff.style.display = "inline-block";
-                } else {
-                    displayDebuff.style.display = "none";
-                }
-            }
-
-   triggerStatAnimation('stat-health', prevStats.health, state.health, 'health');
+            triggerStatAnimation('stat-health', prevStats.health, state.health, 'health');
 document.getElementById('stat-health').innerText = state.health;
+let hpBar = document.getElementById('bar-health');
+if (hpBar) hpBar.style.width = Math.min(100, Math.max(0, state.health)) + '%';
 prevStats.health = state.health;
 
 triggerStatAnimation('stat-stress', prevStats.stress, state.stress, 'stress');
 document.getElementById('stat-stress').innerText = state.stress;
+let stressBar = document.getElementById('bar-stress');
+if (stressBar) stressBar.style.width = Math.min(100, Math.max(0, state.stress)) + '%';
 prevStats.stress = state.stress;
 
 triggerStatAnimation('stat-relation', prevStats.relation, state.relation, 'relation');
 document.getElementById('stat-relation').innerText = (state.relation > 0 ? '+' : '') + state.relation;
+let relBar = document.getElementById('bar-relation');
+if (relBar) {
+    if (state.relation > 0) {
+        relBar.style.width = Math.min(100, state.relation) + '%';
+        relBar.style.left = '0';
+        relBar.style.right = 'auto';
+        relBar.style.backgroundColor = '#f1c40f'; // プラス時の黄色
+    } else if (state.relation < 0) {
+        relBar.style.width = Math.min(100, Math.abs(state.relation)) + '%';
+        relBar.style.right = '0';
+        relBar.style.left = 'auto';
+        relBar.style.backgroundColor = '#754f87'; // マイナス時の紫色
+    } else {
+        relBar.style.width = '0%';
+    }
+}
 prevStats.relation = state.relation;
 
 
 
-        document.getElementById('stat-ap').innerText = `${state.ap}/${state.maxAp}`;
-         document.getElementById('stat-ap-shop').innerText = `${state.ap}/${state.maxAp}`;
+        // APはヘッダーで更新するため個別の更新処理は削除
             
-            // ★ここから変更：資金のアニメーション呼び出しと値の更新
-            triggerStatAnimation('stat-gold', prevStats.gold, state.gold, 'gold');
-            triggerStatAnimation('stat-gold-shop', prevStats.gold, state.gold, 'gold');
-            document.getElementById('stat-gold').innerText = state.gold;
-            document.getElementById('stat-gold-shop').innerText = state.gold;
+            // ヘッダーの資金にアニメーションを適用
+            triggerStatAnimation('display-gold-header', prevStats.gold, state.gold, 'gold');
             prevStats.gold = state.gold;
-            // ★ここまで変更
             
-          /*  const debuffBar = document.getElementById('debuff-bar');
-            if (state.debuff !== 'none') {
-                debuffBar.style.display = 'block';
-                let names = { light: '軽度（歩行困難:ケアコスト+1）', medium: '中度（頭痛と眩暈:ドロー-1）', heavy: '重度（昏睡:AP固定1）' };
-                document.getElementById('debuff-name').innerText = names[state.debuff];
-            } else {
-                debuffBar.style.display = 'none';
-            } */
+            // 戦闘アラートは詳細欄に移動したため個別の表示切り替え処理を削除
 
-            const alertBar = document.getElementById('battle-alert-bar');
-            if (state.battleActive) {
-                alertBar.style.display = 'block';
-                document.getElementById('battle-threat-value').innerText = state.threat;
-            } else {
-                alertBar.style.display = 'none';
-            }
-
-const nextBtn = document.getElementById('next-turn-btn'); // HTMLで設定した実際のIDを指定する
+            const nextBtn = document.getElementById('next-turn-btn');
             if (nextBtn) {
                 if (state.turn === 30) {
                     // 最終ターンの場合の表示
-                    nextBtn.innerText = "結末を見届ける";
+                    nextBtn.innerText = "次へ進む";
                     nextBtn.style.backgroundColor = "#c0392b"; // 任意：色を変更して視覚的に強調
                     nextBtn.style.color = "#ffffff";
                 } else {
@@ -2275,8 +2278,8 @@ if (Math.random() < obstacleRates[state.debuff]) {
                 }, currentLogDelay);
                 currentLogDelay += 600;
                 
-                turnLogs.push("敵襲来");
-                addTurnHistory('states', '敵襲来'); // 戦闘発生を履歴に記録
+                turnLogs.push("戦闘発生");
+                addTurnHistory('states', '戦闘発生'); // 戦闘発生を履歴に記録
             }
 
           // ▼ 追加：ランダムイベント処理
@@ -3312,7 +3315,7 @@ let typeN = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', 
                 item.innerHTML = `<div>
                         <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
                             <span class="card-type type-${card.type}" style="margin-bottom: 0;">${typeN}</span>
-                            <span style="font-size: 10px; background: #a3a29d; border: 0px solid #555; padding: 1px 5px; border-radius: 3px; color: #151515; font-weight: bold;">AP:${card.cost}</span>
+                            <span style="font-size: 10px; background: #5d5d5d; border: 0px solid #555; padding: 1px 5px; border-radius: 2px; color: #151515; font-weight: bold;">AP:${card.cost}</span>
                             <strong style="font-size:12px;">${card.name}</strong>
                         </div>
                         <span style="font-size:10px; color:#aaa; font-family: 'Zen Kaku Gothic New', sans-serif;">${card.desc}</span>
@@ -3427,7 +3430,7 @@ function buyCard(idx, cost, btnEl) {
 
                 item.innerHTML = `<div style="display: flex; align-items: center; gap: 6px;">
                         <span class="card-type type-${card.type}" style="margin-bottom: 0;">${typeN}</span>
-                        <span style="font-size: 10px; background: #a3a29d; border: 0px solid #555; padding: 1px 5px; border-radius: 3px; color: #151515; font-weight: bold;">AP:${card.cost}</span>
+                        <span style="font-size: 10px; background: #5d5d5d; border: 0px solid #555; padding: 1px 5px; border-radius: 2px; color: #151515; font-weight: bold;">AP:${card.cost}</span>
                         <span style="font-size:11px;">${card.name}${bonusIcon}</span>
                     </div>
                     <button class="btn ${btnClass}" style="padding:3px 6px; font-size:10px; margin:0; width:auto;" onclick="disposeCard(${idx}, this)">${btnText}</button>`;
@@ -3535,7 +3538,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
     const typeNames = { direct:'直接', indirect:'間接', cold:'冷淡', harm:'攻撃', season:'季節', obstacle:'不用品', attachment: '愛着' };
     
     // 見出しラベルのデザイン
-    const labelStyle = "background: #080808; color: #736e5d; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-right: 6px; display: inline-flex; align-items: center; justify-content: center; width: 45px; flex-shrink: 0; font-family: 'Zen Kaku Gothic New', sans-serif !important;";
+    const labelStyle = "background: #080808; color: #736e5d; padding: 1px 4px; border-radius: 2px; font-size: 9px; margin-right: 6px; display: inline-flex; align-items: center; justify-content: center; width: 45px; flex-shrink: 0; font-family: 'Zen Kaku Gothic New', sans-serif !important;";
 
     // ★変更：カード使用比率ゲージのHTMLを事前に生成しておく
     let usageRatioHTML = '';
@@ -3560,7 +3563,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
         
         usageRatioHTML += `<div style="margin-bottom: 8px; font-size: 11px; padding-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">`;
         usageRatioHTML += `<div style="font-weight: bold; margin-bottom: 4px; color: #d4af37; font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">▼ カード使用比率（全${totalPlayed}回）</div>`;
-        usageRatioHTML += `<div style="display: flex; height: 10px; width: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 4px; border: 1px solid #444;">
+        usageRatioHTML += `<div style="display: flex; height: 10px; width: 100%; border-radius: 2px; overflow: hidden; margin-bottom: 4px; border: 1px solid #444;">
                     ${bars}
                  </div>`;
         usageRatioHTML += `</div>`;
@@ -3634,7 +3637,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
             else if (stateName === '昏睡') bgColor = '#a71e1e';
             else if (stateName === '戦闘勝利') bgColor = '#bf790d';
             else if (stateName === '戦闘敗北') bgColor = '#40435d';
-            else if (stateName === '敵襲来') bgColor = '#962d22'; // 敵襲来の色を追加
+            else if (stateName === '戦闘発生') bgColor = '#962d22'; // 敵襲来の色を追加
             
             return `<span style="background-color: ${bgColor}; color: #ffffff; padding: 1px 4px; border-radius: 2px; font-size: 8px; display: inline-block; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${stateName}</span>`;
         };
@@ -4182,6 +4185,11 @@ function updateBuffDebuffDetails() {
         let sign = activeBuffs.nextTurnDrawMod > 0 ? '+' : '';
         tempEffects.push(`次ターンドロー枚数: ${sign}${activeBuffs.nextTurnDrawMod}`);
     }
+
+   // ▼戦闘発生時のアラートの追加
+    if (state.battleActive) {
+        tempEffects.push(`<span style="font-family: 'Zen Kaku Gothic New', sans-serif !important;">戦闘発生：脅威度 ${state.threat}%</span>`);
+    }
     
     if (tempEffects.length > 0) {
         html += `<div style="font-weight:bold; color:#d4af37; margin-bottom: 2px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【一時的な効果・発生イベント】</div>`;
@@ -4327,7 +4335,7 @@ function toggleBuffDebuffDetails() {
         letter-spacing: 2px;
     }
     #manual-modal-content h2 {
-        font-size: 18px;
+        font-size: 13px;
         color: #d4af37;
         margin-top: 30px;
         margin-bottom: 15px;
@@ -4335,7 +4343,7 @@ function toggleBuffDebuffDetails() {
         border-bottom: 2px solid #d4af37;
     }
     #manual-modal-content h3 {
-        font-size: 14px;
+        font-size: 12px;
         color: #d4af37;
         margin-top: 20px;
         margin-bottom: 10px;
@@ -4384,7 +4392,7 @@ function toggleBuffDebuffDetails() {
         font-weight: bold;
         color: #fff;
         padding: 2px 6px;
-          border-radius: 3px;  
+          border-radius: 2px;  
     }
 #manual-modal-content .type-tag-direct { background-color: #7d1f18; }
     #manual-modal-content .type-tag-indirect { background-color: #1e5a34; }
@@ -4399,7 +4407,7 @@ function toggleBuffDebuffDetails() {
         flex-direction: column;
         gap: 15px;
         margin: 25px 0;
-        border-radius: 3px;
+        border-radius: 2px;
     }
     #manual-modal-content .flow-step {
         background-color: rgba(255, 255, 255, 0.03);
@@ -4451,7 +4459,7 @@ function toggleBuffDebuffDetails() {
     <div style="background: #151515; border: 2px solid #d4af37; width: 100%; max-width: 480px; max-height: 80vh; overflow-y: auto;  box-shadow: 0 0 20px rgba(212,175,55,0.3); display: flex; flex-direction: column;">
         
         <div style="padding: 15px; border-bottom: 1px solid #444; display: flex; justify-content: space-between; align-items: center; background: #111;">
-            <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 16px;">説明書</span>
+            <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 12px;">説明書</span>
     
         </div>
 
@@ -4497,7 +4505,7 @@ function toggleBuffDebuffDetails() {
                 <div class="status-card">
                     <div class="status-card-title">ストレス</div>
                     <div class="status-card-desc">
-                        主人の精神的な負荷です。<br>一定値を超えた状態でターンを開始すると主人は体調を崩し、デバフが付与されます。<br>（デバフ内容がヘッダーに表示されます）<br>
+                        主人の精神的な負荷です。<br>一定値を超えた状態でターンを開始すると主人は体調を崩し、デバフが付与されます。<br>（デバフ内容はアラート横の▼から詳細を確認できます）<br>
                     </div>
                 </div>
                 <div class="status-card">
@@ -4519,7 +4527,7 @@ function toggleBuffDebuffDetails() {
                 <div class="status-card">
                     <div class="status-card-title">資金（G）</div>
                     <div class="status-card-desc">
-                       カードの売却、または戦闘を無事に切り抜けた際に入手できます。<br>購入・売却フェーズにおいて、新しい強力なカードの購入や、不要になった行動の処分、または特別なカードを使用するために消費します。
+                       カードの売却、または戦闘を無事に切り抜けた際に入手できます。<br>新しい強力なカードの購入や、不要になった行動の処分、または特別なカードを使用するために消費します。
                    </div>
                 </div>
             </div>
@@ -4641,11 +4649,14 @@ function toggleBuffDebuffDetails() {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.8</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.9</p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+  <p style="font-size: 9px;">■ver 0.9<br>
+・UIを変更しました。<br>
+</p>
 <p style="font-size: 9px;">■ver 0.8<br>
 ・通常状態のフレーバーテキストを全カードに追加しました。<br>
 ・フレーバーテキストの表示方法を変更し、関係性の偏りが高いほど矜持・依存のテキストが出るようにしました。<br>
@@ -4776,7 +4787,7 @@ function toggleBuffDebuffDetails() {
             <span style="color: #d4af37; font-weight: bold; font-family: serif; font-size: 11px;">ターン詳細履歴</span>
             <div style="display: flex; align-items: center; gap: 4px;">
                 <span style="color: #d4af37; font-family: serif; font-size: 10px;"></span>
-                <button id="btn-download-all" onclick="downloadAllHistoryImageAsGrid(event)" style="background: #2a2a2a; color: #d4af37; border: 1px solid #d4af37; padding: 4px 8px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 10px; border-radius: 3px;">画像保存</button>
+                <button id="btn-download-all" onclick="downloadAllHistoryImageAsGrid(event)" style="background: #2a2a2a; color: #d4af37; border: 1px solid #d4af37; padding: 4px 8px; cursor: pointer; font-weight: bold; font-family: serif; font-size: 10px; border-radius: 2px;">画像保存</button>
             </div>
         </div>
         <!-- ★変更：画像化時に背景が透過しないよう background: #151515; を追加 -->
