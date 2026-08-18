@@ -1189,7 +1189,7 @@ const CARD_POOL = {
                 trust: ["ふかふかの寝具は心地よいようだが、彼はあなたに世話を焼かせすぎていると感じている。"], 
                 high_trust: ["あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。"],
                 dependence: ["寝具を整えてやると、彼はあなたの気配を感じて目を閉じた。"],
-                mannerism: ["寝具を干すという日常の作業。彼も特に気にかめる様子はない。"],
+                mannerism: ["寝具を干すという日常の作業。彼も特に気にかける様子はない。"],
                 heavy_trust: ["寝具を整え直しても、彼は微かな寝息を立てたまま目を覚まさない。"],
                 heavy_dependence: ["太陽の匂いがする清潔な布団で彼を包み込む。彼はあなたの庇護下で眠っている。"] 
             } 
@@ -2084,13 +2084,13 @@ function getRandomFlavor(flavorObj, state, context, isMannerism) {
         return "";
     };
 
-    // 1. マンネリ判定
-    if (isMannerism && flavorObj.mannerism) {
+    let isHeavy = state.debuff === 'heavy';
+
+    // 1. マンネリ判定（昏睡状態の時は昏睡のフレーバーを優先するためスキップ）
+    if (isMannerism && !isHeavy && flavorObj.mannerism) {
         let text = pickText(flavorObj.mannerism);
         if (text) return text;
     }
-
-    let isHeavy = state.debuff === 'heavy';
     let isBattle = context === 'battle';
     
     // 昏睡用テキストが定義されているかチェック
@@ -2517,7 +2517,7 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                     // 3. マンネリ（灰色の▼）：次に使うと同名カードの使用回数が5回目に達する場合
                     if (['direct', 'indirect'].includes(card.type)) {
                         let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
-                        if (sameCardCount >= 4) { // 次に使った時点で5回目になるため、4回の時点で予告表示する
+                        if (sameCardCount >= 4 && state.debuff !== 'heavy') { // 昏睡状態の時は表示しない
                             debuffIconsHTML += `<span style="color: #aaaaaa; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="マンネリ：回復・ストレス軽減が半減">▼</span>`;
                         }
                     }
@@ -2700,7 +2700,8 @@ function executeCard(target) {
     if (['direct', 'indirect'].includes(card.type)) {
         // 関係性の条件を撤廃し、使用回数のみで判定する
         let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
-        if (sameCardCount >= 5) { // ★ 3 から 5 に変更
+        // マンネリ状態かつ昏睡状態のとき、カード効果は昏睡状態を優先するため効果減衰を無効化
+        if (sameCardCount >= 5 && state.debuff !== 'heavy') { // ★ 3 から 5 に変更
             isMannerism = true;
         }
     }
@@ -4261,7 +4262,11 @@ function updateBuffDebuffDetails() {
         }
     }
     if (mannerismCards.length > 0) {
-        continuousEffects.push(`マンネリ状態 (${mannerismCards.join(', ')}): 回復・ストレス軽減が半減`);
+        if (state.debuff === 'heavy') {
+            continuousEffects.push(`マンネリ状態 (${mannerismCards.join(', ')}): 昏睡状態のため効果減衰は無効化`);
+        } else {
+            continuousEffects.push(`マンネリ状態 (${mannerismCards.join(', ')}): 回復・ストレス軽減が半減`);
+        }
     }
     
     if (!activeBuffs.isMadness) {
