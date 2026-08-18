@@ -360,9 +360,8 @@ body {
 }
 
         .last-action-display {
-            background-color: #0f0f0f;
+            background-color: #070707;
             padding: 6px;
-            
             margin-bottom: 8px;
             font-size: 10px;
             text-align: center;
@@ -732,11 +731,11 @@ display: flex;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-<!-- カスタムアラートモーダル（黒×ゴールド仕様） -->
+<!-- カスタムアラートモーダル（フラット仕様） -->
 <div id="custom-alert-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 20px;">
-    <div style="background-color: #151515; border: 1px solid #d4af37;  padding: 20px; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2); animation: fadeInTarget 0.2s ease-out forwards;">
-        <div id="custom-alert-message" style="color: #e5e5e5; font-size: 13px; margin-bottom: 20px; line-height: 1.5; font-weight: bold;"></div>
-        <button class="btn btn-primary" onclick="closeCustomAlert()" style="width: 100%; max-width: 150px; margin: 0 auto; padding: 8px;">確認</button>
+    <div style="background-color: #0a0a0a; border: 1px solid rgba(212, 175, 55, 0.25); padding: 20px; width: 100%; max-width: 320px; text-align: center; box-shadow: none; animation: fadeInTarget 0.2s ease-out forwards;">
+        <div id="custom-alert-message" style="color: #e5e5e5; font-size: 12px; margin-bottom: 20px; line-height: 1.5;"></div>
+        <button class="btn btn-primary" onclick="closeCustomAlert()" style="width: auto; padding: 6px 25px; margin: 0 auto; display: inline-block;">確認</button>
     </div>
 </div>
 
@@ -822,9 +821,9 @@ display: flex;
             <div class="phase-scroll-area">
                 <div style="display: flex; gap: 5px; margin-bottom: 8px;">
                     <div class="last-action-display" style="flex: 1; margin-bottom: 0;"></div>
-                    <div style="background-color: #0f0f0f; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
+                    <div style="background-color: #070707; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
                 </div>
-                <div class="buff-debuff-details" style="display: none; background-color: #111; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
+                <div class="buff-debuff-details" style="display: none; background-color: #070707; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
                 
             </div>
             <div class="phase-button-area">
@@ -836,9 +835,9 @@ display: flex;
             <div class="phase-scroll-area">
                 <div style="display: flex; gap: 5px; margin-bottom: 8px;">
                     <div class="last-action-display" style="flex: 1; margin-bottom: 0;"></div>
-                    <div style="background-color: #0f0f0f; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
+                    <div style="background-color: #070707; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
                 </div>
-                <div class="buff-debuff-details" style="display: none; background-color: #111; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
+                <div class="buff-debuff-details" style="display: none; background-color: #070707; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
                 
                 <div class="section-title">
                     <span></span>
@@ -867,9 +866,9 @@ display: flex;
                 <!-- 購入・売却フェーズでも last-action-display と詳細ダウンメニューを表示 -->
                 <div style="display: flex; gap: 5px; margin-bottom: 8px;">
                     <div class="last-action-display" style="flex: 1; margin-bottom: 0;"></div>
-                    <div style="background-color: #0f0f0f; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
+                    <div style="background-color: #070707; color: #d4af37; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 0px; border-radius: 0;" onclick="toggleBuffDebuffDetails()">▼</div>
                 </div>
-                <div class="buff-debuff-details" style="display: none; background-color: #111; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
+                <div class="buff-debuff-details" style="display: none; background-color: #070707; border: 0px; padding: 8px; margin-bottom: 8px; font-size: 10px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif;"></div>
 
                 <div class="section-title">
                     <span></span>
