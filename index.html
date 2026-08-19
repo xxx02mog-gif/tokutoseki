@@ -759,15 +759,15 @@ display: flex;
         <!-- flex-wrap: nowrap と white-space: nowrap で段落ちを完全に禁止 -->
         <!-- 各項目を flex: 1 にすることで幅を均等に4分割し、桁数が増減しても仕切り線の位置を完全に固定します -->
         <div style="display: flex; gap: 4px; align-items: center; justify-content: space-between; flex-wrap: nowrap; flex: 1; white-space: nowrap;">
-            <span id="display-time" style="flex: 1; text-align: center;">1 / 30 ターン</span>
+            <span id="display-time" style="flex: 1; text-align: center;">1 / 30</span>
             
             <div style="width: 1px; height: 25px; background-color: #d4af37; opacity: 0.5; flex-shrink: 0;"></div>
             
-            <span id="display-season" style="flex: 1; text-align: center;">季節：夏</span>
+            <span id="display-season" style="flex: 1; text-align: center;">Summer</span>
             
             <div style="width: 1px; height: 25px; background-color: #d4af37; opacity: 0.5; flex-shrink: 0;"></div>
             
-            <span id="display-gold-header" style="flex: 1; text-align: center;">資金: 100G</span>
+            <span id="display-gold-header" style="flex: 1; text-align: center;">100G</span>
             
             <div style="width: 1px; height: 25px; background-color: #d4af37; opacity: 0.5; flex-shrink: 0;"></div>
             
@@ -1015,8 +1015,8 @@ const CARD_POOL = {
             actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}], 
             desc: "健康+5。ストレス-10。関係性+2。", 
             flavor: { 
-                trust: ["彼の口元へコップを運ぶと、途中でコップを奪われてしまった。"], 
-                high_trust: ["あなたがコップを差し出すと、彼は礼を言い、自分で受け取って飲んだ。"],
+                trust: ["あなたが水が入ったコップを差し出すと、彼は短く礼を言って受け取った。"], 
+                high_trust: ["口元へコップを運んでやろうとしたが、途中で彼にコップを奪われてしまった。"],
                 dependence: ["彼は、あなたが手ずから水を飲ませてくれることが嬉しいようだ。"],
                 mannerism: ["いつものように水を飲ませる。二人の間に言葉はない。"],
                 heavy_trust: ["彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。"],
@@ -1049,7 +1049,7 @@ const CARD_POOL = {
         },
         { 
             name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "健康+30。ストレス-15。関係性+2", 
+            actions: [{type: "heal", value: 30}], desc: "健康+30。関係性+2", 
             flavor: { 
                 trust: ["あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた。"], 
                 high_trust: ["差し出した薬を受け取ると、彼は一瞬眉を顰めてから一息に飲み干した。"],
@@ -1061,7 +1061,7 @@ const CARD_POOL = {
         },
         { 
             name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 10}], desc: "健康+20。ストレス-10。関係性+3", 
+            actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 25}], desc: "健康+5。ストレス-25。関係性+3", 
             flavor: { 
                 trust: ["彼の体を丁寧に拭き上げた。彼はこうして世話を焼かれることに負い目を感じている。"], 
                 high_trust: ["体を拭き終えると、彼は少しだけすっきりしたような表情を見せた。"],
@@ -1073,8 +1073,8 @@ const CARD_POOL = {
         },
         { 
             name: "深夜の付き添い", type: "direct", value: 5, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 10},{type: "stress_direct", value: 20}], desc: "健康+10。ストレス-20。関係性+5", 
-            flavor: { 
+            actions: [{type: "heal", value: 20},{type: "stress_direct", value: 20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+20。ストレス-20。関係性+5。次ターンの初期AP-1", 
+            flavor: {  
                 trust: ["夜通し彼の傍にいた。彼はあなたの体調を気遣っている。"], 
                 high_trust: ["あなたが傍にいようとしたが、一人で寝ると追い払われてしまった。"],
                 dependence: ["あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。"],
@@ -1085,7 +1085,8 @@ const CARD_POOL = {
         },
         { 
             name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 5}], desc: "健康+15。ストレス-5。関係性+5。", 
+            actions: [{type: "heal", value: 25}], desc: "健康+25。関係性+5。", 
+
             flavor: { 
                 trust: ["あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめつつも、手当てには感謝している。"], 
                 high_trust: ["消毒しながら表情を窺うと、彼はどこか誇らしげに微笑んだ。"],
@@ -1118,8 +1119,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "輸血を行う", type: "direct", value: 20, cost: 2, valType: "flat", 
-            actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+20。次ターンの初期AP-1（使い切り）", 
+            name: "輸血を行う", type: "direct", value: 30, cost: 2, valType: "percent", 
+            actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+30%。次ターンの初期AP-1（使い切り）", 
             flavor: { 
                 trust: ["あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。"], 
                 high_trust: ["彼は、血を分けてくれるあなたの献身に報いなければならないと思っているようだ。"],
@@ -1128,8 +1129,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "過呼吸の対処", type: "direct", value: 30, cost: 2, valType: "percent", 
-            actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+30%。次ターンの初期AP-1", 
+            name: "過呼吸の対処", type: "direct", value: 10, cost: 2, valType: "flat", 
+            actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+10。次ターンの初期AP-1", 
             flavor: { 
                 trust: ["引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。"], 
                 high_trust: ["あなたが背中をさすると、彼はすぐに落ち着きを取り戻し、あなたの手に触れた。"],
@@ -1171,7 +1172,7 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "部屋の掃除", type: "indirect", value: 2, cost: 1, valType: "flat", stressChange: -10, 
+            name: "部屋の掃除", type: "indirect", value: 2, cost: 1, valType: "flat",  
             actions: [{ type: "heal", value: 10 }, {type: "stress", value: -10}], desc: "健康+10。ストレス-10。関係性+2", 
             flavor: { 
                 trust: ["綺麗になった部屋を見渡し、彼は小さく息を吐いて肩の力を抜いた。"], 
@@ -1183,8 +1184,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "寝具の天日干し", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -15, 
-            actions: [{ type: "heal", value: 20 }, {type: "stress", value: -15}], desc: "健康+20。ストレス-15。関係性+3", 
+             name: "寝具の天日干し", type: "indirect", value: 3, cost: 1, valType: "flat", 
+            actions: [{ type: "heal", value: 10 }, {type: "stress", value: -15}, {type: "buff", key: "nextTurnAPMod", value: 1}], desc: "健康+10。ストレス-10。関係性+3。次ターンの初期AP+1", 
             flavor: { 
                 trust: ["ふかふかの寝具は心地よいようだが、彼はあなたに世話を焼かせすぎていると感じている。"], 
                 high_trust: ["あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。"],
@@ -1195,8 +1196,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", stressChange: -10, 
-            actions: [{ type: "heal", value: 15 }, {type: "stress", value: -10}], desc: "健康+15。ストレス-10。関係性+3", 
+            name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", 
+            actions: [{type: "buff", key: "scentDuration", value: 3}], desc: "関係性+3。3ターンの間、ストレスが5減少する", 
             flavor: { 
                 trust: ["過ごしやすくなった室内に、彼は微かに緊張を解いた様子を見せた。"], 
                 high_trust: ["彼が快適に過ごせるよう調整すると、彼は安心したように目を閉じた。"],
@@ -1229,8 +1230,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "アルバムの整理", type: "indirect", value: 5, cost: 1, valType: "flat", stressChange: -10, 
-            actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+5。デッキからカードを1枚手札に加える", 
+            name: "アルバムの整理", type: "indirect", value: 15, cost: 1, valType: "percent",  
+            actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+15%。デッキからカードを1枚手札に加える", 
             flavor: { 
                 trust: ["あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。"], 
                 high_trust: ["彼はアルバムの表紙を、慈しむように撫でた。"],
@@ -1251,8 +1252,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "調度品の買い替え", type: "indirect", value: 50, cost: 1, valType: "percent", goldCost: 50, 
-            actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性+50%（使い切り）", 
+            name: "調度品の買い替え", type: "indirect", value: 20, cost: 1, valType: "flat", goldCost: 50, 
+            actions: [{type: "gold", value: -50}, {type: "stress", value: -30}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性+20（使い切り）", 
             flavor: { 
                 trust: ["彼は整った室内を見渡し、あなたの細やかな気遣いを感じて小さく息をついた。"], 
                 high_trust: ["新しい調度品を見て、彼はこれからの生活について意見を口にした。"],
@@ -1309,8 +1310,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "無視", type: "cold", value: -2, cost: 1, valType: "flat", 
-            actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-2", 
+            name: "無視", type: "cold", value: -15, cost: 1, valType: "percent", 
+            actions: [{type: "stress", value: 15}], desc: "ストレス+15。関係性-15%", 
             flavor: { 
                 trust: ["あなたが無視すると、彼はかつての自分の振る舞いを反省した。"], 
                 high_trust: ["あなたが無視をしても、彼はそれに傷付く素振りも咎めることもしない。"],
@@ -1322,7 +1323,7 @@ const CARD_POOL = {
         },
         { 
             name: "冷酷な事実", type: "cold", value: -7, cost: 2, valType: "flat", 
-            actions: [{type: "stress", value: 25}], desc: "ストレス+25。関係性-7", 
+            actions: [{type: "stress", value: 40}, {type: "discard_obstacle"}], desc: "ストレス+40。関係性-7。手札の不用品を1枚廃棄する", 
             flavor: { 
                 trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
                 high_trust: ["彼は毅然と事実を受け止めつつ、僅かにあなたへ縋るような視線を向けた。"],
@@ -1346,7 +1347,7 @@ const CARD_POOL = {
         },
         { 
             name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", 
-            actions: [{type: "buff", key: "threatReduction", value: 10},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-10", 
+            actions: [{type: "buff", key: "threatReduction", value: 5},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-5", 
             flavor: { 
                 trust: ["片脚が悪い彼は、整備されていない道では歩きにくいようだ。"], 
                 high_trust: ["彼は荒れた屋敷に思うところがあるのか、ふう、とため息を付いた。"],
@@ -1358,7 +1359,7 @@ const CARD_POOL = {
         },
         { 
             name: "鎮痛剤を与えない", type: "cold", value: -4, cost: 2, valType: "flat", 
-            actions: [{ type: "heal", value: -25 },{type: "stress", value: 10}], desc: "健康-25。ストレス+10。関係性-4", 
+            actions: [{ type: "heal", value: -25 },{type: "stress", value: 10}, {type: "buff", key: "nextTurnAPMod", value: 1}], desc: "健康-25。ストレス+10。関係性-4。次ターンの初期AP+1", 
             flavor: { 
                 trust: ["あなたが薬を与えなくても、彼は自らの命に対する執着を手放しつつある。"], 
                 high_trust: ["痛みに顔をしかめながらも、彼はあなたを気遣わせまいと強がっている。"],
@@ -1370,7 +1371,7 @@ const CARD_POOL = {
         },
         { 
             name: "部屋の施錠", type: "cold", value: -10, cost: 2, valType: "flat", 
-            actions: [{type: "stress", value: 25}, {type: "buff", key: "nextTurnDrawMod", value: -1}], desc: "ストレス+25。関係性-10。次ターンのドロー枚数-1", 
+            actions: [{type: "stress", value: 25}, {type: "buff", key: "threatReduction", value: 15}], desc: "ストレス+25。関係性-10。次の戦闘時、脅威度を-15", 
             flavor: { 
                 trust: ["あなたが部屋の鍵を閉めるのを、彼は正当な処置だと考えている。"], 
                 high_trust: ["閉じ込められることに納得いかないようだが、あなたに免じて従うようだ。"],
@@ -1379,8 +1380,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "食事を与えない", type: "cold", value: -15, cost: 2, valType: "percent", 
-            actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性-15%", 
+            name: "食事を与えない", type: "cold", value: -5, cost: 2, valType: "flat", 
+            actions: [{ type: "heal", value: -10 },{type: "stress", value: 15}], desc: "健康-10。ストレス+15。関係性-5", 
             flavor: { 
                 trust: ["食事が遅れても、彼はあなたを不快にさせた自らの落ち度だと受け止めている。"], 
                 high_trust: ["食事が遅れても、彼はあなたにも都合があるのだろうと気長に待っている。"],
@@ -1415,10 +1416,10 @@ const CARD_POOL = {
                 heavy_battle: ["あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"]
             } 
         },
-        { 
-            name: "首を絞める", type: "harm", masterValue: -50, battleValue: 10, cost: 2, valType: "percent", isMasterAlways: false, 
+         { 
+            name: "首を絞める", type: "harm", masterValue: -20, battleValue: 10, cost: 2, valType: "flat", isMasterAlways: false, 
             actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {type: "consume"}], 
-            desc: "敵脅威度-20。関係性+10%/ 【対主人】健康-30。ストレス+30。関係性-50%（使い切り）", 
+            desc: "敵脅威度-20。関係性+10 / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）", 
             flavor: { 
                 trust: ["彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。"], 
                 high_trust: ["彼は喉を締め上げられても決して目を逸らさず、あなたの意図を探ろうとしている。"],
@@ -1465,7 +1466,7 @@ const CARD_POOL = {
         },
         { 
             name: "硝煙の盾", type: "harm", value: 1, cost: 1, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "stress", value: -15}], desc: "敵脅威度-15。ストレス-15。関係性+1", 
+            actions: [{context: "battle", type: "threat", value: 20}, {type: "stress", value: 10}], desc: "敵脅威度-20。ストレス+10。関係性+1", 
             flavor: { 
                 trust: ["火薬を使って敵を足止めした。彼は、あなたへの心配で胸を痛めている。"], 
                 high_trust: ["火薬の匂いが立ち込める中、彼は自らも周囲の警戒を怠らなかった。"],
@@ -1495,8 +1496,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "捨て身の迎撃", type: "harm", value: -10, cost: 2, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat_clear"}, {context: "battle", type: "heal", value: -10}, {context: "battle", type: "stress", value: 20},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。健康-10。ストレス+20。関係性-10。手札（冷淡・不用品以外）を1枚除外", 
+            name: "捨て身の迎撃", type: "harm", value: -25, cost: 2, valType: "flat", isBattleOnly: true, 
+            actions: [{context: "battle", type: "threat_clear"}, {type: "stress", value: 30},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。ストレス+30。関係性-25。手札（冷淡・不用品以外）を1枚除外",  
             flavor: { 
                 trust: ["身を挺して敵の攻撃を防いだ。彼は己の無力さとあなたを危険に晒したことを悔いている。"], 
                 high_trust: ["自分を庇ったあなたに対し、彼は感謝よりも先に無茶な立ち回りをたしなめた。"],
@@ -1508,8 +1509,8 @@ const CARD_POOL = {
     ],
     season: {
         "秋": { 
-            name: "収穫祭の思い出", type: "season", season: "秋", value: 5, cost: 2, valType: "flat", 
-            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", 
+            name: "収穫祭の思い出", type: "season", season: "秋", value: 20, cost: 2, valType: "percent", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+20%。使用後、「秋の名残」に変化する", 
             flavor: { 
                 trust: ["彼は、収穫祭の賑やかさをポツリと語った。はるか過去のことを話すような口ぶりだった。"], 
                 high_trust: ["外から祭りの音が聞こえる。彼はかつての賑やかな日々を懐かしんでいるようだ。"],
@@ -1518,8 +1519,8 @@ const CARD_POOL = {
             } 
         },
         "冬": { 
-            name: "聖夜の灯火", type: "season", season: "冬", value: 5, cost: 2, valType: "flat", 
-            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", 
+            name: "聖夜の灯火", type: "season", season: "冬", value: 20, cost: 2, valType: "percent", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+20%。使用後、「冬の名残」に変化する", 
             flavor: { 
                 trust: ["窓辺のキャンドルが、彼の凍てついた心をほのかに照らす。"], 
                 high_trust: ["揺れる炎を前に、彼はあなたへの信頼を静かに口にした。"],
@@ -1528,8 +1529,8 @@ const CARD_POOL = {
             } 
         },
         "春": { 
-            name: "薄紅の散策", type: "season", season: "春", value: 5, cost: 2, valType: "flat", 
-            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", 
+            name: "薄紅の散策", type: "season", season: "春", value: 20, cost: 2, valType: "percent", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+20%。使用後、「春の名残」に変化する", 
             flavor: { 
                 trust: ["風に乗って桜が舞い込んだ。彼はいつか、あなたと共に歩ける日を夢見ている。"], 
                 high_trust: ["舞い散る花びらを眺める彼の背筋は、凛と伸びている。"],
@@ -1538,8 +1539,8 @@ const CARD_POOL = {
             } 
         },
         "夏": { 
-            name: "盛夏の木陰", type: "season", season: "夏", value: 5, cost: 2, valType: "flat", 
-            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "夏限定。ストレス-45。関係性+5。使用後、「祭りの名残(不用品)」に変化する", 
+            name: "盛夏の木陰", type: "season", season: "夏", value: 20, cost: 2, valType: "percent", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "夏限定。ストレス-45。関係性+20%。使用後、「夏の名残」に変化する", 
             flavor: { 
                 trust: ["眩い日差しの中、木陰で過ごした。彼は目を細めてあなたを見つめていた。"], 
                 high_trust: ["木陰で涼む彼の佇まいには、以前のような余裕が戻りつつある。"],
@@ -1758,10 +1759,11 @@ function setLastAction(text) {
 
           // 中央寄せのヘッダーテキストを更新
             let season = getSeasonByTurn(state.turn);
-            document.getElementById('display-time').innerText = `${currentTurn} / 30 ターン`;
-            document.getElementById('display-season').innerText = `季節：${season}`;
+            const seasonEn = { "春": "Spring", "夏": "Summer", "秋": "Autumn", "冬": "Winter" }[season];
+            document.getElementById('display-time').innerText = `${currentTurn} / 30`;
+            document.getElementById('display-season').innerText = seasonEn;
             document.getElementById('display-ap-header').innerText = `AP:${'■'.repeat(state.ap)}`;
-            document.getElementById('display-gold-header').innerText = `資金: ${state.gold}G`;
+            document.getElementById('display-gold-header').innerText = `${state.gold}G`;
 
             triggerStatAnimation('stat-health', prevStats.health, state.health, 'health');
 document.getElementById('stat-health').innerText = state.health;
@@ -3083,9 +3085,46 @@ case "set_madness":
                     }
                     let currentIdx = state.hand.indexOf(card);
                     if (currentIdx !== -1) {
+                        let obstacleName = "季節の名残";
+                        let obstacleDesc = "過ぎ去った季節の名残。使用不可";
+                        let obstacleFlavor = {
+                            trust: ["共に過ごした季節の記憶が、名残として心に温かく残っている。"],
+                            dependence: ["過ぎ去った時間に縋り付く。この美しい幻影だけを抱いて生きていたい。"]
+                        };
+
+                        if (card.season === "春") {
+                            obstacleName = "春の名残";
+                            obstacleDesc = "桜道を散策した春の日の名残。使用不可";
+                            obstacleFlavor = {
+                                trust: ["桜が舞う中を歩いたあたたかな記憶が、春の名残として二人の心に静かに残っている。"],
+                                dependence: ["戻らない春の記憶に縋り付く。あの日の美しい幻影にいつまでも囚われている。"]
+                            };
+                        } else if (card.season === "夏") {
+                            obstacleName = "夏の名残";
+                            obstacleDesc = "木陰で涼んだ夏の日の名残。使用不可";
+                            obstacleFlavor = {
+                                trust: ["眩しい日差しと穏やかな木陰の記憶が、夏の名残として心地よく残っている。"],
+                                dependence: ["まばゆい夏の記憶に囚われている。あの瞬間に時間が止まればよかったのに。"]
+                            };
+                        } else if (card.season === "秋") {
+                            obstacleName = "秋の名残";
+                            obstacleDesc = "祭りの喧騒と秋の日の名残。使用不可";
+                            obstacleFlavor = {
+                                trust: ["お祭りの華やかさは去り、手元には虚しい残骸だけが残された。"], 
+                                dependence: ["祭りの熱狂などどうでもいい。残ったゴミのように、あなたに執着していたい。"] 
+                            };
+                        } else if (card.season === "冬") {
+                            obstacleName = "冬の名残";
+                            obstacleDesc = "聖夜祭と冬の日の名残。使用不可";
+                            obstacleFlavor = {
+                                trust: ["外の寒さを忘れるようなキャンドルの小さな温もりが、冬の名残として残っている。"],
+                                dependence: ["凍えるような冬の記憶。あの小さな灯りの温もりだけが、今のすべてだ。"]
+                            };
+                        }
+
                         state.hand[currentIdx] = {
-                            name: "祭りの名残", type: "obstacle", cost: 0, desc: "過去の行事のゴミ。使用不可",
-                            flavor: { trust: ["お祭りの華やかさは去り、手元には虚しい残骸だけが残された。"], dependence: ["祭りの熱狂などどうでもいい。残ったゴミのように、あなたに執着していたい。"] }
+                            name: obstacleName, type: "obstacle", cost: 0, desc: obstacleDesc,
+                            flavor: obstacleFlavor
                         };
                     }
                     keepInHand = true;
@@ -4214,7 +4253,7 @@ function updateBuffDebuffDetails() {
     let continuousEffects = [];
     
     if (activeBuffs.scentDuration > 0) {
-        continuousEffects.push(`香炉: ターン開始時ストレス-5 (残り${activeBuffs.scentDuration}ターン)`);
+        continuousEffects.push(`環境改善(室温/香炉): ターン開始時ストレス-5 (残り${activeBuffs.scentDuration}ターン)`);
     }
     if (activeBuffs.waterStressDuration > 0) {
         continuousEffects.push(`闇医者の副作用: ターン開始時ストレス+15 (残り${activeBuffs.waterStressDuration}ターン)`);
