@@ -904,6 +904,7 @@ display: flex;
 <script>
         let state = {
             turn: 0,
+            startSeasonIndex: Math.floor(Math.random() * 4), // 追加：ゲーム開始時の季節をランダムに決定 (0:春, 1:夏, 2:秋, 3:冬)
             health: 100,
             stress: 0,
             relation: 0,
@@ -1699,10 +1700,17 @@ const SPECIAL_CARDS = {
 
 function getSeasonByTurn(turn) {
     let t = turn === 0 ? 1 : turn;
-    if (t >= 24) return "春";  // 24〜30ターン（7日間）
-    if (t >= 16) return "冬";  // 16〜23ターン（8日間）
-    if (t >= 9)  return "秋";  // 9〜15ターン（7日間）
-    return "夏";               // 1〜8ターン（8日間）
+    
+    // 進行に応じたフェーズを決定（0〜3）
+    let phase = 0;
+    if (t >= 24) phase = 3;       // 24〜30ターン
+    else if (t >= 16) phase = 2;  // 16〜23ターン
+    else if (t >= 9) phase = 1;   // 9〜15ターン
+    else phase = 0;               // 1〜8ターン
+    
+    // ランダムに決定した開始季節にフェーズを足して季節を算出する
+    const SEASONS = ["春", "夏", "秋", "冬"];
+    return SEASONS[(state.startSeasonIndex + phase) % 4];
 }
 
         function initDeck() {
