@@ -3707,8 +3707,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                         </div>`;
             }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
             
-            html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
-                        <span style="${labelStyle}">DECK</span>
+            html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start; gap: 2px;"><span style="${labelStyle}">DECK</span>
                         <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
                             ${deckCardsHTML}
                         </div>
@@ -3733,8 +3732,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
 
         // ステータス
         if (history.stats) {
-            html += `<div style="margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px;">
-                        <span style="${labelStyle}">STATUS</span>
+            html += `<div style="margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px;"><span style="${labelStyle}">STATUS</span>
                         <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">健康: ${history.stats.health}</span>
                         <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">ストレス: ${history.stats.stress}</span>
                         <span style="background: #222; padding: 1px 4px; border-radius: 2px; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">関係性: ${history.stats.relation}</span>
@@ -3772,8 +3770,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                         }
                     }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
 
-                    result += `<div style="margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px;">
-                                <span style="${labelStyle}">EVENT</span>
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px;"><span style="${labelStyle}">EVENT</span>
                                 ${eventBadges}
                              </div>`;
                 } else if (currentGroupType === 'USE') {
@@ -3790,8 +3787,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                                 </div>`;
                     }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
 
-                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
-                                <span style="${labelStyle}">USE</span>
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start; gap: 2px;"><span style="${labelStyle}">USE</span>
                                 <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
                                     ${useCards}
                                 </div>
@@ -3806,8 +3802,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                                 </div>`;
                     }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
                     
-                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
-                                <span style="${labelStyle}">IN</span>
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start; gap: 2px;"><span style="${labelStyle}">IN</span>
                                 <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
                                     ${inCards}
                                 </div>
@@ -3822,8 +3817,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                                 </div>`;
                     }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
                     
-                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
-                                <span style="${labelStyle}">OUT</span>
+                    result += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start; gap: 2px;"><span style="${labelStyle}">OUT</span>
                                 <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
                                     ${outCards}
                                 </div>
@@ -3892,8 +3886,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                     </div>`;
         }).join(`<span style="color:#555; font-size: 9px; font-family: 'Zen Kaku Gothic New', sans-serif !important; margin: 0 2px;">/</span>`);
         
-       html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start;">
-                    <span style="${labelStyle}">DECK</span>
+       html += `<div style="margin-bottom: 4px; display: flex; align-items: flex-start; gap: 2px;"><span style="${labelStyle}">DECK</span>
                     <div style="display: flex; flex-wrap: wrap; align-items: center; flex: 1; gap: 3px; margin-top: 1px;">
                         ${deckCardsHTML}
                     </div>
@@ -4189,22 +4182,59 @@ function openManual() {
             // innerHTMLの先頭にヘッダーを追加
             clone.innerHTML = headerHTML + topRowHTML + dividerHTML + bottomRowHTML;
             
-            // html2canvasでの文字下ズレを修正する専用スタイル
+            // html2canvasでの文字ズレを解決する完全統一スタイル（高さ・ベースライン完全同期版）
             const fixStyle = document.createElement('style');
             fixStyle.innerHTML = `
+                /* 1. バッジ内の文字を中央に引き上げ（上1px, 下3px） */
                 div > span[style*="background"], 
                 div > span.card-type {
                     display: inline-block !important;
-                    line-height: 1.2 !important;
+                    line-height: 1 !important;
                     padding-top: 1px !important;
                     padding-bottom: 3px !important;
                     vertical-align: middle !important;
+                    transform: none !important;
                 }
+
+                /* 2. 左側の見出しラベル(STATUS等)も全く同じ高さにする */
                 div > span[style*="width: 45px"] {
+                    display: inline-block !important;
+                    line-height: 1 !important;
+                    padding-top: 1px !important;
+                    padding-bottom: 3px !important;
                     text-align: center !important;
+                    vertical-align: middle !important;
+                    transform: none !important;
+                }
+
+                /* 3. プレーンテキスト(カード名等)にも同じ上下paddingを付与し、高さをバッジと完全に同期する */
+                div[style*="inline-flex"] > span:not([style*="background"]):not(.card-type),
+                div[style*="flex-wrap: wrap"] > span:not([style*="background"]):not(.card-type) {
+                    display: inline-block !important;
+                    line-height: 1 !important;
+                    padding-top: 1px !important;  /* バッジと同期 */
+                    padding-bottom: 3px !important; /* バッジと同期 */
+                    vertical-align: middle !important;
+                    transform: none !important;
+                }
+
+                /* 4. USE, IN, OUT, DECK などを包むカードコンテナにある不要なmargin-top(1px)を無効化し、高さをラベルと完全に揃える */
+                div[style*="align-items: flex-start"] > div[style*="flex-wrap: wrap"] {
+                    margin-top: 0 !important;
                 }
             `;
             clone.appendChild(fixStyle);
+
+            // 4. DECK行のみ、複数行折り返しによるhtml2canvas特有の下ズレをマージンで吸収する
+            const allLabels = clone.querySelectorAll('span');
+            allLabels.forEach(span => {
+                if (span.innerText === 'DECK') {
+                    const container = span.nextElementSibling;
+                    if (container && container.style.flexWrap === 'wrap') {
+                        container.style.marginTop = '-1px'; // ズレ幅に合わせて上に引き上げ
+                    }
+                }
+            });
             document.body.appendChild(clone);
             
             try {
