@@ -3902,7 +3902,7 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
     if (!options.skipUsageAndEnding) {
         // ★追加：履歴の末尾にエンディングを記載
         if (state.endingTitle && state.endingText) {
-            html += `<div style="margin-top: 10px; margin-bottom: 10px; padding: 15px; text-align: center; font-family: 'Zen Old Mincho', serif; width: 100%; box-sizing: border-box;">`;
+            html += `<div style="margin-top: 10px; margin-bottom: 10px; padding: 8px; text-align: center; font-family: 'Zen Old Mincho', serif; width: 100%; box-sizing: border-box;">`;
             html += `<div style="font-weight: bold; color: #d4af37; font-size: 12px; margin-bottom: 10px;">${state.endingTitle}</div>`;
             
             // 元のデータは変更せず、出力するテキストの句点(。)で改行、読点(、)を改行可能位置に設定する
@@ -3992,7 +3992,7 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
                 endingText = `彼の僅かな理性を繋ぎ止めていた楔を手放した。彼の手に握られた刃はあなたと彼自身を貫いた。`;
             } else if (condition === "dead") {
                 endingTitle = "【GAME OVER】主人の死";
-                endingText = `あなたも彼も、何一つ手放せないでいる。いつか、この痛みごと愛おしくなる時がくるのだろうか。`;
+                endingText = `彼は過酷な環境に耐えかね、息を引き取った。`;
             } else if (isSurvivalClear) {
               let requiredCount = 10;
                 let hasLetterAtEnd = [...state.deck, ...state.hand, ...state.discard].some(c => c && c.name === '手紙');
