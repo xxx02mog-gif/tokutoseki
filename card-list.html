@@ -12,55 +12,85 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif; }
         body { background-color: #070707; color: #e0e0e0; padding: 20px; line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
-        h1 { text-align: center; color: #d4af37; margin-bottom: 40px; font-size: 24px; letter-spacing: 2px; }
-        .subtitle { text-align: center; font-size: 13px; color: #bbbbbb; margin-bottom: 5px; font-family: 'Zen Kaku Gothic New', sans-serif; }
         
-        /* 追加：大見出し用スタイル */
+        /* 大タイトル・サブタイトル */
+        h1 { text-align: center; color: #d4af37; margin-bottom: 25px; font-size: 20px; letter-spacing: 2px; }
+        .subtitle { text-align: center; font-size: 12px; color: #bbbbbb; margin-bottom: 5px; font-family: 'Zen Kaku Gothic New', sans-serif; }
+        
+        /* セクション（大見出し） */
         .section-heading {
-            margin-top: 60px;
-            margin-bottom: 25px;
-            padding: 8px 15px;
-            font-size: 18px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            padding: 4px 10px;
+            font-size: 15px;
             color: #f5f5f5;
             background: linear-gradient(90deg, rgba(212, 175, 55, 0.2) 0%, transparent 100%);
-            border-left: 4px solid #d4af37;
-            letter-spacing: 2px;
+            border-left: 3px solid #d4af37;
+            letter-spacing: 1px;
             font-weight: bold;
         }
 
-        h2 { color: #d4af37; font-size: 18px; border-bottom: 1px solid rgba(212, 175, 55, 0.4); padding-bottom: 5px; margin-top: 35px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end;}
-        .count { font-size: 12px; color: #888; font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: normal; }
+        /* アコーディオンタイトル（小見出し） */
+        h2 { 
+            color: #d4af37; 
+            font-size: 14px; 
+            border-bottom: 1px solid rgba(212, 175, 55, 0.4); 
+            padding-bottom: 4px; 
+            margin-top: 15px; 
+            margin-bottom: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .count { font-size: 11px; color: #888; font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: normal; }
 
+        /* アコーディオンの開閉挙動 */
+        details { margin-bottom: 10px; }
+        details > summary { list-style: none; cursor: pointer; outline: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details summary .toggle-icon {
+            display: inline-block;
+            transition: transform 0.2s;
+            font-size: 10px;
+            opacity: 0.7;
+            margin-left: 5px;
+        }
+        details[open] summary .toggle-icon { transform: rotate(180deg); }
+        .accordion-content { padding-top: 8px; padding-bottom: 10px; }
+        
+        .category-desc {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 12px;
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            line-height: 1.5;
+        }
+
+        /* カードのグリッドとスタイル */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 12px;
         }
-
         .game-card {
             background-color: #121212;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 10px 12px 10px;
+            padding: 10px;
             text-align: left;
             color: #eeeeee;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            min-height: 95px;
+            min-height: 85px;
             position: relative; 
             border-radius: 2px;
             transition: border-color 0.2s ease, background-color 0.2s ease;
         }
-        .game-card:hover {
-            border-color: rgba(212, 175, 55, 0.5);
-            background-color: #161616;
-        }
-        .game-card .card-name {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 6px;
-            color: #f5f5f5;
-        }
+        .game-card:hover { border-color: rgba(212, 175, 55, 0.5); background-color: #161616; }
+        .game-card .card-name { font-weight: bold; font-size: 14px; margin-bottom: 6px; color: #f5f5f5; }
+        .game-card .card-info { font-size: 11px; color: #bbbbbb; line-height: 1.5; font-family: 'Zen Kaku Gothic New', sans-serif !important; }
+        
+        /* バッジとコスト */
         .card-type {
             font-size: 10px;
             padding: 2px 6px;
@@ -79,13 +109,7 @@
         .type-obstacle { background-color: #444444; }
         .type-attachment { background-color: #ad5c77; }
 
-        .game-card .card-info {
-            font-size: 11px;
-            color: #bbbbbb;
-            line-height: 1.5;
-            font-family: 'Zen Kaku Gothic New', sans-serif !important;
-        }
-        .game-card .card-cost {
+        .card-cost {
             position: absolute;
             top: 0;
             right: 0;
@@ -104,35 +128,23 @@
             margin: 0;
             transition: background-color 0.2s ease;
         }
-        .game-card:hover .card-cost {
-            background-color: #8c7c4a;
-        }
+        .game-card:hover .card-cost { background-color: #8c7c4a; }
 
-        .category-desc {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 12px;
-            font-family: 'Zen Kaku Gothic New', sans-serif;
-            line-height: 1.5;
-        }
-        /* アコーディオン用スタイル */
-        details > summary {
-            list-style: none;
-            cursor: pointer;
-            outline: none;
-        }
-        details > summary::-webkit-details-marker {
-            display: none;
-        }
-        details summary .toggle-icon {
-            display: inline-block;
-            transition: transform 0.2s;
-            font-size: 12px;
-            opacity: 0.7;
-            margin-left: 5px;
-        }
-        details[open] summary .toggle-icon {
-            transform: rotate(180deg);
+        /* スマホ向けレスポンシブ（2列化＆フォント縮小） */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+            .game-card { padding: 8px; min-height: 70px; }
+            .game-card .card-name { font-size: 12px; margin-bottom: 4px; }
+            .card-type { font-size: 9px; padding: 1px 4px; margin-bottom: 4px; }
+            .game-card .card-info { font-size: 10px; line-height: 1.4; }
+            .card-cost { width: 30px; height: 30px; font-size: 12px; padding-right: 4px; padding-top: 2px; }
+            .section-heading { font-size: 14px; padding: 4px 8px; margin-top: 25px; }
+            h2 { font-size: 13px; }
+            .category-desc { font-size: 11px; margin-bottom: 8px; }
         }
     </style>
 </head>
@@ -289,14 +301,14 @@
         categories.forEach(cat => {
             const section = document.createElement("div");
             section.innerHTML = `
-                <details style="margin-bottom: 25px;">
+                <details>
                     <summary>
                         <h2>
                             <span>${cat.title} <span class="toggle-icon">▼</span></span>
                             <span class="count">${cat.cards.length}枚</span>
                         </h2>
                     </summary>
-                    <div style="padding-top: 10px;">
+                    <div class="accordion-content">
                         <div class="category-desc">${cat.desc}</div>
                         <div class="card-grid">
                             ${cat.cards.map(card => `
@@ -396,19 +408,19 @@
         effectsContainer.innerHTML = `
             <div class="section-heading">状態異常・継続効果一覧</div>
             ${effectsData.map(group => `
-                <details style="margin-bottom: 20px;">
+                <details>
                     <summary>
-                        <h2 style="border: none; margin-top: 25px; margin-bottom: 5px; font-size: 16px; align-items: center; display: flex; justify-content: space-between;">
-                            <span style="border-left: 3px solid #d4af37; padding-left: 10px;">${group.title} <span class="toggle-icon">▼</span></span>
+                        <h2>
+                            <span>${group.title} <span class="toggle-icon">▼</span></span>
                         </h2>
                     </summary>
-                    <div style="padding-top: 10px;">
-                        <div class="category-desc" style="margin-bottom: 15px;">${group.desc}</div>
+                    <div class="accordion-content">
+                        <div class="category-desc">${group.desc}</div>
                         <div class="card-grid">
                             ${group.items.map(item => `
-                                <div class="game-card" style="min-height: 80px; justify-content: flex-start; padding: 12px 15px;">
-                                    <div class="card-name" style="color: #d4af37; font-size: 14px; margin-bottom: 6px;">${item.name}</div>
-                                    <div class="card-info" style="font-size: 12px; line-height: 1.6;">${item.desc}</div>
+                                <div class="game-card">
+                                    <div class="card-name" style="color: #d4af37;">${item.name}</div>
+                                    <div class="card-info">${item.desc}</div>
                                 </div>
                             `).join('')}
                         </div>
@@ -418,38 +430,38 @@
             
             <div class="section-heading">エンディング分岐一覧</div>
             
-            <details style="margin-bottom: 20px;">
+            <details>
                 <summary>
-                    <h2 style="border: none; margin-top: 25px; margin-bottom: 5px; font-size: 16px; align-items: center; display: flex; justify-content: space-between;">
-                        <span style="border-left: 3px solid #d4af37; padding-left: 10px;">通常エンド <span class="toggle-icon">▼</span></span>
+                    <h2>
+                        <span>通常エンド <span class="toggle-icon">▼</span></span>
                     </h2>
                 </summary>
-                <div style="padding-top: 10px;">
-                    <div class="category-desc" style="margin-bottom: 15px;">ゲーム内で30ターン生存しきった際に到達するエンディングです。<br>特殊エンドの条件を満たしていない場合、最終的な「関係性」の数値によって以下のいずれかに分岐します。</div>
+                <div class="accordion-content">
+                    <div class="category-desc">ゲーム内で30ターン生存しきった際に到達するエンディングです。<br>特殊エンドの条件を満たしていない場合、最終的な「関係性」の数値によって以下のいずれかに分岐します。</div>
                     <div class="card-grid">
                         ${normalEndings.map(item => `
-                            <div class="game-card" style="min-height: 80px; justify-content: flex-start; padding: 12px 15px;">
-                                <div class="card-name" style="color: #d4af37; font-size: 14px; margin-bottom: 6px;">${item.name}</div>
-                                <div class="card-info" style="font-size: 12px; line-height: 1.6;">${item.desc}</div>
+                            <div class="game-card">
+                                <div class="card-name" style="color: #d4af37;">${item.name}</div>
+                                <div class="card-info">${item.desc}</div>
                             </div>
                         `).join('')}
                     </div>
                 </div>
             </details>
 
-            <details style="margin-bottom: 20px;">
+            <details>
                 <summary>
-                    <h2 style="border: none; margin-top: 25px; margin-bottom: 5px; font-size: 16px; align-items: center; display: flex; justify-content: space-between;">
-                        <span style="border-left: 3px solid #d4af37; padding-left: 10px;">特殊エンド・ゲームオーバー <span class="toggle-icon">▼</span></span>
+                    <h2>
+                        <span>特殊エンド・ゲームオーバー <span class="toggle-icon">▼</span></span>
                     </h2>
                 </summary>
-                <div style="padding-top: 10px;">
-                    <div class="category-desc" style="margin-bottom: 15px;">特定の条件を満たした状態で30ターン目を迎えるか、ターン途中で特殊な行動・結果を引くことで発生するエンディングです。<br>生存エンド（END7〜9）においては、基本的に番号の大きい（下にある）エンディングが優先して判定されます。</div>
+                <div class="accordion-content">
+                    <div class="category-desc">特定の条件を満たした状態で30ターン目を迎えるか、ターン途中で特殊な行動・結果を引くことで発生するエンディングです。<br>生存エンド（END7〜9）においては、基本的に番号の大きい（下にある）エンディングが優先して判定されます。</div>
                     <div class="card-grid">
                         ${specialEndings.map(item => `
-                            <div class="game-card" style="min-height: 80px; justify-content: flex-start; padding: 12px 15px;">
-                                <div class="card-name" style="color: #d4af37; font-size: 14px; margin-bottom: 6px;">${item.name}</div>
-                                <div class="card-info" style="font-size: 12px; line-height: 1.6;">${item.desc}</div>
+                            <div class="game-card">
+                                <div class="card-name" style="color: #d4af37;">${item.name}</div>
+                                <div class="card-info">${item.desc}</div>
                             </div>
                         `).join('')}
                     </div>
