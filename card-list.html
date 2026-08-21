@@ -275,6 +275,59 @@
             `;
             container.appendChild(section);
         });
+
+        const effectsData = [
+            {
+                title: "状態異常（体調不良）",
+                desc: "主人のストレスが一定を超えた状態でターンを開始すると、確率で発生します。",
+                items: [
+                    { name: "歩行困難 (軽度)", desc: "直接ケア・間接ケアカードの消費AP（COST）が+1されます。" },
+                    { name: "頭痛 (中度)", desc: "ターン開始時のドロー枚数が-1されます。" },
+                    { name: "昏睡 (重度)", desc: "最大APが1に固定されます。愛着カードが使用可能になり、攻撃カードの消費APが1になります。また、殺害エンドへの分岐条件の一つになります。" }
+                ]
+            },
+            {
+                title: "関係性による特殊状態",
+                desc: "関係性の値によって、カードの効果や主人の反応が変化します。手札のカード上にアイコンで表示されます。",
+                items: [
+                    { name: "矜持状態 (関係性 ＋)", desc: "<span style='color: #bb9244; font-weight: bold;'>▼ 黄色アイコン</span><br>直接ケアを行った際、本来のストレス減少効果が反転して増加になり、関係性の上昇量が半減します。" },
+                    { name: "依存状態 (関係性 －)", desc: "<span style='color: #754f87; font-weight: bold;'>▲/▼ 紫アイコン</span><br>直接ケアを行うと関係性がさらにマイナスへ傾きます。また、間接ケア時の健康度回復が半減し、ストレスが強制的に+10されます。" },
+                    { name: "八つ当たり (確率発動)", desc: "<span style='color: #59829e; font-weight: bold;'>▼/▲ 青アイコン</span><br>蓄積したストレスによる突発的な状態です。カードを1回使用すると解除されます。この状態の時、ケア・季節カードは依存(-)に、冷淡・主人への攻撃は矜持(+)に傾きます。" }
+                ]
+            },
+            {
+                title: "その他の継続効果・アイコン",
+                desc: "行動やイベントによって付与される効果です。",
+                items: [
+                    { name: "マンネリ", desc: "<span style='color: #aaaaaa; font-weight: bold;'>▼ 灰色アイコン</span><br>同じ「直接ケア」「間接ケア」を5回以上使用すると発生。対象カードの健康度回復・ストレス軽減効果が半減します（主人が昏睡状態の時は無効）。" },
+                    { name: "発狂", desc: "<span style='color: #e74c3c; font-weight: bold;'>▼ 赤色アイコン</span><br>特殊な「水を与える」を使用した際に発生。すべてのカードによる関係性の増減が完全にランダム（-50〜+50）になります。" },
+                    { name: "自衛", desc: "ランダムイベントでナイフを隠し持った状態。次の戦闘で敗北した際、一度だけダメージとストレス増加を無効化します。" },
+                    { name: "環境改善", desc: "「室温の調整」「好みの香炉を焚く」による効果。3ターンの間、ターン開始時にストレスが-5されます。" },
+                    { name: "副作用", desc: "「闇医者を呼ぶ」または特殊な「水を与える」の副作用。3ターンの間、ターン開始時にストレスが+15されます。" },
+                    { name: "手紙 / 贈り物", desc: "手札に所持している間、ターン開始時にストレスが増減します。手紙は関係性＋の時にストレス＋5、贈り物は無条件でストレス－5です。" }
+                ]
+            }
+        ];
+
+        const effectsContainer = document.createElement("div");
+        effectsContainer.innerHTML = `
+            <h1 style="margin-top: 60px; border-bottom: 1px solid rgba(212, 175, 55, 0.4); padding-bottom: 10px; font-size: 20px; text-align: left; letter-spacing: 1px;">状態異常・継続効果一覧</h1>
+            ${effectsData.map(group => `
+                <h2 style="border: none; margin-top: 25px; margin-bottom: 5px; font-size: 16px; align-items: center;">
+                    <span style="border-left: 3px solid #d4af37; padding-left: 10px;">${group.title}</span>
+                </h2>
+                <div class="category-desc" style="margin-bottom: 15px;">${group.desc}</div>
+                <div class="card-grid">
+                    ${group.items.map(item => `
+                        <div class="game-card" style="min-height: 80px; justify-content: flex-start; padding: 12px 15px;">
+                            <div class="card-name" style="color: #d4af37; font-size: 14px; margin-bottom: 6px;">${item.name}</div>
+                            <div class="card-info" style="font-size: 12px; line-height: 1.6;">${item.desc}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('')}
+        `;
+        container.appendChild(effectsContainer);
     </script>
 </body>
 </html>
