@@ -3611,19 +3611,7 @@ let baseDisposeCost = 10;
                     removed = state.discard.splice(combinedIdx - state.deck.length, 1)[0];
                 }
 
-               // ★追加：贈り物売却によるDEAD END判定
-                if (removed.name === "贈り物" && state.relation <= -75) {
-                    if (Math.random() < 0.8) {
-                        if (activeBuffs.isMadness) {
-                            checkEndGame(false, "double_suicide");
-                        } else {
-                            checkEndGame(false, "killed_by_master");
-                        }
-                        return; // 処理を中断
-                    }
-                }
-
-                // ★追加：処分したカードが不用品だった場合の記録
+               // ★追加：処分したカードが不用品だった場合の記録
                 if (removed.type === 'obstacle') {
                     state.hasDisposedObstacle = true;
                 }
@@ -3636,6 +3624,18 @@ let baseDisposeCost = 10;
                 setLastAction(`【${removed.name}】を${actionType}`);
                 // 売却フェーズでの除外はすべて（売）として記録する
                 addTurnHistory('sold', { type: removed.type, name: removed.name });
+
+               // ★追加：贈り物売却によるDEAD END判定
+                if (removed.name === "贈り物" && state.relation <= -75) {
+                    if (Math.random() < 0.8) {
+                        if (activeBuffs.isMadness) {
+                            checkEndGame(false, "double_suicide");
+                        } else {
+                            checkEndGame(false, "killed_by_master");
+                        }
+                        return; // 処理を中断
+                    }
+                }
 
                 state.shopSellCount++;
                 renderShopDispose();
@@ -3902,13 +3902,17 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
     if (!options.skipUsageAndEnding) {
         // ★追加：履歴の末尾にエンディングを記載
         if (state.endingTitle && state.endingText) {
-            html += `<div style="margin-top: 10px; margin-bottom: 10px; padding: 15px; text-align: center; font-family: 'Zen Old Mincho', serif;">`;
+            html += `<div style="margin-top: 10px; margin-bottom: 10px; padding: 15px; text-align: center; font-family: 'Zen Old Mincho', serif; width: 100%; box-sizing: border-box;">`;
             html += `<div style="font-weight: bold; color: #d4af37; font-size: 12px; margin-bottom: 10px;">${state.endingTitle}</div>`;
-            // ▼ 修正: word-break: keep-all; と overflow-wrap: anywhere; を追加し、単語途中での不自然な改行を防止
-            html += `<div style="color: #e5e5e5; font-size: 11px; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere;">${state.endingText}</div>`;
+            
+            // 元のデータは変更せず、出力するテキストの句点(。)で改行、読点(、)を改行可能位置に設定する
+            let formattedEndingText = state.endingText.replace(/。(?!$)/g, '。<br>').replace(/、/g, '、<wbr>');
+            
+            // word-breakを標準に戻し、自然なテキスト表示にする
+            html += `<div style="color: #e5e5e5; font-size: 11px; line-height: 1.6; word-break: normal; overflow-wrap: break-word;">${formattedEndingText}</div>`;
             html += `</div>`;
         } else {
-            html += `<div style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-weight: bold; color: #d4af37; font-size: 12px; font-family: 'Zen Old Mincho', serif; letter-spacing: 2px;">END</div>`;
+            html += `<div style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-weight: bold; color: #d4af37; font-size: 12px; font-family: 'Zen Old Mincho', serif; letter-spacing: 2px; width: 100%;">END</div>`;
         }
     } // end if (!options.skipUsageAndEnding)
     } // end if ((endTurn >= state.turn || endTurn >= 30) && !options.skipFinal)
@@ -3982,10 +3986,10 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
                 endingText = `――特等席は永久に失われた。`;
             } else if (condition === "killed_by_master") {
                 endingTitle = "【END 10】代償";
-                endingText = `彼はあなたが贈り物を処分した事に気づき、裏切られたと感じたようだ。彼に深く刺された箇所から命が流れ出ていく。`;
+                endingText = `彼は、地に伏せたあなたを見下ろしている。深く刺された箇所から命が流れ出ていく。`;
             } else if (condition === "double_suicide") {
                 endingTitle = "【END 11】無理心中";
-                endingText = `狂気に苛まれた彼は突如として錯乱した。刃はあなたを貫き、そして彼自身の胸にも突き立てられた。`;
+                endingText = `彼の僅かな理性を繋ぎ止めていた楔を手放した。彼の手に握られた刃はあなたと彼自身を貫いた。`;
             } else if (condition === "dead") {
                 endingTitle = "【GAME OVER】主人の死";
                 endingText = `彼は過酷な環境に耐えかね、息を引き取った。`;
@@ -4090,6 +4094,12 @@ function openManual() {
 
         function closeHistoryModal() {
             document.getElementById('history-modal').style.display = 'none';
+            // 画像保存ボタンの状態をリセット
+            const downloadBtn = document.getElementById('btn-download-all');
+            if (downloadBtn) {
+                downloadBtn.innerText = "画像保存";
+                downloadBtn.generatedFile = null;
+            }
         }
 
         // ★変更：全ターンの履歴を横並び（ターン数に応じて1〜3列）の1枚画像として保存する関数
@@ -4098,6 +4108,17 @@ function openManual() {
             let originalBtnText = "";
             if (event && event.currentTarget) {
                 downloadBtn = event.currentTarget;
+                
+                // 画像が生成済みの場合（2回目のタップ）は即座に共有メニューを開く
+                if (downloadBtn.generatedFile) {
+                    try {
+                        await navigator.share({ files: [downloadBtn.generatedFile] });
+                    } catch (err) {
+                        console.log("共有メニューがキャンセルされました", err);
+                    }
+                    return; 
+                }
+
                 originalBtnText = downloadBtn.innerText;
                 downloadBtn.innerText = "生成中...";
                 downloadBtn.disabled = true;
@@ -4255,27 +4276,40 @@ function openManual() {
                 if (isMobile && navigator.share && navigator.canShare) {
                     const file = new File([blob], filename, { type: 'image/png' });
                     if (navigator.canShare({ files: [file] })) {
-                        try {
-                            await navigator.share({ files: [file] });
-                        } catch (err) {
-                            console.log("共有メニューがキャンセルされました", err);
+                        // ボタンを「共有を開く」に変更し、ユーザーに再度タップさせる
+                        if (downloadBtn) {
+                            downloadBtn.generatedFile = file;
+                            downloadBtn.innerText = "共有を開く";
+                            downloadBtn.disabled = false;
+                            downloadBtn.style.opacity = "1";
+                            showCustomAlert("画像の準備が完了しました。右上の「共有を開く」を押して保存してください。");
                         }
                     } else {
                         fallbackDownload(blob, null, filename);
+                        if (downloadBtn) {
+                            downloadBtn.innerText = originalBtnText;
+                            downloadBtn.disabled = false;
+                            downloadBtn.style.opacity = "1";
+                        }
                     }
                 } else {
                     fallbackDownload(blob, null, filename);
+                    if (downloadBtn) {
+                        downloadBtn.innerText = originalBtnText;
+                        downloadBtn.disabled = false;
+                        downloadBtn.style.opacity = "1";
+                    }
                 }
             } catch (err) {
                 console.error("画像化に失敗しました", err);
                 showCustomAlert("画像の保存に失敗しました。");
-            } finally {
-                document.body.removeChild(clone);
                 if (downloadBtn) {
                     downloadBtn.innerText = originalBtnText;
                     downloadBtn.disabled = false;
                     downloadBtn.style.opacity = "1";
                 }
+            } finally {
+                document.body.removeChild(clone);
             }
         }
 
