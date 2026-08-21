@@ -12,8 +12,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif; }
         body { background-color: #070707; color: #e0e0e0; padding: 20px; line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
-        h1 { text-align: center; color: #d4af37; margin-bottom: 10px; font-size: 24px; letter-spacing: 2px; }
-        .subtitle { text-align: center; font-size: 12px; color: #bbbbbb; margin-bottom: 40px; font-family: 'Zen Kaku Gothic New', sans-serif; }
+        h1 { text-align: center; color: #d4af37; margin-bottom: 40px; font-size: 24px; letter-spacing: 2px; }
+        .subtitle { text-align: center; font-size: 13px; color: #bbbbbb; margin-bottom: 5px; font-family: 'Zen Kaku Gothic New', sans-serif; }
         h2 { color: #d4af37; font-size: 18px; border-bottom: 1px solid rgba(212, 175, 55, 0.4); padding-bottom: 5px; margin-top: 35px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end;}
         .count { font-size: 12px; color: #888; font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: normal; }
 
@@ -105,13 +105,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>特等席 - カード一覧</h1>
-        <div class="subtitle">ゲーム内に登場する全カードのリストです。</div>
+        <div class="subtitle">特等席 <span id="version-display">ver 1.0</span></div>
+        <h1>カード・効果一覧</h1>
         
         <div id="card-lists"></div>
     </div>
 
     <script>
+        const GAME_VERSION = "1.0"; // バージョン情報の一元管理
+
         const categories = [
             {
                 id: "direct",
@@ -121,14 +123,14 @@
                 desc: "主人に直接対応する行動です。",
                 cards: [
                     { name: "水を与える", cost: 1, desc: "健康+5。ストレス-10。関係性+2。" },
-                    { name: "看病", cost: 1, desc: "健康+15。ストレス-10。関係性+3" },
-                    { name: "髪を梳かす", cost: 1, desc: "ストレス-20。関係性+1" },
-                    { name: "薬を飲ませる", cost: 1, desc: "健康+30。関係性+2" },
-                    { name: "体を拭く", cost: 1, desc: "健康+5。ストレス-25。関係性+3" },
+                    { name: "看病", cost: 1, desc: "健康+15。ストレス-10。関係性+3。3ターンの間、健康度が5回復する" },
+                    { name: "髪を梳かす", cost: 1, desc: "ストレス-20。関係性+1。次ターンのドロー枚数+1" },
+                    { name: "薬を飲ませる", cost: 1, desc: "健康+40。必ずストレス+10。関係性+2" },
+                    { name: "体を拭く", cost: 1, desc: "健康+5。ストレス-25。関係性+3。手札の冷淡1枚をランダムなカードに変化" },
                     { name: "深夜の付き添い", cost: 1, desc: "健康+20。ストレス-20。関係性+5。次ターンの初期AP-1" },
                     { name: "傷口の消毒", cost: 1, desc: "健康+25。関係性+5。" },
-                    { name: "熱を測る", cost: 1, desc: "ストレス-10。関係性+20%。手札の冷淡1枚を『部屋の掃除』に変換" },
-                    { name: "食事の介助", cost: 2, desc: "健康+20。ストレス-25。関係性+5" },
+                    { name: "熱を測る", cost: 1, desc: "ストレス-10。関係性+20%" },
+                    { name: "食事の介助", cost: 2, desc: "資金-10~20G。健康+30。ストレス-30。関係性+5" },
                     { name: "輸血を行う", cost: 2, desc: "健康+60。関係性+30%。次ターンの初期AP-1（使い切り）" },
                     { name: "過呼吸の対処", cost: 2, desc: "健康+15。必ずストレス-20。関係性+10。次ターンの初期AP-1" }
                 ]
@@ -144,15 +146,15 @@
                     { name: "闇医者を呼ぶ", cost: 1, desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)" },
                     { name: "部屋の掃除", cost: 1, desc: "健康+10。ストレス-10。関係性+2" },
                     { name: "寝具の天日干し", cost: 1, desc: "健康+10。ストレス-10。関係性+3。次ターンの初期AP+1" },
-                    { name: "室温の調整", cost: 1, desc: "関係性+3。3ターンの間、ストレスが5減少する" },
+                    { name: "室温の調整", cost: 1, desc: "関係性+3。次ターン、ストレス値に関わらず体調悪化が発生しない" },
                     { name: "滋養ある食事", cost: 2, desc: "健康+30。ストレス-25。関係性+4" },
                     { name: "好みの香炉を焚く", cost: 2, desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する" },
-                    { name: "アルバムの整理", cost: 1, desc: "ストレス-10。関係性+15%。デッキからカードを1枚手札に加える" },
-                    { name: "お気に入りの紅茶", cost: 2, desc: "ストレス-25。関係性+4。手札の不用品を1枚廃棄する" },
+                    { name: "アルバムの整理", cost: 1, desc: "ストレス-10。関係性+15%。手札の不用品を1枚廃棄する" },
+                    { name: "お気に入りの紅茶", cost: 2, desc: "ストレス-15。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く" },
                     { name: "調度品の買い替え", cost: 1, desc: "資金-50G。ストレス-30。関係性+20（使い切り）" },
                     { name: "中庭の手入れ", cost: 2, desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアを1枚手札に加える" },
                     { name: "医者を呼ぶ", cost: 1, desc: "資金-40。必ず健康+60。ストレス-5。関係性+2(使い切り)" },
-                    { name: "しがらみの精算", cost: 2, desc: "不用品をすべて除外。除外した枚数が多いほど、関係性が0に近付く  (使い切り)" }
+                    { name: "しがらみの精算", cost: 2, desc: "不用品をすべて廃棄する。廃棄した枚数が多いほど、関係性が0に近付く (使い切り)" }
                 ]
             },
             {
@@ -164,7 +166,7 @@
                 cards: [
                     { name: "事務的な態度", cost: 1, desc: "ストレス+5。関係性-1" },
                     { name: "無視", cost: 1, desc: "ストレス+15。関係性-15%" },
-                    { name: "冷酷な事実", cost: 2, desc: "ストレス+40。関係性-7。手札の不用品を1枚廃棄する" },
+                    { name: "冷酷な事実", cost: 2, desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する" },
                     { name: "私物の没収", cost: 1, desc: "ストレス+15。関係性-10。資金+5~30G" },
                     { name: "整備を意図的に怠る", cost: 1, desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-5" },
                     { name: "鎮痛剤を与えない", cost: 2, desc: "健康-25。ストレス+10。関係性-4。次ターンの初期AP+1" },
@@ -188,7 +190,7 @@
                     { name: "硝煙の盾", cost: 1, desc: "敵脅威度-20。ストレス+10。関係性+1" },
                     { name: "威嚇射撃", cost: 1, desc: "敵脅威度-10。関係性+2。資金+10~15G" },
                     { name: "容赦なき追撃", cost: 1, desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+3" },
-                    { name: "捨て身の迎撃", cost: 2, desc: "敵脅威度を0にする。ストレス+30。関係性-25。手札（冷淡・不用品以外）を1枚除外" }
+                    { name: "捨て身の迎撃", cost: 2, desc: "敵脅威度を0にする。ストレス+30。関係性-25。手札（冷淡・不用品以外）を1枚廃棄する" }
                 ]
             },
             {
@@ -351,6 +353,9 @@
             `).join('')}
         `;
         container.appendChild(effectsContainer);
+
+        // バージョン表記の反映
+        document.getElementById('version-display').innerText = 'ver ' + GAME_VERSION;
     </script>
 </body>
 </html>

@@ -902,6 +902,8 @@ display: flex;
     </div>
 </main>
 <script>
+        const GAME_VERSION = "1.0"; // バージョン情報の一元管理
+
         let state = {
             turn: 0,
             startSeasonIndex: Math.floor(Math.random() * 4), // 追加：ゲーム開始時の季節をランダムに決定 (0:春, 1:夏, 2:秋, 3:冬)
@@ -1026,8 +1028,8 @@ const CARD_POOL = {
         },
         { 
             name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}], desc: "健康+15。ストレス-10。関係性+3", 
-            flavor: { 
+            actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}, {type: "buff", key: "regenDuration", value: 3}], desc: "健康+15。ストレス-10。関係性+3。3ターンの間、健康度が5回復する", 
+            flavor: {
                 trust: ["あなたは彼を気遣って看病した。彼は気まずそうに目を逸らしている。"], 
                 high_trust: ["あなたの手厚い看病に対して、彼から労いの気持ちが伝わってくる。"],
                 dependence: ["看病を終えて部屋を立ち去ろうとすると、彼はあなたにすがりつくように袖を掴んだ。"],
@@ -1038,8 +1040,8 @@ const CARD_POOL = {
         },
         { 
             name: "髪を梳かす", type: "direct", value: 1, cost: 1, valType: "flat", 
-            actions: [{type: "stress_direct", value: 20}], desc: "ストレス-20。関係性+1", 
-            flavor: { 
+            actions: [{type: "stress_direct", value: 20}, {type: "buff", key: "nextTurnDrawMod", value: 1}], desc: "ストレス-20。関係性+1。次ターンのドロー枚数+1", 
+            flavor: {
                 trust: ["あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。"], 
                 high_trust: ["髪を梳かす。彼はその仕事をあなたに任せている。"],
                 dependence: ["あなたの指先が触れると、彼はひどく安心した表情を見せた。"],
@@ -1050,8 +1052,8 @@ const CARD_POOL = {
         },
         { 
             name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 30}], desc: "健康+30。関係性+2", 
-            flavor: { 
+            actions: [{type: "heal", value: 40}, {type: "stress", value: 10}], desc: "健康+40。必ずストレス+10。関係性+2", 
+            flavor: {
                 trust: ["あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた。"], 
                 high_trust: ["差し出した薬を受け取ると、彼は一瞬眉を顰めてから一息に飲み干した。"],
                 dependence: ["あなたが与えるものなら、彼はどんなものでも受け入れる。"],
@@ -1062,8 +1064,8 @@ const CARD_POOL = {
         },
         { 
             name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 25}], desc: "健康+5。ストレス-25。関係性+3", 
-            flavor: { 
+            actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 25}, {type: "convert_card", targetType: "cold", resultName: "random"}], desc: "健康+5。ストレス-25。関係性+3。手札の冷淡1枚をランダムなカードに変化", 
+            flavor: {
                 trust: ["彼の体を丁寧に拭き上げた。彼はこうして世話を焼かれることに負い目を感じている。"], 
                 high_trust: ["体を拭き終えると、彼は少しだけすっきりしたような表情を見せた。"],
                 dependence: ["あなたが触れるたび、彼はあなたとの繋がりを見出している。"],
@@ -1099,8 +1101,8 @@ const CARD_POOL = {
         },
         { 
             name: "熱を測る", type: "direct", value: 20, cost: 1, valType: "percent", 
-            actions: [{type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "部屋の掃除"}], desc: "ストレス-10。関係性+20%。手札の冷淡1枚を『部屋の掃除』に変換", 
-            flavor: { 
+            actions: [{type: "stress_direct", value: 10}], desc: "ストレス-10。関係性+20%", 
+            flavor: {
                 trust: ["彼の熱を測った。彼は気恥ずかしさと隠しきれない困惑を滲ませている。"], 
                 high_trust: ["額に手を当てて熱を測られるのは、子ども扱いされているように感じて不満なようだ。"],
                 dependence: ["彼の額に手を当てる。彼はあなたの体温に強い安心感を覚えている。"],
@@ -1110,9 +1112,9 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat",  
-            actions: [{type: "heal", value: 20}, {type: "stress_direct", value: 25}], desc: "健康+20。ストレス-25。関係性+5", 
-            flavor: { 
+            name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat", goldCost: 10,
+            actions: [{type: "gold_random", min: -20, max: -10}, {type: "heal", value: 30}, {type: "stress_direct", value: 30}], desc: "資金-10~20G。健康+30。ストレス-30。関係性+5", 
+            flavor: {
                 trust: ["つきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。"], 
                 high_trust: ["あなたが食事を与えようとすると、彼は食器を寄越すように言った。"],
                 dependence: ["あなたが手ずから食事を与えれば、彼は雛鳥のように受け入れた。"],
@@ -1198,8 +1200,8 @@ const CARD_POOL = {
         },
         { 
             name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", 
-            actions: [{type: "buff", key: "scentDuration", value: 3}], desc: "関係性+3。3ターンの間、ストレスが5減少する", 
-            flavor: { 
+            actions: [{type: "buff", key: "preventDebuff", value: 1}], desc: "関係性+3。次ターン、ストレス値に関わらず体調悪化が発生しない", 
+            flavor: {
                 trust: ["過ごしやすくなった室内に、彼は微かに緊張を解いた様子を見せた。"], 
                 high_trust: ["彼が快適に過ごせるよう調整すると、彼は安心したように目を閉じた。"],
                 dependence: ["心地よい室温の中でも、彼はあなたがいなければ寒気を感じてしまうようだ。"],
@@ -1232,8 +1234,8 @@ const CARD_POOL = {
         },
         { 
             name: "アルバムの整理", type: "indirect", value: 15, cost: 1, valType: "percent",  
-            actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+15%。デッキからカードを1枚手札に加える", 
-            flavor: { 
+            actions: [{type: "discard_obstacle"},{type: "stress", value: -10}], desc: "ストレス-10。関係性+15%。手札の不用品を1枚廃棄する", 
+            flavor: {
                 trust: ["あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。"], 
                 high_trust: ["彼はアルバムの表紙を慈しむように撫でた。"],
                 dependence: ["彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。"],
@@ -1244,8 +1246,8 @@ const CARD_POOL = {
         },
         { 
             name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", 
-            actions: [{type: "discard_obstacle"},{type: "stress", value: -25}], desc: "ストレス-25。関係性+4。手札の不用品を1枚廃棄する", 
-            flavor: { 
+            actions: [{type: "stress", value: -15}, {type: "discard_any_and_draw", discardCount: 1, drawCount: 2}], desc: "ストレス-15。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く", 
+            flavor: {
                 trust: ["彼の好みに合わせた紅茶を淹れると、彼は己の嗜好を把握されていることに複雑な表情を見せた。"], 
                 high_trust: ["淹れたての紅茶を用意すると、彼は素直にカップを受け取った。"],
                 dependence: ["あなたが淹れた紅茶を飲むと、彼はあなたの存在だけを鮮明に感じるようだ。"],
@@ -1288,8 +1290,8 @@ const CARD_POOL = {
         },
         { 
             name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", 
-            actions: [{type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて除外。除外した枚数が多いほど、関係性が0に近付く  (使い切り)", 
-            flavor: { 
+            actions: [{type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて廃棄する。廃棄した枚数が多いほど、関係性が0に近付く (使い切り)", 
+            flavor: {
                 trust: ["二人の間のしがらみをまっさらにした。これからは、一人の人間として向き合うために。"], 
                 high_trust: ["過去の鎖を断ち切り、彼は自らの足であなたと共に歩む未来を見据えている。"],
                 dependence: ["互いを縛り付けていたものを手放した。心にぽっかり穴が空いたような気がする。"],
@@ -1324,7 +1326,7 @@ const CARD_POOL = {
         },
         { 
             name: "冷酷な事実", type: "cold", value: -7, cost: 2, valType: "flat", 
-            actions: [{type: "stress", value: 40}, {type: "discard_obstacle"}], desc: "ストレス+40。関係性-7。手札の不用品を1枚廃棄する", 
+            actions: [{type: "stress", value: 25}, {type: "discard_obstacle"}], desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する", 
             flavor: { 
                 trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
                 high_trust: ["彼は毅然と事実を受け止めつつ、僅かにあなたへ縋るような視線を向けた。"],
@@ -1498,8 +1500,8 @@ const CARD_POOL = {
         },
         { 
             name: "捨て身の迎撃", type: "harm", value: -25, cost: 2, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat_clear"}, {type: "stress", value: 30},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。ストレス+30。関係性-25。手札（冷淡・不用品以外）を1枚除外",  
-            flavor: { 
+            actions: [{context: "battle", type: "threat_clear"}, {type: "stress", value: 30},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。ストレス+30。関係性-25。手札（冷淡・不用品以外）を1枚廃棄する",  
+            flavor: {
                 trust: ["身を挺して敵の攻撃を防いだ。彼は己の無力さとあなたを危険に晒したことを悔いている。"], 
                 high_trust: ["自分を庇ったあなたに対し、彼は感謝よりも先に無茶な立ち回りをたしなめた。"],
                 dependence: ["あなたは自らを犠牲にして彼を守った。その姿に彼は心酔している。"],
@@ -1680,6 +1682,8 @@ const SPECIAL_CARDS = {
             threatReduction: 0,
             scentDuration: 0,
             waterStressDuration: 0,
+            regenDuration: 0, // 状態：リジェネ（看病）
+            preventDebuff: 0, // 状態：デバフ無効（室温の調整）
             isMadness: false, // 状態異常：発狂
             hasKnife: false   // 状態：自衛
         };
@@ -2180,6 +2184,12 @@ function processWeekStart() {
                 turnLogs.push("副作用(ストレス増)"); // ターン開始時のログに表示
             }
 
+            if (activeBuffs.regenDuration > 0) {
+                state.health = Math.min(100, state.health + 5);
+                activeBuffs.regenDuration--;
+                turnLogs.push("看病(体力回復)");
+            }
+
             // ★追加：「手紙」の所持判定とストレス処理
             let allCardsForLetter = [...state.deck, ...state.discard, ...state.hand];
             let hasLetter = allCardsForLetter.some(c => c && c.name === "手紙");
@@ -2195,7 +2205,13 @@ function processWeekStart() {
 
             let roll = Math.random() * 100;
             let threshold = Math.max(5, Math.min(95, state.stress));
-            if (roll < threshold) {
+            
+            if (activeBuffs.preventDebuff > 0) {
+                // 室温の調整によるデバフ回避
+                state.debuff = 'none';
+                activeBuffs.preventDebuff--;
+                state.temporaryEffects.push("体調維持: 室温調整により体調悪化を防止しました");
+            } else if (roll < threshold) {
                 let debuffs = ['light', 'medium', 'heavy'];
                 state.debuff = debuffs[Math.floor(Math.random() * debuffs.length)];
                 
@@ -2923,8 +2939,7 @@ let calcRelationDelta = function(targetCard, currentTarget) {
                     case "gold_random":
                     // 指定されたmin〜maxの間でランダムな数値を生成して資金に追加
                     let randomGold = Math.floor(Math.random() * (action.max - action.min + 1)) + action.min;
-                    state.gold += randomGold;
-  
+                    state.gold = Math.max(0, state.gold + randomGold);
                     break;
 
 case "set_debuff":
@@ -2997,7 +3012,17 @@ case "set_madness":
                     });
                     if (targetIndices.length > 0) {
                         let randIdx = targetIndices[Math.floor(Math.random() * targetIndices.length)];
-                        let cleanCard = CARD_POOL.indirect.find(c => c.name === action.resultName);
+                        let cleanCard;
+                        
+                        if (action.resultName === "random") {
+                            let types = ['direct', 'indirect', 'cold', 'harm'];
+                            let rType = types[Math.floor(Math.random() * types.length)];
+                            let pool = CARD_POOL[rType].filter(c => c.name !== "形見の宝刀" && c.name !== "しがらみの精算");
+                            cleanCard = pool[Math.floor(Math.random() * pool.length)];
+                        } else {
+                            cleanCard = CARD_POOL.indirect.find(c => c.name === action.resultName);
+                        }
+                        
                         state.hand[randIdx] = JSON.parse(JSON.stringify(cleanCard));
                         state.temporaryEffects.push(`カード変化: ${cleanCard.name}`);
                     }
@@ -3075,6 +3100,35 @@ case "set_madness":
                         }
                     }
                     break;
+                    
+                case "discard_any_and_draw":
+                    let validDiscardIndices = [];
+                    // 現在使用中のカードと不用品以外を対象にする
+                    state.hand.forEach((c, idx) => {
+                        if (c && c !== card && c.type !== 'obstacle') {
+                            validDiscardIndices.push(idx);
+                        }
+                    });
+                    
+                    // カードを捨てる処理
+                    if (validDiscardIndices.length > 0) {
+                        let randIdx = validDiscardIndices[Math.floor(Math.random() * validDiscardIndices.length)];
+                        let removed = state.hand.splice(randIdx, 1)[0];
+                        state.discard.push(removed); // 捨て札に送る
+                    }
+                    
+                    // 指定枚数ドローする処理
+                    for (let i = 0; i < action.drawCount; i++) {
+                        if (state.deck.length === 0 && state.discard.length > 0) {
+                            state.deck = [...state.discard];
+                            state.discard = [];
+                            shuffle(state.deck);
+                        }
+                        if (state.deck.length > 0 && state.hand.length < 10) {
+                            state.hand.push(state.deck.pop());
+                        }
+                    }
+                    break;
 
                 case "add_card_to_hand":
                     let poolCards = state.deck.filter(c => c && c.type === action.poolType);
@@ -3089,7 +3143,7 @@ case "set_madness":
                 case "season_effect":
                     if (!state.achievements.includes(card.season)) {
                         state.achievements.push(card.season);
-                        setLastAction(`思い出【${card.season}の記憶】を獲得！`);
+                        setLastAction(`${card.season}に思い出が出来た`);
                     }
                     let currentIdx = state.hand.indexOf(card);
                     if (currentIdx !== -1) {
@@ -3216,7 +3270,7 @@ if (state.battleActive) {
                         if (state.relation >= 0) {
                             addLog("彼は、隠し持っていたナイフで敵を退けた。", "log-flavor");
                         } else {
-                            addLog("彼は狂乱したようにナイフを振り回し敵を退けた。その手はひどく震えている。", "log-flavor");
+                            addLog("彼はナイフを振り回し敵を退けた。その手はひどく震えている。", "log-flavor");
                         }
                     } else {
                         state.health = Math.max(0, state.health - 20);
@@ -3852,7 +3906,8 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
         if (state.endingTitle && state.endingText) {
             html += `<div style="margin-top: 10px; margin-bottom: 10px; padding: 15px; text-align: center; font-family: 'Zen Old Mincho', serif;">`;
             html += `<div style="font-weight: bold; color: #d4af37; font-size: 12px; margin-bottom: 10px;">${state.endingTitle}</div>`;
-            html += `<div style="color: #e5e5e5; font-size: 11px; line-height: 1.6;">${state.endingText}</div>`;
+            // ▼ 修正: word-break: keep-all; と overflow-wrap: anywhere; を追加し、単語途中での不自然な改行を防止
+            html += `<div style="color: #e5e5e5; font-size: 11px; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere;">${state.endingText}</div>`;
             html += `</div>`;
         } else {
             html += `<div style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-weight: bold; color: #d4af37; font-size: 12px; font-family: 'Zen Old Mincho', serif; letter-spacing: 2px;">END</div>`;
@@ -4015,6 +4070,8 @@ function startGame() {
 
 
 function openManual() {
+            // 説明書を開くタイミングでバージョン表記を反映させる
+            document.getElementById('manual-version-display').innerText = 'ver ' + GAME_VERSION;
             document.getElementById('manual-modal').style.display = 'flex';
         }
 
@@ -4076,10 +4133,11 @@ function openManual() {
             clone.style.left = '-9999px'; // 確実な画面外に配置
             clone.style.zIndex = '-9999';
             clone.style.backgroundColor = '#151515';
-            clone.style.padding = '20px'; 
+            clone.style.padding = '30px'; // 額縁のために少し広げる
             clone.style.color = '#e5e5e5';
             clone.style.fontSize = '12px';
             clone.style.lineHeight = '1.5';
+            clone.style.border = '1px solid rgba(212, 175, 55, 0.5)'; // 額縁の装飾（アイデア3）
             
             // 全体を縦並びに設定（上部: ターン履歴、下部: デッキ・エンディング情報）
             clone.style.display = 'flex';
@@ -4089,6 +4147,14 @@ function openManual() {
             // 1カラムの幅を固定（スマホ等の画面幅に依存せず綺麗なレイアウトにするため）
             const colWidth = '420px'; 
             
+            // ★ヘッダー要素の作成（アイデア1）
+            const headerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 10px; margin-bottom: 5px;">
+                    <div style="color: #d4af37; font-weight: bold; font-family: 'Zen Old Mincho', serif; font-size: 16px; letter-spacing: 2px;">ターン詳細履歴</div>
+                    <div style="color: #bbbbbb; font-size: 11px; font-family: 'Zen Kaku Gothic New', sans-serif;">特等席 ver ${GAME_VERSION}</div>
+                </div>
+            `;
+
             // 上部の列HTML
             const topRowHTML = `
                 <div style="display: flex; flex-direction: row; gap: 20px;">
@@ -4120,7 +4186,8 @@ function openManual() {
                 </div>
             `;
 
-            clone.innerHTML = topRowHTML + dividerHTML + bottomRowHTML;
+            // innerHTMLの先頭にヘッダーを追加
+            clone.innerHTML = headerHTML + topRowHTML + dividerHTML + bottomRowHTML;
             
             // html2canvasでの文字下ズレを修正する専用スタイル
             const fixStyle = document.createElement('style');
@@ -4261,10 +4328,16 @@ function updateBuffDebuffDetails() {
     let continuousEffects = [];
     
     if (activeBuffs.scentDuration > 0) {
-        continuousEffects.push(`環境改善(室温/香炉): ターン開始時ストレス-5 (残り${activeBuffs.scentDuration}ターン)`);
+        continuousEffects.push(`香炉: ターン開始時ストレス-5 (残り${activeBuffs.scentDuration}ターン)`);
     }
     if (activeBuffs.waterStressDuration > 0) {
-        continuousEffects.push(`闇医者の副作用: ターン開始時ストレス+15 (残り${activeBuffs.waterStressDuration}ターン)`);
+        continuousEffects.push(`副作用: ターン開始時ストレス+15 (残り${activeBuffs.waterStressDuration}ターン)`);
+    }
+    if (activeBuffs.regenDuration > 0) {
+        continuousEffects.push(`体調改善: ターン開始時健康度+5 (残り${activeBuffs.regenDuration}ターン)`);
+    }
+    if (activeBuffs.preventDebuff > 0) {
+        continuousEffects.push(`室温調整: 次ターンの体調悪化を防ぐ`);
     }
     if (activeBuffs.threatReduction > 0) {
         continuousEffects.push(`次戦闘の脅威度低下: -${activeBuffs.threatReduction}`);
@@ -4709,11 +4782,15 @@ function toggleBuffDebuffDetails() {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br>ver 0.9</p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br><span id="manual-version-display">ver 0.9</span></p>
 
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+  <p style="font-size: 9px;">■ver 1.0<br>
+・一部のカードの効果を変更しました<br>
+</p>
+
   <p style="font-size: 9px;">■ver 0.9<br>
 ・UIを変更しました。<br>
 </p>
