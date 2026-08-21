@@ -3992,7 +3992,7 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
                 endingText = `彼の僅かな理性を繋ぎ止めていた楔を手放した。彼の手に握られた刃はあなたと彼自身を貫いた。`;
             } else if (condition === "dead") {
                 endingTitle = "【GAME OVER】主人の死";
-                endingText = `彼は過酷な環境に耐えかね、息を引き取った。`;
+                endingText = `あなたも彼も、何一つ手放せないでいる。いつか、この痛みごと愛おしくなる時がくるのだろうか。`;
             } else if (isSurvivalClear) {
               let requiredCount = 10;
                 let hasLetterAtEnd = [...state.deck, ...state.hand, ...state.discard].some(c => c && c.name === '手紙');
