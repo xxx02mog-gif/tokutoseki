@@ -14,6 +14,20 @@
         .container { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
         h1 { text-align: center; color: #d4af37; margin-bottom: 40px; font-size: 24px; letter-spacing: 2px; }
         .subtitle { text-align: center; font-size: 13px; color: #bbbbbb; margin-bottom: 5px; font-family: 'Zen Kaku Gothic New', sans-serif; }
+        
+        /* 追加：大見出し用スタイル */
+        .section-heading {
+            margin-top: 60px;
+            margin-bottom: 25px;
+            padding: 8px 15px;
+            font-size: 18px;
+            color: #f5f5f5;
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.2) 0%, transparent 100%);
+            border-left: 4px solid #d4af37;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
         h2 { color: #d4af37; font-size: 18px; border-bottom: 1px solid rgba(212, 175, 55, 0.4); padding-bottom: 5px; margin-top: 35px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end;}
         .count { font-size: 12px; color: #888; font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: normal; }
 
@@ -101,6 +115,25 @@
             font-family: 'Zen Kaku Gothic New', sans-serif;
             line-height: 1.5;
         }
+        /* アコーディオン用スタイル */
+        details > summary {
+            list-style: none;
+            cursor: pointer;
+            outline: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        details summary .toggle-icon {
+            display: inline-block;
+            transition: transform 0.2s;
+            font-size: 12px;
+            opacity: 0.7;
+            margin-left: 5px;
+        }
+        details[open] summary .toggle-icon {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body>
@@ -108,6 +141,7 @@
         <div class="subtitle">特等席 <span id="version-display">ver 1.0</span></div>
         <h1>カード・効果一覧</h1>
         
+        <div class="section-heading">カード一覧</div>
         <div id="card-lists"></div>
     </div>
 
@@ -255,25 +289,31 @@
         categories.forEach(cat => {
             const section = document.createElement("div");
             section.innerHTML = `
-                <h2>
-                    <span>${cat.title}</span>
-                    <span class="count">${cat.cards.length}枚</span>
-                </h2>
-                <div class="category-desc">${cat.desc}</div>
-                <div class="card-grid">
-                    ${cat.cards.map(card => `
-                        <div class="game-card">
-                            <div>
-                                <div style="display: flex; align-items: center; margin-bottom: 3px;">
-                                    <span class="card-type type-${cat.tagColor}">${cat.tagName}</span>
+                <details style="margin-bottom: 25px;">
+                    <summary>
+                        <h2>
+                            <span>${cat.title} <span class="toggle-icon">▼</span></span>
+                            <span class="count">${cat.cards.length}枚</span>
+                        </h2>
+                    </summary>
+                    <div style="padding-top: 10px;">
+                        <div class="category-desc">${cat.desc}</div>
+                        <div class="card-grid">
+                            ${cat.cards.map(card => `
+                                <div class="game-card">
+                                    <div>
+                                        <div style="display: flex; align-items: center; margin-bottom: 3px;">
+                                            <span class="card-type type-${cat.tagColor}">${cat.tagName}</span>
+                                        </div>
+                                        <div class="card-name">${card.name}</div>
+                                        <div class="card-info">${card.desc}</div>
+                                    </div>
+                                    <div class="card-cost">${card.cost}</div>
                                 </div>
-                                <div class="card-name">${card.name}</div>
-                                <div class="card-info">${card.desc}</div>
-                            </div>
-                            <div class="card-cost">${card.cost}</div>
+                            `).join('')}
                         </div>
-                    `).join('')}
-                </div>
+                    </div>
+                </details>
             `;
             container.appendChild(section);
         });
@@ -334,23 +374,87 @@
             }
         ];
 
+        const normalEndings = [
+            { name: "【END 1】日常", desc: "関係性が -44 〜 44 の間" },
+            { name: "【END 2】深みに嵌まる", desc: "関係性が -84 〜 -45 の間" },
+            { name: "【END 3】主従関係", desc: "関係性が 45 〜 84 の間" },
+            { name: "【END 4】信頼と矜持", desc: "関係性が 85 以上" },
+            { name: "【END 5】共依存", desc: "関係性が -85 以下" }
+        ];
+
+        const specialEndings = [
+            { name: "【END 6】復讐の終止符", desc: "主人が「昏睡」状態の時に、殺害可能な条件（※不用品カードが5枚以上など）を満たした攻撃カード「首を絞める」を主人に使用する。" },
+            { name: "【END 7】壊れゆく自我", desc: "30ターン生存する。<br>「発狂」状態である、または特殊なケア（闇医者や特殊な水など）を累計10回以上使用した状態。（END8・9の条件を満たしていない場合）" },
+            { name: "【END 8】絆", desc: "30ターン生存する。<br>ゲーム中、「不用品カード」を一度も廃棄していない状態。（END9の条件を満たしていない場合）" },
+            { name: "【END 9】鳥籠の外へ", desc: "30ターン生存する。<br>手札等に「手紙」を所持しており、かつ関係性が 50 以上の状態。" },
+            { name: "【END 10】代償", desc: "関係性が -75 以下の状態で「贈り物」カードを廃棄・売却した時に高確率(80%)で発生。<br>（主人が発狂していない場合）" },
+            { name: "【END 11】無理心中", desc: "関係性が -75 以下の状態で「贈り物」カードを廃棄・売却した時に高確率(80%)で発生。<br>（主人が発狂している場合）" },
+            { name: "【GAME OVER】主人の死", desc: "主人の健康度が 0 になる。" }
+        ];
+
         const effectsContainer = document.createElement("div");
         effectsContainer.innerHTML = `
-            <h1 style="margin-top: 60px; border-bottom: 1px solid rgba(212, 175, 55, 0.4); padding-bottom: 10px; font-size: 20px; text-align: left; letter-spacing: 1px;">状態異常・継続効果一覧</h1>
+            <div class="section-heading">状態異常・継続効果一覧</div>
             ${effectsData.map(group => `
-                <h2 style="border: none; margin-top: 25px; margin-bottom: 5px; font-size: 16px; align-items: center;">
-                    <span style="border-left: 3px solid #d4af37; padding-left: 10px;">${group.title}</span>
-                </h2>
-                <div class="category-desc" style="margin-bottom: 15px;">${group.desc}</div>
-                <div class="card-grid">
-                    ${group.items.map(item => `
-                        <div class="game-card" style="min-height: 80px; justify-content: flex-start; padding: 12px 15px;">
-                            <div class="card-name" style="color: #d4af37; font-size: 14px; margin-bottom: 6px;">${item.name}</div>
-                            <div class="card-info" style="font-size: 12px; line-height: 1.6;">${item.desc}</div>
+                <details style="margin-bottom: 20px;">
+                    <summary>
+                        <h2 style="border: none; margin-top: 25px; margin-bottom: 5px; font-size: 16px; align-items: center; display: flex; justify-content: space-between;">
+                            <span style="border-left: 3px solid #d4af37; padding-left: 10px;">${group.title} <span class="toggle-icon">▼</span></span>
+                        </h2>
+                    </summary>
+                    <div style="padding-top: 10px;">
+                        <div class="category-desc" style="margin-bottom: 15px;">${group.desc}</div>
+                        <div class="card-grid">
+                            ${group.items.map(item => `
+                                <div class="game-card" style="min-height: 80px; justify-content: flex-start; padding: 12px 15px;">
+                                    <div class="card-name" style="color: #d4af37; font-size: 14px; margin-bottom: 6px;">${item.name}</div>
+                                    <div class="card-info" style="font-size: 12px; line-height: 1.6;">${item.desc}</div>
+                                </div>
+                            `).join('')}
                         </div>
-                    `).join('')}
-                </div>
+                    </div>
+                </details>
             `).join('')}
+            
+            <div class="section-heading">エンディング分岐一覧</div>
+            
+            <details style="margin-bottom: 20px;">
+                <summary>
+                    <h2 style="border: none; margin-top: 25px; margin-bottom: 5px; font-size: 16px; align-items: center; display: flex; justify-content: space-between;">
+                        <span style="border-left: 3px solid #d4af37; padding-left: 10px;">通常エンド <span class="toggle-icon">▼</span></span>
+                    </h2>
+                </summary>
+                <div style="padding-top: 10px;">
+                    <div class="category-desc" style="margin-bottom: 15px;">ゲーム内で30ターン生存しきった際に到達するエンディングです。<br>特殊エンドの条件を満たしていない場合、最終的な「関係性」の数値によって以下のいずれかに分岐します。</div>
+                    <div class="card-grid">
+                        ${normalEndings.map(item => `
+                            <div class="game-card" style="min-height: 80px; justify-content: flex-start; padding: 12px 15px;">
+                                <div class="card-name" style="color: #d4af37; font-size: 14px; margin-bottom: 6px;">${item.name}</div>
+                                <div class="card-info" style="font-size: 12px; line-height: 1.6;">${item.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </details>
+
+            <details style="margin-bottom: 20px;">
+                <summary>
+                    <h2 style="border: none; margin-top: 25px; margin-bottom: 5px; font-size: 16px; align-items: center; display: flex; justify-content: space-between;">
+                        <span style="border-left: 3px solid #d4af37; padding-left: 10px;">特殊エンド・ゲームオーバー <span class="toggle-icon">▼</span></span>
+                    </h2>
+                </summary>
+                <div style="padding-top: 10px;">
+                    <div class="category-desc" style="margin-bottom: 15px;">特定の条件を満たした状態で30ターン目を迎えるか、ターン途中で特殊な行動・結果を引くことで発生するエンディングです。<br>生存エンド（END7〜9）においては、基本的に番号の大きい（下にある）エンディングが優先して判定されます。</div>
+                    <div class="card-grid">
+                        ${specialEndings.map(item => `
+                            <div class="game-card" style="min-height: 80px; justify-content: flex-start; padding: 12px 15px;">
+                                <div class="card-name" style="color: #d4af37; font-size: 14px; margin-bottom: 6px;">${item.name}</div>
+                                <div class="card-info" style="font-size: 12px; line-height: 1.6;">${item.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </details>
         `;
         container.appendChild(effectsContainer);
 

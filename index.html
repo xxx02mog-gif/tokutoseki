@@ -3034,8 +3034,8 @@ case "set_madness":
                         let removed = state.hand.splice(obsIdx, 1)[0];
                         state.hasDisposedObstacle = true; // ★追加：カード効果で不用品を廃棄した記録
                         addTurnHistory('disposed', { type: removed.type, name: removed.name }); // 売却フェーズ以外は（処）として記録
-                        if (removed.name === "贈り物" && state.relation <= -75) {
-                            if (Math.random() < 0.3) {
+                       if (removed.name === "贈り物" && state.relation <= -75) {
+                            if (Math.random() < 0.8) {
                                 isGameOverByGift = true;
                             }
                         }
@@ -3082,7 +3082,7 @@ case "set_madness":
                     }
                     
                     if (giftDisposed && state.relation <= -75) {
-                        if (Math.random() < 0.3) {
+                        if (Math.random() < 0.8) {
                             isGameOverByGift = true;
                         }
                     }
