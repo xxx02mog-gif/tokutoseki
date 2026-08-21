@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0056)https://xxx02mog-gif.github.io/tokutoseki/card-list.html -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>特等席 - カード一覧</title>
     <!-- Webフォントの読み込み -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="./特等席 - カード一覧_files/css2" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif; }
         
@@ -149,7 +149,26 @@
             margin: 0;
             transition: background-color 0.2s ease;
         }
-        .game-card:hover .card-cost { background-color: #8c7c4a; }
+  .game-card:hover .card-cost { background-color: #8c7c4a; }
+
+       /* 特殊カード（状態異常・エンディング）用バランス調整 */
+        .info-card { padding: 15px; justify-content: center; }
+        .info-card .card-name { padding-right: 0 !important; margin-bottom: 8px !important; font-size: 14.5px !important; }
+        .info-card .card-info { line-height: 1.6 !important; font-size: 11.5px !important; }
+        
+        /* アイコン表示用のラベルスタイル */
+        .status-icon {
+            display: block;
+            width: fit-content;
+            margin-bottom: 8px;
+            padding: 3px 8px;
+            border: 0px solid currentColor;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.08);
+            letter-spacing: 0.5px;
+        }
 
         /* =========================================================
            スマホ向けレスポンシブ
@@ -159,14 +178,14 @@
             h1 { font-size: 18px; margin-bottom: 20px; }
             .section-heading { font-size: 15px; padding: 4px 8px 4px 0; margin-top: 30px; margin-bottom: 12px; text-indent: 6px; }
             
-            /* 見出しと説明文 */
+           /* 見出しと説明文 */
             h2 { font-size: 13px; padding-bottom: 6px; margin-top: 5px; }
             .accordion-content { padding-bottom: 12px; }
             .category-desc { font-size: 11px; margin-bottom: 12px; line-height: 1.5; }
             
-            /* カードグリッド：2列化 */
+            /* カードグリッド：1列化 */
             .card-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
                 gap: 8px;
             }
             .game-card { 
@@ -192,6 +211,12 @@
                 padding-right: 3px; 
                 padding-top: 2px; 
             }
+
+           /* 特殊カード用バランス調整（スマホ） */
+            .info-card { padding: 12px; }
+            .info-card .card-name { font-size: 13px !important; margin-bottom: 6px !important; }
+            .info-card .card-info { font-size: 10.5px !important; }
+            .status-icon { margin-bottom: 6px; padding: 2px 6px; font-size: 10px; }
         }
     </style>
 </head>
@@ -203,7 +228,6 @@
         <div class="section-heading">カード一覧</div>
         <div id="card-lists"></div>
     </div>
-
     <script>
         const GAME_VERSION = "1.0"; // バージョン情報の一元管理
 
@@ -391,17 +415,17 @@
                 title: "関係性による特殊状態",
                 desc: "関係性の値によって、カードの効果や主人の反応が変化します。手札のカード上にアイコンで表示されます。",
                 items: [
-                    { name: "矜持状態 (関係性 ＋)", desc: "<span style='color: #bb9244; font-weight: bold;'>▼ 黄色アイコン</span><br>直接ケアを行った際、本来のストレス減少効果が反転して増加になり、関係性の上昇量が半減します。" },
-                    { name: "依存状態 (関係性 －)", desc: "<span style='color: #754f87; font-weight: bold;'>▲/▼ 紫アイコン</span><br>直接ケアを行うと関係性がさらにマイナスへ傾きます。また、間接ケア時の健康度回復が半減し、ストレスが強制的に+10されます。" },
-                    { name: "八つ当たり (確率発動)", desc: "<span style='color: #59829e; font-weight: bold;'>▼/▲ 青アイコン</span><br>蓄積したストレスによる突発的な状態です。カードを1回使用すると解除されます。この状態の時、ケア・季節カードは依存(-)に、冷淡・主人への攻撃は矜持(+)に傾きます。" }
+                    { name: "矜持状態 (関係性 ＋)", desc: "<span class='status-icon' style='color: #bb9244;'>▼ 黄色アイコン</span>直接ケアを行った際、本来のストレス減少効果が反転して増加になり、関係性の上昇量が半減します。" },
+                    { name: "依存状態 (関係性 －)", desc: "<span class='status-icon' style='color: #9d75af;'>▲/▼ 紫アイコン</span>直接ケアを行うと関係性がさらにマイナスへ傾きます。また、間接ケア時の健康度回復が半減し、ストレスが強制的に+10されます。" },
+                    { name: "八つ当たり (確率発動)", desc: "<span class='status-icon' style='color: #72a3c4;'>▼/▲ 青アイコン</span>蓄積したストレスによる突発的な状態です。カードを1回使用すると解除されます。この状態の時、ケア・季節カードは依存(-)に、冷淡・主人への攻撃は矜持(+)に傾きます。" }
                 ]
             },
             {
                 title: "その他の継続効果・アイコン",
                 desc: "行動やイベントによって付与される効果です。",
                 items: [
-                    { name: "マンネリ", desc: "<span style='color: #aaaaaa; font-weight: bold;'>▼ 灰色アイコン</span><br>同じ「直接ケア」「間接ケア」を5回以上使用すると発生。対象カードの健康度回復・ストレス軽減効果が半減します（主人が昏睡状態の時は無効）。" },
-                    { name: "発狂", desc: "<span style='color: #e74c3c; font-weight: bold;'>▼ 赤色アイコン</span><br>特殊な「水を与える」を使用した際に発生。すべてのカードによる関係性の増減が完全にランダム（-50〜+50）になります。" },
+                    { name: "マンネリ", desc: "<span class='status-icon' style='color: #aaaaaa;'>▼ 灰色アイコン</span>同じ「直接ケア」「間接ケア」を5回以上使用すると発生。対象カードの健康度回復・ストレス軽減効果が半減します（主人が昏睡状態の時は無効）。" },
+                    { name: "発狂", desc: "<span class='status-icon' style='color: #e74c3c;'>▼ 赤色アイコン</span>特殊な「水を与える」を使用した際に発生。すべてのカードによる関係性の増減が完全にランダム（-50〜+50）になります。" },
                     { name: "自衛", desc: "ランダムイベントでナイフを隠し持った状態。次の戦闘で敗北した際、一度だけダメージとストレス増加を無効化します。" },
                     { name: "環境改善", desc: "「室温の調整」「好みの香炉を焚く」による効果。3ターンの間、ターン開始時にストレスが-5されます。" },
                     { name: "副作用", desc: "「闇医者を呼ぶ」または特殊な「水を与える」の副作用。3ターンの間、ターン開始時にストレスが+15されます。" },
@@ -465,7 +489,7 @@
                         <div class="category-desc">${group.desc}</div>
                         <div class="card-grid">
                             ${group.items.map(item => `
-                                <div class="game-card">
+                                <div class="game-card info-card">
                                     <div class="card-name" style="color: #d4af37;">${item.name}</div>
                                     <div class="card-info">${item.desc}</div>
                                 </div>
@@ -485,9 +509,9 @@
                 </summary>
                 <div class="accordion-content">
                     <div class="category-desc">ゲーム内で30ターン生存しきった際に到達するエンディングです。<br>特殊エンドの条件を満たしていない場合、最終的な「関係性」の数値によって以下のいずれかに分岐します。</div>
-                    <div class="card-grid">
+                   <div class="card-grid">
                         ${normalEndings.map(item => `
-                            <div class="game-card">
+                            <div class="game-card info-card">
                                 <div class="card-name" style="color: #d4af37;">${item.name}</div>
                                 <div class="card-info">${item.desc}</div>
                             </div>
@@ -504,9 +528,9 @@
                 </summary>
                 <div class="accordion-content">
                     <div class="category-desc">特定の条件を満たした状態で30ターン目を迎えるか、ターン途中で特殊な行動・結果を引くことで発生するエンディングです。<br>生存エンド（END7〜9）においては、基本的に番号の大きい（下にある）エンディングが優先して判定されます。</div>
-                    <div class="card-grid">
+                   <div class="card-grid">
                         ${specialEndings.map(item => `
-                            <div class="game-card">
+                            <div class="game-card info-card">
                                 <div class="card-name" style="color: #d4af37;">${item.name}</div>
                                 <div class="card-info">${item.desc}</div>
                             </div>
@@ -520,5 +544,6 @@
         // バージョン表記の反映
         document.getElementById('version-display').innerText = 'ver ' + GAME_VERSION;
     </script>
-</body>
-</html>
+
+
+</body></html>
