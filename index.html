@@ -1018,10 +1018,10 @@ const CARD_POOL = {
             actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}], 
             desc: "健康+5。ストレス-10。関係性+2。", 
             flavor: { 
-                trust: ["あなたが水が入ったコップを差し出すと、彼は短く礼を言って受け取った。"], 
-                high_trust: ["口元へコップを運んでやろうとしたが、途中で彼にコップを奪われてしまった。"],
-                dependence: ["彼は、あなたが手ずから水を飲ませてくれることが嬉しいようだ。"],
-                mannerism: ["いつものように水を飲ませる。二人の間に言葉はない。"],
+                trust: ["あなたが水が入ったグラスを差し出すと、彼は短く礼を言って受け取った。"], 
+                high_trust: ["口元へコップを運んでやろうとしたが、途中で彼にグラスを奪われてしまった。"],
+                dependence: ["喉の渇きを癒すことよりも、あなたが自分のためにグラスを運ぶ行為自体に執着している"],
+                mannerism: ["いつものように水を注ぐ。二人の間に言葉はない。"],
                 heavy_trust: ["彼をそっと抱き起こし、咽せないように少しずつ水を口に含ませた。"],
                 heavy_dependence: ["彼に水を飲ませる。飲み込めずに零れた水滴が彼の頬を伝い落ちていった。"]
             } 
@@ -1032,7 +1032,7 @@ const CARD_POOL = {
             flavor: {
                 trust: ["あなたは彼を気遣って看病した。彼は気まずそうに目を逸らしている。"], 
                 high_trust: ["あなたの手厚い看病に対して、彼から労いの気持ちが伝わってくる。"],
-                dependence: ["看病を終えて部屋を立ち去ろうとすると、彼はあなたにすがりつくように袖を掴んだ。"],
+                dependence: ["看病を終えて部屋を立ち去ろうとすると、彼はあなたの服の袖を掴んだ。"],
                 mannerism: ["慣れた手つきで看病をこなす。彼はもう、されるがままになっている。"],
                 heavy_trust: ["意識のない彼を看病した。人形のように力の抜けた体は、いつもよりも重く感じる。"],
                 heavy_dependence: ["あなたが看病すると、彼の苦しげな呼吸が和らいだ。"]
@@ -1092,7 +1092,7 @@ const CARD_POOL = {
 
             flavor: { 
                 trust: ["あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめつつも、手当てには感謝している。"], 
-                high_trust: ["消毒しながら表情を窺うと、彼はどこか誇らしげに微笑んだ。"],
+                high_trust: ["彼は消毒の痛みに顔を歪めまいと、必死に平静を装っている。"],
                 dependence: ["あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと感じているようだ。"],
                 mannerism: ["淡々と消毒を済ませる。互いにこの痛みにすら慣れてしまった。"],
                 heavy_trust: ["あなたは彼の傷口を消毒した。この程度の痛みでは目を覚すことはなさそうだ。"],
@@ -1117,7 +1117,7 @@ const CARD_POOL = {
             flavor: {
                 trust: ["つきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。"], 
                 high_trust: ["あなたが食事を与えようとすると、彼は食器を寄越すように言った。"],
-                dependence: ["あなたが手ずから食事を与えれば、彼は雛鳥のように受け入れた。"],
+                dependence: ["彼は食事の味など気にも留めず、あなたから与えられているという事実だけを貪っている。"],
                 mannerism: ["黙々と食事を運ぶ。ただ生きるための作業のようだった。"]
             } 
         },
@@ -1342,7 +1342,7 @@ const CARD_POOL = {
             flavor: { 
                 trust: ["あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。"], 
                 high_trust: ["私物を処分したことについて、彼は好きにするよう言った。"],
-                dependence: ["私物を奪われても、彼はあなたに従うこと自体に喜びを見出している。"],
+                dependence: ["自分を構成するものが一つずつ奪われ、空っぽになってゆくことに彼は歪な安堵を覚えている。"],
                 mannerism: ["物が減っていく部屋。彼もそれに対して何も言わなくなった。"],
                 heavy_trust: ["あなたは眠り続ける彼の私物を、ためらいなく処分した。"],
                 heavy_dependence: ["彼が目を覚まさないのをいいことに、彼の持ち物を好き勝手に売り払った。"]
@@ -2733,7 +2733,13 @@ function executeCard(target) {
     }
 
     // --- 直前の行動の表示 ---
-    let actionText = `使用:【${card.name}】(${target === 'master' ? '主人' : '戦闘'})`;
+    let actionText = `使用:【${card.name}】`;
+    
+    // 主人と敵（戦闘）の両方に使えるカードのみ対象を記載する
+    if (card.type === 'harm' && !card.isBattleOnly) {
+        actionText += `(${target === 'master' ? '主人' : '戦闘'})`;
+    }
+
     if (isMannerism) {
         actionText += " / マンネリ（効果減衰）";
     }
@@ -3143,7 +3149,6 @@ case "set_madness":
                 case "season_effect":
                     if (!state.achievements.includes(card.season)) {
                         state.achievements.push(card.season);
-                        setLastAction(`${card.season}に思い出が出来た`);
                     }
                     let currentIdx = state.hand.indexOf(card);
                     if (currentIdx !== -1) {
