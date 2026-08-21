@@ -1235,7 +1235,7 @@ const CARD_POOL = {
             actions: [{type: "draw_card", count: 1},{type: "stress", value: -10}], desc: "ストレス-10。関係性+15%。デッキからカードを1枚手札に加える", 
             flavor: { 
                 trust: ["あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。"], 
-                high_trust: ["彼はアルバムの表紙を、慈しむように撫でた。"],
+                high_trust: ["彼はアルバムの表紙を慈しむように撫でた。"],
                 dependence: ["彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。"],
                 mannerism: ["ただ埃を払うためだけの整理。思い出に浸ることもなくなった。"],
                 heavy_trust: ["眠り続ける彼の傍らで、あなたは懐かしいアルバムをめくった。"],
@@ -1952,7 +1952,7 @@ const RANDOM_EVENTS = [
         effect: (state) => { state.stress = Math.max(0, state.stress - 10); state.seasonEventTriggered = true; },
         flavor: {
             trust: ["窓の外に白い雪が舞い始めた。彼は静かに外を眺めている。"],
-            high_trust: ["雪にこころなしか浮かれている彼の姿は、まるで童心に帰ったようだった。"],
+            high_trust: ["窓の外を見つめる彼の横顔には年相応のあどけなさが覗いていた。"],
             dependence: ["凍えるような寒さの中、彼はあなたから与えられる熱だけを求めている。"],
             mannerism: ["また冬が来た。深々と降る雪が、時間を覆い隠していく。"],
             heavy_trust: ["音もなく雪が降り積もる。彼の寝息だけが部屋に響いている。"],
@@ -2438,7 +2438,7 @@ if (Math.random() < obstacleRates[state.debuff]) {
                         high_trust: ["張り詰めていた糸が切れたように、彼は声を荒げて不満をぶちまけた。",
                             "溜め込んでいた感情が爆発し、彼はらしくもなく怒りをあなたにぶつけた。"],
                         dependence: [ "彼は何かに怯えるように取り乱し、あなたに当たり散らしている。",
-                            "見捨てられる不安からか、彼は泣き叫ぶようにあなたを責め立てた。"],
+                            "見捨てられる不安からか、彼は声を震わせながらあなたを責め立てた。"],
                         mannerism: [ "抑えきれない苛立ちが爆発し、彼はあなたを理不尽になじった。",
                             "鬱積した感情が突如として溢れ出し、彼は露骨に不機嫌な態度を取った。"]
                     };
@@ -4600,7 +4600,7 @@ function toggleBuffDebuffDetails() {
                         <span class="card-type-label type-tag-direct">直接</span>
                     </div>
                     <div class="card-type-desc">
-                        身体に直接触れる行動です。<br>矜持状態（<span style="color: #bb9244">▼</span>）: ストレスが増加する効果になり、関係性はカードに書かれた数値の半分だけ矜持（+）に傾きます。ただし、主人が昏睡状態のときはカードに書かれた通りの効果になります。<br>依存状態（<span style="color: #754f87" >▲</span>）: 関係性がカードに書かれた数値分、依存（-）に傾きます。</div>
+                        主人に直接対応する行動です。<br>矜持状態（<span style="color: #bb9244">▼</span>）: ストレスが増加する効果になり、関係性はカードに書かれた数値の半分だけ矜持（+）に傾きます。ただし、主人が昏睡状態のときはカードに書かれた通りの効果になります。<br>依存状態（<span style="color: #754f87" >▲</span>）: 関係性がカードに書かれた数値分、依存（-）に傾きます。</div>
                 </div>
                 <div class="card-type-box">
                     <div class="card-type-header">
