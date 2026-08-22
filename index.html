@@ -1425,7 +1425,7 @@ const CARD_POOL = {
             desc: "敵脅威度-20。関係性+10 / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）", 
             flavor: { 
                 trust: ["彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。"], 
-                high_trust: ["彼は喉を締め上げられても決して目を逸らさず、あなたの意図を探ろうとしている。"],
+                high_trust: ["意識のない彼の首を締め上げる。抵抗すら許されない彼を見下ろし、歪な満足感を得た。"],
                 dependence: ["横たわる主人の首に手をかける。薄く開いた彼の目が僅かに微笑んだように感じる。"], 
                 mannerism: ["首を絞める手に力がこもらない。彼も抵抗する気力がないようだ。"],
                 battle: ["あなたは襲い来る敵の首を締め、無力化させた。"],
@@ -3908,8 +3908,8 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
             // 元のデータは変更せず、出力するテキストの句点(。)で改行、読点(、)を改行可能位置に設定する
             let formattedEndingText = state.endingText.replace(/。(?!$)/g, '。<br>').replace(/、/g, '、<wbr>');
             
-            // word-breakを標準に戻し、自然なテキスト表示にする
-            html += `<div style="color: #e5e5e5; font-size: 11px; line-height: 1.6; word-break: normal; overflow-wrap: break-word;">${formattedEndingText}</div>`;
+            // word-breakをkeep-allにし、指定位置(<wbr>や句読点)でのみ折り返すようにする
+            html += `<div style="color: #e5e5e5; font-size: 11px; line-height: 1.6; word-break: keep-all; overflow-wrap: break-word;">${formattedEndingText}</div>`;
             html += `</div>`;
         } else {
             html += `<div style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-weight: bold; color: #d4af37; font-size: 12px; font-family: 'Zen Old Mincho', serif; letter-spacing: 2px; width: 100%;">END</div>`;
