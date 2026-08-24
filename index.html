@@ -2774,17 +2774,23 @@ function executeCard(target) {
         } else if (target === 'battle' && card.type === 'harm') {
             extraLog = "あなたは襲撃の対処に向かう。先程の無様な行いを咎められなかったことに、彼はひそかに安堵した。";
         }
-        // 次の行動時（または戦闘対処時）で八つ当たり状態は終了
+       // 次の行動時（または戦闘対処時）で八つ当たり状態は終了
         state.isTantrum = false; 
     }
 
+    let executeDelay = 0; // ★追加：ログ出力の遅延管理
+
     if (extraLog) {
         // 八つ当たり状態の場合は、カード固有のテキストを上書きして反応のみを表示する
-        addLog(extraLog, "log-flavor");
+        setTimeout(() => addLog(extraLog, "log-flavor"), executeDelay);
+        executeDelay += 600;
     } else if (card.flavor) {
         // 通常時はカード固有のテキストを表示する
         let text = getRandomFlavor(card.flavor, state, target === 'battle' ? 'battle' : 'master', isMannerism);
-        if (text) addLog(text, "log-flavor");
+        if (text) {
+            setTimeout(() => addLog(text, "log-flavor"), executeDelay);
+            executeDelay += 600;
+        }
     }
 
     // --- 特別処理: 暗殺によるゲーム終了 ---
@@ -2801,8 +2807,10 @@ function executeCard(target) {
         // 1. 対象選択のウィンドウを即座に閉じる
         cancelTargetSelect();
         
-        // 2. 即座にエンディング画面へ移行
-        checkEndGame(false, "assassination");
+        // 2. エンディング画面へ移行（ログ出力を待つ）
+        setTimeout(() => {
+            checkEndGame(false, "assassination");
+        }, executeDelay);
         
         return;
     }
@@ -2876,6 +2884,8 @@ let calcRelationDelta = function(targetCard, currentTarget) {
   let keepInHand = false; // 使用後に手札に残すかどうかのフラグ
     let isConsumed = false; // 【修正】使い切り判定の変数を事前宣言
     let isGameOverByGift = false; // ★追加：贈り物処分によるゲームオーバー判定
+    let disposedLetterEffect = false; // ★追加：効果による手紙処分判定
+    let disposedGiftEffect = false;   // ★追加：効果による贈り物処分判定
 
     // --- アクション(効果)の宣言的実行 ---
     if (card.actions) {
@@ -3041,6 +3051,8 @@ case "set_madness":
                         let removed = state.hand.splice(obsIdx, 1)[0];
                         state.hasDisposedObstacle = true; // ★追加：カード効果で不用品を廃棄した記録
                         addTurnHistory('disposed', { type: removed.type, name: removed.name }); // 売却フェーズ以外は（処）として記録
+                        if (removed.name === "手紙") disposedLetterEffect = true; // ★追加
+                        if (removed.name === "贈り物") disposedGiftEffect = true; // ★追加
                        if (removed.name === "贈り物" && state.relation <= -75) {
                             if (Math.random() < 0.8) {
                                 isGameOverByGift = true;
@@ -3052,6 +3064,11 @@ case "set_madness":
                 case "remove_all_obstacles":
                     let removedCount = 0;
                     let giftDisposed = false;
+                    
+                    // ★追加：不用品全廃棄の前に、手紙と贈り物の所持状況を確認してフラグを立てる
+                    let allCurrentCards = [...state.deck, ...state.discard, ...state.hand];
+                    if (allCurrentCards.some(c => c && c.name === "手紙")) disposedLetterEffect = true;
+                    if (allCurrentCards.some(c => c && c.name === "贈り物")) disposedGiftEffect = true;
 
                     // デッキから不用品をすべて除外（削除時に配列がずれないよう、後ろからループ処理します）
                     for (let i = state.deck.length - 1; i >= 0; i--) {
@@ -3201,16 +3218,42 @@ case "set_madness":
         });
     }
 
+    // ★追加：売却フェーズ以外で手紙・贈り物を処分した場合のフレーバーテキスト表示
+    if (disposedLetterEffect) {
+        let text = getRandomFlavor({
+            trust: ["主人に無断で、彼宛の手紙を処分した。"],
+            high_trust: ["彼に宛てられた手紙を未開封のまま捨てた。"],
+            dependence: ["彼宛の手紙を燃やした。彼に外の世界など必要ない。"]
+        }, state, 'master', false);
+        if (text) {
+            setTimeout(() => addLog(text, "log-flavor"), executeDelay);
+            executeDelay += 600;
+        }
+    }
+    if (disposedGiftEffect) {
+        let text = getRandomFlavor({
+            trust: ["彼からの贈り物を処分した。もともと、一方的に渡されたものだ。どう扱っても構わないはずだ。"],
+            high_trust: ["想いのこもった贈り物を手放した。彼はあなたの行いを黙認している。"],
+            dependence: ["彼の執着がこもった品を処分した。あなたの胸の内に仄暗い優越感が広がる。"]
+        }, state, 'master', false);
+        if (text) {
+            setTimeout(() => addLog(text, "log-flavor"), executeDelay);
+            executeDelay += 600;
+        }
+    }
+
 // ★追加：贈り物処分によるゲームオーバー処理
     if (isGameOverByGift) {
         cancelTargetSelect();
         renderHand();
         updateUI();
-        if (activeBuffs.isMadness) {
-            checkEndGame(false, "double_suicide");
-        } else {
-            checkEndGame(false, "killed_by_master");
-        }
+        setTimeout(() => {
+            if (activeBuffs.isMadness) {
+                checkEndGame(false, "double_suicide");
+            } else {
+                checkEndGame(false, "killed_by_master");
+            }
+        }, executeDelay);
         return;
     }
 
@@ -3233,11 +3276,13 @@ case "set_madness":
     renderHand(); 
     updateUI();
     if (state.health <= 0) { 
-        if (target === 'master' && card.type === 'harm') {
-            checkEndGame(false, "assassination");
-        } else {
-            checkEndGame(false, "dead"); 
-        }
+        setTimeout(() => {
+            if (target === 'master' && card.type === 'harm') {
+                checkEndGame(false, "assassination");
+            } else {
+                checkEndGame(false, "dead"); 
+            }
+        }, executeDelay);
     }
 }
         function processWeekEnd() {
