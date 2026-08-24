@@ -3704,18 +3704,6 @@ function calculateBonusGold(cardName) {
                 // 売却フェーズでの除外はすべて（売）として記録する
                 addTurnHistory('sold', { type: removed.type, name: removed.name });
 
-                // ★追加：贈り物売却によるDEAD END判定
-                if (removed.name === "贈り物" && state.relation <= -75) {
-                    if (Math.random() < 0.8) {
-                        if (activeBuffs.isMadness) {
-                            checkEndGame(false, "double_suicide");
-                        } else {
-                            checkEndGame(false, "killed_by_master");
-                        }
-                        return; // 処理を中断
-                    }
-                }
-
                 // ★追加：手紙・贈り物・愛着カード売却時のフレーバーテキスト表示
                 let sellFlavorObj = null;
 
@@ -3790,6 +3778,18 @@ function calculateBonusGold(cardName) {
                     let sellFlavorText = getRandomFlavor(sellFlavorObj, state, 'master', false);
                     if (sellFlavorText) {
                         addLog(sellFlavorText, "log-flavor");
+                    }
+                }
+
+                // ★追加：贈り物売却によるDEAD END判定
+                if (removed.name === "贈り物" && state.relation <= -75) {
+                    if (Math.random() < 0.8) {
+                        if (activeBuffs.isMadness) {
+                            checkEndGame(false, "double_suicide");
+                        } else {
+                            checkEndGame(false, "killed_by_master");
+                        }
+                        return; // 処理を中断
                     }
                 }
 
@@ -4117,6 +4117,9 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
     let contentHTML = generateTurnHistoryHTML();
     if (contentHTML) {
         turnHistoryHTML = `
+            <details style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px; background-color: #121212;" onclick="event.preventDefault(); openFlavorModal();">
+                <summary style="cursor: pointer; font-weight: bold; color: #d4af37; font-size: 12px; outline: none;">テキストログ出力</summary>
+            </details>
             <details style="border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px; background-color: #121212;" onclick="event.preventDefault(); openHistoryModal();">
                 <summary style="cursor: pointer; font-weight: bold; color: #d4af37; font-size: 12px; outline: none;">ターンごとの詳細履歴</summary>
             </details>
