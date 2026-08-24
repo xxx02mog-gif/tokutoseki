@@ -902,7 +902,7 @@ display: flex;
     </div>
 </main>
 <script>
-        const GAME_VERSION = "1.0"; // バージョン情報の一元管理
+        const GAME_VERSION = "1.1"; // バージョン情報の一元管理
 
         let state = {
             turn: 0,
@@ -927,6 +927,7 @@ display: flex;
             shopBuyCount: 0,
             shopSellCount: 0,
             specialCareCount: 0,
+            attachmentSellCount: 0, // ★追加：愛着カードを売却した回数を記録
             playedCardsList: [], // 追加：使用したカードの記録用（マンネリ判定・売却ボーナス用。処分時にリセット）
             totalPlayedCardsList: [], // ★追加：リザルト画面集計用（リセットされない）
             hasDisposedObstacle: false, // ★追加：不用品を一度でも処理したかの判定用フラグ
@@ -3572,13 +3573,13 @@ function calculateBonusGold(cardName) {
             let targetCard = combinedIdx < state.deck.length ? state.deck[combinedIdx] : state.discard[combinedIdx - state.deck.length];
             let bonusGold = calculateBonusGold(targetCard.name);
             
-let baseDisposeCost = 10;
+            let baseDisposeCost = 10;
             let costIncrease = 20;
             let actionType = '処分';
             
             let netCost = 0;
             if (targetCard.name === "贈り物") {
-                netCost = -(targetCard.sellPrice || 5000); // 売値がそのまま収入になる
+                netCost = -(Number(targetCard.sellPrice) || 5000); // 売値がそのまま収入になる
                 actionType = '売却';
             } else if (state.shopSellCount === 0) {
                 netCost = -(20 + bonusGold);
@@ -3597,21 +3598,22 @@ let baseDisposeCost = 10;
             document.getElementById('phase-shop-container').style.pointerEvents = 'none';
 
             setTimeout(() => {
-                // 資金の増減
+                // ★修正：資金の増減（確実に数値として計算する）
                 if (netCost <= 0) {
-                    state.gold += Math.abs(netCost);
+                    state.gold = Number(state.gold) + Number(Math.abs(netCost));
                 } else {
-                    state.gold -= netCost;
+                    state.gold = Number(state.gold) - Number(netCost);
                 }
 
+                // ★修正：先にカードを削除し、変数 removed に格納する
                 let removed;
-                 if (combinedIdx < state.deck.length) {
+                if (combinedIdx < state.deck.length) {
                     removed = state.deck.splice(combinedIdx, 1)[0];
                 } else {
                     removed = state.discard.splice(combinedIdx - state.deck.length, 1)[0];
                 }
 
-               // ★追加：処分したカードが不用品だった場合の記録
+                // ★追加：処分したカードが不用品だった場合の記録
                 if (removed.type === 'obstacle') {
                     state.hasDisposedObstacle = true;
                 }
@@ -3625,7 +3627,7 @@ let baseDisposeCost = 10;
                 // 売却フェーズでの除外はすべて（売）として記録する
                 addTurnHistory('sold', { type: removed.type, name: removed.name });
 
-               // ★追加：贈り物売却によるDEAD END判定
+                // ★追加：贈り物売却によるDEAD END判定
                 if (removed.name === "贈り物" && state.relation <= -75) {
                     if (Math.random() < 0.8) {
                         if (activeBuffs.isMadness) {
@@ -3634,6 +3636,83 @@ let baseDisposeCost = 10;
                             checkEndGame(false, "killed_by_master");
                         }
                         return; // 処理を中断
+                    }
+                }
+
+                // ★追加：手紙・贈り物・愛着カード売却時のフレーバーテキスト表示
+                let sellFlavorObj = null;
+
+                if (removed.name === "手紙") {
+                    sellFlavorObj = {
+                        trust: ["主人に無断で、彼宛の手紙を処分した。"],
+                        high_trust: ["彼に宛てられた手紙を未開封のまま捨てた。"],
+                        dependence: ["彼宛の手紙を燃やした。彼に外の世界など必要ない。"]
+                    };
+                } else if (removed.name === "贈り物") {
+                    sellFlavorObj = {
+                        trust: ["彼からの贈り物を売り払った。僅かな金貨と引き換えに、確かな重みを失った。"],
+                        high_trust: ["想いのこもった贈り物を手放した。彼はあなたの行いを黙認している。"],
+                        dependence: ["彼の執着がこもった品を売り払った。あなたの胸の内に仄暗い優越感が広がる。"]
+
+                    };
+                } else if (removed.name === "しがらみの精算") {
+                    sellFlavorObj = {
+                         trust: ["あなたは、何があっても過去を断ち切らないと決意する。"],
+                        high_trust: ["関係をまっさらにする機会を自ら捨てた。これまでの日々を、無かったことにはできなかった。"],
+                        dependence: ["これまでの全てをリセットするなど、そんな勿体ないことはしない。"]
+
+                    };
+                } else if (removed.name === "形見の宝刀") {
+                    sellFlavorObj = {
+                         trust: ["形見の宝刀を売り払った。今すぐ買い戻すべきだということは、わかっている。"],
+                        high_trust: ["あなたは復讐のための刃を手放した。それが彼のためなのか自分のためなのか、わからないでいる。"],
+                        dependence: ["何より大事だった宝刀を処分した。彼を生かし続けることこそが復讐なのだと、自らに言い聞かせる。"]
+                    };
+                } else if (removed.type === "attachment") {
+                    state.attachmentSellCount++; // 愛着カードの売却回数をカウント
+                    
+                    if (state.attachmentSellCount >= 3) {
+                        // 3回以上売却した場合のテキスト
+                        sellFlavorObj = {
+                            trust: [
+                                 "もはや彼への愛着を否定しきれない自分がいる。",
+                                "おぞましいことに、切り捨てても切り捨てても彼への情が泉のように湧いてくる。"
+                            ],
+                            high_trust: [
+                                "何度捨てても、彼を愛でてやりたい欲求が消え去ってくれない。",
+                                "切り捨てたはずの情が、また胸の奥で燻り始めている。"
+                            ],
+                            dependence: [
+                                "彼を愛おしく思っている。それでも、あなたは見て見ぬ振りを続けている。",
+                                "何度情を握りつぶそうと、彼への執着は深まるばかりだ。"
+                            ]
+                        };
+                    } else {
+                        // 通常（1〜2回目）の売却時のテキスト
+                        sellFlavorObj = {
+                            trust: [
+                                "あなたは生温い情を切り捨てた。",
+                                "芽生えかけた情を振り払う。この関係に、私情を挟むべきではない。",
+                                "彼に向き合いそうになる心を、冷たく律した。"
+                            ],
+                            high_trust: [
+                                "彼を愛おしく感じ始めている事実を強引に否定する。",
+                                "温かい感情が芽吹く前に、それを無情にも摘み取った。",
+                                "彼への思い入れを自覚しながらも、あえてそれに蓋をした。"
+                            ],
+                            dependence: [
+                                "甘い情などを覚えている場合ではない。",
+                                "まともな愛情など、彼との間に育てるつもりはない。",
+                                "彼との間には、歪んだ繋がりだけがあればいい。"
+                            ]
+                        };
+                    }
+                }
+
+                if (sellFlavorObj) {
+                    let sellFlavorText = getRandomFlavor(sellFlavorObj, state, 'master', false);
+                    if (sellFlavorText) {
+                        addLog(sellFlavorText, "log-flavor");
                     }
                 }
 
@@ -4856,6 +4935,10 @@ function toggleBuffDebuffDetails() {
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+  <p style="font-size: 9px;">■ver 1.1<br>
+・一部のカードを売却したとき、フレーバーテキストを表示されるようにしました。
+</p>
+
   <p style="font-size: 9px;">■ver 1.0<br>
 ・一部のカードの効果を変更しました。<br>
 ・リザルト画像のレイアウトを調整しました。
