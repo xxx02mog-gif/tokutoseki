@@ -1141,7 +1141,7 @@ const CARD_POOL = {
                 high_trust: ["彼は消毒の痛みに顔を歪めまいと、必死に平静を装っている。"],
                 dependence: ["あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと感じているようだ。"],
                 mannerism: ["淡々と消毒を済ませる。互いにこの痛みにすら慣れてしまった。"],
-                heavy_trust: ["あなたは彼の傷口を消毒した。この程度の痛みでは目を覚すことはなさそうだ。"],
+                heavy_trust: ["あなたは彼の傷口を消毒した。この程度の痛みでは目を覚ますことはなさそうだ。"],
                 heavy_dependence: ["あなたは彼の傷口を消毒した。この程度の痛みで目を覚ますはずはない。"]
             } 
         },
@@ -4330,6 +4330,11 @@ function openManual() {
             clone.style.lineHeight = '1.5';
             clone.style.border = '1px solid rgba(212, 175, 55, 0.5)'; // 額縁の装飾（アイデア3）
             
+            // スマホでもPCと同じレイアウト幅を維持するため、全体の幅を明示的に固定する
+            // (420pxの3列 + gap 20px*2 + padding 30px*2 = 1360px)
+            clone.style.width = '1360px';
+            clone.style.boxSizing = 'border-box';
+            
             // 全体を縦並びに設定（上部: ターン履歴、下部: デッキ・エンディング情報）
             clone.style.display = 'flex';
             clone.style.flexDirection = 'column';
@@ -4564,39 +4569,78 @@ function openManual() {
                     div.dataset.originalText = entry.innerHTML;
                     div.dataset.tapState = 0; // 0:通常, 1:大, 2:小
                     
-                    // タップ（クリック）でハイライト状態をトグル（0→1→2→0の順）
+                   // タップ（クリック）でハイライト状態をトグル（0→1→2→0の順）
                     div.onclick = function() {
                         let state = (parseInt(this.dataset.tapState) + 1) % 3;
                         this.dataset.tapState = state;
                         
                         this.classList.remove('highlighted-large', 'highlighted-small');
                         
-                        if (state === 1) {
-                            this.classList.add('highlighted-large');
-                            // 「。」で必ず改行し、それぞれの行の中で「、」による優先折り返しを適用する
-                            let formatted = this.dataset.originalText
-                                .replace(/。(?!$)/g, '。<br>') // 「。」は強制改行
-                                .split('<br>')
-                                .map(line => {
-                                    return line
-                                        .replace(/([、]+)/g, '$1\n')
-                                        .split('\n')
-                                        .filter(s => s !== '')
-                                        .map(part => `<span style="display: inline-block; max-width: 100%;">${part}</span>`)
-                                        .join('<wbr>');
-                                })
-                                .join('<br>');
-                            this.querySelector('.flavor-text').innerHTML = formatted;
-                        } else if (state === 2) {
-                            this.classList.add('highlighted-small');
-                            // 「。」のみ必ず改行する
-                            let formatted = this.dataset.originalText.replace(/。(?!$)/g, '。<br>');
-                            this.querySelector('.flavor-text').innerHTML = formatted;
+                        // 先にクラスを付与
+                        if (state === 1) this.classList.add('highlighted-large');
+                        if (state === 2) this.classList.add('highlighted-small');
+                        
+                        if (state === 1 || state === 2) {
+                            let segmenter = (window.Intl && Intl.Segmenter) ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
+                            let commaThreshold = (state === 1) ? 5 : 15; // しきい値
+                            
+                            // 確実に「。」で分割し、独立した行として処理
+                            let lines = this.dataset.originalText.replace(/。/g, '。_SPLIT_').split('_SPLIT_').filter(s => s !== '');
+                            
+                            let formattedLines = lines.map(line => {
+                                // 1. しきい値に従って「大ブロック」に分割
+                                let parts = line.replace(/、/g, '、_SPLIT_').split('_SPLIT_').filter(s => s !== '');
+                                let blocks = [];
+                                let currentBlock = "";
+                                
+                                for (let i = 0; i < parts.length; i++) {
+                                    currentBlock += parts[i];
+                                    if (parts[i].endsWith('、') && currentBlock.length >= commaThreshold) {
+                                        blocks.push(currentBlock);
+                                        currentBlock = "";
+                                    }
+                                }
+                                if (currentBlock !== "") {
+                                    blocks.push(currentBlock);
+                                }
+                                
+                                // 2. 各「大ブロック」をインラインブロック化し、その中で文節ごとの改行制御を行う
+                                let formattedBlocks = blocks.map(blockText => {
+                                    let innerHTML = "";
+                                    if (segmenter) {
+                                        let segments = Array.from(segmenter.segment(blockText)).map(s => s.segment);
+                                        let grouped = [];
+                                        for (let seg of segments) {
+                                            if (grouped.length > 0 && /^[ぁ-んー。、！？…\s]+$/.test(seg)) {
+                                                grouped[grouped.length - 1] += seg;
+                                            } else {
+                                                grouped.push(seg);
+                                            }
+                                        }
+                                        let resultParts = grouped.map(part => {
+                                            return `<span style="display: inline-block; max-width: 100%; word-break: keep-all; overflow-wrap: break-word;">${part}</span>`;
+                                        });
+                                        innerHTML = resultParts.join('<wbr>');
+                                    } else {
+                                        innerHTML = blockText;
+                                    }
+                                    
+                                    // 大ブロックをインラインブロックで囲むことで、「画面幅が許す限り1行に並び、溢れたらブロックごと（＝『、』の後ろで）次の行へ落ちる」を実現する
+                                    return `<span style="display: inline-block; max-width: 100%; vertical-align: top;">${innerHTML}</span>`;
+                                });
+                                
+                                // 大ブロック同士を連結
+                                return formattedBlocks.join('');
+                            });
+                            
+                            // 最終的なHTMLをセット
+                            this.querySelector('.flavor-text').innerHTML = formattedLines.join('<br>');
+                            
                         } else {
                             this.querySelector('.flavor-text').innerHTML = this.dataset.originalText;
                         }
                     };
-                    captureArea.appendChild(div);
+                    captureArea.appendChild(div); // ★消えていた1行を復帰
                 });
             }
             
@@ -4634,16 +4678,13 @@ function openManual() {
             
             const captureArea = document.getElementById('flavor-capture-area');
             
-            // 画面上の実際の幅を取得
-            const originalWidth = captureArea.getBoundingClientRect().width;
-            
             // 撮影用のクローン要素を作成
             const clone = captureArea.cloneNode(true);
             clone.style.position = 'fixed';
             clone.style.top = '-9999px';
             clone.style.left = '-9999px';
-            // コンテンツの幅を画面と完全に一致させるため、実際の幅 ＋ 左右のpadding(30px * 2) を指定
-            clone.style.width = (originalWidth + 60) + 'px'; 
+            // スマホでもPCと同じ幅で出力させるため、固定幅(480px)を指定
+            clone.style.width = '480px'; 
             clone.style.backgroundColor = '#0b0b0b';
             clone.style.padding = '40px 30px';
             clone.style.border = '1px solid rgba(212, 175, 55, 0.5)';
