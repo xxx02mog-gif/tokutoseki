@@ -744,7 +744,8 @@ display: flex;
     font-size: 16px;
     font-weight: normal;
     text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
-    word-break: keep-all;
+    word-break: normal; /* 未対応ブラウザ用の予備 */
+    word-break: auto-phrase; /* 文の切れ目で自然に改行する */
     overflow-wrap: break-word;
 }
 .flavor-preview-item.highlighted-small {
@@ -752,7 +753,8 @@ display: flex;
     font-size: 14px;
     font-weight: normal;
     text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
-    word-break: keep-all;
+    word-break: normal; 
+    word-break: auto-phrase; 
     overflow-wrap: break-word;
 }
 .flavor-preview-item.has-extra-margin {
@@ -4072,11 +4074,11 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
             html += `<div style="margin-top: 10px; margin-bottom: 10px; padding: 8px; text-align: center; font-family: 'Zen Old Mincho', serif; width: 100%; box-sizing: border-box;">`;
             html += `<div style="font-weight: bold; color: #d4af37; font-size: 12px; margin-bottom: 10px;">${state.endingTitle}</div>`;
             
-            // 元のデータは変更せず、出力するテキストの句点(。)で改行、読点(、)を改行可能位置に設定する
-            let formattedEndingText = state.endingText.replace(/。(?!$)/g, '。<br>').replace(/、/g, '、<wbr>');
+           // 「。」でのみ段落を分け、「、」などそれ以外の折り返し位置はブラウザの自然な判断（文節）に任せる
+            let formattedEndingText = state.endingText.replace(/。(?!$)/g, '。<br>');
             
-            // word-breakをkeep-allにし、指定位置(<wbr>や句読点)でのみ折り返すようにする
-            html += `<div style="color: #e5e5e5; font-size: 11px; line-height: 1.6; word-break: keep-all; overflow-wrap: break-word;">${formattedEndingText}</div>`;
+            // word-break: auto-phrase; を指定し、自然な文の切れ目で折り返す
+            html += `<div style="color: #e5e5e5; font-size: 11px; line-height: 1.6; word-break: normal; word-break: auto-phrase; overflow-wrap: break-word;">${formattedEndingText}</div>`;
             html += `</div>`;
         } else {
             html += `<div style="text-align: center; margin-top: 20px; margin-bottom: 10px; font-weight: bold; color: #d4af37; font-size: 12px; font-family: 'Zen Old Mincho', serif; letter-spacing: 2px; width: 100%;">END</div>`;
@@ -4571,11 +4573,24 @@ function openManual() {
                         
                         if (state === 1) {
                             this.classList.add('highlighted-large');
-                            let formatted = this.dataset.originalText.replace(/。(?!$)/g, '。<br>').replace(/、/g, '、<wbr>');
+                            // 「。」で必ず改行し、それぞれの行の中で「、」による優先折り返しを適用する
+                            let formatted = this.dataset.originalText
+                                .replace(/。(?!$)/g, '。<br>') // 「。」は強制改行
+                                .split('<br>')
+                                .map(line => {
+                                    return line
+                                        .replace(/([、]+)/g, '$1\n')
+                                        .split('\n')
+                                        .filter(s => s !== '')
+                                        .map(part => `<span style="display: inline-block; max-width: 100%;">${part}</span>`)
+                                        .join('<wbr>');
+                                })
+                                .join('<br>');
                             this.querySelector('.flavor-text').innerHTML = formatted;
                         } else if (state === 2) {
                             this.classList.add('highlighted-small');
-                            let formatted = this.dataset.originalText.replace(/。(?!$)/g, '。<br>').replace(/、/g, '、<wbr>');
+                            // 「。」のみ必ず改行する
+                            let formatted = this.dataset.originalText.replace(/。(?!$)/g, '。<br>');
                             this.querySelector('.flavor-text').innerHTML = formatted;
                         } else {
                             this.querySelector('.flavor-text').innerHTML = this.dataset.originalText;
@@ -4619,12 +4634,16 @@ function openManual() {
             
             const captureArea = document.getElementById('flavor-capture-area');
             
+            // 画面上の実際の幅を取得
+            const originalWidth = captureArea.getBoundingClientRect().width;
+            
             // 撮影用のクローン要素を作成
             const clone = captureArea.cloneNode(true);
             clone.style.position = 'fixed';
             clone.style.top = '-9999px';
             clone.style.left = '-9999px';
-            clone.style.width = '420px'; // 綺麗な比率になるよう固定幅
+            // コンテンツの幅を画面と完全に一致させるため、実際の幅 ＋ 左右のpadding(30px * 2) を指定
+            clone.style.width = (originalWidth + 60) + 'px'; 
             clone.style.backgroundColor = '#0b0b0b';
             clone.style.padding = '40px 30px';
             clone.style.border = '1px solid rgba(212, 175, 55, 0.5)';
@@ -4655,12 +4674,12 @@ function openManual() {
                 if (item.classList.contains('highlighted-large')) {
                     item.style.fontSize = '16px';
                     item.style.fontWeight = 'normal';
-                    item.style.wordBreak = 'keep-all';
+                    item.style.wordBreak = 'normal';
                     item.style.overflowWrap = 'break-word';
                 } else if (item.classList.contains('highlighted-small')) {
                     item.style.fontSize = '14px';
                     item.style.fontWeight = 'normal';
-                    item.style.wordBreak = 'keep-all';
+                    item.style.wordBreak = 'normal';
                     item.style.overflowWrap = 'break-word';
                 } else {
                     item.style.fontSize = '13px';
