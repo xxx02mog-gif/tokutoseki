@@ -732,20 +732,31 @@ display: flex;
     cursor: pointer;
     transition: all 0.3s ease;
     padding-bottom: 4px;
-    border-bottom: 1px solid #151515;
+    border-bottom: none;
     font-family: 'Zen Old Mincho', serif;
     line-height: 1.4;
 }
 .flavor-preview-item:hover {
     background-color: rgba(255, 255, 255, 0.05);
 }
-.flavor-preview-item.highlighted {
+.flavor-preview-item.highlighted-large {
     color: #aaaaaa;
     font-size: 16px;
     font-weight: normal;
     text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
     word-break: keep-all;
     overflow-wrap: break-word;
+}
+.flavor-preview-item.highlighted-small {
+    color: #aaaaaa;
+    font-size: 14px;
+    font-weight: normal;
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+.flavor-preview-item.has-extra-margin {
+    margin-bottom: 30px !important;
 }
 #flavor-capture-area {
     background-color: #0b0b0b;
@@ -4510,25 +4521,64 @@ function openManual() {
             const logEntries = document.querySelectorAll('#log-area .log-flavor');
             const recentFlavors = Array.from(logEntries).slice(-10);
             
-            if (recentFlavors.length === 0) {
+           if (recentFlavors.length === 0) {
                 captureArea.innerHTML = '<div style="color: #bbbbbb; font-size: 12px; text-align: center; font-family: \'Zen Kaku Gothic New\', sans-serif;">記録がありません。</div>';
             } else {
                 recentFlavors.forEach(entry => {
                     const div = document.createElement('div');
                     div.className = 'flavor-preview-item';
-                    div.innerHTML = entry.innerHTML;
+                    div.style.position = 'relative';
+                    div.style.paddingRight = '45px';
+                    
+                    const textSpan = document.createElement('span');
+                    textSpan.className = 'flavor-text';
+                    textSpan.innerHTML = entry.innerHTML;
+                    div.appendChild(textSpan);
+                    
+                    const marginBtn = document.createElement('button');
+                    marginBtn.className = 'btn margin-btn';
+                    marginBtn.innerText = '余白';
+                    marginBtn.style.position = 'absolute';
+                    marginBtn.style.right = '0';
+                    marginBtn.style.bottom = '4px';
+                    marginBtn.style.padding = '2px 6px';
+                    marginBtn.style.fontSize = '9px';
+                    marginBtn.style.width = 'auto';
+                    marginBtn.style.minWidth = '36px';
+                    
+                    // 余白ボタントグル処理
+                    marginBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        div.classList.toggle('has-extra-margin');
+                        if (div.classList.contains('has-extra-margin')) {
+                            marginBtn.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+                        } else {
+                            marginBtn.style.backgroundColor = 'transparent';
+                        }
+                    };
+                    div.appendChild(marginBtn);
+
                     // 元のテキストを保持しておく
                     div.dataset.originalText = entry.innerHTML;
+                    div.dataset.tapState = 0; // 0:通常, 1:大, 2:小
                     
-                    // タップ（クリック）でハイライト状態をトグル
+                    // タップ（クリック）でハイライト状態をトグル（0→1→2→0の順）
                     div.onclick = function() {
-                        this.classList.toggle('highlighted');
-                        // ハイライト時は句読点で改行タグを入れる
-                        if (this.classList.contains('highlighted')) {
+                        let state = (parseInt(this.dataset.tapState) + 1) % 3;
+                        this.dataset.tapState = state;
+                        
+                        this.classList.remove('highlighted-large', 'highlighted-small');
+                        
+                        if (state === 1) {
+                            this.classList.add('highlighted-large');
                             let formatted = this.dataset.originalText.replace(/。(?!$)/g, '。<br>').replace(/、/g, '、<wbr>');
-                            this.innerHTML = formatted;
+                            this.querySelector('.flavor-text').innerHTML = formatted;
+                        } else if (state === 2) {
+                            this.classList.add('highlighted-small');
+                            let formatted = this.dataset.originalText.replace(/。(?!$)/g, '。<br>').replace(/、/g, '、<wbr>');
+                            this.querySelector('.flavor-text').innerHTML = formatted;
                         } else {
-                            this.innerHTML = this.dataset.originalText;
+                            this.querySelector('.flavor-text').innerHTML = this.dataset.originalText;
                         }
                     };
                     captureArea.appendChild(div);
@@ -4583,13 +4633,32 @@ function openManual() {
             // 各テキストのスタイルをインライン化（html2canvasで確実に反映させるため）
             const items = clone.querySelectorAll('.flavor-preview-item');
             items.forEach(item => {
-                item.style.borderBottom = '1px solid #151515';
+                // 画像化時には余白ボタンを削除する
+                const btn = item.querySelector('.margin-btn');
+                if (btn) btn.remove();
+                
+                item.style.paddingRight = '0';
+                item.style.borderBottom = 'none';
                 item.style.paddingBottom = '4px';
-                item.style.marginBottom = '6px';
+                
+                // 下余白の適用
+                if (item.classList.contains('has-extra-margin')) {
+                    item.style.marginBottom = '30px';
+                } else {
+                    item.style.marginBottom = '6px';
+                }
+                
                 item.style.lineHeight = '1.4';
                 item.style.color = '#aaaaaa'; // 通常・ハイライト共通
-                if (item.classList.contains('highlighted')) {
+                
+                // 文字サイズの適用
+                if (item.classList.contains('highlighted-large')) {
                     item.style.fontSize = '16px';
+                    item.style.fontWeight = 'normal';
+                    item.style.wordBreak = 'keep-all';
+                    item.style.overflowWrap = 'break-word';
+                } else if (item.classList.contains('highlighted-small')) {
+                    item.style.fontSize = '14px';
                     item.style.fontWeight = 'normal';
                     item.style.wordBreak = 'keep-all';
                     item.style.overflowWrap = 'break-word';
