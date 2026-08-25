@@ -4507,7 +4507,7 @@ function openManual() {
             }, 150);
         }
 
-        // --- 追加：記憶（フレーバーテキスト）画像化機能 ---
+      // --- 追加：記憶（フレーバーテキスト）画像化機能 ---
         function removeTopFlavor() {
             const captureArea = document.getElementById('flavor-capture-area');
             const items = captureArea.querySelectorAll('.flavor-preview-item');
@@ -4520,140 +4520,214 @@ function openManual() {
             if (items.length > 0) items[items.length - 1].remove();
         }
 
+        // スマホ画面幅に合わせてモーダル全体を縮小する関数
+        function adjustFlavorModalScale() {
+            const modal = document.getElementById('flavor-modal');
+            if (modal.style.display === 'none') return;
+            const modalDialog = modal.firstElementChild;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            let scale = 1;
+            
+            // 修正：モーダルが画面端で削れないよう、左右に余白を残して縮小する
+            if (windowWidth < 620) { 
+                scale = (windowWidth - 40) / 580;
+            }
+            
+            // 高さが画面をはみ出す場合も縮小
+            if (modalDialog.offsetHeight > 0 && modalDialog.offsetHeight * scale > windowHeight - 40) {
+                const hScale = (windowHeight - 40) / modalDialog.offsetHeight;
+                if (hScale < scale) scale = hScale;
+            }
+            
+            modalDialog.style.transformOrigin = 'center center';
+            modalDialog.style.transform = `scale(${scale})`;
+        }
+        
+        window.addEventListener('resize', adjustFlavorModalScale);
+
         function openFlavorModal() {
+            const modal = document.getElementById('flavor-modal');
+            const modalDialog = modal.firstElementChild; 
+            
+            // ガクつき対策: 透明な状態でDOMを展開し、計算を終わらせる
+            modal.style.transition = 'none';
+            modal.style.opacity = '0';
+            modal.style.display = 'flex';
+            
             const captureArea = document.getElementById('flavor-capture-area');
+            const scrollArea = captureArea.parentElement;
+            
             captureArea.innerHTML = '';
             
-            // ログエリアから最新のフレーバーテキストを最大10件取得
+            // --- 最重要：レイアウトの完全固定化（画像出力と同一幅） ---
+            // モーダル全体を広げ、右側にボタンがはみ出るスペース(余白)を確保
+            modalDialog.style.width = '580px';
+            modalDialog.style.maxWidth = 'none';
+            modalDialog.style.flexShrink = '0';
+            
+            // スクロール領域のパディングをゼロにし、captureArea側で内側の余白を管理する
+            scrollArea.style.padding = '0px';
+            scrollArea.style.overflowX = 'hidden';
+            
+            // 【画像出力時と100%同じ条件】に固定
+            captureArea.style.width = '480px';
+            captureArea.style.padding = '40px 30px'; 
+            captureArea.style.boxSizing = 'border-box';
+            captureArea.style.position = 'relative';
+            
+            // 修正：中央配置をやめ、左側に寄せることで右側の窮屈さを解消
+            captureArea.style.margin = '0 0 0 10px'; 
+            
+            // 修正：内側の枠線（ボタンに被る枠線）をプレビュー画面では非表示にする
+            // ※CSS側の指定を上書きして消しています
+            captureArea.style.border = 'none'; 
+            
+            captureArea.style.transform = 'none'; // 無駄なJS計算を廃止
+            
             const logEntries = document.querySelectorAll('#log-area .log-flavor');
             const recentFlavors = Array.from(logEntries).slice(-10);
             
-           if (recentFlavors.length === 0) {
+            if (recentFlavors.length === 0) {
                 captureArea.innerHTML = '<div style="color: #bbbbbb; font-size: 12px; text-align: center; font-family: \'Zen Kaku Gothic New\', sans-serif;">記録がありません。</div>';
-            } else {
-                recentFlavors.forEach(entry => {
-                    const div = document.createElement('div');
-                    div.className = 'flavor-preview-item';
-                    div.style.position = 'relative';
-                    div.style.paddingRight = '45px';
-                    
-                    const textSpan = document.createElement('span');
-                    textSpan.className = 'flavor-text';
-                    textSpan.innerHTML = entry.innerHTML;
-                    div.appendChild(textSpan);
-                    
-                    const marginBtn = document.createElement('button');
-                    marginBtn.className = 'btn margin-btn';
-                    marginBtn.innerText = '余白';
-                    marginBtn.style.position = 'absolute';
-                    marginBtn.style.right = '0';
-                    marginBtn.style.bottom = '4px';
-                    marginBtn.style.padding = '2px 6px';
-                    marginBtn.style.fontSize = '9px';
-                    marginBtn.style.width = 'auto';
-                    marginBtn.style.minWidth = '36px';
-                    
-                    // 余白ボタントグル処理
-                    marginBtn.onclick = function(e) {
-                        e.stopPropagation();
-                        div.classList.toggle('has-extra-margin');
-                        if (div.classList.contains('has-extra-margin')) {
-                            marginBtn.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
-                        } else {
-                            marginBtn.style.backgroundColor = 'transparent';
-                        }
-                    };
-                    div.appendChild(marginBtn);
-
-                    // 元のテキストを保持しておく
-                    div.dataset.originalText = entry.innerHTML;
-                    div.dataset.tapState = 0; // 0:通常, 1:大, 2:小
-                    
-                   // タップ（クリック）でハイライト状態をトグル（0→1→2→0の順）
-                    div.onclick = function() {
-                        let state = (parseInt(this.dataset.tapState) + 1) % 3;
-                        this.dataset.tapState = state;
-                        
-                        this.classList.remove('highlighted-large', 'highlighted-small');
-                        
-                        // 先にクラスを付与
-                        if (state === 1) this.classList.add('highlighted-large');
-                        if (state === 2) this.classList.add('highlighted-small');
-                        
-                        if (state === 1 || state === 2) {
-                            let segmenter = (window.Intl && Intl.Segmenter) ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
-                            let commaThreshold = (state === 1) ? 5 : 15; // しきい値
-                            
-                            // 確実に「。」で分割し、独立した行として処理
-                            let lines = this.dataset.originalText.replace(/。/g, '。_SPLIT_').split('_SPLIT_').filter(s => s !== '');
-                            
-                            let formattedLines = lines.map(line => {
-                                // 1. しきい値に従って「大ブロック」に分割
-                                let parts = line.replace(/、/g, '、_SPLIT_').split('_SPLIT_').filter(s => s !== '');
-                                let blocks = [];
-                                let currentBlock = "";
-                                
-                                for (let i = 0; i < parts.length; i++) {
-                                    currentBlock += parts[i];
-                                    if (parts[i].endsWith('、') && currentBlock.length >= commaThreshold) {
-                                        blocks.push(currentBlock);
-                                        currentBlock = "";
-                                    }
-                                }
-                                if (currentBlock !== "") {
-                                    blocks.push(currentBlock);
-                                }
-                                
-                                // 2. 各「大ブロック」をインラインブロック化し、その中で文節ごとの改行制御を行う
-                                let formattedBlocks = blocks.map(blockText => {
-                                    let innerHTML = "";
-                                    if (segmenter) {
-                                        let segments = Array.from(segmenter.segment(blockText)).map(s => s.segment);
-                                        let grouped = [];
-                                        for (let seg of segments) {
-                                            if (grouped.length > 0 && /^[ぁ-んー。、！？…\s]+$/.test(seg)) {
-                                                grouped[grouped.length - 1] += seg;
-                                            } else {
-                                                grouped.push(seg);
-                                            }
-                                        }
-                                        let resultParts = grouped.map(part => {
-                                            return `<span style="display: inline-block; max-width: 100%; word-break: keep-all; overflow-wrap: break-word;">${part}</span>`;
-                                        });
-                                        innerHTML = resultParts.join('<wbr>');
-                                    } else {
-                                        innerHTML = blockText;
-                                    }
-                                    
-                                    // 大ブロックをインラインブロックで囲むことで、「画面幅が許す限り1行に並び、溢れたらブロックごと（＝『、』の後ろで）次の行へ落ちる」を実現する
-                                    return `<span style="display: inline-block; max-width: 100%; vertical-align: top;">${innerHTML}</span>`;
-                                });
-                                
-                                // 大ブロック同士を連結
-                                return formattedBlocks.join('');
-                            });
-                            
-                            // 最終的なHTMLをセット
-                            this.querySelector('.flavor-text').innerHTML = formattedLines.join('<br>');
-                            
-                        } else {
-                            this.querySelector('.flavor-text').innerHTML = this.dataset.originalText;
-                        }
-                    };
-                    captureArea.appendChild(div); // ★消えていた1行を復帰
-                });
+                adjustFlavorModalScale();
+                modal.style.transition = 'opacity 0.2s ease';
+                setTimeout(() => { modal.style.opacity = '1'; }, 50);
+                return;
             }
+
+            const baseSize = 13;
+            const largeSize = 16;
+            const smallSize = 14;
+
+            recentFlavors.forEach(entry => {
+                const div = document.createElement('div');
+                div.className = 'flavor-preview-item';
+                div.style.position = 'relative';
+                
+                // 幅は画像出力時と同じ480px（padding込）に完全固定される
+                div.style.width = '100%';
+                div.style.paddingRight = '0px'; 
+                
+                div.style.fontSize = `${baseSize}px`; // 初期状態は通常サイズ(ハイライトなし)
+                div.style.transition = 'font-size 0.2s ease, margin 0.2s ease'; 
+                div.style.marginBottom = '6px';
+                div.style.lineHeight = '1.4';
+                
+                const textSpan = document.createElement('span');
+                textSpan.className = 'flavor-text';
+                textSpan.innerHTML = entry.innerHTML; // 初期状態はそのまま
+                div.appendChild(textSpan);
+                
+                const marginBtn = document.createElement('button');
+                marginBtn.className = 'btn margin-btn';
+                marginBtn.innerText = '余白';
+                marginBtn.style.position = 'absolute';
+                
+                // 【解決の鍵】ボタンはテキスト領域の「外側」に配置する
+                // 修正：少しだけテキストに近づける
+                marginBtn.style.right = '-40px'; 
+                marginBtn.style.bottom = '0px';
+                marginBtn.style.padding = '2px 6px';
+                marginBtn.style.fontSize = '9px';
+                marginBtn.style.width = 'auto';
+                marginBtn.style.minWidth = '36px';
+                
+                marginBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    div.classList.toggle('has-extra-margin');
+                    if (div.classList.contains('has-extra-margin')) {
+                        marginBtn.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+                        div.style.marginBottom = '30px';
+                    } else {
+                        marginBtn.style.backgroundColor = 'transparent';
+                        div.style.marginBottom = '6px';
+                    }
+                };
+                div.appendChild(marginBtn);
+
+                div.dataset.originalText = entry.innerHTML;
+                div.dataset.tapState = 0;
+                
+                div.onclick = function() {
+                    let state = (parseInt(this.dataset.tapState) + 1) % 3;
+                    this.dataset.tapState = state;
+                    
+                    this.classList.remove('highlighted-large', 'highlighted-small');
+                    
+                    if (state === 1) {
+                        this.classList.add('highlighted-large');
+                        this.style.fontSize = `${largeSize}px`;
+                    } else if (state === 2) {
+                        this.classList.add('highlighted-small');
+                        this.style.fontSize = `${smallSize}px`;
+                    } else {
+                        this.style.fontSize = `${baseSize}px`;
+                    }
+                    
+                    if (state === 1 || state === 2) {
+                        let segmenter = (window.Intl && Intl.Segmenter) ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
+                        let commaThreshold = (state === 1) ? 5 : 15;
+                        
+                        let lines = this.dataset.originalText.replace(/。/g, '。_SPLIT_').split('_SPLIT_').filter(s => s !== '');
+                        
+                        let formattedLines = lines.map(line => {
+                            let parts = line.replace(/、/g, '、_SPLIT_').split('_SPLIT_').filter(s => s !== '');
+                            let blocks = [];
+                            let currentBlock = "";
+                            
+                            for (let i = 0; i < parts.length; i++) {
+                                currentBlock += parts[i];
+                                if (parts[i].endsWith('、') && currentBlock.length >= commaThreshold) {
+                                    blocks.push(currentBlock);
+                                    currentBlock = "";
+                                }
+                            }
+                            if (currentBlock !== "") blocks.push(currentBlock);
+                            
+                            let formattedBlocks = blocks.map(blockText => {
+                                let innerHTML = "";
+                                if (segmenter) {
+                                    let segments = Array.from(segmenter.segment(blockText)).map(s => s.segment);
+                                    let grouped = [];
+                                    for (let seg of segments) {
+                                        if (grouped.length > 0 && /^[ぁ-んー。、！？…\s]+$/.test(seg)) {
+                                            grouped[grouped.length - 1] += seg;
+                                        } else {
+                                            grouped.push(seg);
+                                        }
+                                    }
+                                    let resultParts = grouped.map(part => `<span style="display: inline-block; max-width: 100%; word-break: keep-all; overflow-wrap: break-word;">${part}</span>`);
+                                    innerHTML = resultParts.join('<wbr>');
+                                } else {
+                                    innerHTML = blockText;
+                                }
+                                return `<span style="display: inline-block; max-width: 100%; vertical-align: top;">${innerHTML}</span>`;
+                            });
+                            return formattedBlocks.join('');
+                        });
+                        this.querySelector('.flavor-text').innerHTML = formattedLines.join('<br>');
+                    } else {
+                        this.querySelector('.flavor-text').innerHTML = this.dataset.originalText;
+                    }
+                };
+                captureArea.appendChild(div);
+            });
             
-            // ボタンの状態をリセット
             const downloadBtn = document.getElementById('btn-download-flavor');
             downloadBtn.innerText = "画像保存";
             downloadBtn.disabled = false;
             downloadBtn.style.opacity = "1";
             downloadBtn.generatedFile = null;
-            
-            document.getElementById('flavor-modal').style.display = 'flex';
-        }
 
+            // DOMが配置された状態で、モーダル全体をスマホ幅に一括縮小する
+            adjustFlavorModalScale();
+            
+            setTimeout(() => {
+                modal.style.transition = 'opacity 0.2s ease';
+                modal.style.opacity = '1';
+            }, 50); 
+        }
         function closeFlavorModal() {
             document.getElementById('flavor-modal').style.display = 'none';
         }
@@ -4661,7 +4735,6 @@ function openManual() {
         async function downloadFlavorImage(event) {
             const downloadBtn = event.currentTarget;
             
-            // 2回目のタップ（画像生成済み）なら共有メニューを開く
             if (downloadBtn.generatedFile) {
                 try {
                     await navigator.share({ files: [downloadBtn.generatedFile] });
@@ -4676,24 +4749,26 @@ function openManual() {
             downloadBtn.disabled = true;
             downloadBtn.style.opacity = "0.5";
             
+            // 修正：iframeではなく、直接 captureArea を取得する
             const captureArea = document.getElementById('flavor-capture-area');
+            if (!captureArea) return;
             
-            // 撮影用のクローン要素を作成
+            // メイン画面の裏側にクローンを配置する
             const clone = captureArea.cloneNode(true);
             clone.style.position = 'fixed';
             clone.style.top = '-9999px';
             clone.style.left = '-9999px';
-            // スマホでもPCと同じ幅で出力させるため、固定幅(480px)を指定
             clone.style.width = '480px'; 
             clone.style.backgroundColor = '#0b0b0b';
             clone.style.padding = '40px 30px';
             clone.style.border = '1px solid rgba(212, 175, 55, 0.5)';
             clone.style.boxSizing = 'border-box';
+            clone.style.transform = 'none';
+            clone.style.margin = '0';
+            clone.style.fontFamily = "'Zen Old Mincho', serif";
             
-            // 各テキストのスタイルをインライン化（html2canvasで確実に反映させるため）
             const items = clone.querySelectorAll('.flavor-preview-item');
             items.forEach(item => {
-                // 画像化時には余白ボタンを削除する
                 const btn = item.querySelector('.margin-btn');
                 if (btn) btn.remove();
                 
@@ -4701,7 +4776,6 @@ function openManual() {
                 item.style.borderBottom = 'none';
                 item.style.paddingBottom = '4px';
                 
-                // 下余白の適用
                 if (item.classList.contains('has-extra-margin')) {
                     item.style.marginBottom = '30px';
                 } else {
@@ -4709,25 +4783,25 @@ function openManual() {
                 }
                 
                 item.style.lineHeight = '1.4';
-                item.style.color = '#aaaaaa'; // 通常・ハイライト共通
+                item.style.color = '#aaaaaa'; 
                 
-                // 文字サイズの適用
                 if (item.classList.contains('highlighted-large')) {
                     item.style.fontSize = '16px';
                     item.style.fontWeight = 'normal';
                     item.style.wordBreak = 'normal';
                     item.style.overflowWrap = 'break-word';
+                    item.style.textShadow = '0 0 8px rgba(212, 175, 55, 0.3)';
                 } else if (item.classList.contains('highlighted-small')) {
                     item.style.fontSize = '14px';
                     item.style.fontWeight = 'normal';
                     item.style.wordBreak = 'normal';
                     item.style.overflowWrap = 'break-word';
+                    item.style.textShadow = '0 0 8px rgba(212, 175, 55, 0.3)';
                 } else {
                     item.style.fontSize = '13px';
                 }
             });
             
-            // クローンに装飾ヘッダーを追加
             const header = document.createElement('div');
             header.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 10px; margin-bottom: 25px;">
@@ -4742,7 +4816,7 @@ function openManual() {
             try {
                 const canvas = await html2canvas(clone, {
                     backgroundColor: '#0b0b0b',
-                    scale: 2 // 高画質化
+                    scale: 2 
                 });
                 
                 const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
@@ -5476,20 +5550,15 @@ function toggleBuffDebuffDetails() {
         </div>
         
        <div id="flavor-modal-content" style="height: 450px; min-height: 450px; display: flex; flex-direction: column; padding: 20px; background: #0a0a0a; overflow: hidden;">
-            <!-- 上下のログ削除用ボタン（上部固定） -->
+            <!-- 上下のログ削除用ボタン -->
             <div style="display: flex; justify-content: space-between; margin-bottom: 15px; flex-shrink: 0;">
                 <button class="btn" onclick="removeTopFlavor()" style="padding: 6px; font-size: 10px; width: 48%; border-color: #333; color: #aaa;">↑ 一番上の文を消す</button>
                 <button class="btn" onclick="removeBottomFlavor()" style="padding: 6px; font-size: 10px; width: 48%; border-color: #333; color: #aaa;">↓ 一番下の文を消す</button>
             </div>
             
-            <!-- 固定枠（スクロールしない） -->
-            <div style="flex: 1; border: 1px solid rgba(212, 175, 55, 0.4); background-color: #0b0b0b; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 15px;">
-                <!-- 内側のスクロール領域 -->
-                <div style="flex: 1; overflow-y: auto; padding: 20px;">
-                    <div id="flavor-capture-area" style="border: none; margin: 0; padding: 0; background: transparent;">
-                        <!-- ここにフレーバーテキストが挿入されます -->
-                    </div>
-                </div>
+            <!-- スクロール領域（外側の枠線を元に戻す） -->
+            <div style="flex: 1; border: 1px solid rgba(212, 175, 55, 0.4); background-color: #0b0b0b; overflow-y: auto; overflow-x: hidden; position: relative;">
+                <div id="flavor-capture-area"></div>
             </div>
         </div>
         
