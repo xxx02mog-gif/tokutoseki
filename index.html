@@ -2852,6 +2852,7 @@ function executeCard(target) {
             state.afterAssassinationDuration = 2; // ★変更：未遂ターンの終了時と次ターン終了時に-1されるため、実質「次の1ターン」持続する
             state.stress = Math.min(100, state.stress + 50);
             state.relation = Math.max(-100, state.relation - 30); // 依存側へ
+            state.isTantrum = false; // ★追加：命の危機により八つ当たり状態を強制解除
             
             // ★追加：主人が強制的に目を覚ます処理
             if (state.debuff === 'heavy') {
@@ -2891,6 +2892,13 @@ function executeCard(target) {
                 let awakeText = getRandomFlavor(awakeKillFlavor, state, 'master', false);
                 if (awakeText) {
                     setTimeout(() => addLog(awakeText, "log-flavor"), executeDelay);
+                    executeDelay += 600;
+                }
+            } else {
+                // 昏睡状態での殺害なら、カードに設定された通常のフレーバーテキストを出力する
+                let sleepText = getRandomFlavor(card.flavor, state, 'master', false);
+                if (sleepText) {
+                    setTimeout(() => addLog(sleepText, "log-flavor"), executeDelay);
                     executeDelay += 600;
                 }
             }
@@ -2968,12 +2976,12 @@ function executeCard(target) {
         state.isTantrum = false; 
     }
 
-    if (extraLog) {
+   if (extraLog) {
         // 八つ当たり状態の場合は、カード固有のテキストを上書きして反応のみを表示する
         setTimeout(() => addLog(extraLog, "log-flavor"), executeDelay);
         executeDelay += 600;
-    } else if (state.afterAssassinationDuration > 0 && target === 'master') {
-        // ★変更：暗殺未遂直後の1ターンは、カード種別ごとに気まずい反応を表示する
+    } else if (state.afterAssassinationDuration > 0 && target === 'master' && state.debuff !== 'heavy') {
+        // ★変更：暗殺未遂直後の1ターンは、カード種別ごとに気まずい反応を表示する（昏睡時は意識がないためスキップ）
         let attemptAfterFlavor;
         if (card.type === 'direct') {
             attemptAfterFlavor = {
