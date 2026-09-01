@@ -947,7 +947,7 @@ display: flex;
     </div>
 </main>
 <script>
-        const GAME_VERSION = "1.1"; // バージョン情報の一元管理
+        const GAME_VERSION = "1.2"; // バージョン情報の一元管理
 
         let state = {
             turn: 0,
@@ -985,7 +985,9 @@ display: flex;
             temporaryEffects: [], // 追加：一時的な効果の表示用
             endOfTurnEffects: [], // 追加：ターン終了時の効果の表示用
             endingTitle: "", // 追加：エンディングのタイトル
-            endingText: "" // 追加：エンディングのテキスト
+            endingText: "", // 追加：エンディングのテキスト
+            hasAttemptedAssassination: false, // 追加：暗殺未遂フラグ
+            afterAssassinationDuration: 0 // ★変更：暗殺未遂後の気まずい期間（ターン数で管理）
         };
 
 // 直前のステータスを保持するオブジェクト
@@ -2126,6 +2128,24 @@ const RANDOM_EVENTS = [
             dependence: ["彼は何かを握りしめ、周囲を警戒している。"],
             mannerism: ["枕の下のナイフの存在は、互いに暗黙の了解となっていた。"]
         }
+    },
+    {
+        title: "微睡み", effectText: "ストレス-25", condition: (state) => state.debuff !== "heavy",
+        effect: (state) => { state.stress = Math.max(0, state.stress - 25); },
+        flavor: {
+            trust: [
+                "ふと目を覚ますと、彼があなたの肩にそっと毛布を掛けていた。あなたに世話を焼けたことが嬉しいようだ。",
+                "疲れからつい居眠りをしてしまった。慌てて部屋を出ると、どこか得意げな主人と目が合った。"
+            ],
+            high_trust: [
+                "うたた寝から目覚めると、彼があなたを見守っていた。彼の目が、愛おしげに細められる。",
+                "あなたは肩を叩かれ目を覚ました。寝心地の良い場所へ移るよう促す彼の顔は、心なしか晴れやかだ。"
+            ],
+            dependence: [
+                "目を覚ますと、彼が這うような手つきであなたの頬を撫でていた。",
+                "微睡みから目覚めると、彼が甲斐甲斐しくあなたの世話を焼いていた。自分を必要としてほしいという渇望が透けて見えるようだ。"
+            ]
+        }
     }
 ];
 // ▲ ここまで (RANDOM_EVENTS の末尾)
@@ -2374,6 +2394,7 @@ if (Math.random() < obstacleRates[state.debuff]) {
                 if (availableEvents.length > 0) {
                     let ev = availableEvents[Math.floor(Math.random() * availableEvents.length)];
                     ev.effect(state);
+
                     
                     state.temporaryEffects.push(`${ev.title}: ${ev.effectText}`);
 
@@ -2682,16 +2703,18 @@ if (card.type === 'season') {
                 masterBtn.style.display = 'none';
             } else {
                 masterBtn.style.display = 'block';
-                if (state.debuff === 'heavy' && card.type === 'harm') {
-                    // ★追加: 「首を絞める」かつ不用品5枚以上の場合も殺害フラグを有効化
-                    let isKill = card.isKillTrigger;
-                    if (card.name === "首を絞める") {
-                        let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
-                        if (obstacleCount >= 5) {
-                            isKill = true;
-                        }
+                
+                // 殺害フラグの判定（首を絞める、または元々のisKillTrigger）
+                let isKill = card.isKillTrigger;
+                if (card.name === "首を絞める") {
+                    let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
+                    if (obstacleCount >= 5) {
+                        isKill = true;
                     }
-
+                }
+                
+                // 昏睡状態、または「暗殺未遂フラグ」が立っていれば、攻撃カードによる殺害が有効になる
+                if ((state.debuff === 'heavy' || state.hasAttemptedAssassination) && card.type === 'harm') {
                     if (isKill) {
                         masterBtn.innerText = "主人を殺す";
                         masterBtn.style.backgroundColor = "#c0392b";
@@ -2735,7 +2758,19 @@ function executeCard(target) {
         return; // ★そのまま戦闘に選べるよう、状態を維持してリターン
     }
 
-    if (target === 'master' && card.isMasterAlways === false && state.debuff !== 'heavy' && !card.isBattleOnly) {
+    // 殺害フラグの判定（暗殺未遂フラグがあれば、昏睡時以外でも使用可能にする）
+    let isKill = card.isKillTrigger;
+    if (card.name === "首を絞める") {
+        let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
+        if (obstacleCount >= 5) {
+            isKill = true;
+        }
+    }
+    
+    // isMasterAlwaysがfalseのカードは基本「昏睡」時のみだが、殺害可能状態（未遂フラグあり＆isKill）なら許可する
+    let canUseOnMaster = (state.debuff === 'heavy') || (state.hasAttemptedAssassination && isKill && card.type === 'harm');
+
+    if (target === 'master' && card.isMasterAlways === false && !canUseOnMaster && !card.isBattleOnly) {
         showCustomAlert("主人が『昏睡』の時しか使用できません。");
         return; // ★state.selectedCardIndex = null; を削除し、選択を維持
     }
@@ -2755,11 +2790,121 @@ function executeCard(target) {
     }
     state.ap -= currentCost;
 
- // 追加：使用したカードを記録
+    // 追加：使用したカードを記録
     state.playedCardsList.push(card);
-    state.totalPlayedCardsList.push(card); // ★追加：リザルト集計用にも記録
-    // ★変更：カードの使用を履歴に記録
+    state.totalPlayedCardsList.push(card);
     addTurnHistory('used', { type: card.type, name: card.name, target: target });
+
+    let executeDelay = 0; // ログ出力の遅延管理
+
+    // ==============================================================
+    // ★修正：暗殺処理を通常効果・通常テキストの【前】に移動（不整合の完全解消）
+    // ==============================================================
+    let isKillFlag = card.isKillTrigger;
+    if (card.name === "首を絞める") {
+        let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
+        if (obstacleCount >= 5) {
+            isKillFlag = true;
+        }
+    }
+
+    if (target === 'master' && card.type === 'harm' && isKillFlag) {
+        // 武器（カード）に応じたフレーバーテキストの用意
+        let attemptFlavor, awakeKillFlavor;
+
+        if (card.name === "首を絞める") {
+            attemptFlavor = {
+                trust: [
+                    "首に手をかけた瞬間、反射的にナイフを向けられた。相手があなただと気づき、彼は手に持っていたナイフを取り落とした。",
+                    "突然起き上がった彼にナイフを突きつけられた。彼はあなたを賊と勘違いしたようだ。"
+                ],
+                dependence: [
+                    "反射的に振り回されたナイフがあなたの皮膚を裂いた。あなたに刃向かってしまった事実に、彼は酷く錯乱している。",
+                    "咄嗟の抵抗をあなたに向けてしまったと知るなり、彼は動揺し、震えている。"
+                ]
+            };
+            awakeKillFlavor = {
+                trust: ["首に手をかけても彼は抵抗しなかった。あなたの手によって終わることを、ずっと望んでいたようだ。"],
+                dependence: ["息の根を止めようと力を込めるあなたの手に、彼はそっと自分の手を重ねた。"]
+            };
+        } else {
+            // 形見の宝刀などの武器系
+            attemptFlavor = {
+                trust: [
+                    "刃を振り下ろした瞬間、反射的にナイフで弾き返された。相手があなただと気づき、彼は手に持っていたナイフを取り落とした。",
+                    "突然起き上がった彼にナイフを突きつけられた。彼はあなたを賊と勘違いしたようだ。"
+                ],
+                dependence: [
+                    "宝刀を彼の胸へ突き立てようとした瞬間、ナイフで刃を凌がれた。あなたに刃向かってしまった事実に、彼は酷く錯乱している。",
+                    "咄嗟の抵抗をあなたに向けてしまったと知るなり、彼は動揺し、震えている。"
+                ]
+            };
+            awakeKillFlavor = {
+                trust: ["刃を向けても彼は抵抗しなかった。あなたの手によって終わることを、ずっと望んでいたようだ。"],
+                dependence: ["彼の体に深く刃を突き立てる。彼は震える手で、宝刀の柄をあなたの手を上から握りしめた。"]
+            };
+        }
+
+        // 未遂フラグがなく、かつ自衛状態の場合：暗殺失敗イベント（ゲーム続行）
+        if (!state.hasAttemptedAssassination && activeBuffs.hasKnife) {
+            activeBuffs.hasKnife = false;
+            state.hasAttemptedAssassination = true;
+            state.afterAssassinationDuration = 2; // ★変更：未遂ターンの終了時と次ターン終了時に-1されるため、実質「次の1ターン」持続する
+            state.stress = Math.min(100, state.stress + 50);
+            state.relation = Math.max(-100, state.relation - 30); // 依存側へ
+            
+            // ★追加：主人が強制的に目を覚ます処理
+            if (state.debuff === 'heavy') {
+                state.debuff = 'medium'; // 頭痛・混乱状態で起きる
+                state.temporaryEffects.push("強制覚醒: 襲撃により昏睡状態から目を覚ました");
+            }
+
+            setLastAction(`使用:【${card.name}】(暗殺未遂)`);
+
+            let text = getRandomFlavor(attemptFlavor, state, 'master', false);
+            if (text) {
+                setTimeout(() => addLog(text, "log-flavor"), executeDelay);
+                executeDelay += 600;
+            }
+            state.temporaryEffects.push("暗殺失敗: 自衛により阻まれた（以降、覚醒時でも殺害可能）");
+            addTurnHistory('event', '暗殺失敗');
+            
+            // 使用済みカードの廃棄処理（通常処理をスキップするためここで手動で行う）
+            let finalIdx = state.hand.indexOf(card);
+            if (finalIdx !== -1) {
+                let playedCard = state.hand.splice(finalIdx, 1)[0];
+                state.discard.push(playedCard);
+            }
+            state.lastPlayedType = card.type;
+            cancelTargetSelect();
+            renderHand();
+            updateUI();
+            return; // ★通常のカード効果（ダメージ等）と通常テキストをすべてスキップして終了
+        } 
+        // 自衛なし、または既に未遂フラグがある場合：暗殺成功（ゲームオーバー）
+        else {
+            setLastAction(`使用:【${card.name}】(暗殺)`);
+            cancelTargetSelect();
+            
+            // 覚醒状態（heavy以外）での殺害なら、専用のフレーバーテキストを出力する
+            if (state.debuff !== 'heavy') {
+                let awakeText = getRandomFlavor(awakeKillFlavor, state, 'master', false);
+                if (awakeText) {
+                    setTimeout(() => addLog(awakeText, "log-flavor"), executeDelay);
+                    executeDelay += 600;
+                }
+            }
+            
+            setTimeout(() => {
+                checkEndGame(false, "assassination");
+            }, executeDelay);
+            
+            return;
+        }
+    }
+    // ==============================================================
+
+    // （これより下は、暗殺ではない通常のカード使用時の処理）
 
     // 「闇医者を呼ぶ」または 特殊版「水を与える」（昏睡付与 または 関係性リセット）を判定
     if (card.name === "闇医者を呼ぶ" || (card.name === "水を与える" && card.actions && card.actions.some(a => (a.type === "set_debuff" && a.value === "heavy") || a.type === "set_relation_zero"))) {
@@ -2773,7 +2918,7 @@ function executeCard(target) {
         // 関係性の条件を撤廃し、使用回数のみで判定する
         let sameCardCount = state.playedCardsList.filter(c => c && c.name === card.name).length;
         // マンネリ状態かつ昏睡状態のとき、カード効果は昏睡状態を優先するため効果減衰を無効化
-        if (sameCardCount >= 5 && state.debuff !== 'heavy') { // ★ 3 から 5 に変更
+        if (sameCardCount >= 5 && state.debuff !== 'heavy') {
             isMannerism = true;
         }
     }
@@ -2823,12 +2968,34 @@ function executeCard(target) {
         state.isTantrum = false; 
     }
 
-    let executeDelay = 0; // ★追加：ログ出力の遅延管理
-
     if (extraLog) {
         // 八つ当たり状態の場合は、カード固有のテキストを上書きして反応のみを表示する
         setTimeout(() => addLog(extraLog, "log-flavor"), executeDelay);
         executeDelay += 600;
+    } else if (state.afterAssassinationDuration > 0 && target === 'master') {
+        // ★変更：暗殺未遂直後の1ターンは、カード種別ごとに気まずい反応を表示する
+        let attemptAfterFlavor;
+        if (card.type === 'direct') {
+            attemptAfterFlavor = {
+                trust: ["あんなことがあったにも関わらず、いつも通りに世話を焼かれ、彼は困惑しきっている。"],
+                dependence: ["命を奪おうとした手で優しくされる異常な状況に、彼は身をこわばらせている。"]
+            };
+        } else if (card.type === 'indirect' || card.type === 'season') {
+            attemptAfterFlavor = {
+                trust: ["彼はあなたの様子を窺っている。先日の行いなど無かったかのように振る舞う姿に、恐れを抱いているようだ。"],
+                dependence: ["あなたの殺意を退けて以降、彼は怯えた目であなたの背中を見つめている。"]
+            };
+        } else {
+            attemptAfterFlavor = {
+                trust: ["冷ややかな態度を取ると、彼は床に転がったままになっていたナイフに後悔の眼差しを向けた。"],
+                dependence: ["あなたに突き放され、彼は殺されることよりも見捨てられる恐怖に泣きそうな顔をしている。"]
+            };
+        }
+        let text = getRandomFlavor(attemptAfterFlavor, state, 'master', false);
+        if (text) {
+            setTimeout(() => addLog(text, "log-flavor"), executeDelay);
+            executeDelay += 600;
+        }
     } else if (card.flavor) {
         // 通常時はカード固有のテキストを表示する
         let text = getRandomFlavor(card.flavor, state, target === 'battle' ? 'battle' : 'master', isMannerism);
@@ -2837,29 +3004,6 @@ function executeCard(target) {
             executeDelay += 600;
         }
     }
-
-    // --- 特別処理: 暗殺によるゲーム終了 ---
-    // ▼ 追加：不用品が5枚以上なら「首を絞める」を暗殺可能にする
-    let isKill = card.isKillTrigger;
-    if (card.name === "首を絞める") {
-        let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
-        if (obstacleCount >= 5) {
-            isKill = true;
-        }
-    }
-
-    if (target === 'master' && card.type === 'harm' && state.debuff === 'heavy' && isKill) {
-        // 1. 対象選択のウィンドウを即座に閉じる
-        cancelTargetSelect();
-        
-        // 2. エンディング画面へ移行（ログ出力を待つ）
-        setTimeout(() => {
-            checkEndGame(false, "assassination");
-        }, executeDelay);
-        
-        return;
-    }
-
     // --- 関係性の計算と反映 ---
 let calcRelationDelta = function(targetCard, currentTarget) {
         // 対象別の数値設定（masterValue / battleValue）があれば優先し、なければ従来の value を使用する
@@ -3335,6 +3479,10 @@ cancelTargetSelect();
             // ターン内に発生した一時効果をターン終了時にクリアする
             state.temporaryEffects = [];
             state.endOfTurnEffects = []; // 次ターンに持ち越さないようここでクリアする
+            
+            if (state.afterAssassinationDuration > 0) {
+                state.afterAssassinationDuration--; // ★変更：気まずい期間を1減らす
+            }
 
             let endLogs = [];
             if (state.ap > 0) {
@@ -4155,7 +4303,7 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
 // 1. 各分岐でエンディングテキストのみを設定する
             if (condition === "assassination") {
                 endingTitle = "【END 6】復讐の終止符";
-                endingText = `――特等席は永久に失われた。`;
+                endingText = `<span style="letter-spacing: -0.4em; padding-right: 0.4em;">――</span>特等席は永久に失われた。`;
             } else if (condition === "killed_by_master") {
                 endingTitle = "【END 10】代償";
                 endingText = `地に伏せたあなたは、彼に見下ろされている。深く刺された箇所から命が流れ出ていく。`;
@@ -4958,6 +5106,11 @@ function updateBuffDebuffDetails() {
         continuousEffects.push(`季節イベント: 次回購入フェーズで季節カード確定出現`);
     }
     
+    // ★追加：暗殺未遂後の永続表記
+    if (state.hasAttemptedAssassination) {
+        continuousEffects.push(`殺意の受容: 以降、主人が覚醒状態でも殺害可能`);
+    }
+    
     let mannerismCards = [];
     if (state.playedCardsList) {
         let cardCounts = {};
@@ -5385,6 +5538,11 @@ function toggleBuffDebuffDetails() {
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+  <p style="font-size: 9px;">■ver 1.2<br>
+・イベントを1種、特殊状態を1種追加しました。<br>
+・一部のフレーバーテキストを変更しました。
+</p>
+
   <p style="font-size: 9px;">■ver 1.1<br>
 ・一部のカードを売却したとき、フレーバーテキストを表示されるようにしました。<br>
 ・フレーバーテキストログを画像で出力できるようにしました。
