@@ -2820,7 +2820,7 @@ function executeCard(target) {
                 ],
                 dependence: [
                     "反射的に振り回されたナイフがあなたの皮膚を裂いた。あなたに刃向かってしまった事実に、彼は酷く錯乱している。",
-                    "咄嗟の抵抗をあなたに向けてしまったと知るなり、彼は動揺し、震えている。"
+                    "咄嗟の抵抗をあなたに向けてしまったと気づき、彼は動揺している。"
                 ]
             };
             awakeKillFlavor = {
@@ -4311,7 +4311,7 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
 // 1. 各分岐でエンディングテキストのみを設定する
             if (condition === "assassination") {
                 endingTitle = "【END 6】復讐の終止符";
-                endingText = `<span style="letter-spacing: -0.4em; padding-right: 0.4em;">――</span>特等席は永久に失われた。`;
+                endingText = `── 特等席は永久に失われた。`;
             } else if (condition === "killed_by_master") {
                 endingTitle = "【END 10】代償";
                 endingText = `地に伏せたあなたは、彼に見下ろされている。深く刺された箇所から命が流れ出ていく。`;
