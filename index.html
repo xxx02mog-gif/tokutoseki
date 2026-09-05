@@ -897,7 +897,7 @@ display: flex;
                <div class="target-selector" id="target-selector" style="display: none; margin-top: 0; margin-bottom: 8px;">
                     <div style="font-size:11px; margin-bottom:4px; color:#aaa;">対象を選択してください:</div>
                     <div class="target-btn" id="target-master-btn" onclick="executeCard('master')">主人に使用</div>
-                    <div class="target-btn" style="display:none;" id="target-visitor-btn" onclick="executeCard('visitor')">訪問者に使用</div>
+                    <div class="target-btn" style="display:none; background-color:#3b3b3b;" id="target-visitor-btn" onclick="executeCard('visitor')">訪問者に使用</div>
                     <div class="target-btn" style="background-color:#3b3b3b;" id="target-battle-btn" onclick="executeCard('battle')">治安維持（戦闘）に使用</div>
                     <div class="target-btn" style="background-color:#1a1a1a;" onclick="cancelTargetSelect()">キャンセル</div>
                 </div>
@@ -2834,7 +2834,7 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                 let displayDesc = card.desc;
                 if (state.visitorActive && card.visitorDesc) {
                     if (card.visitorDesc[state.visitorType]) {
-                        displayDesc += `<br><span>【対訪問者】${card.visitorDesc[state.visitorType]}</span>`;
+                        displayDesc += `<br>【対訪問者】${card.visitorDesc[state.visitorType]}`;
                     }
                 }
                 // ★ここまで
@@ -5460,7 +5460,7 @@ function updateBuffDebuffDetails() {
         continuousEffects.push(`自衛: 次の戦闘失敗時、ダメージを一度だけ無効化`);
     }
     if (state.baseThreatIncrease > 0) {
-        continuousEffects.push(`悪評: 戦闘時の初期脅威度上昇 (+${state.baseThreatIncrease})`);
+        continuousEffects.push(`悪評: 戦闘時の脅威度上昇 (+${state.baseThreatIncrease})`);
     }
   if (state.isTantrum) {
         continuousEffects.push(`八つ当たり状態: 次カードを使用する(昏睡時を除く）と解除。ケア・季節は依存(-)に、冷淡・主人へ攻撃は矜持(+)に傾く。`);
