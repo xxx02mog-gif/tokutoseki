@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0056)https://xxx02mog-gif.github.io/tokutoseki/card-list.html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +6,7 @@
     <!-- Webフォントの読み込み -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-    <link href="./特等席 - カード一覧_files/css2" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif; }
         
@@ -259,19 +258,19 @@
                 tagName: "間接",
                 desc: "周囲の環境を整える行動です。",
                 cards: [
-                    { name: "町で仕事を請け負う", cost: 1, desc: "ストレス-10。関係性+3。資金+5~15G" },
+                    { name: "仕事を請け負う", cost: 1, desc: "ストレス-10。関係性+3。資金+5~15G", visitorDesc: { merchant: "資金+10~30G。関係性+3", official: "資金+10~30G。関係性+3" } },
                     { name: "闇医者を呼ぶ", cost: 1, desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)" },
                     { name: "部屋の掃除", cost: 1, desc: "健康+10。ストレス-10。関係性+2" },
                     { name: "寝具の天日干し", cost: 1, desc: "健康+10。ストレス-10。関係性+3。次ターンの初期AP+1" },
                     { name: "室温の調整", cost: 1, desc: "関係性+3。次ターン、ストレス値に関わらず体調悪化が発生しない" },
-                    { name: "滋養ある食事", cost: 2, desc: "健康+30。ストレス-25。関係性+4" },
-                    { name: "好みの香炉を焚く", cost: 2, desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する" },
-                    { name: "アルバムの整理", cost: 1, desc: "ストレス-10。関係性+15%。手札の不用品を1枚廃棄する" },
-                    { name: "お気に入りの紅茶", cost: 2, desc: "ストレス-15。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く" },
-                    { name: "調度品の買い替え", cost: 1, desc: "資金-50G。ストレス-30。関係性+20（使い切り）" },
+                    { name: "滋養ある食事", cost: 2, desc: "健康+30。ストレス-25。関係性+4", visitorDesc: { friend: "ストレス-15。関係性+4" } },
+                    { name: "好みの香炉を焚く", cost: 2, desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", visitorDesc: { friend: "ストレス-10。関係性+3" } },
+                    { name: "アルバムの整理", cost: 1, desc: "ストレス-10。関係性+15%。手札の不用品を1枚廃棄する", visitorDesc: { friend: "ストレス-20。関係性+15%。手札の不用品を1枚廃棄する" } },
+                    { name: "お気に入りの紅茶", cost: 2, desc: "ストレス-15。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く", visitorDesc: { friend: "ストレス-10。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く" } },
+                    { name: "調度品の買い替え", cost: 1, desc: "資金-50G。ストレス-30。関係性+20（使い切り）", visitorDesc: { merchant: "資金-35G。ストレス-10。関係性+20（使い切り）" } },
                     { name: "中庭の手入れ", cost: 2, desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアを1枚手札に加える" },
                     { name: "医者を呼ぶ", cost: 1, desc: "資金-40。必ず健康+60。ストレス-5。関係性+2(使い切り)" },
-                    { name: "しがらみの精算", cost: 2, desc: "不用品をすべて廃棄する。廃棄した枚数が多いほど、関係性が0に近付く (使い切り)" }
+                    { name: "しがらみの精算", cost: 2, desc: "不用品をすべて廃棄する。廃棄した枚数が多いほど、関係性が0に近付く (使い切り)", visitorDesc: { friend: "資金-30G。ストレス-20。不用品をすべて廃棄し関係性が0に近付く (使い切り)" } }
                 ]
             },
             {
@@ -281,13 +280,13 @@
                 tagName: "冷淡",
                 desc: "あえて刺々しい態度を取ったり無視をしたり、冷たい関係性を築く行動です。",
                 cards: [
-                    { name: "事務的な態度", cost: 1, desc: "ストレス+5。関係性-1" },
-                    { name: "無視", cost: 1, desc: "ストレス+15。関係性-15%" },
-                    { name: "冷酷な事実", cost: 2, desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する" },
-                    { name: "私物の没収", cost: 1, desc: "ストレス+15。関係性-10。資金+5~30G" },
+                    { name: "事務的な態度", cost: 1, desc: "ストレス+5。関係性-1", visitorDesc: { merchant: "ストレス-5。関係性-5", official: "ストレス-5。関係性-5" } },
+                    { name: "無視", cost: 1, desc: "ストレス+15。関係性-15%", visitorDesc: { merchant: "ストレス-10。関係性-10%", friend: "ストレス-10。関係性-10%", official: "ストレス-10。関係性-10%" } },
+                    { name: "冷酷な事実", cost: 2, desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する", visitorDesc: { friend: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する", official: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する" } },
+                    { name: "私物の没収", cost: 1, desc: "ストレス+15。関係性-10。資金+5~30G", visitorDesc: { merchant: "資金+20~50G。ストレス+30。関係性-20" } },
                     { name: "整備を意図的に怠る", cost: 1, desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-5" },
                     { name: "鎮痛剤を与えない", cost: 2, desc: "健康-25。ストレス+10。関係性-4。次ターンの初期AP+1" },
-                    { name: "部屋の施錠", cost: 2, desc: "ストレス+25。関係性-10。次の戦闘時、脅威度を-15" },
+                    { name: "部屋の施錠", cost: 2, desc: "ストレス+25。関係性-10。次の戦闘時、脅威度を-15", visitorDesc: { merchant: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", friend: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", official: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15" } },
                     { name: "食事を与えない", cost: 2, desc: "健康-10。ストレス+15。関係性-5" },
                     { name: "他人の気配を匂わす", cost: 2, desc: "ストレス+30。関係性-30%（使い切り）" }
                 ]
@@ -299,15 +298,15 @@
                 tagName: "攻撃",
                 desc: "外部から迫る襲撃者を排除するための武力行動、または主人への攻撃です。",
                 cards: [
-                    { name: "毒の調合", cost: 1, desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10" },
-                    { name: "首を絞める", cost: 2, desc: "敵脅威度-20。関係性+10 / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）" },
-                    { name: "見せしめの拷問", cost: 2, desc: "敵脅威度を強制的に0にする。関係性-10% / 【対主人】ストレス+40。関係性-20%（使い切り）" },
-                    { name: "形見の宝刀", cost: 1, desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1" },
-                    { name: "罠を配置する", cost: 1, desc: "敵脅威度-15。関係性+2。次ターンの初期APを+1" },
-                    { name: "硝煙の盾", cost: 1, desc: "敵脅威度-20。ストレス+10。関係性+1" },
-                    { name: "威嚇射撃", cost: 1, desc: "敵脅威度-10。関係性+2。資金+10~15G" },
-                    { name: "容赦なき追撃", cost: 1, desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+3" },
-                    { name: "捨て身の迎撃", cost: 2, desc: "敵脅威度を0にする。ストレス+30。関係性-25。手札（冷淡・不用品以外）を1枚廃棄する" }
+                    { name: "毒の調合", cost: 1, desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10" } },
+                    { name: "首を絞める", cost: 2, desc: "敵脅威度-20。関係性+10 / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）", isHiddenMasterEffect: true, visitorDesc: { merchant: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20", friend: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20", official: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20" } },
+                    { name: "見せしめの拷問", cost: 2, desc: "敵脅威度を強制的に0にする。関係性-10% / 【対主人】ストレス+40。関係性-20%（使い切り）", visitorDesc: { merchant: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30", friend: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30", official: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30" } },
+                    { name: "形見の宝刀", cost: 1, desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", isHiddenMasterEffect: true, visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15" } },
+                    { name: "罠を配置する", cost: 1, desc: "敵脅威度-15。関係性+2。次ターンの初期APを+1", isBattleOnly: true },
+                    { name: "硝煙の盾", cost: 1, desc: "敵脅威度-20。ストレス+10。関係性+1", isBattleOnly: true },
+                    { name: "威嚇射撃", cost: 1, desc: "敵脅威度-10。関係性+2。資金+10~15G", isBattleOnly: true },
+                    { name: "容赦なき追撃", cost: 1, desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+3", isBattleOnly: true },
+                    { name: "捨て身の迎撃", cost: 2, desc: "敵脅威度を0にする。ストレス+30。関係性-25。手札（冷淡・不用品以外）を1枚廃棄する", isBattleOnly: true }
                 ]
             },
             {
@@ -344,7 +343,9 @@
                 cards: [
                     { name: "水を与える(昏睡)", cost: 1, desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間ストレス+15" },
                     { name: "水を与える(初期化)", cost: 1, desc: "健康+30。必ずストレス-30。関係性を0にする。3ターンの間ストレス+15" },
-                    { name: "水を与える(発狂)", cost: 1, desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる。(使い切り)" }
+                    { name: "水を与える(発狂)", cost: 1, desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる。(使い切り)" },
+                    { name: "面会", type: "indirect", cost: 1, desc: "ストレス+30。関係性+10（使い切り）。別の手段で対応した場合も、このカードは手札から除外される", isVisitorOnly: true },
+                    { name: "面会(昔馴染み)", type: "indirect", cost: 1, desc: "ストレス-20。関係性+10。不用品が1枚捨て札に混入する（使い切り）。別の手段で対応した場合も、このカードは除外される", isVisitorOnly: true }
                 ]
             },
             {
@@ -369,6 +370,44 @@
 
         const container = document.getElementById("card-lists");
         
+        // テキストを【主人】【戦闘】【訪問者】に分割して整形する関数（リストページ用）
+        function getListCardDescHTML(card) {
+            if (card.type === 'obstacle' || card.id === 'season' || card.id === 'attachment' || card.id === 'special') return card.desc;
+
+            let battleDesc = "";
+            let masterDesc = "";
+            let visitorDescText = "";
+
+            if (card.desc.includes(" / 【対主人】")) {
+                let parts = card.desc.split(" / 【対主人】");
+                battleDesc = parts[0];
+                if (!card.isHiddenMasterEffect) {
+                    masterDesc = parts[1];
+                }
+            } else if (card.isBattleOnly || card.isHiddenMasterEffect) {
+                battleDesc = card.desc;
+            } else {
+                masterDesc = card.desc;
+            }
+
+            if (card.visitorDesc) {
+                // 訪問者ごとにテキストが違う場合は「 / 」で繋ぐ、同じなら1つだけ表示
+                let descSet = new Set(Object.values(card.visitorDesc));
+                visitorDescText = Array.from(descSet).join(" / ");
+            }
+
+            let resultLines = [];
+            
+            // リストページでは常に全て表示する（shop画面と同じ仕様）
+            if (masterDesc) resultLines.push(`【主人】${masterDesc}`);
+            if (battleDesc) resultLines.push(`【戦闘】${battleDesc}`);
+            if (visitorDescText) resultLines.push(`【訪問者】${visitorDescText}`);
+            
+            if (resultLines.length === 0) resultLines.push(card.desc);
+
+            return resultLines.join("<br>");
+        }
+
         categories.forEach(cat => {
             const section = document.createElement("div");
             section.innerHTML = `
@@ -386,10 +425,10 @@
                                 <div class="game-card">
                                     <div>
                                         <div style="display: flex; align-items: center; margin-bottom: 3px;">
-                                            <span class="card-type type-${cat.tagColor}">${cat.tagName}</span>
+                                            <span class="card-type type-${card.type || cat.tagColor}">${cat.tagName}</span>
                                         </div>
                                         <div class="card-name">${card.name}</div>
-                                        <div class="card-info">${card.desc}</div>
+                                        <div class="card-info">${getListCardDescHTML(card)}</div>
                                     </div>
                                     <div class="card-cost">${card.cost}</div>
                                 </div>
@@ -408,15 +447,16 @@
                 items: [
                     { name: "歩行困難 (軽度)", desc: "直接ケア・間接ケアカードの消費AP（COST）が+1されます。" },
                     { name: "頭痛 (中度)", desc: "ターン開始時のドロー枚数が-1されます。" },
-                    { name: "昏睡 (重度)", desc: "最大APが1に固定されます。愛着カードが使用可能になり、攻撃カードの消費APが1になります。マンネリや矜持状態による影響が一時的に無効化され、殺害エンドへの分岐条件の一つにもなります。" }
+                    { name: "昏睡 (重度)", desc: "最大APが1に固定されます。愛着カードが使用可能になり、攻撃カードの消費APが1になります。マンネリや矜持状態による影響が一時的に無効化され、殺害エンドへの分岐条件の一つにもなります。" },
+                    { name: "高ストレス時の体力減少", desc: "ストレスが 70 以上ある状態でターンを終了すると、健康度が 10 減少します。" }
                 ]
             },
             {
                 title: "関係性による特殊状態",
                 desc: "関係性の値によって、カードの効果や主人の反応が変化します。手札のカード上にアイコンで表示されます。",
                 items: [
-                    { name: "矜持状態 (関係性 ＋)", desc: "<span class='status-icon' style='color: #bb9244;'>▼ 黄色アイコン</span>直接ケアを行った際、本来のストレス減少効果が反転して増加になり、関係性の上昇量が半減します（主人が昏睡状態の時は無効）。" },
-                    { name: "依存状態 (関係性 －)", desc: "<span class='status-icon' style='color: #9d75af;'>▲/▼ 紫アイコン</span>直接ケアを行うと関係性がさらにマイナスへ傾きます。また、間接ケア時の健康度回復が半減し、ストレスが強制的に+10されます。" },
+                    { name: "矜持状態 (関係性 ＋)", desc: "<span class='status-icon' style='color: #bb9244;'>▼ 黄色アイコン</span>直接ケアを行った際、本来のストレス減少効果が反転して増加になり、関係性の上昇量が半減します（主人が昏睡状態の時は無効）。<br><span style='color: #888; font-size: 10px;'>※マンネリ状態と重なった場合、ストレスの増加ペナルティは半減されずそのまま受けます。</span>" },
+                    { name: "依存状態 (関係性 －)", desc: "<span class='status-icon' style='color: #9d75af;'>▲/▼ 紫アイコン</span>直接ケアを行うと関係性がさらにマイナスへ傾きます。また、間接ケア時の健康度回復が半減し、ストレスが強制的に+10されます。<br><span style='color: #888; font-size: 10px;'>※マンネリ状態と重なった場合、間接ケアの回復量が本来の1/4まで激減し、強制的なストレス+10はそのまま受けます。</span>" },
                     { name: "八つ当たり (確率発動)", desc: "<span class='status-icon' style='color: #72a3c4;'>▼/▲ 青アイコン</span>蓄積したストレスによる突発的な状態です。カードを1回使用すると解除されます。この状態の時、ケア・季節カードは依存(-)に、冷淡・主人への攻撃は矜持(+)に傾きます。" }
                 ]
             },
@@ -426,7 +466,8 @@
                 items: [
                     { name: "マンネリ", desc: "<span class='status-icon' style='color: #aaaaaa;'>▼ 灰色アイコン</span>同じ「直接ケア」「間接ケア」を5回以上使用すると発生。対象カードの健康度回復・ストレス軽減効果が半減します（主人が昏睡状態の時は無効）。" },
                     { name: "発狂", desc: "<span class='status-icon' style='color: #e74c3c;'>▼ 赤色アイコン</span>特殊な「水を与える」を使用した際に発生。すべてのカードによる関係性の増減が完全にランダム（-50〜+50）になります。" },
-                    { name: "自衛", desc: "ランダムイベントでナイフを隠し持った状態。次の戦闘で敗北した際、一度だけダメージとストレス増加を無効化します。" },
+                    { name: "自衛 / 暗殺失敗", desc: "ランダムイベントでナイフを隠し持った状態。次の戦闘で敗北した際、一度だけダメージとストレス増加を無効化します。主人の暗殺を試みた場合は阻まれます。" },
+                    { name: "殺意の受容", desc: "暗殺失敗後に付与されます。以降、主人が覚醒状態（昏睡以外）であっても攻撃カードによる殺害が実行可能になります。" },
                     { name: "環境改善 / 体調改善", desc: "「好みの香炉を焚く」は3ターンの間ストレス-5、「看病」は3ターンの間健康度+5、「室温の調整」は次のターンの体調悪化を無効化します。" },
                     { name: "副作用", desc: "「闇医者を呼ぶ」または特殊な「水を与える」の副作用。3ターンの間、ターン開始時にストレスが+15されます。" },
                     { name: "手紙 / 贈り物", desc: "手札に所持している間、ターン開始時にストレスが増減します。手紙は関係性＋の時にストレス＋5、贈り物は無条件でストレス－5です。" }
@@ -453,8 +494,8 @@
                     { name: "次ターンドロー減", desc: "主人の体調が「頭痛 (中度)」の時などに、ターンの手札補充枚数が減少します。" },
                     { name: "脅威度低下", desc: "「部屋の施錠」などを使用した際、次に発生する戦闘の敵の強さ（脅威度）が下がります。" },
                     { name: "AP未消費ペナルティ", desc: "行動を終了した際、残っているAP1につき「資金-10G、ストレス+15」となり、さらに関係性が0に近づきます。" },
-                    { name: "高ストレスペナルティ", desc: "ターン終了時に主人のストレスが70以上あると、健康度が-10されます。" },
-                    { name: "訪問者放置ペナルティ", desc: "訪問者がいる状態のまま、カードで応対せずに行動を終了すると、関係性が-15、ストレスが+10されます。" }
+                    { name: "訪問者放置ペナルティ", desc: "訪問者がいる状態のまま、カードで応対せずに行動を終了すると、関係性が-15、ストレスが+10されます。" },
+                    { name: "各月最初の処分ボーナス", desc: "4ターンに1度訪れる「購入・処分フェーズ」にて、その月で最初にカードを処分した場合のみ、廃棄コストがかからず「資金+20G」を獲得できます。" }
                 ]
             }
         ];
@@ -468,7 +509,7 @@
         ];
 
         const specialEndings = [
-            { name: "【END 6】復讐の終止符", desc: "主人が「昏睡」状態の時に、「形見の宝刀」、または条件（不用品が5枚以上）を満たした「首を絞める」を主人に使用する。" },
+            { name: "【END 6】復讐の終止符", desc: "「形見の宝刀」、または条件（不用品が5枚以上）を満たした「首を絞める」を主人に使用する。<br>※主人が昏睡状態の時、または暗殺未遂後に「殺意の受容」が付与されている時のみ実行可能。" },
             { name: "【END 7】壊れゆく自我", desc: "30ターン生存する。<br>「発狂」状態である、または特殊なケア（闇医者や特殊な水など）を累計10回以上使用した状態。（END8・9の条件を満たしていない場合）" },
             { name: "【END 8】絆", desc: "30ターン生存する。<br>ゲーム中、「不用品カード」を一度も廃棄していない状態。（END9の条件を満たしていない場合）" },
             { name: "【END 9】鳥籠の外へ", desc: "30ターン生存する。<br>手札等に「手紙」を所持しており、かつ関係性が 50 以上の状態。" },

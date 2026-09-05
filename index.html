@@ -1140,7 +1140,6 @@ const CARD_POOL = {
         { 
             name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", 
             actions: [{type: "heal", value: 25}], desc: "健康+25。関係性+5。", 
-
             flavor: { 
                 trust: ["あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめつつも、手当てには感謝している。"], 
                 high_trust: ["彼は消毒の痛みに顔を歪めまいと、必死に平静を装っている。"],
@@ -1272,7 +1271,7 @@ const CARD_POOL = {
             } 
         },
         { 
-             name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", 
+            name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", cannotUseOnVisitorWhenHeavy: true,
             actions: [{context: "master", type: "heal", value: 30 }, {context: "master", type: "stress", value: -25}, {context: "visitor", type: "stress", value: -15}], desc: "健康+30。ストレス-25。関係性+4", visitorDesc: { friend: "ストレス-15。関係性+4" },
             flavor: { 
                 trust: ["栄養のある食事を用意すると、彼は感謝とともにそれを口にした。"], 
@@ -1285,7 +1284,7 @@ const CARD_POOL = {
             } 
         },
         { 
-             name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, 
+            name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, cannotUseOnVisitorWhenHeavy: true,
             actions: [{context: "master", type: "buff", key: "scentDuration", value: 3},{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}], desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", visitorDesc: { friend: "ストレス-10。関係性+3" },
             flavor: { 
                 trust: ["彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出すようだ。"], 
@@ -1300,7 +1299,7 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "アルバムの整理", type: "indirect", value: 15, cost: 1, valType: "percent",  
+            name: "アルバムの整理", type: "indirect", value: 15, cost: 1, valType: "percent", cannotUseOnVisitorWhenHeavy: true, 
             actions: [{type: "discard_obstacle"},{context: "master", type: "stress", value: -10}, {context: "visitor", type: "stress", value: -20}], desc: "ストレス-10。関係性+15%。手札の不用品を1枚廃棄する", visitorDesc: { friend: "ストレス-20。関係性+15%。手札の不用品を1枚廃棄する" },
             flavor: {
                 trust: ["あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。"], 
@@ -1320,7 +1319,7 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", 
+            name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", cannotUseOnVisitorWhenHeavy: true,
             actions: [{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}, {type: "discard_any_and_draw", discardCount: 1, drawCount: 2}], desc: "ストレス-15。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く", visitorDesc: { friend: "ストレス-10。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く" },
             flavor: {
                 trust: ["彼の好みに合わせた紅茶を淹れると、彼は己の嗜好を把握されていることに複雑な表情を見せた。"], 
@@ -1394,12 +1393,11 @@ const CARD_POOL = {
                 }
             } 
         }
-        
     ],
     cold: [
         { 
             name: "事務的な態度", type: "cold", value: -1,visitorValue: -5, cost: 1, valType: "flat", 
-            actions: [{context: "master", type: "stress", value: 5}, {context: "visitor", type: "stress", value: -5}], desc: "ストレス+5。関係性-1", 
+            actions: [{context: "master", type: "stress", value: 5}, {context: "visitor", type: "stress", value: -5}], desc: "ストレス+5。関係性-1", visitorDesc: { merchant: "ストレス-5。関係性-5", official: "ストレス-5。関係性-5" },
             flavor: { 
                 trust: ["事務的に接すると、彼はただ己の義務を果たそうと努めた。"], 
                 high_trust: ["彼はあなたの態度を見て、この時間は仕事として割り切って接することにしたようだ。"],
@@ -1430,7 +1428,7 @@ const CARD_POOL = {
             }
         },
         { 
-            name: "冷酷な事実", type: "cold", value: -7, visitorValue: -10, cost: 2, valType: "flat", 
+            name: "冷酷な事実", type: "cold", value: -7, visitorValue: -10, cost: 2, valType: "flat", cannotUseOnVisitorWhenHeavy: true,
             actions: [{context: "master", type: "stress", value: 25}, {context: "master", type: "discard_obstacle"}, {context: "visitor", type: "stress", value: 10}], desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する",visitorDesc: { friend: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する", official: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する" },
             flavor: { 
                 trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
@@ -1555,7 +1553,8 @@ const CARD_POOL = {
             } 
         },
          { 
-            name: "首を絞める", type: "harm", masterValue: -20, battleValue: 10, visitorValue: -30, cost: 2, valType: "flat", isMasterAlways: false, 
+            name: "首を絞める", type: "harm", masterValue: -20, battleValue: 10, visitorValue: -30, cost: 2, valType: "flat", isMasterAlways: false, isHiddenMasterEffect: true,
+            checkKillCondition: (state) => [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length >= 5,
             actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {context: "visitor", type: "increase_base_threat", value: 20}, {context: "visitor", type: "stress", value: 30}, {type: "consume"}],
             desc: "敵脅威度-20。関係性+10 / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）", visitorDesc: { merchant: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20", friend: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20", official: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20" },
             flavor: { 
@@ -1576,9 +1575,7 @@ const CARD_POOL = {
                 }
             } 
         },
-       
-
-{ 
+        { 
             name: "見せしめの拷問", type: "harm", masterValue: -20, battleValue: -10, visitorValue: -20, cost: 2, valType: "percent", isMasterAlways: false, 
            actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"}, {context: "visitor", type: "increase_base_threat", value: 30}, {context: "visitor", type: "stress", value: 40}, {type: "consume"} ],
             desc: "敵脅威度を強制的に0にする。関係性-10% / 【対主人】ストレス+40。関係性-20%（使い切り）",visitorDesc: { merchant: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30", friend: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30", official: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30" }, 
@@ -1599,9 +1596,8 @@ const CARD_POOL = {
                 }
             } 
         },
-
-{ 
-            name: "形見の宝刀", type: "harm", masterValue: 0, battleValue: 10, visitorValue: -15, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, 
+        { 
+            name: "形見の宝刀", type: "harm", masterValue: 0, battleValue: 10, visitorValue: -15, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, isHiddenMasterEffect: true,
             actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}, {context: "visitor", type: "increase_base_threat", value: 15}, {context: "visitor", type: "stress", value: 20}],
             desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15" },
             flavor: { 
@@ -1621,7 +1617,6 @@ const CARD_POOL = {
                 }
             } 
         },
-
         { 
             name: "罠を配置する", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, 
             actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。関係性+2。次ターンの初期APを+1", 
@@ -1719,14 +1714,13 @@ const CARD_POOL = {
     }
 };
 
-// 通常ドローされないイベント用・特殊カード群
 const SPECIAL_CARDS = {
     visitor_meet: { 
-        name: "面会", type: "indirect", isMasterAlways: false, value: 10, cost: 1, valType: "flat", 
+        name: "面会", type: "indirect", isMasterAlways: false, value: 10, cost: 1, valType: "flat", isVisitorOnly: true,
         actions: [
-    {context: "visitor", type: "stress", value: 30},
-    {type: "consume"}
-],
+            {context: "visitor", type: "stress", value: 30},
+            {type: "consume"}
+        ],
         desc: "ストレス+30。関係性+10（使い切り）。別の手段で対応した場合も、このカードは手札から除外される", 
         flavor: {
             visitor: {
@@ -1742,28 +1736,28 @@ const SPECIAL_CARDS = {
         } 
     },
     visitor_meet_friend: { 
-        name: "面会", type: "indirect", isMasterAlways: false, value: 10, cost: 1, valType: "flat", 
+        name: "面会", type: "indirect", isMasterAlways: false, value: 10, cost: 1, valType: "flat", isVisitorOnly: true,
         actions: [
             {context: "visitor", type: "stress", value: -20},
             {context: "visitor", type: "add_random_obstacle"},
             {type: "consume"}
         ],
         desc: "ストレス-20。関係性+10。不用品が1枚捨て札に混入する（使い切り）。別の手段で対応した場合も、このカードは除外される", 
-            flavor: {
-                visitor: {
-                    trust: [
-                        "久しぶりの昔馴染との会話は、彼に一時的な安らぎをもたらしたようだ。"
-                    ],
-                    dependence: [
-                        "彼を昔馴染と引き合わせた。話をする間、時折、彼と目が合った。",
-                        "昔馴染との面会を終え、彼は細く息を吐いた。その吐息は、痛みに耐えるような音をしていた。"
-                    ],
-                    heavy_trust: [
-                        "彼を昔馴染みと引き合わせた。眠り続ける彼を見て、昔馴染みは悲痛な面持ちで去っていった。"
-                    ]
-                }
-            } 
-        },
+        flavor: {
+            visitor: {
+                trust: [
+                    "久しぶりの昔馴染との会話は、彼に一時的な安らぎをもたらしたようだ。"
+                ],
+                dependence: [
+                    "彼を昔馴染と引き合わせた。話をする間、時折、彼と目が合った。",
+                    "昔馴染との面会を終え、彼は細く息を吐いた。その吐息は、痛みに耐えるような音をしていた。"
+                ],
+                heavy_trust: [
+                    "彼を昔馴染みと引き合わせた。眠り続ける彼を見て、昔馴染みは悲痛な面持ちで去っていった。"
+                ]
+            }
+        } 
+    },
     water_coma: {
         name: "水を与える", type: "direct", value: 2, cost: 1, valType: "flat",
         actions: [
@@ -1881,7 +1875,78 @@ const SPECIAL_CARDS = {
     }
 };
 
+function getCardDescHTML(card, context, currentState) {
+    if (card.type === 'obstacle') return card.desc;
 
+    let battleDesc = "";
+    let masterDesc = "";
+    let visitorDescText = "";
+
+    if (card.desc.includes(" / 【対主人】")) {
+        let parts = card.desc.split(" / 【対主人】");
+        battleDesc = parts[0];
+        if (!card.isHiddenMasterEffect) {
+            masterDesc = parts[1];
+        }
+    } else if (card.isBattleOnly || card.isHiddenMasterEffect) {
+        battleDesc = card.desc;
+    } else {
+        masterDesc = card.desc;
+    }
+
+    if (card.visitorDesc) {
+        let descSet = new Set(Object.values(card.visitorDesc));
+        visitorDescText = Array.from(descSet).join(" / ");
+    }
+
+    let resultLines = [];
+    
+    if (context === "shop") {
+        if (masterDesc) resultLines.push(`【主人】${masterDesc}`);
+        if (battleDesc) resultLines.push(`【戦闘】${battleDesc}`);
+        if (visitorDescText) resultLines.push(`【訪問者】${visitorDescText}`);
+        if (resultLines.length === 0) resultLines.push(card.desc);
+    } 
+    else if (context === "hand") {
+        let isMasterValid = !card.isBattleOnly && !card.isVisitorOnly;
+        let isVisitorValid = false;
+        
+        if (currentState.visitorActive && currentState.visitorType) {
+            if (card.isVisitorOnly) {
+                if (currentState.debuff !== 'heavy') isVisitorValid = true;
+            } else if (card.visitorDesc && card.visitorDesc[currentState.visitorType]) {
+                isVisitorValid = true;
+            }
+        }
+
+        let targetList = [];
+
+        if (isMasterValid && masterDesc) {
+            targetList.push({ label: '主人', text: masterDesc });
+        }
+        if (currentState.battleActive && battleDesc) {
+            targetList.push({ label: '戦闘', text: battleDesc });
+        }
+        if (isVisitorValid) {
+            let vText = (card.visitorDesc && card.visitorDesc[currentState.visitorType]) ? card.visitorDesc[currentState.visitorType] : card.desc;
+            targetList.push({ label: '訪問者', text: vText });
+        }
+
+        // 使用先が1つの場合はラベルを省く、2つ以上の場合はラベルをつける
+        if (targetList.length === 1) {
+            resultLines.push(targetList[0].text);
+        } else {
+            targetList.forEach(t => resultLines.push(`【${t.label}】${t.text}`));
+        }
+
+        // 隠し効果により表示対象が0件になった場合のフォールバック（隠し効果を含まないテキストを優先）
+        if (resultLines.length === 0) {
+            resultLines.push(battleDesc || masterDesc || card.desc);
+        }
+    }
+
+    return resultLines.join("<br>");
+}
 
         let activeBuffs = {
             doubleDirect: false,
@@ -2830,15 +2895,6 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                     }
                 }
 
-                // ★ここから追加：訪問者専用テキストの切り替え処理
-                let displayDesc = card.desc;
-                if (state.visitorActive && card.visitorDesc) {
-                    if (card.visitorDesc[state.visitorType]) {
-                        displayDesc += `<br>【対訪問者】${card.visitorDesc[state.visitorType]}`;
-                    }
-                }
-                // ★ここまで
-
                 grid.appendChild(cardEl);
                 cardEl.innerHTML = `
                     <div>
@@ -2847,7 +2903,7 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                             ${debuffIconsHTML}
                         </div>
                         <div class="card-name">${card.name}</div>
-                        <div class="card-info">${displayDesc}</div>
+                        <div class="card-info">${getCardDescHTML(card, "hand", state)}</div>
                    </div>
                     <div class="card-cost">${currentCost}</div>
                 `;
@@ -2873,7 +2929,7 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                 return;
             }
 
-            if (card.name === "面会" && state.debuff === 'heavy') {
+            if (card.isVisitorOnly && state.debuff === 'heavy') {
                 showCustomAlert("主人が『昏睡』のため、面会させることはできません。");
                 state.selectedCardIndex = null;
                 return;
@@ -2922,17 +2978,10 @@ if (card.type === 'season') {
             const visitorBtn = document.getElementById('target-visitor-btn');
             if (state.visitorActive) {
                 let canUse = false;
-                // 主人が昏睡状態（heavy）の時は面会できない
-                if (card.name === "面会" && state.debuff !== 'heavy') canUse = true;
-                else if (state.visitorType === 'merchant') {
-                    if (['harm'].includes(card.type) && !card.isBattleOnly) canUse = true;
-                    if (["仕事を請け負う", "調度品の買い替え", "私物の没収", "部屋の施錠", "事務的な態度", "無視"].includes(card.name)) canUse = true;
-                } else if (state.visitorType === 'friend') {
-                    if (['harm'].includes(card.type) && !card.isBattleOnly) canUse = true;
-                    if (["しがらみの精算", "お気に入りの紅茶", "部屋の施錠", "冷酷な事実", "無視", "滋養ある食事", "好みの香炉を焚く", "アルバムの整理"].includes(card.name)) canUse = true;
-                } else if (state.visitorType === 'official') {
-                    if (['harm'].includes(card.type) && !card.isBattleOnly) canUse = true;
-                    if (["仕事を請け負う", "部屋の施錠", "冷酷な事実", "事務的な態度", "無視"].includes(card.name)) canUse = true;
+                if (card.isVisitorOnly) {
+                    if (state.debuff !== 'heavy') canUse = true;
+                } else if (card.visitorDesc && card.visitorDesc[state.visitorType]) {
+                    canUse = true;
                 }
                 visitorBtn.style.display = canUse ? 'block' : 'none';
             } else {
@@ -2942,25 +2991,18 @@ if (card.type === 'season') {
             const masterBtn = document.getElementById('target-master-btn');
             // ▼追加：昏睡時は、主人が同席していないと不自然な対応はボタンを隠す
             if (state.visitorActive && state.debuff === 'heavy') {
-                const cannotUseWhenHeavy = ["お気に入りの紅茶", "滋養ある食事", "好みの香炉を焚く", "冷酷な事実"];
-                if (cannotUseWhenHeavy.includes(card.name)) {
+                if (card.cannotUseOnVisitorWhenHeavy) {
                     visitorBtn.style.display = 'none';
                 }
             }
 
-            if (card.isBattleOnly || card.name === "面会") {
+            if (card.isBattleOnly || card.isVisitorOnly) {
                 masterBtn.style.display = 'none';
             } else {
                 masterBtn.style.display = 'block';
                 
-                // 殺害フラグの判定（首を絞める、または元々のisKillTrigger）
-                let isKill = card.isKillTrigger;
-                if (card.name === "首を絞める") {
-                    let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
-                    if (obstacleCount >= 5) {
-                        isKill = true;
-                    }
-                }
+                // 殺害フラグの判定
+                let isKill = card.isKillTrigger || (card.checkKillCondition && card.checkKillCondition(state));
                 
                 // 昏睡状態、または「暗殺未遂フラグ」が立っていれば、攻撃カードによる殺害が有効になる
                 if ((state.debuff === 'heavy' || state.hasAttemptedAssassination) && card.type === 'harm') {
@@ -3008,13 +3050,7 @@ function executeCard(target) {
     }
 
     // 殺害フラグの判定（暗殺未遂フラグがあれば、昏睡時以外でも使用可能にする）
-    let isKill = card.isKillTrigger;
-    if (card.name === "首を絞める") {
-        let obstacleCount = [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length;
-        if (obstacleCount >= 5) {
-            isKill = true;
-        }
-    }
+    let isKill = card.isKillTrigger || (card.checkKillCondition && card.checkKillCondition(state));
     
     // isMasterAlwaysがfalseのカードは基本「昏睡」時のみだが、殺害可能状態（未遂フラグあり＆isKill）なら許可する
     let canUseOnMaster = (state.debuff === 'heavy') || (state.hasAttemptedAssassination && isKill && card.type === 'harm');
@@ -4028,7 +4064,7 @@ function openShop() {
                             <span style="font-size: 10px; background: #5d5d5d; border: 0px solid #555; padding: 1px 5px; border-radius: 2px; color: #151515; font-weight: bold;">AP:${card.cost}</span>
                             <strong style="font-size:12px; color:#f5f5f5;">${card.name}</strong>
                         </div>
-                        <div style="font-size:10px; color:#bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif; line-height: 1.3;">${card.desc}</div>
+                        <div style="font-size:10px; color:#bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif; line-height: 1.3;">${getCardDescHTML(card, "shop", state)}</div>
                     </div>
                     <button class="btn btn-primary" style="padding: 6px 4px; font-size: 11px; margin: 0; width: 60px; text-align: center; flex-shrink: 0;" onclick="buyCard(${idx}, ${currentCost}, this)">-${currentCost}G</button>`;
                 view.appendChild(item);
@@ -4139,7 +4175,7 @@ function buyCard(idx, cost, btnEl) {
                             <span style="font-size: 10px; background: #5d5d5d; border: 0px solid #555; padding: 1px 5px; border-radius: 2px; color: #151515; font-weight: bold;">AP:${card.cost}</span>
                             <strong style="font-size:12px; color:#f5f5f5;">${card.name}</strong>
                         </div>
-                        <div style="font-size:10px; color:#bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif; line-height: 1.3;">${card.desc}</div>
+                        <div style="font-size:10px; color:#bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif; line-height: 1.3;">${getCardDescHTML(card, "shop", state)}</div>
                     </div>
                     <button class="btn ${btnClass}" style="padding: 6px 4px; font-size: 11px; margin: 0; width: 60px; text-align: center; flex-shrink: 0;" onclick="disposeCard(${idx}, this)">${btnText}</button>`;
                 view.appendChild(item);
@@ -5761,6 +5797,7 @@ function toggleBuffDebuffDetails() {
                         <div class="manual-summary">ストレス</div>
                         <div class="manual-detail">・主人の精神的な負荷です。</div>
                         <div class="manual-detail">・高い状態でターンを開始すると<span class="manual-hl">体調不良（デバフ）</span>が付与されます。</div>
+                        <div class="manual-detail">・70以上でターンを終了すると、<span class="manual-hl">健康度が10減少</span>します。</div>
                     </div>
                     
                     <div style="margin-bottom: 25px;">
@@ -5864,6 +5901,7 @@ function toggleBuffDebuffDetails() {
                             <div class="timeline-icon"></div>
                             <div class="manual-summary" style="margin-bottom: 4px;">購入・処分フェーズ <span style="font-size: 10px; color: #888; font-family: 'Zen Kaku Gothic New', sans-serif;">（※4ターン毎に発生）</span></div>
                             <div class="manual-detail">・資金を消費して、カードの購入や処分を行います。</div>
+                            <div class="manual-note">※ただし各月の<span class="manual-hl">最初の1枚の処分に限り、資金（+20G）を獲得</span>できます。</div>
                             <div class="manual-detail">・終了後、手札をすべて戻して配り直されます。</div>
                         </div>
                     </div>
@@ -5888,6 +5926,8 @@ function toggleBuffDebuffDetails() {
                     <div style="margin-bottom: 12px;">
                         <div class="manual-summary"><span class="manual-hl">マンネリ状態</span> <span style="font-size: 10px; color: #aaaaaa; vertical-align: middle; margin-left: 4px;">▼</span></div>
                         <div class="manual-detail">・同じケアを繰り返し、回復・ストレス軽減が半減している状態</div>
+                        <div class="manual-note">※矜持状態や依存状態による「ストレス増加ペナルティ」は半減されます。</div>
+                        <div class="manual-note">※依存状態での間接ケアなど、他の半減効果と重なると回復量が本来の1/4になります。</div>
                     </div>
                     <div style="margin-bottom: 12px;">
                         <div class="manual-summary"><span class="manual-hl">発狂状態</span> <span style="font-size: 10px; color: #e74c3c; vertical-align: middle; margin-left: 4px;">▼</span></div>
