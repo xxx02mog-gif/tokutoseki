@@ -820,7 +820,6 @@ display: flex;
         <!-- ボタンも縮んで改行されないように nowrap と flex-shrink: 0 を付与 -->
         <button onclick="openManual()" style="background: none; border: 1px solid rgba(212, 175, 55, 0.4); color: #d4af37; padding: 2px 6px; cursor: pointer; font-size: 11px; font-family: serif; flex-shrink: 0; margin-left: 6px; white-space: nowrap;">説明書</button>
     </div>
-    </div>
     <div class="status-container">
         <div class="status-row">
             <div class="status-header">
@@ -947,7 +946,7 @@ display: flex;
     </div>
 </main>
 <script>
-        const GAME_VERSION = "1.2"; // バージョン情報の一元管理
+        const GAME_VERSION = "1.3"; // バージョン情報の一元管理
 
         let state = {
             turn: 0,
@@ -1198,18 +1197,24 @@ const CARD_POOL = {
         { 
             name: "仕事を請け負う", type: "indirect", value: 3, cost: 1, valType: "flat", 
             actions: [ {context: "master", type: "stress", value: -10}, {context: "master", type: "gold_random", min: 5, max: 15 }, {context: "visitor", type: "gold_random", min: 10, max: 30 } ], 
-            desc: "ストレス-10。関係性+3。資金+5~15G", 
+            desc: "ストレス-10。関係性+3。資金+5~15G", visitorDesc: { merchant: "資金+10~30G。関係性+3", official: "資金+10~30G。関係性+3" },
             flavor: { 
                 trust: ["彼に見送られ、あなたは仕事をこなすために屋敷を出た。"],
                 high_trust: ["出かけるあなたを彼は送り出す。あなたが不在の間は、彼が屋敷を守る。"],
                 dependence: ["あなたが屋敷を空けることを、彼は快く思っていないようだ。"],
                 mannerism: ["出稼ぎに向かうのも、待つことも、二人の日常の一部にすぎない。"],
                 heavy_trust: ["意識のない彼を部屋に残し、あなたは町で日銭を稼いだ。"],
-                heavy_dependence: ["あなたが町から戻っても、部屋は出発前と変わらぬ静寂に包まれていた。"] ,
-                visitor: [
-                    "訪問者から直接依頼を請け負った。これで少しは生活の足しになるだろう。",
-                    "取引を無難に済ませ、早々に扉を閉めた。彼はその様子を静かに見守っていた。"
-                ]
+                heavy_dependence: ["あなたが町から戻っても、部屋は出発前と変わらぬ静寂に包まれていた。"],
+                visitor: {
+                    trust: [
+                        "訪問者から直接依頼を請け負った。これで少しは生活の足しになるだろう。",
+                        "取引を無難に済ませ、早々に扉を閉めた。彼はその様子を静かに見守っていた。"
+                    ],
+                    heavy_trust: [
+                        "訪問者から直接依頼を請け負った。これで少しは生活の足しになるだろう。彼の寝息が静かに響いている。",
+                        "取引を無難に済ませ、早々に扉を閉めた。彼が目を覚ます気配はない。"
+                    ]
+                }
             } 
         },
         { 
@@ -1267,8 +1272,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", 
-            actions: [{context: "master", type: "heal", value: 30 }, {context: "master", type: "stress", value: -25}, {context: "visitor", type: "stress", value: -15}], desc: "健康+30。ストレス-25。関係性+4", 
+             name: "滋養ある食事", type: "indirect", value: 4, cost: 2, valType: "flat", 
+            actions: [{context: "master", type: "heal", value: 30 }, {context: "master", type: "stress", value: -25}, {context: "visitor", type: "stress", value: -15}], desc: "健康+30。ストレス-25。関係性+4", visitorDesc: { friend: "ストレス-15。関係性+4" },
             flavor: { 
                 trust: ["栄養のある食事を用意すると、彼は感謝とともにそれを口にした。"], 
                 high_trust: ["彼の好みに合わせた食事を出す。彼を眺めていると怪訝な目を向けられた。"],
@@ -1280,8 +1285,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, 
-            actions: [{context: "master", type: "buff", key: "scentDuration", value: 3},{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}], desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", 
+             name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, 
+            actions: [{context: "master", type: "buff", key: "scentDuration", value: 3},{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}], desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", visitorDesc: { friend: "ストレス-10。関係性+3" },
             flavor: { 
                 trust: ["彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出すようだ。"], 
                 high_trust: ["懐かしい香りに包まれ、彼はかつての威厳を取り戻したかのように落ち着いて座っている。"],
@@ -1296,7 +1301,7 @@ const CARD_POOL = {
         },
         { 
             name: "アルバムの整理", type: "indirect", value: 15, cost: 1, valType: "percent",  
-            actions: [{type: "discard_obstacle"},{context: "master", type: "stress", value: -10}, {context: "visitor", type: "stress", value: -20}], desc: "ストレス-10。関係性+15%。手札の不用品を1枚廃棄する", 
+            actions: [{type: "discard_obstacle"},{context: "master", type: "stress", value: -10}, {context: "visitor", type: "stress", value: -20}], desc: "ストレス-10。関係性+15%。手札の不用品を1枚廃棄する", visitorDesc: { friend: "ストレス-20。関係性+15%。手札の不用品を1枚廃棄する" },
             flavor: {
                 trust: ["あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。"], 
                 high_trust: ["彼はアルバムの表紙を慈しむように撫でた。"],
@@ -1304,14 +1309,19 @@ const CARD_POOL = {
                 mannerism: ["ただ埃を払うためだけの整理。思い出に浸ることもなくなった。"],
                 heavy_trust: ["眠り続ける彼の傍らで、あなたは懐かしいアルバムをめくった。"],
                 heavy_dependence: ["彼が目を覚まさないのをいいことに、あなたは彼の大切な写真を燃やした。"],
-                visitor: [
-                    "昔馴染の訪問を機に、彼が映る古い写真を何枚か譲り渡した。"
-                ]
+                visitor: {
+                    trust: [
+                        "昔馴染の訪問を機に、彼が映る古い写真を何枚か譲り渡した。"
+                    ],
+                    heavy_trust: [
+                        "彼が眠っている間に、昔馴染に古い写真を何枚か譲り渡した。"
+                    ]
+                }
             } 
         },
         { 
             name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", 
-            actions: [{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}, {type: "discard_any_and_draw", discardCount: 1, drawCount: 2}], desc: "ストレス-15。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く", 
+            actions: [{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}, {type: "discard_any_and_draw", discardCount: 1, drawCount: 2}], desc: "ストレス-15。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く", visitorDesc: { friend: "ストレス-10。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く" },
             flavor: {
                 trust: ["彼の好みに合わせた紅茶を淹れると、彼は己の嗜好を把握されていることに複雑な表情を見せた。"], 
                 high_trust: ["淹れたての紅茶を用意すると、彼は素直にカップを受け取った。"],
@@ -1324,18 +1334,24 @@ const CARD_POOL = {
         },
         { 
             name: "調度品の買い替え", type: "indirect", value: 20, cost: 1, valType: "flat", goldCost: 50, 
-            actions: [{context: "master", type: "gold", value: -50}, {context: "master", type: "stress", value: -30}, {context: "visitor", type: "gold", value: -35}, {context: "visitor", type: "stress", value: -10}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性+20（使い切り）", 
+            actions: [{context: "master", type: "gold", value: -50}, {context: "master", type: "stress", value: -30}, {context: "visitor", type: "gold", value: -35}, {context: "visitor", type: "stress", value: -10}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性+20（使い切り）", visitorDesc: { merchant: "資金-35G。ストレス-10。関係性+20（使い切り）" },
             flavor: {
                 trust: ["彼は整った室内を見渡し、あなたの細やかな気遣いを感じて小さく息をついた。"], 
                 high_trust: ["新しい調度品を見て、彼はこれからの生活について意見を口にした。"],
                 dependence: ["彼は新しい家具よりも、あなたが傍にいてくれることだけを望んでいる。"],
                 mannerism: ["家具が変わっても、彼の心は何も動かないようだ。"],
                 heavy_trust: ["新しい家具を揃える間も、彼は眠り続けている。"],
-                heavy_dependence: ["彼が意識のない間に、あなたは部屋の内装を勝手に新調した。"] ,
-                visitor: [
-                    "商人から目新しい調度品を安く買い叩いた。運び込まれた家具を、彼はどこか冷めた目で見ている。",
-                    "行商人から質の良い品を適正な価格で買い取った。生活環境の向上に、彼は小さく息を吐いた。"
-                ]
+                heavy_dependence: ["彼が意識のない間に、あなたは部屋の内装を勝手に新調した。"],
+                visitor: {
+                    trust: [
+                        "商人から目新しい調度品を安く買い叩いた。運び込まれた家具を、彼はどこか冷めた目で見ている。",
+                        "行商人から質の良い品を手頃な価格で買い取った。"
+                    ],
+                    heavy_trust: [
+                        "商人から目新しい調度品を安く買い叩いた。家具が運び込まれる音の中でも、彼は眠り続けている。",
+                        "行商人から質の良い品を手頃な価格で買い取った。"
+                    ]
+                }
             } 
         },
         { 
@@ -1362,16 +1378,23 @@ const CARD_POOL = {
         },
         { 
             name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", 
-            actions: [{context: "master", type: "remove_all_obstacles"}, {context: "visitor", type: "gold", value: -30}, {context: "visitor", type: "stress", value: -20}, {context: "visitor", type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて廃棄する。廃棄した枚数が多いほど、関係性が0に近付く (使い切り)", 
+            actions: [{context: "master", type: "remove_all_obstacles"}, {context: "visitor", type: "gold", value: -30}, {context: "visitor", type: "stress", value: -20}, {context: "visitor", type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて廃棄する。廃棄した枚数が多いほど、関係性が0に近付く (使い切り)", visitorDesc: { friend: "資金-30G。ストレス-20。不用品をすべて廃棄し関係性が0に近付く (使い切り)" },
             flavor: {
                 trust: ["二人の間のしがらみをまっさらにした。これからは、一人の人間として向き合うために。"], 
                 high_trust: ["過去の鎖を断ち切り、彼は自らの足であなたと共に歩む未来を見据えている。"],
                 dependence: ["互いを縛り付けていたものを手放した。心にぽっかり穴が空いたような気がする。"],
                 mannerism: ["すべてのしがらみを捨てたはずなのに、空虚さだけが残った。"],
-                visitor: [
-                    "手切れ金を握らせ、彼との関わりを金輪際持たないよう約束させた。"]
+                visitor: {
+                     trust: [
+                        "昔馴染を彼と会わせることはせず、今後彼との関わりを金輪際持たないよう忠告した。"
+                    ],
+                    heavy_trust: [
+                        "昔馴染を彼と会わせることはせず、今後彼との関わりを金輪際持たないよう忠告した。"
+                    ]
+                }
             } 
         }
+        
     ],
     cold: [
         { 
@@ -1392,7 +1415,7 @@ const CARD_POOL = {
         },
         { 
             name: "無視", type: "cold", value: -15,visitorValue: -10, cost: 1, valType: "percent", 
-            actions: [{context: "master", type: "stress", value: 15}, {context: "visitor", type: "stress", value: -10}], desc: "ストレス+15。関係性-15%", 
+            actions: [{context: "master", type: "stress", value: 15}, {context: "visitor", type: "stress", value: -10}], desc: "ストレス+15。関係性-15%", visitorDesc: { merchant: "ストレス-10。関係性-10%", friend: "ストレス-10。関係性-10%", official: "ストレス-10。関係性-10%" },
             flavor: { 
                 trust: ["あなたが無視すると、彼はかつての自分の振る舞いを反省した。"], 
                 high_trust: ["あなたが無視をしても、彼はそれに傷付く素振りも咎めることもしない。"],
@@ -1408,7 +1431,7 @@ const CARD_POOL = {
         },
         { 
             name: "冷酷な事実", type: "cold", value: -7, visitorValue: -10, cost: 2, valType: "flat", 
-            actions: [{context: "master", type: "stress", value: 25}, {context: "master", type: "discard_obstacle"}, {context: "visitor", type: "stress", value: 10}], desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する",
+            actions: [{context: "master", type: "stress", value: 25}, {context: "master", type: "discard_obstacle"}, {context: "visitor", type: "stress", value: 10}], desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する",visitorDesc: { friend: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する", official: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する" },
             flavor: { 
                 trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
                 high_trust: ["彼は毅然と事実を受け止めつつ、僅かにあなたへ縋るような視線を向けた。"],
@@ -1424,7 +1447,7 @@ const CARD_POOL = {
         },
         { 
             name: "私物の没収", type: "cold", value: -10, visitorValue: -20, cost: 1, valType: "flat", 
-            actions: [{context: "master", type: "stress", value: 15}, {context: "master", type: "gold_random", min: 5, max: 30}, {context: "visitor", type: "stress", value: 30}, {context: "visitor", type: "gold_random", min: 20, max: 50}], desc: "ストレス+15。関係性-10。資金+5~30G", 
+            actions: [{context: "master", type: "stress", value: 15}, {context: "master", type: "gold_random", min: 5, max: 30}, {context: "visitor", type: "stress", value: 30}, {context: "visitor", type: "gold_random", min: 20, max: 50}], desc: "ストレス+15。関係性-10。資金+5~30G", visitorDesc: { merchant: "資金+20~50G。ストレス+30。関係性-20" },
             flavor: {
                 trust: ["あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。"], 
                 high_trust: ["私物を処分したことについて、彼は好きにするよう言った。"],
@@ -1432,9 +1455,14 @@ const CARD_POOL = {
                 mannerism: ["物が減っていく部屋。彼もそれに対して何も言わなくなった。"],
                 heavy_trust: ["あなたは眠り続ける彼の私物を、ためらいなく処分した。"],
                 heavy_dependence: ["彼が目を覚まさないのをいいことに、彼の持ち物を好き勝手に売り払った。"],
-                visitor: [
-                    "彼の私物を訪問者に売り付け、一方的に取引を終えた。彼は黙ってそれを見ている。"
-                ]
+                visitor: {
+                    trust: [
+                        "彼の私物を訪問者に売り付け、一方的に取引を終えた。彼は黙ってそれを見ている。"
+                    ],
+                    heavy_trust: [
+                        "彼が目を覚まさないのをいいことに、彼の私物を訪問者に売り付けた。"
+                    ]
+                }
             } 
         },
         { 
@@ -1446,11 +1474,7 @@ const CARD_POOL = {
                 dependence: ["屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。"], 
                 mannerism: ["荒れ果てた屋敷。それが二人の世界のすべてになってしまった。"],
                 heavy_trust: ["彼はしばらく目覚めそうにない。整備などしなくてもいいだろう。"],
-                heavy_dependence: ["彼が夢の中にいる間も屋敷は荒れていく。あなたさえ居れば、彼はそれで構わないはずだ。"],
-                visitor: [
-                    "屋敷の荒れ果てた惨状を見せつけ、ここには長居できないと訪問者に悟らせた。",
-                    "意図的に放置された廃墟のような有様を見て、来客は気味悪そうに立ち去った。"
-                ]
+                heavy_dependence: ["彼が夢の中にいる間も屋敷は荒れていく。あなたさえ居れば、彼はそれで構わないはずだ。"]
             } 
         },
         { 
@@ -1467,16 +1491,21 @@ const CARD_POOL = {
         },
         { 
             name: "部屋の施錠", type: "cold", value: -10, visitorValue: -15, cost: 2, valType: "flat", 
-            actions: [{context: "master", type: "stress", value: 25}, {context: "master", type: "buff", key: "threatReduction", value: 15}, {context: "visitor", type: "stress", value: 20}], desc: "ストレス+25。関係性-10。次の戦闘時、脅威度を-15", 
+            actions: [{context: "master", type: "stress", value: 25}, {context: "master", type: "buff", key: "threatReduction", value: 15}, {context: "visitor", type: "stress", value: 20}], desc: "ストレス+25。関係性-10。次の戦闘時、脅威度を-15", visitorDesc: { merchant: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", friend: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", official: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15" },
             flavor: {
                 trust: ["あなたが部屋の鍵を閉めるのを、彼は正当な処置だと考えている。"], 
                 high_trust: ["閉じ込められることに納得いかないようだが、あなたに免じて従うようだ。"],
                 dependence: ["部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。"],
                 mannerism: ["閉ざされた扉。それが開かないことは彼もよく分かっている。"],
-                visitor: [
-                    "来客に応対することなく、重い鍵を下ろした。屋敷と外界を遮断する。",
-                    "扉越しに何重にも鍵をかけ、拒絶の意思を示した。閉ざされた空間の安全に、彼は肩の力を抜いた。"
-                ]
+                visitor: {
+                    trust: [
+                        "来客に応対することなく、重い鍵を下ろした。屋敷と外界を遮断する。",
+                        "扉越しに何重にも鍵をかけ、拒絶の意思を示した。閉ざされた空間の安全に、彼は肩の力を抜いた。"
+                    ],
+                    heavy_trust: [
+                        "来客に応対することなく、重い鍵を下ろした。これで彼が目を覚ますまで邪魔は入らないだろう。"
+                    ]
+                }
             } 
         },
         { 
@@ -1504,7 +1533,7 @@ const CARD_POOL = {
         { 
             name: "毒の調合", type: "harm", masterValue: -10, battleValue: 1, visitorValue: -15, cost: 1, valType: "flat", isMasterAlways: true, 
             actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}, {context: "visitor", type: "increase_base_threat", value: 10}, {context: "visitor", type: "stress", value: 20}],
-            desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", 
+            desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10" },
             flavor: {  
                 trust: ["苦い薬を食事に混ぜても、彼は何も言わずにそれを飲み干す。"], 
                 high_trust: ["彼はそれが毒だと知りながら、黙って飲み込む。信頼という名の圧力を感じる。"],
@@ -1514,16 +1543,21 @@ const CARD_POOL = {
                 heavy_trust: ["彼の口に少量の毒を流し込んだ。彼がそれに気づくことはないだろう。"],
                 heavy_dependence: ["彼の生命を、あなたの毒がゆっくりと蝕んでいく。"],
                 heavy_battle: ["あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"],
-                 visitor: [
-                    "来客に毒を盛った茶を出した。二度とここへ来る気力は起きないだろう。",
-                    "微量の毒物を仕込み、体調不良に陥った訪問者には丁重にお帰り頂いた。彼はその手口に息を呑んでいる。"
-                ]
+                visitor: {
+                    trust: [
+                        "来客に毒を盛った茶を出した。二度とここへ来る気力は起きないだろう。",
+                        "微量の毒物を仕込み、体調不良に陥った訪問者には丁重にお帰り頂いた。彼はその手口に息を呑んでいる。"
+                    ],
+                    heavy_trust: [
+                        "来客に毒を盛った茶を出す。あなたが客に応対している最中も、彼はまだ深く眠っている。"
+                    ]
+                }
             } 
         },
          { 
             name: "首を絞める", type: "harm", masterValue: -20, battleValue: 10, visitorValue: -30, cost: 2, valType: "flat", isMasterAlways: false, 
             actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {context: "visitor", type: "increase_base_threat", value: 20}, {context: "visitor", type: "stress", value: 30}, {type: "consume"}],
-            desc: "敵脅威度-20。関係性+10 / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）", 
+            desc: "敵脅威度-20。関係性+10 / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）", visitorDesc: { merchant: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20", friend: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20", official: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20" },
             flavor: { 
                 trust: ["彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。"], 
                 high_trust: ["意識のない彼の首を締め上げる。抵抗すら許されない彼を見下ろし、歪な満足感を得た。"],
@@ -1531,16 +1565,23 @@ const CARD_POOL = {
                 mannerism: ["首を絞める手に力がこもらない。彼も抵抗する気力がないようだ。"],
                 battle: ["あなたは襲い来る敵の首を締め、無力化させた。"],
                 heavy_battle: ["虫の居所が悪かったあなたは、気まぐれに既に戦闘不能になっている敵の首を締めた。"],
-                visitor: [
-                    "言葉を交わすより先に、招かれざる客の首を締め上げて気絶させていた。そのまま、屋敷の外へ放り捨てた。",
-                    "来客の首に容赦なく手をかけ、脅し、追い払った。あまりに暴力的な手段に彼は言葉を失っている。"
-                ]
+                visitor: {
+                    trust: [
+                        "言葉を交わすより先に、招かれざる客の首を締め上げて気絶させていた。そのまま、屋敷の外へ放り捨てた。",
+                        "来客の首に容赦なく手をかけ、脅し、追い払った。あまりに暴力的な手段に彼は言葉を失っている。"
+                    ],
+                    heavy_trust: [
+                        "来客の首に容赦なく手をかけ、脅し、追い払った。彼がこの行いを知ることはない。"
+                    ]
+                }
             } 
         },
-        { 
+       
+
+{ 
             name: "見せしめの拷問", type: "harm", masterValue: -20, battleValue: -10, visitorValue: -20, cost: 2, valType: "percent", isMasterAlways: false, 
            actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"}, {context: "visitor", type: "increase_base_threat", value: 30}, {context: "visitor", type: "stress", value: 40}, {type: "consume"} ],
-            desc: "敵脅威度を強制的に0にする。関係性-10% / 【対主人】ストレス+40。関係性-20%（使い切り）", 
+            desc: "敵脅威度を強制的に0にする。関係性-10% / 【対主人】ストレス+40。関係性-20%（使い切り）",visitorDesc: { merchant: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30", friend: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30", official: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30" }, 
             flavor: { 
                 trust: ["あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。"], 
                 high_trust: ["悲惨な光景に目を背けながらも、彼はその意図を汲み取り、顛末を見届けている。"],
@@ -1548,26 +1589,39 @@ const CARD_POOL = {
                 mannerism: ["惨たらしい死体を見ても、もはや何の感情も湧かないようだ。"],
                 battle: ["捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。"],
                 heavy_battle: ["捕らえた敵を無残に痛めつけ、他の襲撃者への見せしめとした。"],
-                visitor: [
-                    "穏便な来客に対してすら容赦ない苦痛を与え、二度と近づかないよう思い知らせた。彼は眉を顰めている。"
-                ]
+                visitor: {
+                    trust: [
+                        "穏便な来客に対してすら容赦ない苦痛を与え、二度と近づかないよう思い知らせた。彼は眉を顰めている。"
+                    ],
+                    heavy_trust: [
+                        "来客に対して容赦ない苦痛を与え、二度と近づかないよう思い知らせた。わざわざ彼に報告する必要もない。"
+                    ]
+                }
             } 
         },
-        { 
+
+{ 
             name: "形見の宝刀", type: "harm", masterValue: 0, battleValue: 10, visitorValue: -15, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, 
             actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}, {context: "visitor", type: "increase_base_threat", value: 15}, {context: "visitor", type: "stress", value: 20}],
-            desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", 
+            desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15" },
             flavor: { 
                 trust: ["あなたは形見の宝刀を構え、因縁に終止符を打った。"], 
                 dependence: ["あまりにあっけなく、復讐は終わった。"], 
                 mannerism: ["血塗られた宝刀。これもまた日常を象徴するものの一つだ。"],
                 battle: ["形見の宝刀を抜き放ち、あなたは迫り来る敵を容赦なく斬り捨てた。"],
                 heavy_battle: ["彼に近づけまいと必死になっている自分への嫌悪。それを拭うため、あなたはひたすら宝刀を振るう。"],
-                visitor: [
-                    "形見の宝刀を抜き放ち、招かれざる客を威嚇した。訪問者は顔を引き攣らせている。",
-                    "言葉も発さずに宝刀を向け、来客は慌てて逃げ出した。あなたはこの空間に異様な執着を抱いている。"]
+                visitor: {
+                    trust: [
+                        "形見の宝刀を抜き放ち、招かれざる客を威嚇した。訪問者は顔を引き攣らせている。",
+                        "言葉も発さずに宝刀を向け、来客は慌てて逃げ出した。あなたはこの空間に異様な執着を抱いている。"
+                    ],
+                    heavy_trust: [
+                        "形見の宝刀を抜き放ち、招かれざる客を威嚇した。彼が眠るこの部屋には、誰も立ち入らせない。"
+                    ]
+                }
             } 
         },
+
         { 
             name: "罠を配置する", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, 
             actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。関係性+2。次ターンの初期APを+1", 
@@ -1695,18 +1749,21 @@ const SPECIAL_CARDS = {
             {type: "consume"}
         ],
         desc: "ストレス-20。関係性+10。不用品が1枚捨て札に混入する（使い切り）。別の手段で対応した場合も、このカードは除外される", 
-        flavor: {
-            visitor: {
-                trust: [
-                    "久しぶりの昔馴染との会話は、彼に一時的な安らぎをもたらしたようだ。",
-                ],
-                dependence: [
-                    "彼を昔馴染と引き合わせた。話をする間、時折、彼と目が合った。",
-                    "昔馴染との面会を終え、彼は細く息を吐いた。その吐息は痛みに耐えるような音をしていた。"
-                ]
-            }
-        } 
-    },
+            flavor: {
+                visitor: {
+                    trust: [
+                        "久しぶりの昔馴染との会話は、彼に一時的な安らぎをもたらしたようだ。"
+                    ],
+                    dependence: [
+                        "彼を昔馴染と引き合わせた。話をする間、時折、彼と目が合った。",
+                        "昔馴染との面会を終え、彼は細く息を吐いた。その吐息は痛みに耐えるような音をしていた。"
+                    ],
+                    heavy_trust: [
+                        "彼を昔馴染みと引き合わせた。眠り続ける彼を見て、昔馴染みは悲痛な面持ちで去っていった。"
+                    ]
+                }
+            } 
+        },
     water_coma: {
         name: "水を与える", type: "direct", value: 2, cost: 1, valType: "flat",
         actions: [
@@ -2239,23 +2296,32 @@ const RANDOM_EVENTS = [
             ]
         }
     },
-    {
-        title: "来客（商人）", effectText: "訪問者に対してカードを使用可能。特定のカードで追い払うことも可能。通常よりお得に資金のやり取りができる。", 
+   {
+       title: "来客（商人）", effectText: "訪問者にカードを使用可能。通常時と異なる効果が発生する。",
         condition: (state) => !state.battleActive && !state.visitorActive,
         effect: (state) => { state.visitorActive = true; state.visitorType = 'merchant'; state.hasIgnoredVisitor = false; },
-        flavor: { trust: ["外から扉を叩く音がする。どうやら行商人が物資の売買に来たようだ。"], dependence: ["外から扉を叩く音がする。どうやら行商人が物資の売買に来たようだ。"] }
+                flavor: { 
+            trust: ["外から扉を叩く音がする。どうやら行商人が物資の売買に来たようだ。", "扉越しに商人の声がする。取引を持ちかけてきているようだ。"],
+            heavy_trust: ["外から扉を叩く音がする。深い眠りに落ちている彼は気づく様子もない。", "扉越しに商人の声がする。彼は微睡みの中だ。"]
+        }
     },
     {
-        title: "来客（昔馴染み）", effectText: "訪問者に対してカードを使用可能。特定のカードで追い払うことも可能。", 
+        title: "来客（昔馴染み）", effectText: "訪問者にカードを使用可能。通常時と異なる効果が発生する。", 
         condition: (state) => !state.battleActive && !state.visitorActive,
         effect: (state) => { state.visitorActive = true; state.visitorType = 'friend'; state.hasIgnoredVisitor = false; },
-        flavor: { trust: ["外から扉を叩く音がする。彼の昔馴染みが、彼を外へ連れ出そうと訪ねてきたようだ。"], dependence: ["外から扉を叩く音がする。彼の昔馴染みが、彼を外へ連れ出そうと訪ねてきたようだ。"] }
+        flavor: { 
+            trust: ["外から扉を叩く音がする。彼の昔馴染みが彼を訪ねてきたようだ。", "扉越しに聞き覚えのある声がする。彼の昔馴染みが様子を見に来たらしい。"],
+            heavy_trust: ["外から扉を叩く音がする。彼の昔馴染みが訪ねてきたようだが、彼は深い眠りの中だ。", "扉越しに聞き覚えのある声がする。しかし彼が目覚める気配はない。"]
+        }
     },
     {
-        title: "来客（役人）", effectText: "訪問者に対してカードを使用可能。特定のカードで追い払うことも可能。", 
+        title: "来客（役人）", effectText: "訪問者にカードを使用可能。通常時と異なる効果が発生する。", 
         condition: (state) => !state.battleActive && !state.visitorActive,
         effect: (state) => { state.visitorActive = true; state.visitorType = 'official'; state.hasIgnoredVisitor = false; },
-        flavor: { trust: ["外から激しく扉を叩く音がする。公的な役人が、不審な噂の調査に来たようだ。"], dependence: ["外から激しく扉を叩く音がする。公的な役人が、不審な噂の調査に来たようだ。"] }
+        flavor: { 
+            trust: ["地域の役人が、定期的な見回りと周辺状況の確認に訪れたようだ。", "規則正しいノックの音が響く。役人が安否確認に訪れたようだ。"],
+            heavy_trust: ["外から控えめに扉を叩く音がする。地域の役人が訪れたようだ。彼は静かに寝息を立てている。", "規則正しいノックの音が響く。深く眠る彼には届かない。"]
+        }
     }
 ];
 // ▲ ここまで (RANDOM_EVENTS の末尾)
@@ -2282,13 +2348,13 @@ function getRandomFlavor(flavorObj, state, context, isMannerism) {
         if (text) return text;
     }
 
-    // ▼追加：訪問者に応対時のフレーバー処理
+    // ▼訪問者に応対時のフレーバー処理
     if (context === 'visitor') {
         let visitorData = flavorObj['visitor'];
         if (!visitorData) return "";
         
         if (Array.isArray(visitorData)) {
-            // 通常の配列定義の場合、昏睡時は汎用テキストに差し替える
+            // 通常の配列定義（個別テキストがないカード）の場合、昏睡時は汎用テキストを返す
             if (isHeavy) {
                 const heavyVisitorTexts = [
                     "来客を追い返した。意識のない彼がそれに気づくことはない。",
@@ -2299,7 +2365,7 @@ function getRandomFlavor(flavorObj, state, context, isMannerism) {
             }
             return pickText(visitorData);
         } else {
-            // オブジェクト定義（例：「面会」など）の場合は、共通ロジックに流すため flavorObj を差し替え
+            // オブジェクト定義（個別テキストが用意されているカード）の場合は、共通ロジックに流す
             flavorObj = visitorData; 
         }
     }
@@ -2764,6 +2830,15 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                     }
                 }
 
+                // ★ここから追加：訪問者専用テキストの切り替え処理
+                let displayDesc = card.desc;
+                if (state.visitorActive && card.visitorDesc) {
+                    if (card.visitorDesc[state.visitorType]) {
+                        displayDesc += `<br><span style="color: #9ab4c2;">【対訪問者】${card.visitorDesc[state.visitorType]}</span>`;
+                    }
+                }
+                // ★ここまで
+
                 grid.appendChild(cardEl);
                 cardEl.innerHTML = `
                     <div>
@@ -2772,7 +2847,7 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                             ${debuffIconsHTML}
                         </div>
                         <div class="card-name">${card.name}</div>
-                        <div class="card-info">${card.desc}</div>
+                        <div class="card-info">${displayDesc}</div>
                    </div>
                     <div class="card-cost">${currentCost}</div>
                 `;
@@ -2865,6 +2940,14 @@ if (card.type === 'season') {
             }
 
             const masterBtn = document.getElementById('target-master-btn');
+            // ▼追加：昏睡時は、主人が同席していないと不自然な対応はボタンを隠す
+            if (state.visitorActive && state.debuff === 'heavy') {
+                const cannotUseWhenHeavy = ["お気に入りの紅茶", "滋養ある食事", "好みの香炉を焚く", "冷酷な事実"];
+                if (cannotUseWhenHeavy.includes(card.name)) {
+                    visitorBtn.style.display = 'none';
+                }
+            }
+
             if (card.isBattleOnly || card.name === "面会") {
                 masterBtn.style.display = 'none';
             } else {
@@ -3184,26 +3267,35 @@ function executeCard(target) {
     } else if (state.visitorActive && target === 'master' && !state.hasIgnoredVisitor) {
         state.hasIgnoredVisitor = true;
         let ignoreTexts = [];
-        if (card.type === 'direct' || card.type === 'attachment') {
+        
+        // ▼追加：昏睡状態での無視テキスト
+        if (state.debuff === 'heavy') {
             ignoreTexts = [
-                "来客に構わず彼の世話を焼いた。彼もまた、外の声に応えようとはしなかった。",
-                "来客の気配に彼が肩を揺らす。あなたはその耳を塞ぐように、ゆっくりと彼に触れた。"
+                "外の気配などお構いなしに作業を進める。昏睡状態の彼にとって、外の世界など存在しないも同義だ。",
+                "来客の呼ぶ声が響く。あなたはそれに一切応えず、ただ静かに彼の傍に居続けた。"
             ];
-        } else if (card.type === 'indirect' || card.type === 'season') {
-            ignoreTexts = [
-                "扉を叩く音を無視し、あなたは部屋の環境を整え続けた。異常なまでの静寂が二人を包む。",
-                "外の気配などお構いなしに作業を進める。彼にとっては、あなたの存在だけが世界のすべてだ。"
-            ];
-        } else if (card.type === 'cold') {
-            ignoreTexts = [
-                "来客に気付いていないふりをして、あなたは彼に冷ややかな視線を向けた。彼は怯えたように身を竦める。",
-                "外から呼ぶ声を無視し、あえて突き放すような態度をとる。彼は見捨てられないかと不安げな目を向けた。"
-            ];
-        } else if (card.type === 'harm') {
-            ignoreTexts = [
-                "外の騒ぎを無視して、あなたは黙々と迎撃の準備を進めた。その異常な光景に彼は息を呑む。",
-                "来客などいないかのように、あなたは冷酷な手段の準備を整える。彼はただ震えてそれを見ていた。"
-            ];
+        } else {
+            if (card.type === 'direct' || card.type === 'attachment') {
+                ignoreTexts = [
+                    "来客に構わず彼の世話を焼いた。彼もまた、外の声に応えようとはしなかった。",
+                    "来客の気配に彼が肩を揺らす。あなたはその耳を塞ぐように、ゆっくりと彼に触れた。"
+                ];
+            } else if (card.type === 'indirect' || card.type === 'season') {
+                ignoreTexts = [
+                    "扉を叩く音を無視し、あなたは部屋の環境を整え続けた。異常なまでの静寂が二人を包む。",
+                    "外の気配などお構いなしに作業を進める。彼にとっては、あなたの存在だけが世界のすべてだ。"
+                ];
+            } else if (card.type === 'cold') {
+                ignoreTexts = [
+                    "来客に気付いていないふりをして、あなたは彼に冷ややかな視線を向けた。",
+                    "外から呼ぶ声を無視し、彼も適当にあしらった。"
+                ];
+            } else if (card.type === 'harm') {
+                ignoreTexts = [
+                    "外の騒ぎを無視して、あなたは黙々と迎撃の準備を進める。",
+                    "来客などいないかのように、あなたは冷酷な手段の準備を整える。"
+                ];
+            }
         }
         let text = ignoreTexts[Math.floor(Math.random() * ignoreTexts.length)];
         setTimeout(() => addLog(text, "log-flavor"), executeDelay);
@@ -3734,8 +3826,8 @@ cancelTargetSelect();
                 state.relation = Math.max(-100, state.relation - 15);
                 state.stress = Math.min(100, state.stress + 10);
                 endLogs.push("来客を無視");
-                state.endOfTurnEffects.push(`来客無視: 外の世界を遮断した (関係性-15 / ストレス+10)`);
-                addLog("訪問者は諦めて立ち去った。二人きりの閉ざされた世界が、より一層深まるのを感じる。", "log-flavor");
+                state.endOfTurnEffects.push(`来客を無視:関係性-15 / ストレス+10`);
+                addLog("対応をしないでいると、訪問者はじきに諦めて立ち去った。", "log-flavor");
                 state.visitorActive = false;
             }
             
@@ -3753,7 +3845,7 @@ cancelTargetSelect();
                     state.relation = Math.min(0, state.relation + pullCount);
                 }
                 
-                state.endOfTurnEffects.push(`AP未消費ペナルティ(残りAP${state.ap}): 資金-${penaltyGold} / ストレス+${penaltyStress} / 関係性が0に近づいた`);
+                state.endOfTurnEffects.push(`AP未消費ペナルティ: 資金-${penaltyGold} / ストレス+${penaltyStress} / 関係性が0に近づいた`);
             }
 
 if (state.battleActive) {
@@ -5291,8 +5383,28 @@ document.addEventListener('pointerdown', function(e) {
 function updateBuffDebuffDetails() {
     let html = "";
     
-    // HTML属性の中で途切れないようシングルクォーテーションで囲む
-    const lineStyle = "color: #bbbbbb; margin-bottom: 2px; font-family: 'Zen Kaku Gothic New', sans-serif !important;";
+    // ラベル化して表示するためのヘルパー関数
+    const renderEffectLine = (text) => {
+        let rawText = text.replace(/<[^>]*>?/gm, ''); // HTMLタグを除去
+
+        // 最初の : または ： で分割
+        let match = rawText.match(/^(.*?)(:|：)\s*(.*)$/);
+        if (match) {
+            let label = match[1];
+            let content = match[3];
+            
+            let labelBg = '#222222';
+            let labelColor = '#d4af37';
+            let contentColor = '#bbbbbb';
+
+            return `<div style="display: flex; align-items: flex-start; margin-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">
+                        <span style="background-color: ${labelBg}; color: ${labelColor}; padding: 2px 4px 1px; line-height: 1.1; border-radius: 2px; font-size: 9px; margin-top: 1px; margin-right: 6px; white-space: nowrap; flex-shrink: 0; display: inline-block; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${label}</span>
+                        <span style="color: ${contentColor}; font-size: 10px; line-height: 1.4; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${content}</span>
+                    </div>`;
+        } else {
+            return `<div style="color: #bbbbbb; margin-bottom: 6px; font-size: 10px; line-height: 1.4; font-family: 'Zen Kaku Gothic New', sans-serif !important;">・${rawText}</div>`;
+        }
+    };
     
     let tempEffects = [];
     
@@ -5314,15 +5426,15 @@ function updateBuffDebuffDetails() {
 
    // ▼戦闘発生時のアラートの追加
     if (state.battleActive) {
-        tempEffects.push(`<span style="font-family: 'Zen Kaku Gothic New', sans-serif !important;">戦闘発生：脅威度 ${state.threat}%</span>`);
+        tempEffects.push(`戦闘発生：脅威度 ${state.threat}%`);
     }
     
     if (tempEffects.length > 0) {
-        html += `<div style="font-weight:bold; color:#d4af37; margin-bottom: 2px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【一時的な効果・発生イベント】</div>`;
+        html += `<div style="font-weight:bold; color:#bbbbbb; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px dashed rgba(212, 175, 55, 0.3); font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">一時的な効果・発生イベント</div>`;
         tempEffects.forEach(effect => {
-            html += `<div style="${lineStyle}">・${effect}</div>`;
+            html += renderEffectLine(effect);
         });
-        html += `<div style="margin-bottom: 6px;"></div>`;
+        html += `<div style="margin-bottom: 12px;"></div>`;
     }
 
     let continuousEffects = [];
@@ -5343,7 +5455,7 @@ function updateBuffDebuffDetails() {
         continuousEffects.push(`次戦闘の脅威度低下: -${activeBuffs.threatReduction}`);
     }
     if (activeBuffs.isMadness) {
-        continuousEffects.push(`<span style="font-weight: bold; color: #e74c3c; font-family: 'Zen Kaku Gothic New', sans-serif !important;">発狂: すべてのカードによる関係性の増減がランダム</span>`);
+        continuousEffects.push(`発狂: すべてのカードによる関係性の増減がランダム`);
     }
    if (activeBuffs.hasKnife) {
         continuousEffects.push(`自衛: 次の戦闘失敗時、ダメージを一度だけ無効化`);
@@ -5406,9 +5518,9 @@ function updateBuffDebuffDetails() {
     }
 
     if (continuousEffects.length > 0) {
-        html += `<div style="font-weight:bold; margin-bottom: 4px; color: #bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif !important;">【継続効果】</div>`;
+        html += `<div style="font-weight:bold; color:#bbbbbb; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px dashed rgba(212, 175, 55, 0.3); font-size: 10px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">継続効果</div>`;
         continuousEffects.forEach(effect => {
-            html += `<div style="${lineStyle}">・${effect}</div>`;
+            html += renderEffectLine(effect);
         });
     }
 
@@ -5436,9 +5548,14 @@ function toggleBuffDebuffDetails() {
         background-color: #0a0a0a;
         color: #e5e5e5;
         font-family: 'Georgia', 'Times New Roman', 'YuMincho', '游明朝', 'MS PMincho', serif;
-        line-height: 1.7;
-        font-size: 13px;
         padding: 30px 20px;
+    }
+    #manual-modal-content h1 {
+        text-align: center;
+        font-size: 20px;
+        color: #d4af37;
+        margin-bottom: 10px;
+        letter-spacing: 2px;
     }
     #manual-modal-content .ornament-line {
         text-align: center;
@@ -5458,147 +5575,139 @@ function toggleBuffDebuffDetails() {
     }
     #manual-modal-content .catchphrase {
         text-align: center;
-        font-size: 16px;
-        font-weight: bold;
-        color: #d4af37;
-        margin-bottom: 30px;
-        line-height: 1.5;
-        padding: 15px;
-        border-top: 1px solid rgba(212, 175, 55, 0.25);
-        border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-    }
-    #manual-modal-content .story-section {
-        background-color: #121212;
-        padding: 15px;
-        font-size: 12px;
-        color: #bbbbbb;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        margin-bottom: 40px;
-        font-style: italic;
-    }
-    #manual-modal-content h1 {
-        text-align: center;
-        font-size: 20px;
-        color: #d4af37;
-        margin-bottom: 10px;
-        letter-spacing: 2px;
-    }
-    #manual-modal-content h2 {
-        font-size: 13px;
-        color: #d4af37;
-        margin-top: 30px;
-        margin-bottom: 15px;
-        padding-bottom: 5px;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-    }
-    #manual-modal-content h3 {
-        font-size: 12px;
-        color: #d4af37;
-        margin-top: 20px;
-        margin-bottom: 10px;
-    }
-    #manual-modal-content .status-resource-grid, 
-    #manual-modal-content .card-types-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 8px;
         margin-bottom: 25px;
     }
-    #manual-modal-content .status-card,
-    #manual-modal-content .card-type-box {
-        background-color: #121212;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 12px;
+    #manual-modal-content .story-section {
+        padding: 10px;
+        font-size: 11px;
+        color: #aaaaaa;
+        margin-bottom: 30px;
+        font-style: italic;
+        line-height: 1.6;
+        text-align: center;
     }
-    #manual-modal-content .status-card-title {
+    
+    /* 階層構造デザイン */
+    
+    /* 1. 項目 (アコーディオン設定) */
+    #manual-modal-content details {
+        margin-bottom: 15px;
+    }
+    #manual-modal-content summary {
+        font-size: 13px;
+        color: #d4af37;
+        padding: 10px 5px;
+        cursor: pointer;
+        list-style: none;
+        position: relative;
+        font-family: 'Zen Old Mincho', serif;
+        letter-spacing: 1px;
+        outline: none;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    }
+    #manual-modal-content summary::-webkit-details-marker {
+        display: none;
+    }
+    #manual-modal-content summary::after {
+        content: "▼";
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #d4af37;
+        font-size: 10px;
+        transition: transform 0.2s;
+    }
+    #manual-modal-content details[open] summary::after {
+        transform: translateY(-50%) rotate(180deg);
+    }
+    #manual-modal-content .details-inner {
+        padding: 15px 5px 5px 5px;
+    }
+
+    /* 見出しスタイル */
+    #manual-modal-content .manual-heading {
+        font-size: 13px;
+        color: #d4af37;
         font-weight: bold;
-        color: #f5f5f5;
-        font-size: 12px;
-        margin-bottom: 6px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 6px;
+        margin-top: 20px;
+        margin-bottom: 12px;
+        padding-left: 8px;
+        padding-bottom: 4px;
+        border-left: 3px solid #d4af37;
+        border-bottom: 1px dashed rgba(212, 175, 55, 0.3);
+        display: flex;
+        align-items: center;
+        line-height: 1.2;
     }
-    #manual-modal-content .status-card-desc,
-    #manual-modal-content .card-type-desc {
+
+    /* 2. ざっくりした説明 */
+    #manual-modal-content .manual-summary {
+        font-size: 12px;
+        color: #e5e5e5;
+        margin-bottom: 3px;
+        line-height: 1.6;
+    }
+
+    /* 3. 細かい説明 */
+    #manual-modal-content .manual-detail {
         font-size: 11px;
         color: #bbbbbb;
+        font-family: 'Zen Kaku Gothic New', sans-serif !important;
+        margin-bottom: 2px;
+        padding-left: 14px;
+        text-indent: -14px;
         line-height: 1.5;
     }
-    #manual-modal-content .card-type-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 6px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 6px;
-    }
-    #manual-modal-content .card-type-label {
+
+    /* 4. さらに細かい補足 */
+    #manual-modal-content .manual-note {
         font-size: 10px;
-        font-weight: bold;
-        color: #fff;
-        padding: 2px 6px;
-        border-radius: 2px;
+        color: #888888;
         font-family: 'Zen Kaku Gothic New', sans-serif !important;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        padding-left: 14px;
+        line-height: 1.4;
     }
-    #manual-modal-content .type-tag-direct { background-color: #7d1f18; }
-    #manual-modal-content .type-tag-indirect { background-color: #1e5a34; }
-    #manual-modal-content .type-tag-cold { background-color: #1f4a63; }
-    #manual-modal-content .type-tag-harm { background-color: #964b15; }
-    #manual-modal-content .type-tag-season { background-color: #b3860f; }
-    #manual-modal-content .type-tag-obstacle { background-color: #444444; }
-    #manual-modal-content .card-type-title { font-size: 12px; font-weight: bold; color: #f5f5f5; }
     
-    #manual-modal-content .flow-container {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin: 25px 0;
+    /* タイムライン（ステップUI） */
+    #manual-modal-content .timeline-container {
+        position: relative;
+        padding-left: 20px;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
-    #manual-modal-content .flow-step {
-        background-color: #121212;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 12px;
+    #manual-modal-content .timeline-container::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        height: calc(100% - 12px);
+        width: 1px;
+        background: rgba(212, 175, 55, 0.3);
     }
-    #manual-modal-content .flow-step-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 6px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 6px;
+    #manual-modal-content .timeline-step {
+        position: relative;
+        margin-bottom: 15px;
     }
-    #manual-modal-content .flow-step-num {
-        background-color: #444444;
-        color: #ffffff;
-        font-weight: bold;
-        font-size: 10px;
-        width: 18px;
-        height: 18px;
-        border-radius: 2px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Zen Kaku Gothic New', sans-serif !important;
+    #manual-modal-content .timeline-step:last-child {
+        margin-bottom: 0;
     }
-    #manual-modal-content .flow-step-title { font-weight: bold; color: #f5f5f5; font-size: 12px; }
-    #manual-modal-content .flow-step-body { font-size: 11px; color: #bbbbbb; line-height: 1.5; }
-
-    @media (min-width: 768px) {
-        #manual-modal-content .flow-container { 
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 8px;
-        }
-        #manual-modal-content .flow-step { margin-right: 0; height: 100%; }
-        #manual-modal-content .flow-step:not(:last-child) { margin-right: 0; }
+    #manual-modal-content .timeline-icon {
+        position: absolute;
+        top: 2px;
+        left: -20px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background-color: #0a0a0a;
+        border: 2px solid #d4af37;
+        box-sizing: border-box;
     }
 
-    #manual-modal-content ul { padding-left: 20px; margin-bottom: 15px; }
-    #manual-modal-content ul li { margin-bottom: 6px; color: #bbbbbb; font-size: 12px; }
-    #manual-modal-content strong { color: #f5f5f5; }
-    #manual-modal-content .ui-explain-list { list-style: none; padding-left: 0; }
-    #manual-modal-content .ui-explain-list li { border-left: 2px solid rgba(212, 175, 55, 0.5); padding-left: 10px; margin-bottom: 12px; }
-    #manual-modal-content .ui-explain-tag { font-weight: bold; color: #d4af37; }
+    /* ハイライト用の文字色 */
+    .manual-hl { color: #d4af37; font-weight: bold; }
 </style>
 
 <div id="manual-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; padding: 20px;">
@@ -5619,179 +5728,209 @@ function toggleBuffDebuffDetails() {
               <img src="catch.png" alt="キャッチコピー" style="width: 80%; max-width: 250px; height: auto; margin-bottom: -4px;"></div>
 
             <div class="story-section">
-                あなたは、とある主人に仕える使用人だ。<br><br>
-
-                心身を蝕まれている主人に寄り添うこと。<br>
-                それが、あなたが自らに課した役割。<br><br>
-
-                移ろう季節の中。<br>
-                二人の関係は静かに、しかし確実に変わってゆく。<br><br>
-
-                これは、二人きりの箱庭の中で紡がれる、主と従僕の日々の記録。
+                <span style="display: inline-block;">あなたは、</span><span style="display: inline-block;">とある主人に仕える使用人だ。</span><br><br>
+                <span style="display: inline-block;">心身を蝕まれている主人に寄り添うこと。</span><br>
+                <span style="display: inline-block;">それが、</span><span style="display: inline-block;">あなたが自らに課した役割。</span><br><br>
+                <span style="display: inline-block;">移ろう季節の中。</span><br>
+                <span style="display: inline-block;">二人の関係は静かに、</span><span style="display: inline-block;">しかし確実に変わってゆく。</span><br><br>
+                <span style="display: inline-block;">これは、</span><span style="display: inline-block;">二人きりの箱庭の中で紡がれる、</span><span style="display: inline-block;">主と従僕の日々の記録。</span>
             </div>
 
             <div class="ornament-line">◆</div>
 
-            <h2>1. ゲームの目的</h2>
-            <p>
-                プレイヤーの目的は、<strong>全30ターンの間</strong>、主人の体調を管理し、外部の襲撃を退けながら無事に生き延びることです。<br>
-                日々のあなたの行動（カードの選択）によって主人の心身のステータスが細かく変動し、30ターン目が終了した時点でエンディングになります。
-            </p>
+            <details open>
+                <summary>1. ゲームの目的</summary>
+                <div class="details-inner">
+                    <div class="manual-summary">全30ターンの間、主人の体調を管理し生き延びるゲームです。</div>
+                    <div class="manual-detail">・日々の行動（カード選択）で主人の心身ステータスが変動します。</div>
+                    <div class="manual-detail">・30ターン目が終了した時点のステータスによってエンディングが分岐します。</div>
+                </div>
+            </details>
 
-            <h2>2. 主なステータスとリソース</h2>
-            
-            <h3>【主人の状態】</h3>
-            <div class="status-resource-grid">
-                <div class="status-card">
-                    <div class="status-card-title">健康度</div>
-                    <div class="status-card-desc">
-                        主人の身体的な体力です。<br>あなたの行動や、防衛の失敗などによって減少します。<br>健康度が０になると、その時点でゲームは強制終了します。
+            <details>
+                <summary>2. 主なステータスとリソース</summary>
+                <div class="details-inner">
+                    <div class="manual-heading" style="margin-top: 0;">主人の状態</div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary">健康度</div>
+                        <div class="manual-detail">・主人の身体的な体力です。行動や防衛失敗で減少します。</div>
+                        <div class="manual-note">※<span class="manual-hl">0になると強制ゲームオーバー</span>になります。</div>
                     </div>
-                </div>
-                <div class="status-card">
-                    <div class="status-card-title">ストレス</div>
-                    <div class="status-card-desc">
-                        主人の精神的な負荷です。<br>一定値を超えた状態でターンを開始すると主人は体調を崩し、デバフが付与されます。<br>（デバフ内容はアラート横の▼から詳細を確認できます）<br>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary">ストレス</div>
+                        <div class="manual-detail">・主人の精神的な負荷です。</div>
+                        <div class="manual-detail">・高い状態でターンを開始すると<span class="manual-hl">体調不良（デバフ）</span>が付与されます。</div>
                     </div>
-                </div>
-                <div class="status-card">
-                    <div class="status-card-title">関係性</div>
-                    <div class="status-card-desc">
-                        二人の心の距離を示しています。<br>関係性の値が＋の場合は【矜持状態】、－の場合は【依存状態】状態です。<br>この値がどちらに傾いているかによって、同じ行動でも主人の反応が変化します。<br>詳しい変化は【3.カードの種類】で説明します。<br>
+                    
+                    <div style="margin-bottom: 25px;">
+                        <div class="manual-summary">関係性</div>
+                        <div class="manual-detail">・二人の心の距離です。</div>
+                        <div class="manual-detail">・プラスで<span class="manual-hl">矜持状態</span>、マイナスで<span class="manual-hl">依存状態</span>になります。</div>
+                        <div class="manual-note">※どちらに傾いているかで、同じ行動でも主人の反応や効果が変化します。</div>
                     </div>
-                </div>
-            </div>
 
-            <h3>【プレイヤーのリソース】</h3>
-            <div class="status-resource-grid">
-                <div class="status-card">
-                    <div class="status-card-title">AP（アクションポイント）</div>
-                    <div class="status-card-desc">
-                        あなたが毎ターン自由に使用できる行動力です。<br>手札の行動（カード）をプレイするたびに消費されます。使い残したまま精算フェーズに入ると、厳しい資金ペナルティや主人のストレス蓄積を招くため、すべて使い切ることが基本となります。
-                    </div>
-                </div>
-                <div class="status-card">
-                    <div class="status-card-title">資金（G）</div>
-                    <div class="status-card-desc">
-                       カードの売却、または戦闘を無事に切り抜けた際に入手できます。<br>新しい強力なカードの購入や、不要になった行動の処分、または特別なカードを使用するために消費します。
-                   </div>
-                </div>
-            </div>
+                    <div class="manual-heading">プレイヤーのリソース</div>
 
-            <h2>3. カードの種類</h2>
-            <div class="card-types-grid">
-                <div class="card-type-box">
-                    <div class="card-type-header">
-                        <span class="card-type-title">直接ケア</span>
-                        <span class="card-type-label type-tag-direct">直接</span>
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary">AP（アクションポイント）</div>
+                        <div class="manual-detail">・毎ターンの行動力です。カードを使用するたびに消費されます。</div>
+                        <div class="manual-note">※使い残すと厳しいペナルティがあるため、<span class="manual-hl">毎ターン使い切る</span>のが基本です。</div>
                     </div>
-                    <div class="card-type-desc">
-                        主人に直接対応する行動です。<br>矜持状態（<span style="color: #bb9244">▼</span>）: ストレスが増加する効果になり、関係性はカードに書かれた数値の半分だけ矜持（+）に傾きます。ただし、主人が昏睡状態のときはカードに書かれた通りの効果になります。<br>依存状態（<span style="color: #754f87" >▲</span>）: 関係性がカードに書かれた数値分、依存（-）に傾きます。</div>
-                </div>
-                <div class="card-type-box">
-                    <div class="card-type-header">
-                        <span class="card-type-title">間接ケア</span>
-                        <span class="card-type-label type-tag-indirect">間接</span>
-                    </div>
-                    <div class="card-type-desc">
-                        周囲の環境を整える行動です。<br>現在の関係性に関わらず、安定して矜持（+）に傾きます。<br>
-しかし、依存状態（<span style="color: #754f87">▼</span>）時には健康度の回復が半減し、カードにストレス減少がある場合は記載に関わらず10増加します。
 
+                    <div style="margin-bottom: 10px;">
+                        <div class="manual-summary">資金（G）</div>
+                        <div class="manual-detail">・新しいカードの購入や、不用品の処分に使用します。</div>
+                        <div class="manual-detail">・不要なカードの売却や、戦闘勝利時に入手できます。</div>
                     </div>
                 </div>
-                <div class="card-type-box">
-                    <div class="card-type-header">
-                        <span class="card-type-title">冷淡</span>
-                        <span class="card-type-label type-tag-cold">冷淡</span>
-                    </div>
-                    <div class="card-type-desc">
-                        あえて刺々しい態度を取ったり無視をしたり、冷たい関係性を築く行動です。<br>関係性を依存（-）に傾け、ストレスを増加させます。
-                    </div>
-                </div>
-                <div class="card-type-box">
-                    <div class="card-type-header">
-                        <span class="card-type-title">攻撃 / 戦闘</span>
-                        <span class="card-type-label type-tag-harm">攻撃</span>
-                    </div>
-                    <div class="card-type-desc">
-                        外部から迫る襲撃者を排除するための武力行動です。<br>基本的には戦闘発生時の対処に用います。<br>主人の体調が極めて悪い時に限り、消費APが1になります。
-                    </div>
-                </div>
-                <div class="card-type-box">
-                    <div class="card-type-header">
-                        <span class="card-type-title">季節</span>
-                        <span class="card-type-label type-tag-season">季節</span>
-                    </div>
-                    <div class="card-type-desc">
-                        各の季節（秋、冬、春、夏）の期間内のみにできる限定行動です。<br>主人のストレスを大幅に軽減する非常に強力な効果を持ちますが、使用後は不用品カードが残ります。
-                    </div>
-                </div>
-                <div class="card-type-box">
-                    <div class="card-type-header">
-                        <span class="card-type-title">不用品</span>
-                        <span class="card-type-label type-tag-obstacle">不用品</span>
-                    </div>
-                    <div class="card-type-desc">
-                        行動力を消費しても使用することができないカードです。<br>手札や山札に混入すると行動が著しく阻害されるため、ショップ等で処分する必要があります。
-                    </div>
-                </div>
-            </div>
+            </details>
 
-            <h2>4. ターンの流れ</h2>
-            <p>ゲームは1ターンの中で、以下のステップに沿って進行します。</p>
-
-            <div class="flow-container">
-                <div class="flow-step">
-                    <div class="flow-step-header">
-                        <div class="flow-step-num">1</div>
-                        <div class="flow-step-title">準備</div>
+            <details>
+                <summary>3. カードの種類</summary>
+                <div class="details-inner">
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary"><span class="card-type type-direct" style="margin-right: 5px;">直接</span> 直接ケア</div>
+                        <div class="manual-detail">・主人に直接対応する行動です。</div>
+                        <div class="manual-detail">・矜持状態（＋）の時はストレスが増加し、関係性上昇が半減します。</div>
+                        <div class="manual-note">※主人が『昏睡』状態のときはカードに書かれた通りの効果になります。</div>
+                        <div class="manual-detail">・依存状態（－）の時は、関係性がマイナス方向（依存）へ傾きます。</div>
                     </div>
-                    <div class="flow-step-body">
-                        デッキからカードがドローされ、このターンのデバフ状態や、戦闘アラートなどが通知されます。
+
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary"><span class="card-type type-indirect" style="margin-right: 5px;">間接</span> 間接ケア</div>
+                        <div class="manual-detail">・周囲の環境を整え、安定して関係性がプラスに傾く行動です。</div>
+                        <div class="manual-detail">・依存状態（－）の時は回復が半減し、ストレスが強制的に10増加します。</div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary"><span class="card-type type-cold" style="margin-right: 5px;">冷淡</span> 冷淡</div>
+                        <div class="manual-detail">・主人を突き放し、精神的・肉体的な苦痛を与える行動です。</div>
+                        <div class="manual-detail">・関係性を依存（－）に傾け、ストレスを増加させます。</div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary"><span class="card-type type-harm" style="margin-right: 5px;">攻撃</span> 攻撃 / 戦闘</div>
+                        <div class="manual-detail">・襲撃者を排除するための武力行動です。</div>
+                        <div class="manual-detail">・防衛に失敗すると大きな被害を受けるため、この行動で敵の脅威度を下げます。</div>
+                        <div class="manual-note">※主人が『昏睡』状態の時に限り、消費APが1になります。</div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary"><span class="card-type type-season" style="margin-right: 5px;">季節</span> 季節</div>
+                        <div class="manual-detail">・各季節の期間内のみ使用できる、強力なストレス軽減行動です。</div>
+                        <div class="manual-note">※使用後は「不用品カード」に変わります。</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary"><span class="card-type type-attachment" style="margin-right: 5px;">愛着</span> 愛着</div>
+                        <div class="manual-detail">・特定の条件下で主人への情が芽生え、手に入ることがある特別なカードです。</div>
+                        <div class="manual-note">※主人が『昏睡』状態の時のみ使用できます。</div>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <div class="manual-summary"><span class="card-type type-obstacle" style="margin-right: 5px;">不用品</span> 不用品</div>
+                        <div class="manual-detail">・手札や山札を圧迫する、過去のしがらみです。</div>
+                        <div class="manual-detail">・行動力を消費しても使用することができません。</div>
+                        <div class="manual-note">※ショップの処分枠で廃棄する必要があります。</div>
                     </div>
                 </div>
-                <div class="flow-step">
-                    <div class="flow-step-header">
-                        <div class="flow-step-num">2</div>
-                        <div class="flow-step-title">行動</div>
-                    </div>
-                    <div class="flow-step-body">
-                        手札からAPを消費してカードを使用します。
+            </details>
+
+            <details>
+                <summary>4. ターンの流れ</summary>
+                <div class="details-inner">
+                    <div class="manual-summary" style="margin-bottom: 15px;">1ターンは以下の流れで進行します。</div>
+                    
+                    <div class="timeline-container">
+                        <div class="timeline-step">
+                            <div class="timeline-icon"></div>
+                            <div class="manual-summary" style="margin-bottom: 4px;">準備フェーズ</div>
+                            <div class="manual-detail">・手札がドローされます。</div>
+                            <div class="manual-detail">・体調不良/ランダムイベント/敵の襲撃などが通知されます。</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="timeline-icon"></div>
+                            <div class="manual-summary" style="margin-bottom: 4px;">行動フェーズ</div>
+                            <div class="manual-detail">・手札からAPを消費してカードを使用します。</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="timeline-icon"></div>
+                            <div class="manual-summary" style="margin-bottom: 4px;">精算フェーズ</div>
+                            <div class="manual-detail">・使い残したAPのペナルティ処理が行われます。</div>
+                            <div class="manual-detail">・戦闘が発生していた場合、ここで勝敗判定が行われます。</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="timeline-icon"></div>
+                            <div class="manual-summary" style="margin-bottom: 4px;">購入・処分フェーズ <span style="font-size: 10px; color: #888; font-family: 'Zen Kaku Gothic New', sans-serif;">（※4ターン毎に発生）</span></div>
+                            <div class="manual-detail">・資金を消費して、カードの購入や処分を行います。</div>
+                            <div class="manual-detail">・終了後、手札をすべて戻して配り直されます。</div>
+                        </div>
                     </div>
                 </div>
-                <div class="flow-step">
-                    <div class="flow-step-header">
-                        <div class="flow-step-num">3</div>
-                        <div class="flow-step-title">精算</div>
+            </details>
+
+            <details>
+                <summary>5. 快適なプレイのためのヒント</summary>
+                <div class="details-inner">
+                    <div class="manual-heading" style="margin-top: 0;">カードのアイコンについて</div>
+                    <div class="manual-summary" style="margin-bottom: 15px;">手札のカードにつくマークは、現在の状態による影響を表しています。</div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <div class="manual-summary"><span class="manual-hl">矜持状態</span> <span style="font-size: 10px; color: #bb9244; vertical-align: middle; margin-left: 4px;">▼</span></div>
+                        <div class="manual-detail">・（直接ケア時）ストレス増加 / 関係性上昇が半減</div>
                     </div>
-                    <div class="flow-step-body">
-                        余ったAPによるペナルティの計算や、戦闘の勝敗判定が行われます。
+                    <div style="margin-bottom: 12px;">
+                        <div class="manual-summary"><span class="manual-hl">依存状態</span> <span style="font-size: 10px; color: #754f87; vertical-align: middle; margin-left: 4px;">▼ / ▲</span></div>
+                        <div class="manual-detail">・（間接ケア時）回復が半減・ストレス増加</div>
+                        <div class="manual-detail">・（直接ケア時）関係性がマイナスに傾く</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <div class="manual-summary"><span class="manual-hl">マンネリ状態</span> <span style="font-size: 10px; color: #aaaaaa; vertical-align: middle; margin-left: 4px;">▼</span></div>
+                        <div class="manual-detail">・同じケアを繰り返し、回復・ストレス軽減が半減している状態</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <div class="manual-summary"><span class="manual-hl">発狂状態</span> <span style="font-size: 10px; color: #e74c3c; vertical-align: middle; margin-left: 4px;">▼</span></div>
+                        <div class="manual-detail">・すべてのカードによる関係性の増減がランダムになる状態</div>
+                    </div>
+                    <div style="margin-bottom: 25px;">
+                        <div class="manual-summary"><span class="manual-hl">八つ当たり状態</span> <span style="font-size: 10px; color: #59829e; vertical-align: middle; margin-left: 4px;">▼ / ▲</span></div>
+                        <div class="manual-detail">・ケアは依存（－）に、冷淡は矜持（＋）に傾く状態</div>
+                    </div>
+
+                    <div class="manual-heading">立ち回りのコツ</div>
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary">デッキの圧縮</div>
+                        <div class="manual-detail">・不用品や不要なカードはショップで積極的に処分し、手札の巡りを良くしましょう。</div>
+                        <div class="manual-note">※使い込んでマンネリ状態になったカードは、通常より高値で売却できます。</div>
+                    </div>
+                    <div style="margin-bottom: 25px;">
+                        <div class="manual-summary">訪問者への対応</div>
+                        <div class="manual-detail">・来客中は、一部のカードで「訪問者に使用」が選べます。</div>
+                        <div class="manual-note">※放置するとペナルティがあります。手酷く追い払うと悪評が立ち、以降の戦闘が厳しくなります。</div>
+                    </div>
+
+                    <div class="manual-heading">その他の仕様</div>
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary">ランダムイベント</div>
+                        <div class="manual-detail">・ターン開始時、様々なイベントが発生することがあります。</div>
+                        <div class="manual-detail">・ステータスが変動したり、特殊なカードが手に入ることがあります。</div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary">一時的な効果やイベント・永続効果の確認</div>
+                        <div class="manual-detail">・現在のバフデバフ内容や付与されている効果は、画面中央のアラート横の「▼」から詳細を確認できます。</div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <div class="manual-summary">エンディング</div>
+                        <div class="manual-detail">・ゲームオーバーとクリア（6種）の他に、特殊なエンディング（6種）があります。</div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div class="manual-summary">記録の保存</div>
+                        <div class="manual-detail">・直近のテキストログや詳細履歴は、専用ボタンから画像保存できます。</div>
                     </div>
                 </div>
-                <div class="flow-step">
-                    <div class="flow-step-header">
-                        <div class="flow-step-num">4</div>
-                        <div class="flow-step-title">購入・売却</div>
-                    </div>
-                    <div class="flow-step-body">
-                        4ターン毎に資金を消費して行動カードを購入・処分できます。<br>購入売却後は、手札が残っている場合もすべてデッキに戻し、カードの配り直しが行われます。
-                    </div>
-                </div>
-            </div>
-
-            <h2>5. 快適なプレイのためのヒント</h2>
-            <ul>
-                <li><strong>カードの値について：</strong> カードに記載されている固定値は「現在の値から数値がそのまま増減」します。％表記は「現在値から（現在値の●％）が増減」します。</li>
-                <li><strong>主人の心境の変化：</strong> 関係性の傾き方によって、同じカードでも効果が反転・半減したり、フレーバーテキストが変化します。</li>
-                <li><strong>戦闘への対処：</strong> 戦闘に敗北すると手痛い被害を受けます。攻撃カードを使用して、敵の脅威度を下げましょう。</li>
-                <li><strong>デッキの圧縮の活用：</strong> 手札の巡りを良くするためには、ショップでのカード処分が不可欠です。現在の関係性に合わない不要なカードはどんどん処分しましょう。</li>
-<li><strong>使い込まれたカードの価値：</strong>同じケアを繰り返していると、マンネリ状態（<span style="color: #aaaaaa">▼</span>）になり健康度・ストレス回復効果が半減します。また、一定回数以上使ったカードを手放す際、通常の売却・処分よりも少しだけ高価で売却できます。</li>
- <li><strong>愛着の芽生え：</strong> 冷淡な気持ちがなくなっている時、稀に愛情のような感情が芽生えます。愛着行動は主人が昏睡状態の時のみ使用できます。</li>
-                <li><strong>エンディング分岐：</strong>ゲームオーバーとゲームクリア（6種）以外に、特殊なエンディング（6種）があります。</li>
-                <li><strong>テキストログの出力：</strong> 画面中央の「▼」から開く詳細メニュー内の「テキストログを出力」ボタンから、直近のテキストを最大10件まで画像として保存できます。出力画面で文をタップすると、その文を強調表示できます。</li>
-            </ul>
-
-
+            </details>
 
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
@@ -5801,6 +5940,9 @@ function toggleBuffDebuffDetails() {
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+  <p style="font-size: 9px;">■ver 1.3<br>・ランダムイベントを1種追加しました。<br>・カード詳細に訪問者使用時の効果を表示するようにしました。<br>
+  ・説明書の記載と一部UIを変更しました。</p>
+
   <p style="font-size: 9px;">■ver 1.2<br>
 ・イベントを1種、特殊状態を1種追加しました。<br>
 ・一部のフレーバーテキストを変更しました。
