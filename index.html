@@ -1246,9 +1246,9 @@ const CARD_POOL = {
                 heavy_dependence: ["部屋を掃除する間、彼は静かに寝息を立てている。"] 
             } 
         },
-        { 
+         { 
              name: "寝具の天日干し", type: "indirect", value: 3, cost: 1, valType: "flat", 
-            actions: [{ type: "heal", value: 10 }, {type: "stress", value: -15}, {type: "buff", key: "nextTurnAPMod", value: 1}], desc: "健康+10。ストレス-10。関係性+3。次ターンの初期AP+1", 
+            actions: [{ type: "heal", value: 10 }, {type: "stress", value: -15}, {type: "buff", key: "nextTurnAPMod", value: 1}], desc: "健康+10。ストレス-15。関係性+3。次ターンの初期AP+1", 
             flavor: { 
                 trust: ["ふかふかの寝具は心地よいようだが、彼はあなたに世話を焼かせすぎていると感じている。"], 
                 high_trust: ["あなたが寝具を干すと、彼はその温もりに少しだけ表情を和らげた。"],
@@ -1376,7 +1376,7 @@ const CARD_POOL = {
             }
         },
         { 
-            name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", 
+            name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", visitorGoldCost: 30,
             actions: [{context: "master", type: "remove_all_obstacles"}, {context: "visitor", type: "gold", value: -30}, {context: "visitor", type: "stress", value: -20}, {context: "visitor", type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて廃棄する。廃棄した枚数が多いほど、関係性が0に近付く (使い切り)", visitorDesc: { friend: "資金-30G。ストレス-20。不用品をすべて廃棄し関係性が0に近付く (使い切り)" },
             flavor: {
                 trust: ["二人の間のしがらみをまっさらにした。これからは、一人の人間として向き合うために。"], 
@@ -1429,7 +1429,7 @@ const CARD_POOL = {
         },
         { 
             name: "冷酷な事実", type: "cold", value: -7, visitorValue: -10, cost: 2, valType: "flat", cannotUseOnVisitorWhenHeavy: true,
-            actions: [{context: "master", type: "stress", value: 25}, {context: "master", type: "discard_obstacle"}, {context: "visitor", type: "stress", value: 10}], desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する",visitorDesc: { friend: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する", official: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する" },
+            actions: [{context: "master", type: "stress", value: 25}, {type: "discard_obstacle"}, {context: "visitor", type: "stress", value: 10}], desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する",visitorDesc: { friend: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する", official: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する" },
             flavor: { 
                 trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
                 high_trust: ["彼は毅然と事実を受け止めつつ、僅かにあなたへ縋るような視線を向けた。"],
@@ -1489,7 +1489,7 @@ const CARD_POOL = {
         },
         { 
             name: "部屋の施錠", type: "cold", value: -10, visitorValue: -15, cost: 2, valType: "flat", 
-            actions: [{context: "master", type: "stress", value: 25}, {context: "master", type: "buff", key: "threatReduction", value: 15}, {context: "visitor", type: "stress", value: 20}], desc: "ストレス+25。関係性-10。次の戦闘時、脅威度を-15", visitorDesc: { merchant: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", friend: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", official: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15" },
+            actions: [{context: "master", type: "stress", value: 25}, {type: "buff", key: "threatReduction", value: 15}, {context: "visitor", type: "stress", value: 20}], desc: "ストレス+25。関係性-10。次の戦闘時、脅威度を-15", visitorDesc: { merchant: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", friend: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", official: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15" },
             flavor: {
                 trust: ["あなたが部屋の鍵を閉めるのを、彼は正当な処置だと考えている。"], 
                 high_trust: ["閉じ込められることに納得いかないようだが、あなたに免じて従うようだ。"],
@@ -1556,7 +1556,7 @@ const CARD_POOL = {
             name: "首を絞める", type: "harm", masterValue: -20, battleValue: 10, visitorValue: -30, cost: 2, valType: "flat", isMasterAlways: false, isHiddenMasterEffect: true,
             checkKillCondition: (state) => [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length >= 5,
             actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {context: "visitor", type: "increase_base_threat", value: 20}, {context: "visitor", type: "stress", value: 30}, {type: "consume"}],
-            desc: "敵脅威度-20。関係性+10 / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）", visitorDesc: { merchant: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20", friend: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20", official: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20" },
+            desc: "敵脅威度-20。関係性+10（使い切り） / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）", visitorDesc: { merchant: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20（使い切り）", friend: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20（使い切り）", official: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20（使い切り）" },
             flavor: { 
                 trust: ["彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。"], 
                 high_trust: ["意識のない彼の首を締め上げる。抵抗すら許されない彼を見下ろし、歪な満足感を得た。"],
@@ -1578,7 +1578,7 @@ const CARD_POOL = {
         { 
             name: "見せしめの拷問", type: "harm", masterValue: -20, battleValue: -10, visitorValue: -20, cost: 2, valType: "percent", isMasterAlways: false, 
            actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"}, {context: "visitor", type: "increase_base_threat", value: 30}, {context: "visitor", type: "stress", value: 40}, {type: "consume"} ],
-            desc: "敵脅威度を強制的に0にする。関係性-10% / 【対主人】ストレス+40。関係性-20%（使い切り）",visitorDesc: { merchant: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30", friend: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30", official: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30" }, 
+            desc: "敵脅威度を強制的に0にする。関係性-10%（使い切り） / 【対主人】ストレス+40。関係性-20%（使い切り）",visitorDesc: { merchant: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30（使い切り）", friend: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30（使い切り）", official: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30（使い切り）" }, 
             flavor: { 
                 trust: ["あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。"], 
                 high_trust: ["悲惨な光景に目を背けながらも、彼はその意図を汲み取り、顛末を見届けている。"],
@@ -1598,9 +1598,9 @@ const CARD_POOL = {
         },
         { 
             name: "形見の宝刀", type: "harm", masterValue: 0, battleValue: 10, visitorValue: -15, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, isHiddenMasterEffect: true,
-            actions: [{context: "battle", type: "threat", value: 45}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: -1}, {context: "visitor", type: "increase_base_threat", value: 15}, {context: "visitor", type: "stress", value: 20}],
-            desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15" },
-            flavor: { 
+            actions: [{context: "battle", type: "threat", value: 45}, {type: "buff", key: "nextTurnAPMod", value: -1}, {context: "visitor", type: "increase_base_threat", value: 15}, {context: "visitor", type: "stress", value: 20}],
+            desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15。次ターンの初期AP-1", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15。次ターンの初期AP-1", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15。次ターンの初期AP-1" },
+            flavor: {
                 trust: ["あなたは形見の宝刀を構え、因縁に終止符を打った。"], 
                 dependence: ["あまりにあっけなく、復讐は終わった。"], 
                 mannerism: ["血塗られた宝刀。これもまた日常を象徴するものの一つだ。"],
@@ -1742,11 +1742,11 @@ const SPECIAL_CARDS = {
             {context: "visitor", type: "add_random_obstacle"},
             {type: "consume"}
         ],
-        desc: "ストレス-20。関係性+10。不用品が1枚捨て札に混入する（使い切り）。別の手段で対応した場合も、このカードは除外される", 
+        desc: "ストレス-20。関係性+10。不用品+1枚。他カードを訪問者に使用した場合このカードも除外（使い切り）", 
         flavor: {
             visitor: {
                 trust: [
-                    "久しぶりの昔馴染との会話は、彼に一時的な安らぎをもたらしたようだ。"
+                    "久しぶりの昔馴染との会話は、彼に安らぎと痛みをもたらしたようだ。"
                 ],
                 dependence: [
                     "彼を昔馴染と引き合わせた。話をする間、時折、彼と目が合った。",
@@ -3063,6 +3063,11 @@ function executeCard(target) {
    if (target === 'master' && card.goldCost && state.gold < card.goldCost) {
         showCustomAlert(`資金が足りないため使用できません。`);
         return; // ★cancelTargetSelect(); を削除し、選択を維持
+    }
+
+    if (target === 'visitor' && card.visitorGoldCost && state.gold < card.visitorGoldCost) {
+        showCustomAlert(`資金が足りないため使用できません。`);
+        return;
     }
 
    // --- コスト消費 ---
