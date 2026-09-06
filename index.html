@@ -1061,6 +1061,159 @@ function addTurnHistory(category, data) {
     }
 }
 
+// 訪問者を無視して主人へ行動した際の汎用フレーバーテキスト辞書
+const VISITOR_IGNORE_TEXTS = {
+    heavy_care: [
+        "来客の呼ぶ声が響く中、あなたは眠り続ける彼の世話を焼いた。"
+    ],
+    heavy_indirect: [
+        "来客の声を無視し、ただ淡々と彼の身の回りの整理を進めた。"
+    ],
+     heavy_cold: [
+        "訪問者に何の対応をしなくても、彼がとやかく言ってくることもない。",
+        "あなたは来客を無視し、ベッドに沈んだ彼を見下ろした。"
+    ],
+    heavy_harm: [
+        "外の騒ぎなど耳に入らない。意識のない彼を前に、加虐心だけが満たされていく。"
+    ],
+    care: [
+        "来客に構わず彼の世話を焼いた。彼もまた、外の声に応えようとはしなかった。",
+        "扉を叩く音に気付いた彼が、あなたに目配せをする。あなたはその耳をそっと塞いだ。"
+    ],
+    indirect: [
+        "扉を叩く音を無視し、あなたはいつも通りに振る舞った。",
+        "あなたは来客に構うことなく、彼のためだけに行動した。"
+    ],
+    cold: [
+        "ベルの音を気にしている彼に冷ややかな視線を向けた。",
+        "外から呼ぶ声を無視し、彼のことも適当にあしらった。"
+    ],
+    harm: [
+        "彼へ何をしてやるか企むのに夢中で、呼び鈴など耳に入らない。",
+        "彼を誰にも会わせるつもりはない。彼の姿を見せるわけにはいかない。"
+    ],
+    season: [
+        "外の喧騒を締め出し、二人だけの空間で静かに季節の移ろいを感じていた。"
+    ],
+    attachment: [
+        "外で誰が呼んでいようと、あなたの意識は目の前の彼にだけ向けられている。"
+    ]
+};
+
+// --- 追加する辞書データ ---
+// 体調不良発生時
+const DEBUFF_FLAVORS = {
+    light: [
+        "彼は不自由な脚を引きずり、顔をしかめている。",
+        "脚の痛みが悪化しているのか、彼の動作はいつもよりも鈍い。",
+        "不自然な歩き方をしている。また脚が痛むようだ。"
+    ],
+    medium: [
+        "激しい頭痛と眩暈に襲われているのか、彼は壁に手をついて青褪めている。",
+        "彼は顔を顰め、時折こめかみを押さえている。",
+        "焦点の合わない目で宙を見つめている。眩暈が酷いらしい。"
+    ],
+    heavy: [
+        "彼は心身ともに疲弊しきっている。ただ、昏々と眠り続けている。",
+        "意識の混濁が深刻化し、彼は深い眠りに落ちている。",
+        "自力で起き上がる気配はない。呼吸だけが規則的に繰り返されている。"
+    ]
+};
+
+// 八つ当たり発生時
+const TANTRUM_OCCUR_FLAVOR = {
+    trust: [
+        "蓄積したストレスが限界を超え、彼はあなたに対して声を荒げた。",
+        "我慢の限界を迎えたのか、彼は感情のままにあなたへ八つ当たりをした。"
+    ],
+    high_trust: [
+        "張り詰めていた糸が切れたように、彼は声を荒げて不満をぶちまけた。",
+        "溜め込んでいた感情が爆発し、彼はらしくもなく怒りをあなたにぶつけた。"
+    ],
+    dependence: [
+        "彼は何かに怯えるように取り乱し、あなたに当たり散らしている。",
+        "見捨てられる不安からか、彼は声を震わせながらあなたを責め立てた。"
+    ],
+    mannerism: [
+        "抑えきれない苛立ちが爆発し、彼はあなたを理不尽になじった。",
+        "鬱積した感情が突如として溢れ出し、彼は露骨に不機嫌な態度を取った。"
+    ]
+};
+
+// 戦闘勝利時
+const BATTLE_WIN_FLAVOR = {
+    trust: [
+        "敵を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。",
+        "戦いから戻ったあなたを見て、彼は自らが負担になっている現実に顔を歪めた。"
+    ],
+    high_trust: [
+        "敵を撃退し戻ると、彼は主人としてあなたの働きを労った。",
+        "彼は血に濡れたあなたを案じている。返り血であることを確認し、ようやく安堵の表情を浮かべた。"
+    ],
+    dependence: [
+        "圧倒的な暴力で敵を蹂躙するあなたを見て、彼は胸を撫でおろした。",
+        "彼は、返り血を浴びたあなたに心酔しているようだ。"
+    ],
+    heavy_trust: [
+        "血に濡れて戻ったあなたを、ただ静かな寝息だけが出迎えた。",
+        "敵の排除を終え部屋に戻ったが、彼が目を覚ます気配はない。"
+    ],
+    heavy_dependence: [
+        "外の惨状も知らず、彼は部屋で眠り続けている。",
+        "彼の寝顔を眺める。これを傷つけていいのは、あなただけだ。"
+    ]
+};
+
+// 戦闘敗北時
+const BATTLE_FAIL_FLAVOR = {
+    trust: [
+        "彼はあなたを庇おうと敵の前に立ちはだかり、傷を負った。",
+        "己の無力さを呪うように、彼は床に伏しながら血を吐き出した。"
+    ],
+    high_trust: [
+        "彼は主人として従者であるあなたを守るため、自ら盾となった。",
+        "敵の凶刃からあなたを庇い、彼は苦痛に顔を歪めながらも迎撃した。"
+    ],
+    dependence: [
+        "彼は痛みに悶えながらも、助けを求めるように手を伸ばしている。",
+        "傷の痛みよりも、見捨てられるかもしれないという恐怖が彼を支配しているようだ。"
+    ],
+    heavy_trust: [
+        "意識のない彼は身を守る術を持たず、理不尽な暴力に晒されてしまった。",
+        "彼を守り切れなかった。まっさらなシーツに鮮血が染み込んでいく。"
+    ],
+    heavy_dependence: [
+        "彼の体についた無惨な傷。あなたの胸中に、激しい衝動が湧き上がる。",
+        "所有物が他人に傷つけられた。その事実が、あなたの支配欲をさらに刺激する。"
+    ]
+};
+
+// 八つ当たり中に行動した時のテキスト
+const TANTRUM_ACTION_TEXTS = {
+    care_trust: "宥めるように優しくしてやれば、彼はバツが悪そうに唇を噛み締めた。",
+    care_dep: "機嫌が悪い彼をいつも以上に甘やかすと、次第にしおらしくなった。",
+    indirect_trust: "あなたに何事もなかったのように振る舞われ、彼は己の愚かさを恥じ入っている。",
+    indirect_dep: "理不尽な態度を咎められなかったことに、彼は安堵と滲ませた。",
+    cold_trust: "冷めた視線と態度を向けると、彼はハッと我に返り口を噤んだ。",
+    cold_dep: "あなたに冷たく突き放され、彼はあからさまに動揺している。",
+    battle: "あなたは襲撃の対処に向かう。先程の無様な行いを咎められなかったことに、彼はひそかに安堵した。"
+};
+
+// 暗殺未遂直後のテキスト (getRandomFlavorに渡す形)
+const ASSASSINATION_AFTER_FLAVOR = {
+    care: {
+        trust: ["あんなことがあったにも関わらず、いつも通りに世話を焼かれ、彼は困惑しきっている。"],
+        dependence: ["命を奪おうとした手で優しくされる異常な状況に、彼は身をこわばらせている。"]
+    },
+    indirect: {
+        trust: ["彼はあなたの様子を窺っている。先日の行いなど無かったかのように振る舞う姿に、恐れを抱いているようだ。"],
+        dependence: ["あなたの殺意を退けて以降、彼は怯えた目であなたの背中を見つめている。"]
+    },
+    cold: {
+        trust: ["冷ややかな態度を取ると、彼は床に転がったままになっていたナイフに後悔の眼差しを向けた。"],
+        dependence: ["あなたに突き放され、彼は殺されることよりも見捨てられる恐怖に泣きそうな顔をしている。"]
+    }
+};
 
 const CARD_POOL = {
     direct: [
@@ -1174,6 +1327,7 @@ const CARD_POOL = {
         { 
             name: "輸血を行う", type: "direct", value: 30, cost: 2, valType: "percent", 
             actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+30%。次ターンの初期AP-1（使い切り）", 
+            ignoreVisitorFlavor: ["来客を追い返すこともせず、あなたはただ自らの血を彼に分け与えることに没頭した。"],
             flavor: { 
                 trust: ["あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。"], 
                 high_trust: ["彼は、血を分けてくれるあなたの献身に報いなければならないと思っているようだ。"],
@@ -1197,6 +1351,7 @@ const CARD_POOL = {
             name: "仕事を請け負う", type: "indirect", value: 3, cost: 1, valType: "flat", 
             actions: [ {context: "master", type: "stress", value: -10}, {context: "master", type: "gold_random", min: 5, max: 15 }, {context: "visitor", type: "gold_random", min: 10, max: 30 } ], 
             desc: "ストレス-10。関係性+3。資金+5~15G", visitorDesc: { merchant: "資金+10~30G。関係性+3", official: "資金+10~30G。関係性+3" },
+            ignoreVisitorFlavor: ["仕事をこなすため、あなたは裏口から屋敷をでた。"],
             flavor: { 
                 trust: ["彼に見送られ、あなたは仕事をこなすために屋敷を出た。"],
                 high_trust: ["出かけるあなたを彼は送り出す。あなたが不在の間は、彼が屋敷を守る。"],
@@ -1225,6 +1380,7 @@ const CARD_POOL = {
                 {type: "consume"}
             ],
             desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)",
+            ignoreVisitorFlavor: ["来客を無視し、裏口から怪しげな医者を招き入れた。"],
             flavor: { 
                 trust: ["外部から怪しげな医者を呼び、治療を受けさせた。彼は医師のことを訝しんでいるようだ。"], 
                 high_trust: ["怪しげな医者の往診に彼は胡乱な目を向けたが、あなたが選んだのであればと渋々受け入れた。"],
@@ -1286,7 +1442,8 @@ const CARD_POOL = {
         { 
             name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, cannotUseOnVisitorWhenHeavy: true,
             actions: [{context: "master", type: "buff", key: "scentDuration", value: 3},{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}], desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", visitorDesc: { friend: "ストレス-10。関係性+3" },
-            flavor: { 
+            ignoreVisitorFlavor: ["客の気配など不要だと言わんばかりに、彼好みの香りで部屋を塗り潰した。"],
+            flavor: {
                 trust: ["彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出すようだ。"], 
                 high_trust: ["懐かしい香りに包まれ、彼はかつての威厳を取り戻したかのように落ち着いて座っている。"],
                 dependence: ["香りが部屋を満たす間、彼はあなたに包まれているような安心感を覚えている。"],
@@ -1298,12 +1455,13 @@ const CARD_POOL = {
                 ]
             } 
         },
-        { 
+         { 
             name: "アルバムの整理", type: "indirect", value: 15, cost: 1, valType: "percent", cannotUseOnVisitorWhenHeavy: true, 
             actions: [{type: "discard_obstacle"},{context: "master", type: "stress", value: -10}, {context: "visitor", type: "stress", value: -20}], desc: "ストレス-10。関係性+15%。手札の不用品を1枚廃棄する", visitorDesc: { friend: "ストレス-20。関係性+15%。手札の不用品を1枚廃棄する" },
+            ignoreVisitorFlavor: ["外で誰が待っていようと関係ない。あなた達には整理すべき過去がある。"],
             flavor: {
                 trust: ["あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。"], 
-                high_trust: ["彼はアルバムの表紙を慈しむように撫でた。"],
+                high_trust: ["アルバムの写真を眺めている横顔に陰りは見当たらない。"],
                 dependence: ["彼は整理途中のアルバムを机からはたき落とした。思い出の欠片が床に散らばる。"],
                 mannerism: ["ただ埃を払うためだけの整理。思い出に浸ることもなくなった。"],
                 heavy_trust: ["眠り続ける彼の傍らで、あなたは懐かしいアルバムをめくった。"],
@@ -1334,6 +1492,7 @@ const CARD_POOL = {
         { 
             name: "調度品の買い替え", type: "indirect", value: 20, cost: 1, valType: "flat", goldCost: 50, 
             actions: [{context: "master", type: "gold", value: -50}, {context: "master", type: "stress", value: -30}, {context: "visitor", type: "gold", value: -35}, {context: "visitor", type: "stress", value: -10}, {type: "consume"}], desc: "資金-50G。ストレス-30。関係性+20（使い切り）", visitorDesc: { merchant: "資金-35G。ストレス-10。関係性+20（使い切り）" },
+            ignoreVisitorFlavor: ["表に来ている来客には構わず、かねてより手配していた業者に新しい家具を運び込ませた。"],
             flavor: {
                 trust: ["彼は整った室内を見渡し、あなたの細やかな気遣いを感じて小さく息をついた。"], 
                 high_trust: ["新しい調度品を見て、彼はこれからの生活について意見を口にした。"],
@@ -1363,9 +1522,10 @@ const CARD_POOL = {
                 mannerism: ["庭の手入れも、もはや時間の経過を知らせる作業に過ぎない。"]
             }
         },
-        {
+       {
             name: "医者を呼ぶ", type: "indirect", value: 2, cost: 1,valType: "flat",goldCost: 40,
-            actions: [ {type: "gold", value: -40}, { type: "heal", value: 60, isFixed: true },{type: "stress", value: -5},{ type: "consume" }],desc: "資金-40。必ず健康+60。ストレス-5。関係性+2(使い切り)",
+            actions: [ {type: "gold", value: -40}, { type: "heal", value: 60, isFixed: true },{type: "stress", value: -5},{ type: "consume" }],desc: "資金-40G。必ず健康+60。ストレス-5。関係性+2(使い切り)",
+            ignoreVisitorFlavor: ["来客には応じず、裏口から医者を招き入れて彼を診察させた。"],
             flavor: {
                 trust: ["外部から医者を呼び、適切な治療を受けさせた。体は楽になったようだが、彼はどこか不服そうにしている。"], 
                 high_trust: ["医者の診察を受ける彼は、自らの状態を冷静に把握しようとしていた。"],
@@ -1430,6 +1590,7 @@ const CARD_POOL = {
         { 
             name: "冷酷な事実", type: "cold", value: -7, visitorValue: -10, cost: 2, valType: "flat", cannotUseOnVisitorWhenHeavy: true,
             actions: [{context: "master", type: "stress", value: 25}, {type: "discard_obstacle"}, {context: "visitor", type: "stress", value: 10}], desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する",visitorDesc: { friend: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する", official: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する" },
+            ignoreVisitorFlavor: ["外の騒ぎなど意に介さず、あなたは淡々と残酷な事実を告げた。"],
             flavor: { 
                 trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
                 high_trust: ["彼は毅然と事実を受け止めつつ、僅かにあなたへ縋るような視線を向けた。"],
@@ -1446,6 +1607,7 @@ const CARD_POOL = {
         { 
             name: "私物の没収", type: "cold", value: -10, visitorValue: -20, cost: 1, valType: "flat", 
             actions: [{context: "master", type: "stress", value: 15}, {context: "master", type: "gold_random", min: 5, max: 30}, {context: "visitor", type: "stress", value: 30}, {context: "visitor", type: "gold_random", min: 20, max: 50}], desc: "ストレス+15。関係性-10。資金+5~30G", visitorDesc: { merchant: "資金+20~50G。ストレス+30。関係性-20" },
+            ignoreVisitorFlavor: ["訪問者の声が響く中、あなたは何事もないかのように彼の私物を処分していく。"],
             flavor: {
                 trust: ["あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。"], 
                 high_trust: ["私物を処分したことについて、彼は好きにするよう言った。"],
@@ -1466,7 +1628,8 @@ const CARD_POOL = {
         { 
             name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", 
             actions: [{type: "buff", key: "threatReduction", value: 5},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-5", 
-            flavor: { 
+            ignoreVisitorFlavor: ["来客にも応じず、屋敷の手入れもせず、ただ怠惰に時間を潰した。"],
+            flavor: {
                 trust: ["片脚が悪い彼は、整備されていない道では歩きにくいようだ。"], 
                 high_trust: ["彼は荒れた屋敷に思うところがあるのか、ふう、とため息を付いた。"],
                 dependence: ["屋敷が荒れ果てても、彼はあなたがそばにいるだけで満足している。"], 
@@ -1490,6 +1653,7 @@ const CARD_POOL = {
         { 
             name: "部屋の施錠", type: "cold", value: -10, visitorValue: -15, cost: 2, valType: "flat", 
             actions: [{context: "master", type: "stress", value: 25}, {type: "buff", key: "threatReduction", value: 15}, {context: "visitor", type: "stress", value: 20}], desc: "ストレス+25。関係性-10。次の戦闘時、脅威度を-15", visitorDesc: { merchant: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", friend: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", official: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15" },
+            ignoreVisitorFlavor: ["彼を訪問者と会わせないために、部屋に閉じ込めた。"],
             flavor: {
                 trust: ["あなたが部屋の鍵を閉めるのを、彼は正当な処置だと考えている。"], 
                 high_trust: ["閉じ込められることに納得いかないようだが、あなたに免じて従うようだ。"],
@@ -1519,8 +1683,9 @@ const CARD_POOL = {
         { 
             name: "他人の気配を匂わす", type: "cold", value: -30, cost: 2, valType: "percent", 
             actions: [{type: "stress", value: 30}, {type: "consume"}], desc: "ストレス+30。関係性-30%（使い切り）", 
-            flavor: { 
-                trust: ["あなたが他人の気配を漂わせると、彼はとうとう自分が不要になったのだと悟ったようだ。"], 
+            ignoreVisitorFlavor: ["あえて彼に聞こえるように、扉の向こうの人物に親しげに話した。"],
+            flavor: {
+                trust: ["あなたが他人の気配を漂わせると、彼は自分が不要になったと諦観を滲ませた。"], 
                 high_trust: ["他人の気配を感じても、彼はあなたとの絆を疑うことはなかった。"],
                 dependence: ["他人の気配を感じた彼は、あなたを誰かに奪われるかもしれないと取り乱した。"],
                 mannerism: ["誰かの気配を匂わせても、彼は一切の無関心を貫いている。"]
@@ -1532,6 +1697,7 @@ const CARD_POOL = {
             name: "毒の調合", type: "harm", masterValue: -10, battleValue: 1, visitorValue: -15, cost: 1, valType: "flat", isMasterAlways: true, 
             actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}, {context: "visitor", type: "increase_base_threat", value: 10}, {context: "visitor", type: "stress", value: 20}],
             desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10" },
+            ignoreVisitorFlavor: ["外の気配には見向きもせず、彼の口に少量の毒を流し込んだ。"],
             flavor: {  
                 trust: ["苦い薬を食事に混ぜても、彼は何も言わずにそれを飲み干す。"], 
                 high_trust: ["彼はそれが毒だと知りながら、黙って飲み込む。信頼という名の圧力を感じる。"],
@@ -1553,10 +1719,11 @@ const CARD_POOL = {
             } 
         },
          { 
-            name: "首を絞める", type: "harm", masterValue: -20, battleValue: 10, visitorValue: -30, cost: 2, valType: "flat", isMasterAlways: false, isHiddenMasterEffect: true,
+            name: "首を絞める", type: "harm", masterValue: -20, battleValue: 10, visitorValue: -30, cost: 2, valType: "flat", isMasterAlways: false,
             checkKillCondition: (state) => [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length >= 5,
             actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {context: "visitor", type: "increase_base_threat", value: 20}, {context: "visitor", type: "stress", value: 30}, {type: "consume"}],
             desc: "敵脅威度-20。関係性+10（使い切り） / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）", visitorDesc: { merchant: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20（使い切り）", friend: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20（使い切り）", official: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20（使い切り）" },
+            ignoreVisitorFlavor: ["外から聞こえる声を聞きながら、じわじわと彼の首を締め上げた。"],
             flavor: { 
                 trust: ["彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。"], 
                 high_trust: ["意識のない彼の首を締め上げる。抵抗すら許されない彼を見下ろし、歪な満足感を得た。"],
@@ -1579,6 +1746,7 @@ const CARD_POOL = {
             name: "見せしめの拷問", type: "harm", masterValue: -20, battleValue: -10, visitorValue: -20, cost: 2, valType: "percent", isMasterAlways: false, 
            actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"}, {context: "visitor", type: "increase_base_threat", value: 30}, {context: "visitor", type: "stress", value: 40}, {type: "consume"} ],
             desc: "敵脅威度を強制的に0にする。関係性-10%（使い切り） / 【対主人】ストレス+40。関係性-20%（使い切り）",visitorDesc: { merchant: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30（使い切り）", friend: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30（使い切り）", official: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30（使い切り）" }, 
+            ignoreVisitorFlavor: ["来客の呑気な声は、凄惨な肉を裂く音に容易く塗り潰された。"],
             flavor: { 
                 trust: ["あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。"], 
                 high_trust: ["悲惨な光景に目を背けながらも、彼はその意図を汲み取り、顛末を見届けている。"],
@@ -1600,6 +1768,7 @@ const CARD_POOL = {
             name: "形見の宝刀", type: "harm", masterValue: 0, battleValue: 10, visitorValue: -15, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, isHiddenMasterEffect: true,
             actions: [{context: "battle", type: "threat", value: 45}, {type: "buff", key: "nextTurnAPMod", value: -1}, {context: "visitor", type: "increase_base_threat", value: 15}, {context: "visitor", type: "stress", value: 20}],
             desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15。次ターンの初期AP-1", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15。次ターンの初期AP-1", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15。次ターンの初期AP-1" },
+            ignoreVisitorFlavor: ["扉の向こうの来客などどうでもいい。振り下ろした刃が、すべての因縁を断ち切った。"],
             flavor: {
                 trust: ["あなたは形見の宝刀を構え、因縁に終止符を打った。"], 
                 dependence: ["あまりにあっけなく、復讐は終わった。"], 
@@ -2551,26 +2720,11 @@ function processWeekStart() {
                
                 let debuffFlavor = "";
                 if (state.debuff === 'light') {
-                    const lightTexts = [
-                        "彼は不自由な脚を引きずり、顔をしかめている。",
-                        "脚の痛みが悪化しているのか、彼の動作はいつもよりも鈍い。",
-                        "不自然な歩き方をしている。また脚が痛むようだ。"
-                    ];
-                    debuffFlavor = lightTexts[Math.floor(Math.random() * lightTexts.length)];
+                    debuffFlavor = DEBUFF_FLAVORS.light[Math.floor(Math.random() * DEBUFF_FLAVORS.light.length)];
                 } else if (state.debuff === 'medium') {
-                    const mediumTexts = [
-                        "激しい頭痛と眩暈に襲われているのか、彼は壁に手をついて青褪めている。",
-                        "彼は顔を顰め、時折こめかみを押さえている。",
-                        "焦点の合わない目で宙を見つめている。眩暈が酷いらしい。"
-                    ];
-                    debuffFlavor = mediumTexts[Math.floor(Math.random() * mediumTexts.length)];
+                    debuffFlavor = DEBUFF_FLAVORS.medium[Math.floor(Math.random() * DEBUFF_FLAVORS.medium.length)];
                 } else if (state.debuff === 'heavy') {
-                    const heavyTexts = [
-                        "彼は心身ともに疲弊しきっている。ただ、昏々と眠り続けている。",
-                        "意識の混濁が深刻化し、彼は深い眠りに落ちている。",
-                        "自力で起き上がる気配はない。呼吸だけが規則的に繰り返されている。"
-                    ];
-                    debuffFlavor = heavyTexts[Math.floor(Math.random() * heavyTexts.length)];
+                    debuffFlavor = DEBUFF_FLAVORS.heavy[Math.floor(Math.random() * DEBUFF_FLAVORS.heavy.length)];
                 }
                 
                 // 【警告】発生時の不用品混入（軽度35%、中度75%、重度90%の確率）
@@ -2785,17 +2939,7 @@ if (Math.random() < obstacleRates[state.debuff]) {
                     eventOccurred = true;
                     state.temporaryEffects.push(`八つ当たり: 八つ当たり状態付与`);
                     
-                    const tantrumFlavor = {
-                        trust: ["蓄積したストレスが限界を超え、彼はあなたに対して声を荒げた。",
-                            "我慢の限界を迎えたのか、彼は感情のままにあなたへ八つ当たりをした。"],
-                        high_trust: ["張り詰めていた糸が切れたように、彼は声を荒げて不満をぶちまけた。",
-                            "溜め込んでいた感情が爆発し、彼はらしくもなく怒りをあなたにぶつけた。"],
-                        dependence: [ "彼は何かに怯えるように取り乱し、あなたに当たり散らしている。",
-                            "見捨てられる不安からか、彼は声を震わせながらあなたを責め立てた。"],
-                        mannerism: [ "抑えきれない苛立ちが爆発し、彼はあなたを理不尽になじった。",
-                            "鬱積した感情が突如として溢れ出し、彼は露骨に不機嫌な態度を取った。"]
-                    };
-                    let flavorText = getRandomFlavor(tantrumFlavor, state, 'master', false);
+                    let flavorText = getRandomFlavor(TANTRUM_OCCUR_FLAVOR, state, 'master', false);
                     setTimeout(() => {
                         if (flavorText) addLog(flavorText, "log-flavor");
                     }, currentLogDelay);
@@ -3183,14 +3327,19 @@ function executeCard(target) {
                 state.temporaryEffects.push("強制覚醒: 襲撃により昏睡状態から目を覚ました");
             }
 
-            setLastAction(`使用:【${card.name}】(暗殺未遂)`);
+           setLastAction(`使用:【${card.name}】(暗殺未遂)`);
 
             let text = getRandomFlavor(attemptFlavor, state, 'master', false);
             if (text) {
+                // 来客中に未遂が発生した場合、来客対応済みにした上でテキストの先頭に状況を付与する
+                if (state.visitorActive && !state.hasIgnoredVisitor) {
+                    state.hasIgnoredVisitor = true;
+                    text = "外の来客など気に留めず、" + text;
+                }
                 setTimeout(() => addLog(text, "log-flavor"), executeDelay);
                 executeDelay += 600;
             }
-            state.temporaryEffects.push("暗殺失敗: 自衛により阻まれた（以降、覚醒時でも殺害可能）");
+            state.temporaryEffects.push("暗殺失敗: 自衛により阻まれた");
             addTurnHistory('event', '暗殺失敗');
             
             // 使用済みカードの廃棄処理（通常処理をスキップするためここで手動で行う）
@@ -3205,25 +3354,30 @@ function executeCard(target) {
             updateUI();
             return; // ★通常のカード効果（ダメージ等）と通常テキストをすべてスキップして終了
         } 
-        // 自衛なし、または既に未遂フラグがある場合：暗殺成功（ゲームオーバー）
+         // 自衛なし、または既に未遂フラグがある場合：暗殺成功（ゲームオーバー）
         else {
             setLastAction(`使用:【${card.name}】(暗殺)`);
             cancelTargetSelect();
             
-            // 覚醒状態（heavy以外）での殺害なら、専用のフレーバーテキストを出力する
-            if (state.debuff !== 'heavy') {
-                let awakeText = getRandomFlavor(awakeKillFlavor, state, 'master', false);
-                if (awakeText) {
-                    setTimeout(() => addLog(awakeText, "log-flavor"), executeDelay);
-                    executeDelay += 600;
-                }
+            let killText = "";
+            
+            // 来客中で、かつカードに無視時専用テキスト（ignoreVisitorFlavor）が設定されていれば最優先で出力する
+            if (state.visitorActive && !state.hasIgnoredVisitor && card.ignoreVisitorFlavor && card.ignoreVisitorFlavor.length > 0) {
+                state.hasIgnoredVisitor = true;
+                killText = card.ignoreVisitorFlavor[Math.floor(Math.random() * card.ignoreVisitorFlavor.length)];
             } else {
-                // 昏睡状態での殺害なら、カードに設定された通常のフレーバーテキストを出力する
-                let sleepText = getRandomFlavor(card.flavor, state, 'master', false);
-                if (sleepText) {
-                    setTimeout(() => addLog(sleepText, "log-flavor"), executeDelay);
-                    executeDelay += 600;
+                // 覚醒状態（heavy以外）での殺害なら、専用のフレーバーテキストを出力する
+                if (state.debuff !== 'heavy') {
+                    killText = getRandomFlavor(awakeKillFlavor, state, 'master', false);
+                } else {
+                    // 昏睡状態での殺害なら、カードに設定された通常のフレーバーテキストを出力する
+                    killText = getRandomFlavor(card.flavor, state, 'master', false);
                 }
+            }
+
+            if (killText) {
+                setTimeout(() => addLog(killText, "log-flavor"), executeDelay);
+                executeDelay += 600;
             }
             
             setTimeout(() => {
@@ -3276,26 +3430,14 @@ function executeCard(target) {
     if (isTantrumActive) {
         if (target === 'master') {
             if (card.type === 'direct') {
-                if (state.relation >= 0) {
-                    extraLog = "宥めるように優しくしてやれば、彼はバツが悪そうに唇を噛み締めた。";
-                } else {
-                    extraLog = "機嫌が悪い彼をいつも以上に甘やかすと、次第にしおらしくなった。";
-                }
+                extraLog = (state.relation >= 0) ? TANTRUM_ACTION_TEXTS.care_trust : TANTRUM_ACTION_TEXTS.care_dep;
             } else if (['indirect', 'season'].includes(card.type)) {
-                if (state.relation >= 0) {
-                    extraLog = "あなたに何事もなかったのように振る舞われ、彼は己の愚かさを恥じ入っている。";
-                } else {
-                    extraLog = "理不尽な態度を咎められなかったことに、彼は安堵と滲ませた。";
-                }
+                extraLog = (state.relation >= 0) ? TANTRUM_ACTION_TEXTS.indirect_trust : TANTRUM_ACTION_TEXTS.indirect_dep;
             } else if (card.type === 'cold' || card.type === 'harm') {
-                if (state.relation >= 0) {
-                    extraLog = "冷めた視線と態度を向けると、彼はハッと我に返り口を噤んだ。";
-                } else {
-                    extraLog = "あなたに冷たく突き放され、彼はあからさまに動揺している。";
-                }
+                extraLog = (state.relation >= 0) ? TANTRUM_ACTION_TEXTS.cold_trust : TANTRUM_ACTION_TEXTS.cold_dep;
             }
         } else if (target === 'battle' && card.type === 'harm') {
-            extraLog = "あなたは襲撃の対処に向かう。先程の無様な行いを咎められなかったことに、彼はひそかに安堵した。";
+            extraLog = TANTRUM_ACTION_TEXTS.battle;
         }
        // 次の行動時（または戦闘対処時）で八つ当たり状態は終了
         state.isTantrum = false; 
@@ -3307,58 +3449,47 @@ function executeCard(target) {
         executeDelay += 600;
     } else if (state.visitorActive && target === 'master' && !state.hasIgnoredVisitor) {
         state.hasIgnoredVisitor = true;
-        let ignoreTexts = [];
         
-        // ▼追加：昏睡状態での無視テキスト
-        if (state.debuff === 'heavy') {
-            ignoreTexts = [
-                "外の気配などお構いなしに作業を進める。昏睡状態の彼にとって、外の世界など存在しないも同義だ。",
-                "来客の呼ぶ声が響く。あなたはそれに一切応えず、ただ静かに彼の傍に居続けた。"
-            ];
-        } else {
-            if (card.type === 'direct' || card.type === 'attachment') {
-                ignoreTexts = [
-                    "来客に構わず彼の世話を焼いた。彼もまた、外の声に応えようとはしなかった。",
-                    "来客の気配に彼が肩を揺らす。あなたはその耳を塞ぐように、ゆっくりと彼に触れた。"
-                ];
-            } else if (card.type === 'indirect' || card.type === 'season') {
-                ignoreTexts = [
-                    "扉を叩く音を無視し、あなたはいつも通りに振る舞った。",
-                    "あなたは来客に構うことなく、彼のためだけに行動した。"
-                ];
-            } else if (card.type === 'cold') {
-                ignoreTexts = [
-                    "来客に気付いていないふりをして、彼に冷ややかな視線を向けた。",
-                    "外から呼ぶ声を無視し、彼のことも適当にあしらった。"
-                ];
-             } else if (card.type === 'harm') {
-                ignoreTexts = [
-                    "彼へ何をしてやるか企むのに夢中で、呼び鈴など耳に入らない。",
-                    "彼を誰にも会わせるつもりはない。彼の姿を見せるわけにはいかない。"
-                ];
+        // 1. 個別カードの専用テキスト(ignoreVisitorFlavor)があれば最優先（覚醒・昏睡問わず）
+        let ignoreTexts = card.ignoreVisitorFlavor;
+        
+        // 2. なければ、状態やカードのtypeに応じた汎用テキスト（辞書）を取得
+        if (!ignoreTexts || ignoreTexts.length === 0) {
+            if (state.debuff === 'heavy') {
+                const heavyDict = {
+                    'direct': VISITOR_IGNORE_TEXTS.heavy_care,
+                    'indirect': VISITOR_IGNORE_TEXTS.heavy_indirect,
+                    'cold': VISITOR_IGNORE_TEXTS.heavy_cold,
+                    'harm': VISITOR_IGNORE_TEXTS.heavy_harm,
+                    'attachment': VISITOR_IGNORE_TEXTS.attachment
+                };
+                ignoreTexts = heavyDict[card.type];
+            } else {
+                const normalDict = {
+                    'direct': VISITOR_IGNORE_TEXTS.care,
+                    'indirect': VISITOR_IGNORE_TEXTS.indirect,
+                    'cold': VISITOR_IGNORE_TEXTS.cold,
+                    'harm': VISITOR_IGNORE_TEXTS.harm,
+                    'season': VISITOR_IGNORE_TEXTS.season
+                };
+                ignoreTexts = normalDict[card.type];
             }
         }
-        let text = ignoreTexts[Math.floor(Math.random() * ignoreTexts.length)];
-        setTimeout(() => addLog(text, "log-flavor"), executeDelay);
-        executeDelay += 600;
+        
+        if (ignoreTexts && ignoreTexts.length > 0) {
+            let text = ignoreTexts[Math.floor(Math.random() * ignoreTexts.length)];
+            setTimeout(() => addLog(text, "log-flavor"), executeDelay);
+            executeDelay += 600;
+        }
     } else if (state.afterAssassinationDuration > 0 && target === 'master' && state.debuff !== 'heavy') {
         // ★変更：暗殺未遂直後の1ターンは、カード種別ごとに気まずい反応を表示する（昏睡時は意識がないためスキップ）
         let attemptAfterFlavor;
         if (card.type === 'direct') {
-            attemptAfterFlavor = {
-                trust: ["あんなことがあったにも関わらず、いつも通りに世話を焼かれ、彼は困惑しきっている。"],
-                dependence: ["命を奪おうとした手で優しくされる異常な状況に、彼は身をこわばらせている。"]
-            };
+            attemptAfterFlavor = ASSASSINATION_AFTER_FLAVOR.care;
         } else if (card.type === 'indirect' || card.type === 'season') {
-            attemptAfterFlavor = {
-                trust: ["彼はあなたの様子を窺っている。先日の行いなど無かったかのように振る舞う姿に、恐れを抱いているようだ。"],
-                dependence: ["あなたの殺意を退けて以降、彼は怯えた目であなたの背中を見つめている。"]
-            };
+            attemptAfterFlavor = ASSASSINATION_AFTER_FLAVOR.indirect;
         } else {
-            attemptAfterFlavor = {
-                trust: ["冷ややかな態度を取ると、彼は床に転がったままになっていたナイフに後悔の眼差しを向けた。"],
-                dependence: ["あなたに突き放され、彼は殺されることよりも見捨てられる恐怖に泣きそうな顔をしている。"]
-            };
+            attemptAfterFlavor = ASSASSINATION_AFTER_FLAVOR.cold;
         }
         let text = getRandomFlavor(attemptAfterFlavor, state, 'master', false);
         if (text) {
@@ -3725,7 +3856,6 @@ case "set_madness":
                         let deckIdx = state.deck.findIndex(c => c === poolCards[0]);
                         let addedCard = state.deck.splice(deckIdx, 1)[0];
                         state.hand.push(addedCard);
-                        addTurnHistory('obtained', { type: addedCard.type, name: addedCard.name });
                     }
                     break;
 
@@ -3909,62 +4039,16 @@ if (state.battleActive) {
                         addTurnHistory('states', '戦闘敗北'); 
                         state.endOfTurnEffects.push(`戦闘敗北: 健康-20 / ストレス+30`);
                         
-                        // 防衛失敗時の情景描写
-                    const battleFailFlavor = {
-                        trust: [
-                            "彼はあなたを庇おうと敵の前に立ちはだかり、傷を負った。",
-                            "己の無力さを呪うように、彼は床に伏しながら血を吐き出した。"
-                        ],
-                        high_trust: [
-                            "彼は主人として従者であるあなたを守るため、自ら盾となった。",
-                            "敵の凶刃からあなたを庇い、彼は苦痛に顔を歪めながらも迎撃した。"
-                        ],
-                        dependence: [
-                            "彼は痛みに悶えながらも、助けを求めるように手を伸ばしている。",
-                            "傷の痛みよりも、見捨てられるかもしれないという恐怖が彼を支配しているようだ。"
-                        ],
-                        heavy_trust: [
-                            "意識のない彼は身を守る術を持たず、理不尽な暴力に晒されてしまった。",
-                            "彼を守り切れなかった。まっさらなシーツに鮮血が染み込んでいく。"
-                        ],
-                        heavy_dependence: [
-                            "彼の体についた無惨な傷。あなたの胸中に、激しい衝動が湧き上がる。",
-                            "所有物が他人に傷つけられた。その事実が、あなたの支配欲をさらに刺激する。"
-                        ]
-                    };
-                    let failLog = getRandomFlavor(battleFailFlavor, state, 'master', false);
-                    if (failLog) addLog(failLog, "log-flavor");
-                }
+                        let failLog = getRandomFlavor(BATTLE_FAIL_FLAVOR, state, 'master', false);
+                        if (failLog) addLog(failLog, "log-flavor");
+                    }
                 } else {
                     let reward = 15 + Math.floor(state.turn * 0.5);
                     state.gold += reward;
                     addTurnHistory('states', '戦闘勝利'); // 
                     state.endOfTurnEffects.push(`戦闘勝利: 資金+${reward}G`);
                     
-                    // 防衛成功時の情景描写
-                    const battleWinFlavor = {
-                        trust: [
-                            "敵を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。",
-                            "戦いから戻ったあなたを見て、彼は自らが負担になっている現実に顔を歪めた。"
-                        ],
-                        high_trust: [
-                            "敵を撃退し戻ると、彼は主人としてあなたの働きを労った。",
-                            "彼は血に濡れたあなたを案じている。返り血であることを確認し、ようやく安堵の表情を浮かべた。"
-                        ],
-                        dependence: [
-                            "圧倒的な暴力で敵を蹂躙するあなたを見て、彼は胸を撫でおろした。",
-                            "彼は、返り血を浴びたあなたに心酔しているようだ。"
-                        ],
-                        heavy_trust: [
-                            "血に濡れて戻ったあなたを、ただ静かな寝息だけが出迎えた。",
-                            "敵の排除を終え部屋に戻ったが、彼が目を覚ます気配はない。"
-                        ],
-                        heavy_dependence: [
-                            "外の惨状も知らず、彼は部屋で眠り続けている。",
-                            "彼の寝顔を眺める。これを傷つけていいのは、あなただけだ。"
-                        ]
-                    };
-                    let winLog = getRandomFlavor(battleWinFlavor, state, 'master', false);
+                    let winLog = getRandomFlavor(BATTLE_WIN_FLAVOR, state, 'master', false);
                     if (winLog) addLog(winLog, "log-flavor");
                 }
             }
