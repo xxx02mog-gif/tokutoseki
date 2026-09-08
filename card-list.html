@@ -128,6 +128,7 @@
         .type-season { background-color: #b3860f; }
         .type-obstacle { background-color: #444444; }
         .type-attachment { background-color: #ad5c77; }
+        .type-consume { background-color: #3b3b3b; }
         
         .card-cost {
             position: absolute;
@@ -247,7 +248,7 @@
                     { name: "傷口の消毒", cost: 1, desc: "健康+25。関係性+5" },
                     { name: "熱を測る", cost: 1, desc: "ストレス-10。関係性+20%" },
                     { name: "食事の介助", cost: 2, desc: "資金-10~20G。健康+30。ストレス-30。関係性+5" },
-                    { name: "輸血を行う", cost: 2, desc: "健康+60。関係性+30%。次ターンの初期AP-1（使い切り）" },
+                    { name: "輸血を行う", cost: 2, desc: "健康+60。関係性+30%。次ターンの初期AP-1", isConsume: true },
                     { name: "過呼吸の対処", cost: 2, desc: "健康+15。必ずストレス-20。関係性+10。次ターンの初期AP-1" }
                 ]
             },
@@ -259,7 +260,7 @@
                 desc: "周囲の環境を整える行動です。",
                 cards: [
                     { name: "仕事を請け負う", cost: 1, desc: "資金+5~15G。ストレス-10。関係性+3", visitorDesc: { merchant: "資金+10~30G。関係性+3", official: "資金+10~30G。関係性+3" } },
-                    { name: "闇医者を呼ぶ", cost: 1, desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える（使い切り）" },
+                    { name: "闇医者を呼ぶ", cost: 1, desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える", isConsume: true },
                     { name: "部屋の掃除", cost: 1, desc: "健康+10。ストレス-10。関係性+2" },
                     { name: "寝具の天日干し", cost: 1, desc: "健康+10。ストレス-10。関係性+3。次ターンの初期AP+1" },
                     { name: "室温の調整", cost: 1, desc: "関係性+3。次ターンの体調悪化を無効化する" },
@@ -267,10 +268,10 @@
                     { name: "好みの香炉を焚く", cost: 2, desc: "ストレス-15。関係性+3。3ターンの間、毎ターンストレス-5", visitorDesc: { friend: "ストレス-10。関係性+3" } },
                     { name: "アルバムの整理", cost: 1, desc: "ストレス-10。関係性+15%。手札の不用品カードを1枚廃棄する", visitorDesc: { friend: "ストレス-20。関係性+15%。手札の不用品カードを1枚廃棄する" } },
                     { name: "お気に入りの紅茶", cost: 2, desc: "ストレス-15。関係性+4。手札（不用品以外）を1枚捨て、デッキから2枚引く", visitorDesc: { friend: "ストレス-10。関係性+4。手札（不用品以外）を1枚捨て、デッキから2枚引く" } },
-                    { name: "調度品の買い替え", cost: 1, desc: "資金-50G。ストレス-30。関係性+20（使い切り）", visitorDesc: { merchant: "資金-35G。ストレス-10。関係性+20（使い切り）" } },
+                    { name: "調度品の買い替え", cost: 1, desc: "資金-50G。ストレス-30。関係性+20", visitorDesc: { merchant: "資金-35G。ストレス-10。関係性+20" }, isConsume: true },
                     { name: "中庭の手入れ", cost: 2, desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアカードを1枚手札に加える" },
-                    { name: "医者を呼ぶ", cost: 1, desc: "資金-40G。必ず健康+60。ストレス-5。関係性+2（使い切り）" },
-                    { name: "しがらみの精算", cost: 2, desc: "不用品カードをすべて廃棄する。廃棄した枚数が多いほど関係性が0に近付く（使い切り）", visitorDesc: { friend: "資金-30G。ストレス-20。不用品カードをすべて廃棄し関係性が0に近付く（使い切り）" } }
+                    { name: "医者を呼ぶ", cost: 1, desc: "資金-40G。必ず健康+60。ストレス-5。関係性+2", isConsume: true },
+                    { name: "しがらみの精算", cost: 2, desc: "不用品カードをすべて廃棄する。廃棄した枚数が多いほど関係性が0に近付く", visitorDesc: { friend: "資金-30G。ストレス-20。不用品カードをすべて廃棄する。廃棄した枚数が多いほど関係性が0に近付く" }, isConsume: true }
                 ]
             },
             {
@@ -288,7 +289,7 @@
                     { name: "鎮痛剤を与えない", cost: 2, desc: "健康-25。ストレス+10。関係性-4。次ターンの初期AP+1" },
                     { name: "部屋の施錠", cost: 2, desc: "ストレス+25。関係性-10。次回の戦闘時、敵脅威度-15", visitorDesc: { merchant: "ストレス+20。関係性-15。次回の戦闘時、敵脅威度-15", friend: "ストレス+20。関係性-15。次回の戦闘時、敵脅威度-15", official: "ストレス+20。関係性-15。次回の戦闘時、敵脅威度-15" } },
                     { name: "食事を与えない", cost: 2, desc: "健康-10。ストレス+15。関係性-5" },
-                    { name: "他人の気配を匂わす", cost: 2, desc: "ストレス+30。関係性-30%（使い切り）" }
+                    { name: "他人の気配を匂わす", cost: 2, desc: "ストレス+30。関係性-30%", isConsume: true }
                 ]
             },
             {
@@ -299,8 +300,8 @@
                 desc: "外部から迫る襲撃者を排除するための武力行動、または主人への攻撃です。",
                 cards: [
                      { name: "毒の調合", cost: 1, desc: "敵脅威度-15。関係性+1 / 【主人】健康-15。ストレス+10。関係性-10", visitorDesc: { merchant: "ストレス+20。以降の戦闘で敵脅威度+10。関係性-5", friend: "ストレス+20。以降の戦闘で敵脅威度+10。関係性-5", official: "ストレス+20。以降の戦闘で敵脅威度+10。関係性-5" } },
-                    { name: "首を絞める", cost: 2, desc: "敵脅威度-20。関係性+10（使い切り） / 【主人】健康-30。ストレス+30。関係性-20。特定の条件下で対象を殺害する（使い切り）", isHiddenMasterEffect: true, visitorDesc: { merchant: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10（使い切り）", friend: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10（使い切り）", official: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10（使い切り）" } },
-                    { name: "見せしめの拷問", cost: 2, desc: "敵脅威度を強制的に0にする。ストレス+40。関係性-20%（使い切り） / 【主人】ストレス+40。関係性-20%（使い切り）", isHiddenMasterEffect: true, visitorDesc: { merchant: "次回以降の戦闘時、敵脅威度+30。ストレス+40。関係性-20%（使い切り）", friend: "次回以降の戦闘時、敵脅威度+30。ストレス+40。関係性-20%（使い切り）", official: "次回以降の戦闘時、敵脅威度+30。ストレス+40。関係性-20%（使い切り）" } },
+                    { name: "首を絞める", cost: 2, desc: "敵脅威度-20。関係性+10 / 【主人】健康-30。ストレス+30。関係性-20。特定の条件下で対象を殺害する", isHiddenMasterEffect: true, visitorDesc: { merchant: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10", friend: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10", official: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10" }, isConsume: true },
+                    { name: "見せしめの拷問", cost: 2, desc: "敵脅威度を強制的に0にする。ストレス+40。関係性-20% / 【主人】ストレス+40。関係性-20%", isHiddenMasterEffect: true, visitorDesc: { merchant: "次回以降の戦闘時、敵脅威度+30。ストレス+40。関係性-20%", friend: "次回以降の戦闘時、敵脅威度+30。ストレス+40。関係性-20%", official: "次回以降の戦闘時、敵脅威度+30。ストレス+40。関係性-20%" }, isConsume: true },
                     { name: "形見の宝刀", cost: 1, desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1 / 【主人】特定の条件下で対象を殺害する", isHiddenMasterEffect: true, visitorDesc: { merchant: "ストレス+20。以降の戦闘で敵脅威度+15。関係性-5。次ターンの初期AP-1", friend: "ストレス+20。以降の戦闘で敵脅威度+15。関係性-5。次ターンの初期AP-1", official: "ストレス+20。以降の戦闘で敵脅威度+15。関係性-5。次ターンの初期AP-1" } },
                     { name: "罠を配置する", cost: 1, desc: "敵脅威度-15。関係性+2。次ターンの初期AP+1", isBattleOnly: true },
                     { name: "硝煙の盾", cost: 1, desc: "ストレス+10。敵脅威度-20。関係性+1", isBattleOnly: true },
@@ -329,9 +330,9 @@
                 tagName: "愛着",
                 desc: "主人が昏睡状態の時のみ使用できる特殊なカードです。",
                 cards: [
-                    { name: "手を握って付き添う", cost: 1, desc: "ストレス-35。関係性+15（使い切り）" },
-                    { name: "頭を撫でる", cost: 1, desc: "健康+25。ストレス-45。関係性+10（使い切り）" },
-                    { name: "じっと見守る", cost: 1, desc: "健康+25。ストレス-20。関係性+25（使い切り）" }
+                    { name: "手を握って付き添う", cost: 1, desc: "ストレス-35。関係性+15", isConsume: true },
+                    { name: "頭を撫でる", cost: 1, desc: "健康+25。ストレス-45。関係性+10", isConsume: true },
+                    { name: "じっと見守る", cost: 1, desc: "健康+25。ストレス-20。関係性+25", isConsume: true }
                 ]
             },
             {
@@ -343,9 +344,9 @@
                 cards: [
                     { name: "水を与える(昏睡)", cost: 1, desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間、毎ターンストレス+15" },
                     { name: "水を与える(初期化)", cost: 1, desc: "健康+30。必ずストレス-30。関係性を0にする。3ターンの間、毎ターンストレス+15" },
-                    { name: "水を与える(発狂)", cost: 1, desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる（使い切り）" },
-                    { name: "面会", type: "indirect", cost: 1, desc: "ストレス+30。関係性+10（使い切り）。別の手段で対応した場合も、このカードは手札から除外される", isVisitorOnly: true },
-                    { name: "面会(昔馴染み)", type: "indirect", cost: 1, desc: "ストレス-20。関係性+10。不用品カード+1枚。他のカードを訪問者に使用した場合このカードも除外される（使い切り）", isVisitorOnly: true }
+                    { name: "水を与える(発狂)", cost: 1, desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる", isConsume: true },
+                    { name: "面会", type: "indirect", cost: 1, desc: "ストレス+30。関係性+10。別の手段で対応した場合も、このカードは手札から除外される", isVisitorOnly: true, isConsume: true },
+                    { name: "面会(昔馴染み)", type: "indirect", cost: 1, desc: "ストレス-20。関係性+10。不用品カード+1枚。他のカードを訪問者に使用した場合このカードも除外される", isVisitorOnly: true, isConsume: true }
                 ]
             },
             {
@@ -466,7 +467,8 @@
                                 <div class="game-card">
                                     <div>
                                         <div style="display: flex; align-items: center; margin-bottom: 3px;">
-                                            <span class="card-type type-${card.type || cat.tagColor}">${cat.tagName}</span>
+                                            <span class="card-type type-${card.type || cat.tagColor}" style="margin-bottom: 0;">${cat.tagName}</span>
+                                            ${card.isConsume ? `<span class="card-type type-consume" style="margin-bottom: 0; margin-left: 4px;">使い切り</span>` : ''}
                                         </div>
                                         <div class="card-name">${card.name}</div>
                                         <div class="card-info">${getListCardDescHTML(card)}</div>
