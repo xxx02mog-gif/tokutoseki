@@ -1217,10 +1217,10 @@ const ASSASSINATION_AFTER_FLAVOR = {
 
 const CARD_POOL = {
     direct: [
-        { 
+         { 
             name: "水を与える", type: "direct", value: 2, cost: 1, valType: "flat", stressChange: -10, 
             actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}], 
-            desc: "健康+5。ストレス-10。関係性+2。", 
+            desc: "健康+5。ストレス-10。関係性+2", 
             flavor: { 
                 trust: ["あなたが水が入ったグラスを差し出すと、彼は短く礼を言って受け取った。"], 
                 high_trust: ["口元へコップを運んでやろうとしたが、途中で彼にグラスを奪われてしまった。"],
@@ -1232,7 +1232,7 @@ const CARD_POOL = {
         },
         { 
             name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}, {type: "buff", key: "regenDuration", value: 3}], desc: "健康+15。ストレス-10。関係性+3。3ターンの間、健康度が5回復する", 
+            actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}, {type: "buff", key: "regenDuration", value: 3}], desc: "健康+15。ストレス-10。関係性+3。3ターンの間、毎ターン健康度+5", 
             flavor: {
                 trust: ["あなたは彼を気遣って看病した。彼は気まずそうに目を逸らしている。"], 
                 high_trust: ["あなたの手厚い看病に対して、彼から労いの気持ちが伝わってくる。"],
@@ -1268,7 +1268,7 @@ const CARD_POOL = {
         },
         { 
             name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "random"}], desc: "健康+5。ストレス-10。関係性+3。手札の冷淡1枚をランダムなカードに変化", 
+            actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "random"}], desc: "健康+5。ストレス-10。関係性+3。手札の冷淡カード1枚をランダムなカードに変化", 
             flavor: {
                 trust: ["彼の体を丁寧に拭き上げた。彼はこうして世話を焼かれることに負い目を感じている。"], 
                 high_trust: ["体を拭き終えると、彼は少しだけすっきりしたような表情を見せた。"],
@@ -1292,7 +1292,7 @@ const CARD_POOL = {
         },
         { 
             name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 25}], desc: "健康+25。関係性+5。", 
+            actions: [{type: "heal", value: 25}], desc: "健康+25。関係性+5", 
             flavor: { 
                 trust: ["あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめつつも、手当てには感謝している。"], 
                 high_trust: ["彼は消毒の痛みに顔を歪めまいと、必死に平静を装っている。"],
@@ -1326,7 +1326,7 @@ const CARD_POOL = {
         },
         { 
             name: "輸血を行う", type: "direct", value: 30, cost: 2, valType: "percent", 
-            actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+30%。次ターンの初期AP-1（使い切り）", 
+            actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+30%。次ターンの初期AP-1（使い切り）",
             ignoreVisitorFlavor: ["来客を追い返すこともせず、あなたはただ自らの血を彼に分け与えることに没頭した。"],
             flavor: { 
                 trust: ["あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。"], 
@@ -1350,7 +1350,7 @@ const CARD_POOL = {
         { 
             name: "仕事を請け負う", type: "indirect", value: 3, cost: 1, valType: "flat", 
             actions: [ {context: "master", type: "stress", value: -10}, {context: "master", type: "gold_random", min: 5, max: 15 }, {context: "visitor", type: "gold_random", min: 10, max: 30 } ], 
-            desc: "ストレス-10。関係性+3。資金+5~15G", visitorDesc: { merchant: "資金+10~30G。関係性+3", official: "資金+10~30G。関係性+3" },
+            desc: "資金+5~15G。ストレス-10。関係性+3", visitorDesc: { merchant: "資金+10~30G。関係性+3", official: "資金+10~30G。関係性+3" },
             ignoreVisitorFlavor: ["仕事をこなすため、あなたは裏口から屋敷をでた。"],
             flavor: { 
                 trust: ["彼に見送られ、あなたは仕事をこなすために屋敷を出た。"],
@@ -1379,7 +1379,7 @@ const CARD_POOL = {
                 {type: "add_special_card", key: ["water_coma", "water_coma", "water_coma", "water_reset", "water_reset", "water_normal"]},
                 {type: "consume"}
             ],
-            desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える(使い切り)",
+            desc: "資金-20G。必ず健康+50。関係性+5。『水を与える』を手札に加える（使い切り）",
             ignoreVisitorFlavor: ["来客を無視し、裏口から怪しげな医者を招き入れた。"],
             flavor: { 
                 trust: ["外部から怪しげな医者を呼び、治療を受けさせた。彼は医師のことを訝しんでいるようだ。"], 
@@ -1416,7 +1416,7 @@ const CARD_POOL = {
         },
         { 
             name: "室温の調整", type: "indirect", value: 3, cost: 1, valType: "flat", 
-            actions: [{type: "buff", key: "preventDebuff", value: 1}], desc: "関係性+3。次ターン、ストレス値に関わらず体調悪化が発生しない", 
+            actions: [{type: "buff", key: "preventDebuff", value: 1}], desc: "関係性+3。次ターンの体調悪化を無効化する", 
             flavor: {
                 trust: ["過ごしやすくなった室内に、彼は微かに緊張を解いた様子を見せた。"], 
                 high_trust: ["彼が快適に過ごせるよう調整すると、彼は安心したように目を閉じた。"],
@@ -1441,7 +1441,7 @@ const CARD_POOL = {
         },
         { 
             name: "好みの香炉を焚く", type: "indirect", value: 3, cost: 2, valType: "flat", stressChange: -15, cannotUseOnVisitorWhenHeavy: true,
-            actions: [{context: "master", type: "buff", key: "scentDuration", value: 3},{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}], desc: "ストレス-15。関係性+3。3ターンの間、ストレスが5減少する", visitorDesc: { friend: "ストレス-10。関係性+3" },
+            actions: [{context: "master", type: "buff", key: "scentDuration", value: 3},{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}], desc: "ストレス-15。関係性+3。3ターンの間、毎ターンストレス-5", visitorDesc: { friend: "ストレス-10。関係性+3" },
             ignoreVisitorFlavor: ["客の気配など不要だと言わんばかりに、彼好みの香りで部屋を塗り潰した。"],
             flavor: {
                 trust: ["彼好みの香りを焚くと、彼はかつての穏やかな日々を思い出すようだ。"], 
@@ -1457,7 +1457,7 @@ const CARD_POOL = {
         },
          { 
             name: "アルバムの整理", type: "indirect", value: 15, cost: 1, valType: "percent", cannotUseOnVisitorWhenHeavy: true, 
-            actions: [{type: "discard_obstacle"},{context: "master", type: "stress", value: -10}, {context: "visitor", type: "stress", value: -20}], desc: "ストレス-10。関係性+15%。手札の不用品を1枚廃棄する", visitorDesc: { friend: "ストレス-20。関係性+15%。手札の不用品を1枚廃棄する" },
+            actions: [{type: "discard_obstacle"},{context: "master", type: "stress", value: -10}, {context: "visitor", type: "stress", value: -20}], desc: "ストレス-10。関係性+15%。手札の不用品カードを1枚廃棄する", visitorDesc: { friend: "ストレス-20。関係性+15%。手札の不用品カードを1枚廃棄する" },
             ignoreVisitorFlavor: ["外で誰が待っていようと関係ない。あなた達には整理すべき過去がある。"],
             flavor: {
                 trust: ["あなたがアルバムの整理をしていると、彼は懐かしむように、それでいてどこか寂しそうに目を伏せた。"], 
@@ -1478,7 +1478,7 @@ const CARD_POOL = {
         },
         { 
             name: "お気に入りの紅茶", type: "indirect", value: 4, cost: 2, valType: "flat", cannotUseOnVisitorWhenHeavy: true,
-            actions: [{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}, {type: "discard_any_and_draw", discardCount: 1, drawCount: 2}], desc: "ストレス-15。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く", visitorDesc: { friend: "ストレス-10。関係性+4。手札(不用品以外)を1枚捨て、デッキから2枚引く" },
+            actions: [{context: "master", type: "stress", value: -15}, {context: "visitor", type: "stress", value: -10}, {type: "discard_any_and_draw", discardCount: 1, drawCount: 2}], desc: "ストレス-15。関係性+4。手札（不用品以外）を1枚捨て、デッキから2枚引く", visitorDesc: { friend: "ストレス-10。関係性+4。手札（不用品以外）を1枚捨て、デッキから2枚引く" },
             flavor: {
                 trust: ["彼の好みに合わせた紅茶を淹れると、彼は己の嗜好を把握されていることに複雑な表情を見せた。"], 
                 high_trust: ["淹れたての紅茶を用意すると、彼は素直にカップを受け取った。"],
@@ -1514,7 +1514,7 @@ const CARD_POOL = {
         },
         { 
             name: "中庭の手入れ", type: "indirect", value: 5, cost: 2, valType: "flat", 
-            actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアを1枚手札に加える", 
+            actions: [{ type: "heal", value: 5 },{type: "stress", value: -20}, {type: "add_card_to_hand", poolType: "indirect"}], desc: "健康+5。ストレス-20。関係性+5。デッキから間接ケアカードを1枚手札に加える", 
             flavor: { 
                 trust: ["中庭を手入れすると、そのささやかな平穏が彼の心を癒やしていった。"], 
                 high_trust: ["彼は手入れされた中庭を眺めながら、次に手を入れる箇所を算段している。"],
@@ -1524,7 +1524,7 @@ const CARD_POOL = {
         },
        {
             name: "医者を呼ぶ", type: "indirect", value: 2, cost: 1,valType: "flat",goldCost: 40,
-            actions: [ {type: "gold", value: -40}, { type: "heal", value: 60, isFixed: true },{type: "stress", value: -5},{ type: "consume" }],desc: "資金-40G。必ず健康+60。ストレス-5。関係性+2(使い切り)",
+            actions: [ {type: "gold", value: -40}, { type: "heal", value: 60, isFixed: true },{type: "stress", value: -5},{ type: "consume" }],desc: "資金-40G。必ず健康+60。ストレス-5。関係性+2（使い切り）",
             ignoreVisitorFlavor: ["来客には応じず、裏口から医者を招き入れて彼を診察させた。"],
             flavor: {
                 trust: ["外部から医者を呼び、適切な治療を受けさせた。体は楽になったようだが、彼はどこか不服そうにしている。"], 
@@ -1537,7 +1537,7 @@ const CARD_POOL = {
         },
         { 
             name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", visitorGoldCost: 30,
-            actions: [{context: "master", type: "remove_all_obstacles"}, {context: "visitor", type: "gold", value: -30}, {context: "visitor", type: "stress", value: -20}, {context: "visitor", type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品をすべて廃棄する。廃棄した枚数が多いほど、関係性が0に近付く (使い切り)", visitorDesc: { friend: "資金-30G。ストレス-20。不用品をすべて廃棄し関係性が0に近付く (使い切り)" },
+            actions: [{context: "master", type: "remove_all_obstacles"}, {context: "visitor", type: "gold", value: -30}, {context: "visitor", type: "stress", value: -20}, {context: "visitor", type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品カードをすべて廃棄する。廃棄した枚数が多いほど関係性が0に近付く（使い切り）", visitorDesc: { friend: "資金-30G。ストレス-20。不用品カードをすべて廃棄し関係性が0に近付く（使い切り）" },
             flavor: {
                 trust: ["二人の間のしがらみをまっさらにした。これからは、一人の人間として向き合うために。"], 
                 high_trust: ["過去の鎖を断ち切り、彼は自らの足であなたと共に歩む未来を見据えている。"],
@@ -1589,7 +1589,7 @@ const CARD_POOL = {
         },
         { 
             name: "冷酷な事実", type: "cold", value: -7, visitorValue: -10, cost: 2, valType: "flat", cannotUseOnVisitorWhenHeavy: true,
-            actions: [{context: "master", type: "stress", value: 25}, {type: "discard_obstacle"}, {context: "visitor", type: "stress", value: 10}], desc: "ストレス+25。関係性-7。手札の不用品を1枚廃棄する",visitorDesc: { friend: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する", official: "ストレス+10。関係性-10。手札の不用品を1枚廃棄する" },
+            actions: [{context: "master", type: "stress", value: 25}, {type: "discard_obstacle"}, {context: "visitor", type: "stress", value: 10}], desc: "ストレス+25。関係性-7。手札の不用品カードを1枚廃棄する",visitorDesc: { friend: "ストレス+10。関係性-10。手札の不用品カードを1枚廃棄する", official: "ストレス+10。関係性-10。手札の不用品カードを1枚廃棄する" },
             ignoreVisitorFlavor: ["外の騒ぎなど意に介さず、あなたは淡々と残酷な事実を告げた。"],
             flavor: { 
                 trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
@@ -1606,7 +1606,7 @@ const CARD_POOL = {
         },
         { 
             name: "私物の没収", type: "cold", value: -10, visitorValue: -20, cost: 1, valType: "flat", 
-            actions: [{context: "master", type: "stress", value: 15}, {context: "master", type: "gold_random", min: 5, max: 30}, {context: "visitor", type: "stress", value: 30}, {context: "visitor", type: "gold_random", min: 20, max: 50}], desc: "ストレス+15。関係性-10。資金+5~30G", visitorDesc: { merchant: "資金+20~50G。ストレス+30。関係性-20" },
+            actions: [{context: "master", type: "stress", value: 15}, {context: "master", type: "gold_random", min: 5, max: 30}, {context: "visitor", type: "stress", value: 30}, {context: "visitor", type: "gold_random", min: 20, max: 50}], desc: "資金+5~30G。ストレス+15。関係性-10", visitorDesc: { merchant: "資金+20~50G。ストレス+30。関係性-20" },
             ignoreVisitorFlavor: ["訪問者の声が響く中、あなたは何事もないかのように彼の私物を処分していく。"],
             flavor: {
                 trust: ["あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。"], 
@@ -1627,7 +1627,7 @@ const CARD_POOL = {
         },
         { 
             name: "整備を意図的に怠る", type: "cold", value: -3, cost: 1, valType: "flat", 
-            actions: [{type: "buff", key: "threatReduction", value: 5},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次の戦闘時、脅威度を-5", 
+            actions: [{type: "buff", key: "threatReduction", value: 5},{ type: "heal", value: -5 },{type: "stress", value: 10}], desc: "健康-5。ストレス+10。関係性-3。次回の戦闘時、敵脅威度-5", 
             ignoreVisitorFlavor: ["来客にも応じず、屋敷の手入れもせず、ただ怠惰に時間を潰した。"],
             flavor: {
                 trust: ["片脚が悪い彼は、整備されていない道では歩きにくいようだ。"], 
@@ -1650,9 +1650,9 @@ const CARD_POOL = {
                 heavy_dependence: ["苦痛に顔を歪める彼を、薬を与えずにただ眺め続けた。"]
             } 
         },
-        { 
+       { 
             name: "部屋の施錠", type: "cold", value: -10, visitorValue: -15, cost: 2, valType: "flat", 
-            actions: [{context: "master", type: "stress", value: 25}, {type: "buff", key: "threatReduction", value: 15}, {context: "visitor", type: "stress", value: 20}], desc: "ストレス+25。関係性-10。次の戦闘時、脅威度を-15", visitorDesc: { merchant: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", friend: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15", official: "ストレス+20。関係性-15。次の戦闘時、脅威度を-15" },
+            actions: [{context: "master", type: "stress", value: 25}, {type: "buff", key: "threatReduction", value: 15}, {context: "visitor", type: "stress", value: 20}], desc: "ストレス+25。関係性-10。次回の戦闘時、敵脅威度-15", visitorDesc: { merchant: "ストレス+20。関係性-15。次回の戦闘時、敵脅威度-15", friend: "ストレス+20。関係性-15。次回の戦闘時、敵脅威度-15", official: "ストレス+20。関係性-15。次回の戦闘時、敵脅威度-15" },
             ignoreVisitorFlavor: ["彼を訪問者と会わせないために、部屋に閉じ込めた。"],
             flavor: {
                 trust: ["あなたが部屋の鍵を閉めるのを、彼は正当な処置だと考えている。"], 
@@ -1694,9 +1694,9 @@ const CARD_POOL = {
     ],
     harm: [
         { 
-            name: "毒の調合", type: "harm", masterValue: -10, battleValue: 1, visitorValue: -15, cost: 1, valType: "flat", isMasterAlways: true, 
+            name: "毒の調合", type: "harm", masterValue: -10, battleValue: 1, visitorValue: -5, cost: 1, valType: "flat", isMasterAlways: true, 
             actions: [{context: "master", type: "heal", value: -15}, {context: "master", type: "stress", value: 10}, {context: "battle", type: "threat", value: 15}, {context: "visitor", type: "increase_base_threat", value: 10}, {context: "visitor", type: "stress", value: 20}],
-            desc: "敵脅威度-15。関係性+1 / 【対主人】健康-15。ストレス+10。関係性-10", visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+10" },
+            desc: "敵脅威度-15。関係性+1 / 【主人】健康-15。ストレス+10。関係性-10", visitorDesc: { merchant: "ストレス+20。以降の戦闘で敵脅威度+10。関係性-5", friend: "ストレス+20。以降の戦闘で敵脅威度+10。関係性-5", official: "ストレス+20。以降の戦闘で敵脅威度+10。関係性-5" },
             ignoreVisitorFlavor: ["外の気配には見向きもせず、彼の口に少量の毒を流し込んだ。"],
             flavor: {  
                 trust: ["苦い薬を食事に混ぜても、彼は何も言わずにそれを飲み干す。"], 
@@ -1719,10 +1719,10 @@ const CARD_POOL = {
             } 
         },
          { 
-            name: "首を絞める", type: "harm", masterValue: -20, battleValue: 10, visitorValue: -30, cost: 2, valType: "flat", isMasterAlways: false,
+            name: "首を絞める", type: "harm", masterValue: -20, battleValue: 10, visitorValue: -10, cost: 2, valType: "flat", isMasterAlways: false,
             checkKillCondition: (state) => [...state.deck, ...state.hand, ...state.discard].filter(c => c && c.type === 'obstacle').length >= 5,
             actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {context: "visitor", type: "increase_base_threat", value: 20}, {context: "visitor", type: "stress", value: 30}, {type: "consume"}],
-            desc: "敵脅威度-20。関係性+10（使い切り） / 【対主人】健康-30。ストレス+30。関係性-20（使い切り）", visitorDesc: { merchant: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20（使い切り）", friend: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20（使い切り）", official: "ストレス+30。関係性-30。以降の戦闘初期脅威度+20（使い切り）" },
+            desc: "敵脅威度-20。関係性+10（使い切り） / 【主人】健康-30。ストレス+30。関係性-20（使い切り）", visitorDesc: { merchant: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10（使い切り）", friend: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10（使い切り）", official: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10（使い切り）" },
             ignoreVisitorFlavor: ["外から聞こえる声を聞きながら、じわじわと彼の首を締め上げた。"],
             flavor: { 
                 trust: ["彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。"], 
@@ -1743,9 +1743,9 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "見せしめの拷問", type: "harm", masterValue: -20, battleValue: -10, visitorValue: -20, cost: 2, valType: "percent", isMasterAlways: false, 
-           actions: [{context: "master", type: "stress", value: 40}, {context: "battle", type: "threat_clear"}, {context: "visitor", type: "increase_base_threat", value: 30}, {context: "visitor", type: "stress", value: 40}, {type: "consume"} ],
-            desc: "敵脅威度を強制的に0にする。関係性-10%（使い切り） / 【対主人】ストレス+40。関係性-20%（使い切り）",visitorDesc: { merchant: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30（使い切り）", friend: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30（使い切り）", official: "ストレス+40。関係性-20。以降の戦闘初期脅威度+30（使い切り）" }, 
+            name: "見せしめの拷問", type: "harm", masterValue: -20, battleValue: -20, visitorValue: -20, cost: 2, valType: "percent", isMasterAlways: false, 
+           actions: [{type: "stress", value: 40}, {context: "battle", type: "threat_clear"}, {context: "visitor", type: "increase_base_threat", value: 30}, {type: "consume"} ],
+            desc: "敵脅威度を強制的に0にする。ストレス+40。関係性-20%（使い切り） / 【主人】ストレス+40。関係性-20%（使い切り）",visitorDesc: { merchant: "次回以降の戦闘時、敵脅威度+30。ストレス+40。関係性-20%（使い切り）", friend: "次回以降の戦闘時、敵脅威度+30。ストレス+40。関係性-20%（使い切り）", official: "次回以降の戦闘時、敵脅威度+30。ストレス+40。関係性-20%（使い切り）" },
             ignoreVisitorFlavor: ["来客の呑気な声は、凄惨な肉を裂く音に容易く塗り潰された。"],
             flavor: { 
                 trust: ["あなたは主人の目に触れる場所に、惨たらしく切り刻んだ魔物の死体を放置した。"], 
@@ -1764,10 +1764,10 @@ const CARD_POOL = {
                 }
             } 
         },
-        { 
-            name: "形見の宝刀", type: "harm", masterValue: 0, battleValue: 10, visitorValue: -15, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, isHiddenMasterEffect: true,
+         { 
+            name: "形見の宝刀", type: "harm", masterValue: 0, battleValue: 10, visitorValue: -5, cost: 1, valType: "flat", isMasterAlways: false, isKillTrigger: true, isHiddenMasterEffect: true,
             actions: [{context: "battle", type: "threat", value: 45}, {type: "buff", key: "nextTurnAPMod", value: -1}, {context: "visitor", type: "increase_base_threat", value: 15}, {context: "visitor", type: "stress", value: 20}],
-            desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1", visitorDesc: { merchant: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15。次ターンの初期AP-1", friend: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15。次ターンの初期AP-1", official: "ストレス+20。関係性-15。以降の戦闘初期脅威度+15。次ターンの初期AP-1" },
+            desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1 / 【主人】特定の条件下で対象を殺害する", visitorDesc: { merchant: "ストレス+20。以降の戦闘で敵脅威度+15。関係性-5。次ターンの初期AP-1", friend: "ストレス+20。以降の戦闘で敵脅威度+15。関係性-5。次ターンの初期AP-1", official: "ストレス+20。以降の戦闘で敵脅威度+15。関係性-5。次ターンの初期AP-1" },
             ignoreVisitorFlavor: ["扉の向こうの来客などどうでもいい。振り下ろした刃が、すべての因縁を断ち切った。"],
             flavor: {
                 trust: ["あなたは形見の宝刀を構え、因縁に終止符を打った。"], 
@@ -1786,9 +1786,9 @@ const CARD_POOL = {
                 }
             } 
         },
-        { 
+       { 
             name: "罠を配置する", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。関係性+2。次ターンの初期APを+1", 
+            actions: [{context: "battle", type: "threat", value: 15}, {context: "battle", type: "buff", key: "nextTurnAPMod", value: 1}], desc: "敵脅威度-15。関係性+2。次ターンの初期AP+1", 
             flavor: { 
                 trust: ["周囲に罠を仕掛けた。屋敷の安全を万全にする。"], 
                 high_trust: ["仕掛けられた罠の配置を確認し、彼はより効果的な防衛策を提案した。"],
@@ -1798,7 +1798,7 @@ const CARD_POOL = {
         },
         { 
             name: "硝煙の盾", type: "harm", value: 1, cost: 1, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat", value: 20}, {type: "stress", value: 10}], desc: "敵脅威度-20。ストレス+10。関係性+1", 
+            actions: [{context: "battle", type: "threat", value: 20}, {type: "stress", value: 10}], desc: "ストレス+10。敵脅威度-20。関係性+1", 
             flavor: { 
                 trust: ["火薬を使って敵を足止めした。彼は、あなたへの心配で胸を痛めている。"], 
                 high_trust: ["火薬の匂いが立ち込める中、彼は自らも周囲の警戒を怠らなかった。"],
@@ -1809,7 +1809,7 @@ const CARD_POOL = {
         },
         { 
             name: "威嚇射撃", type: "harm", value: 2, cost: 1, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "敵脅威度-10。関係性+2。資金+10~15G", 
+            actions: [{context: "battle", type: "threat", value: 10}, {context: "battle", type: "gold_random", min: 10, max: 15 }], desc: "資金+10~15G。敵脅威度-10。関係性+2", 
             flavor: { 
                 trust: ["威嚇射撃で敵を追い払った。残された物資を回収し、状況を立て直す。"], 
                 high_trust: ["彼は銃声に肩を揺らしたが、すぐに状況を見極めようと気を引き締めた。"],
@@ -1819,7 +1819,7 @@ const CARD_POOL = {
         },
         { 
             name: "容赦なき追撃", type: "harm", value: 3, cost: 1, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10(同ターンに他の攻撃カードを使用済なら-35)。関係性+3", 
+            actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10（同ターンに他の攻撃カードを使用済なら-35）。関係性+3", 
             flavor: { 
                 trust: ["あなたは、撤退してゆく容赦なく敵を追い詰めた。"], 
                 high_trust: ["危険な役割を担うあなたを、彼は痛ましく思いながら見守っている。"],
@@ -1829,7 +1829,7 @@ const CARD_POOL = {
         },
         { 
             name: "捨て身の迎撃", type: "harm", value: -25, cost: 2, valType: "flat", isBattleOnly: true, 
-            actions: [{context: "battle", type: "threat_clear"}, {type: "stress", value: 30},{context: "battle", type: "banish_random_hand"}], desc: "敵脅威度を0にする。ストレス+30。関係性-25。手札（冷淡・不用品以外）を1枚廃棄する",  
+            actions: [{context: "battle", type: "threat_clear"}, {type: "stress", value: 30},{context: "battle", type: "banish_random_hand"}], desc: "ストレス+30。敵脅威度を強制的に0にする。関係性-25。手札（冷淡・不用品以外）を1枚廃棄する",
             flavor: {
                 trust: ["身を挺して敵の攻撃を防いだ。彼は己の無力さとあなたを危険に晒したことを悔いている。"], 
                 high_trust: ["自分を庇ったあなたに対し、彼は感謝よりも先に無茶な立ち回りをたしなめた。"],
@@ -1842,7 +1842,7 @@ const CARD_POOL = {
     season: {
         "秋": { 
             name: "収穫祭の思い出", type: "season", season: "秋", value: 20, cost: 2, valType: "percent", 
-            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+20%。使用後、「秋の名残」に変化する", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+20%。使用後、『秋の名残』に変化する", 
             flavor: { 
                 trust: ["彼は、収穫祭の賑やかさをポツリと語った。はるか過去のことを話すような口ぶりだった。"], 
                 high_trust: ["外から祭りの音が聞こえる。彼はかつての賑やかな日々を懐かしんでいるようだ。"],
@@ -1852,7 +1852,7 @@ const CARD_POOL = {
         },
         "冬": { 
             name: "聖夜の灯火", type: "season", season: "冬", value: 20, cost: 2, valType: "percent", 
-            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+20%。使用後、「冬の名残」に変化する", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "冬限定。ストレス-45。関係性+20%。使用後、『冬の名残』に変化する", 
             flavor: { 
                 trust: ["窓辺のキャンドルが、彼の凍てついた心をほのかに照らす。"], 
                 high_trust: ["揺れる炎を前に、彼はあなたへの信頼を静かに口にした。"],
@@ -1862,7 +1862,7 @@ const CARD_POOL = {
         },
         "春": { 
             name: "薄紅の散策", type: "season", season: "春", value: 20, cost: 2, valType: "percent", 
-            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+20%。使用後、「春の名残」に変化する", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "春限定。ストレス-45。関係性+20%。使用後、『春の名残』に変化する", 
             flavor: { 
                 trust: ["風に乗って桜が舞い込んだ。彼はいつか、あなたと共に歩ける日を夢見ている。"], 
                 high_trust: ["舞い散る花びらを眺める彼の背筋は、凛と伸びている。"],
@@ -1872,7 +1872,7 @@ const CARD_POOL = {
         },
         "夏": { 
             name: "盛夏の木陰", type: "season", season: "夏", value: 20, cost: 2, valType: "percent", 
-            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "夏限定。ストレス-45。関係性+20%。使用後、「夏の名残」に変化する", 
+            actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "夏限定。ストレス-45。関係性+20%。使用後、『夏の名残』に変化する",
             flavor: { 
                 trust: ["眩い日差しの中、木陰で過ごした。彼は目を細めてあなたを見つめていた。"], 
                 high_trust: ["木陰で涼む彼の佇まいには、以前のような余裕が戻りつつある。"],
@@ -1911,7 +1911,7 @@ const SPECIAL_CARDS = {
             {context: "visitor", type: "add_random_obstacle"},
             {type: "consume"}
         ],
-        desc: "ストレス-20。関係性+10。不用品+1枚。他カードを訪問者に使用した場合このカードも除外（使い切り）", 
+        desc: "ストレス-20。関係性+10。不用品カード+1枚。他のカードを訪問者に使用した場合このカードも除外される（使い切り）", 
         flavor: {
             visitor: {
                 trust: [
@@ -1927,7 +1927,7 @@ const SPECIAL_CARDS = {
             }
         } 
     },
-    water_coma: {
+     water_coma: {
         name: "水を与える", type: "direct", value: 2, cost: 1, valType: "flat",
         actions: [
             {type: "heal", value: 30}, 
@@ -1935,7 +1935,7 @@ const SPECIAL_CARDS = {
             {type: "set_debuff", value: "heavy"},
             {type: "buff", key: "waterStressDuration", value: 3}
         ], 
-        desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間ストレス+15", 
+        desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間、毎ターンストレス+15", 
         flavor: { 
             trust: ["その水を飲んだ彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。"], 
             high_trust: ["迷いなく杯を空けた直後、彼の身体から急激に力が抜けていく。"],
@@ -1953,7 +1953,7 @@ const SPECIAL_CARDS = {
             {type: "buff", key: "waterStressDuration", value: 3},
             {type: "set_relation_zero"}
         ], 
-        desc: "健康+30。必ずストレス-30。関係性を0にする。3ターンの間ストレス+15", 
+        desc: "健康+30。必ずストレス-30。関係性を0にする。3ターンの間、毎ターンストレス+15", 
         flavor: { 
             trust: ["何かを諦めたように目を閉じ、彼はその水を飲み干した。"], 
             high_trust: ["彼は生唾を飲み込んだ後、意を決したようにあなたから受け取った水を飲んだ。"],
@@ -1971,7 +1971,7 @@ const SPECIAL_CARDS = {
             {type: "set_madness"},
             {type: "consume"}
         ], 
-        desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる。(使い切り)", 
+        desc: "健康+30。必ずストレス-30。使用後、すべてのカードによる関係値の増減がランダムになる（使い切り）",
         flavor: { 
             trust: ["彼はその水を飲み干した。目が、異様な光を帯びている。"], 
             high_trust: ["かつての矜持を取り戻しかけていた彼の心を、その水は容易に壊してしまった。"],
@@ -2045,76 +2045,120 @@ const SPECIAL_CARDS = {
 };
 
 function getCardDescHTML(card, context, currentState) {
-    if (card.type === 'obstacle') return card.desc;
+    // 障害物・愛着カードはそのまま
+    if (card.type === 'obstacle' || card.type === 'attachment') return card.desc;
 
-    let battleDesc = "";
-    let masterDesc = "";
-    let visitorDescText = "";
-
-    if (card.desc.includes(" / 【対主人】")) {
-        let parts = card.desc.split(" / 【対主人】");
-        battleDesc = parts[0];
-        if (!card.isHiddenMasterEffect) {
-            masterDesc = parts[1];
-        }
+    // 1. 各対象ごとのテキストをパース
+    let battleText = "";
+    let masterText = "";
+    // ★修正：分割キーワードを「 / 【主人】」に変更
+    if (card.desc.includes(" / 【主人】")) {
+        let parts = card.desc.split(" / 【主人】");
+        battleText = parts[0];
+        if (!card.isHiddenMasterEffect) masterText = parts[1];
     } else if (card.isBattleOnly || card.isHiddenMasterEffect) {
-        battleDesc = card.desc;
+        battleText = card.desc;
     } else {
-        masterDesc = card.desc;
+        masterText = card.desc;
     }
 
-    if (card.visitorDesc) {
-        let descSet = new Set(Object.values(card.visitorDesc));
-        visitorDescText = Array.from(descSet).join(" / ");
+    let visitorText = "";
+    let isVisitorValid = false;
+    
+    if (currentState && currentState.visitorActive && currentState.visitorType) {
+        if (card.isVisitorOnly) {
+            if (currentState.debuff !== 'heavy') isVisitorValid = true;
+        } else if (card.visitorDesc && card.visitorDesc[currentState.visitorType]) {
+            isVisitorValid = true;
+        }
+        if (isVisitorValid) {
+            visitorText = (card.visitorDesc && card.visitorDesc[currentState.visitorType]) ? card.visitorDesc[currentState.visitorType] : card.desc;
+        }
+    } else if (context === "shop") {
+        if (card.visitorDesc) {
+            let descSet = new Set(Object.values(card.visitorDesc));
+            visitorText = Array.from(descSet).join(" / ");
+        }
+    }
+
+    const splitSentences = (text) => text.split('。').map(s => s.trim()).filter(s => s !== '');
+    
+    let masterSentences = splitSentences(masterText);
+    let battleSentences = splitSentences(battleText);
+    let visitorSentences = splitSentences(visitorText);
+    
+    let targetLists = [];
+    
+    let isMasterValid = !card.isBattleOnly && !card.isVisitorOnly;
+    if (context === "hand" && card.isMasterAlways === false) {
+        let isKill = card.isKillTrigger || (card.checkKillCondition && card.checkKillCondition(currentState));
+        let canUseOnMaster = (currentState && currentState.debuff === 'heavy') || (currentState && currentState.hasAttemptedAssassination && isKill && card.type === 'harm');
+        if (!canUseOnMaster) {
+            isMasterValid = false;
+        }
+    }
+    let isBattleValid = !!(currentState && currentState.battleActive);
+
+    // ★状況に応じたテキストの振り分け
+    if (context === "shop") {
+        // ショップ：常に全テキストをラベル付きで出す
+        if (masterText) targetLists.push({ label: '主人', sents: masterSentences });
+        if (battleText) targetLists.push({ label: '戦闘', sents: battleSentences });
+        if (visitorText) targetLists.push({ label: '訪問者', sents: visitorSentences });
+    } else if (context === "hand") {
+        // 手札：使える対象をリストアップ
+        if (isMasterValid && masterText) targetLists.push({ label: '主人', sents: masterSentences });
+        if (isBattleValid && battleText) targetLists.push({ label: '戦闘', sents: battleSentences });
+        if (isVisitorValid && visitorText) targetLists.push({ label: '訪問者', sents: visitorSentences });
+
+        // ★どこにも使えない場合：メイン効果だけをラベル無しで出す
+        if (targetLists.length === 0) {
+            if (battleText) {
+                targetLists.push({ label: '', sents: battleSentences });
+            } else if (masterText) {
+                targetLists.push({ label: '', sents: masterSentences });
+            }
+        } 
+        // ★1つしか使えない場合：ラベルを消す
+        else if (targetLists.length === 1) {
+            targetLists[0].label = '';
+        }
+    }
+
+    let commonSentences = [];
+    if (targetLists.length > 1) {
+        let baseSents = targetLists[0].sents;
+        commonSentences = baseSents.filter(sent => 
+            targetLists.every(target => target.sents.includes(sent))
+        );
+        targetLists.forEach(target => {
+            target.sents = target.sents.filter(sent => !commonSentences.includes(sent));
+        });
+    } else if (targetLists.length === 1) {
+        commonSentences = targetLists[0].sents;
+        targetLists[0].sents = [];
     }
 
     let resultLines = [];
+    if (commonSentences.length > 0) {
+        resultLines.push(commonSentences.join("。") + "。");
+    }
     
-    if (context === "shop") {
-        if (masterDesc) resultLines.push(`【主人】${masterDesc}`);
-        if (battleDesc) resultLines.push(`【戦闘】${battleDesc}`);
-        if (visitorDescText) resultLines.push(`【訪問者】${visitorDescText}`);
-        if (resultLines.length === 0) resultLines.push(card.desc);
-    } 
-    else if (context === "hand") {
-        let isMasterValid = !card.isBattleOnly && !card.isVisitorOnly;
-        let isVisitorValid = false;
-        
-        if (currentState.visitorActive && currentState.visitorType) {
-            if (card.isVisitorOnly) {
-                if (currentState.debuff !== 'heavy') isVisitorValid = true;
-            } else if (card.visitorDesc && card.visitorDesc[currentState.visitorType]) {
-                isVisitorValid = true;
+    targetLists.forEach(target => {
+        if (target.sents.length > 0) {
+            if (target.label) {
+                resultLines.push(`【${target.label}】${target.sents.join("。")}。`);
+            } else {
+                resultLines.push(`${target.sents.join("。")}。`);
             }
         }
+    });
 
-        let targetList = [];
-
-        if (isMasterValid && masterDesc) {
-            targetList.push({ label: '主人', text: masterDesc });
-        }
-        if (currentState.battleActive && battleDesc) {
-            targetList.push({ label: '戦闘', text: battleDesc });
-        }
-        if (isVisitorValid) {
-            let vText = (card.visitorDesc && card.visitorDesc[currentState.visitorType]) ? card.visitorDesc[currentState.visitorType] : card.desc;
-            targetList.push({ label: '訪問者', text: vText });
-        }
-
-        // 使用先が1つの場合はラベルを省く、2つ以上の場合はラベルをつける
-        if (targetList.length === 1) {
-            resultLines.push(targetList[0].text);
-        } else {
-            targetList.forEach(t => resultLines.push(`【${t.label}】${t.text}`));
-        }
-
-        // 隠し効果により表示対象が0件になった場合のフォールバック（隠し効果を含まないテキストを優先）
-        if (resultLines.length === 0) {
-            resultLines.push(battleDesc || masterDesc || card.desc);
-        }
+    let finalHtml = resultLines.join("<br>");
+    if (finalHtml === "") {
+        finalHtml = card.desc;
     }
-
-    return resultLines.join("<br>");
+    return finalHtml;
 }
 
         let activeBuffs = {
@@ -3067,24 +3111,12 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                 return;
             }
 
-            if (card.isBattleOnly && !state.battleActive) {
-                showCustomAlert("対象（敵）がいないため、使用できません。");
-                state.selectedCardIndex = null;
-                return;
-            }
-
-            if (card.isVisitorOnly && state.debuff === 'heavy') {
-                showCustomAlert("主人が『昏睡』のため、面会させることはできません。");
-                state.selectedCardIndex = null;
-                return;
-            }
-
             let currentCost = card.cost;
             if (state.debuff === 'light' && (card.type === 'direct' || card.type === 'indirect')) {
                 currentCost += 1;
             }
 
-if (state.debuff === 'heavy' && card.type === 'harm') {
+            if (state.debuff === 'heavy' && card.type === 'harm') {
                 currentCost = 1;
             }
             if (state.ap < currentCost) {
@@ -3093,62 +3125,63 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                 return;
             }
 
-if (card.type === 'season') {
+            if (card.type === 'season') {
                 let currentSeason = getSeasonByTurn(state.turn);
-
                 if (card.season !== currentSeason) {
-                    // --- 変更：デフォルトの alert() を showCustomAlert() に置き換え ---
                     showCustomAlert(`${card.season}以外では使用できません。`);
                     state.selectedCardIndex = null;
                     return;
                 }
             }
 
+            // ▼ 各対象への使用可否を判定
+            let canUseOnBattle = state.battleActive && card.type === 'harm';
+            
+            let canUseOnVisitor = false;
+            if (state.visitorActive) {
+                if (card.isVisitorOnly) {
+                    if (state.debuff !== 'heavy') canUseOnVisitor = true;
+                } else if (card.visitorDesc && card.visitorDesc[state.visitorType]) {
+                    canUseOnVisitor = true;
+                }
+                // 昏睡時は主人が同席していないと不自然な対応はできない
+                if (state.debuff === 'heavy' && card.cannotUseOnVisitorWhenHeavy) {
+                    canUseOnVisitor = false;
+                }
+            }
+
+            let isKill = card.isKillTrigger || (card.checkKillCondition && card.checkKillCondition(state));
+            let canUseOnMaster = !card.isBattleOnly && !card.isVisitorOnly;
+            if (card.isMasterAlways === false) {
+                let killAllowed = state.hasAttemptedAssassination && isKill && card.type === 'harm';
+                if (state.debuff !== 'heavy' && !killAllowed) {
+                    canUseOnMaster = false;
+                }
+            }
+
+            // ★ どこにも使えない場合はアラートを出して終了
+            if (!canUseOnBattle && !canUseOnVisitor && !canUseOnMaster) {
+                showCustomAlert("現在、使用できる対象がいません。");
+                state.selectedCardIndex = null;
+                return;
+            }
+
             document.getElementById(`card-${index}`).classList.add('selected-card');
 
-       const selector = document.getElementById('target-selector');
+            const selector = document.getElementById('target-selector');
             selector.style.display = 'block';
             selector.classList.remove('target-anim-out');
-            selector.classList.add('target-anim-in'); // フェードインのクラスを付与
+            selector.classList.add('target-anim-in');
             
             const battleBtn = document.getElementById('target-battle-btn');
-            if (state.battleActive && card.type === 'harm') {
-                battleBtn.style.display = 'block';
-            } else {
-                battleBtn.style.display = 'none';
-            }
+            battleBtn.style.display = canUseOnBattle ? 'block' : 'none';
 
-            // ▼追加：訪問者用ボタンの表示制御
             const visitorBtn = document.getElementById('target-visitor-btn');
-            if (state.visitorActive) {
-                let canUse = false;
-                if (card.isVisitorOnly) {
-                    if (state.debuff !== 'heavy') canUse = true;
-                } else if (card.visitorDesc && card.visitorDesc[state.visitorType]) {
-                    canUse = true;
-                }
-                visitorBtn.style.display = canUse ? 'block' : 'none';
-            } else {
-                visitorBtn.style.display = 'none';
-            }
+            visitorBtn.style.display = canUseOnVisitor ? 'block' : 'none';
 
             const masterBtn = document.getElementById('target-master-btn');
-            // ▼追加：昏睡時は、主人が同席していないと不自然な対応はボタンを隠す
-            if (state.visitorActive && state.debuff === 'heavy') {
-                if (card.cannotUseOnVisitorWhenHeavy) {
-                    visitorBtn.style.display = 'none';
-                }
-            }
-
-            if (card.isBattleOnly || card.isVisitorOnly) {
-                masterBtn.style.display = 'none';
-            } else {
+            if (canUseOnMaster) {
                 masterBtn.style.display = 'block';
-                
-                // 殺害フラグの判定
-                let isKill = card.isKillTrigger || (card.checkKillCondition && card.checkKillCondition(state));
-                
-                // 昏睡状態、または「暗殺未遂フラグ」が立っていれば、攻撃カードによる殺害が有効になる
                 if ((state.debuff === 'heavy' || state.hasAttemptedAssassination) && card.type === 'harm') {
                     if (isKill) {
                         masterBtn.innerText = "主人を殺す";
@@ -3161,6 +3194,8 @@ if (card.type === 'season') {
                     masterBtn.innerText = "主人に使用";
                     masterBtn.style.backgroundColor = "#3b3b3b";
                 }
+            } else {
+                masterBtn.style.display = 'none';
             }
         }
 
