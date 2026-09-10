@@ -947,7 +947,7 @@ display: flex;
     </div>
 </main>
 <script>
-        const GAME_VERSION = "1.3"; // バージョン情報の一元管理
+        const GAME_VERSION = "1.4"; // バージョン情報の一元管理
 
         let state = {
             turn: 0,
@@ -981,6 +981,7 @@ display: flex;
             seasonEventTriggered: false, // 季節イベントの発生記録用
             hasEncounteredLetter: false, // 追加：手紙イベント発生済みフラグ
             hasEncounteredGift: false, // 追加：贈り物イベント発生済みフラグ
+            hasGivenGiftToMaster: false, // 追加：主人に贈り物を送ったかのフラグ
             isTantrum: false, // 追加：八つ当たり状態フラグ
             temporaryEffects: [], // 追加：一時的な効果の表示用
             endOfTurnEffects: [], // 追加：ターン終了時の効果の表示用
@@ -2041,7 +2042,64 @@ const SPECIAL_CARDS = {
             trust: ["贈り物を唐突に渡された。何の意図があるのか尋ねても、彼は答えなかった。"], 
             high_trust: ["信頼の証があなたの手の中で輝いている。彼は照れくさいのか、顔をそむけている。"],
             dependence: ["彼は、あなたに「それ」を肌見放さず持っていてもらいたいようだ。"]          
-        } 
+        },
+        sellFlavor: {
+            trust: ["彼からの贈り物を売り払った。大金と引き換えに、確かな重みを失った。"],
+            high_trust: ["想いのこもった贈り物を手放した。彼はあなたの行いを黙認している。"],
+            dependence: ["彼の執着がこもった品を売り払った。あなたの胸の内に仄暗い優越感が広がる。"]
+        }
+    },
+    gift_to_master: {
+        name: "主人への贈り物", type: "indirect", value: 5, cost: 2, valType: "flat", goldCost: 100,
+        actions: [
+            {type: "gold", value: -100},
+            {type: "stress", value: -20},
+            {type: "set_flag", key: "hasGivenGiftToMaster", value: true},
+            {type: "combine_if_has", targetName: "贈り物", resultKey: "paired_ornament", message: "カード変化: 揃いの装飾品"},
+            {type: "consume"}
+        ],
+        desc: "資金-100G。ストレス-20。関係性+5。主人へ贈り物を渡す。",
+        ignoreVisitorFlavor: ["あなたは他人のことなど気に留めず、贈り物を彼へ与えた。"],
+        flavor: {
+            trust: ["彼にささやかな品を手渡した。彼は少しばかり戸惑いを見せながらも、静かにそれを受け取った。"],
+            high_trust: ["用意した品を渡す。彼は受け取る理由を探すように視線を泳がせ、やがて短く礼を言った。"],
+            dependence: ["彼はあなたに渡された品をじっと見つめ、縋るように握りしめている。"]
+        },
+        tantrumFlavor: {
+            trust: ["怒りに身を任せる彼に、用意していた品を差し出した。彼は毒気を抜かれたように押し黙った。"],
+            high_trust: ["声を荒げる彼に静かに贈り物を手渡す。彼は己の振る舞いを恥じ入るように目を伏せた。"],
+            dependence: ["取り乱す彼に品を握らせた。彼はあなたから与えられたものにすがりつき、震えを鎮めようとしている。"]
+        },
+        comboFlavor: {
+            targetName: "贈り物",
+            flavor: {
+                trust: ["貰いっぱなしも癪で、あなたは彼に返礼の品を用意した。彼はキョトンとした顔であなたを見上げている。"],
+                high_trust: ["彼の想いに応えて、揃いの品を贈った。それは、二人の関係をほんの少しだけ曖昧にする。"],
+                dependence: ["彼が渡してきたモノに対して贈り物を見繕った。彼はそれを肌見放さず身に付けるようになった。"]
+            }
+        },
+        comboTantrumFlavor: {
+            targetName: "贈り物",
+            flavor: {
+                trust: ["怒りに任せて声を荒げる彼に、返礼の品を突きつけた。彼はハッと我に返り、気まずそうにそれを受け取った。"],
+                high_trust: ["不満をぶつける彼に揃いの品を差し出した。彼は己の余裕のなさを自嘲し、愛おしげにそれに触れた。"],
+                dependence: ["あなたを責め立てる彼に返礼の品を握らせる。歪な繋がりが形になったことに、彼は歪んだ安堵の息を吐いた。"]
+            }
+        },
+        sellFlavor: {
+            trust: ["彼に渡すつもりだった品を処分した。今の二人に、このようなやり取りは不要だろう。"],
+            high_trust: ["彼のために用意した品を手放した。この関係に、私情を挟むべきではないと自らを律する。"],
+            dependence: ["彼に与えるつもりだった品を売り払う。彼を喜ばせる必要など、どこにもないのだから。"]
+        }
+    },
+    paired_ornament: {
+        name: "揃いの装飾品", type: "obstacle", cost: 0,
+        desc: "所持している間、ターン開始時ストレス-15。使用不可。",
+        sellFlavor: {
+            trust: ["互いに贈り合った品を売り払った。手元から重みが消え、元の何もない日々に逆戻りする。"],
+            high_trust: ["交わした揃いの品を金銭に換えた。彼もまた、何も言わずにそれを見つめている。"],
+            dependence: ["あえて形にした絆を売り払う。彼は、あなたの裏切りと明確な拒絶に呆然としている。"]
+        }
     }
 };
 
@@ -2743,8 +2801,18 @@ function processWeekStart() {
             }
 
             let hasGift = allCardsForLetter.some(c => c && c.name === "贈り物");
-            if (hasGift) {
-                state.stress = Math.max(0, state.stress - 5);
+            let hasPairedOrnament = allCardsForLetter.some(c => c && c.name === "揃いの装飾品");
+
+            if (hasPairedOrnament) {
+                state.stress = Math.max(0, state.stress - 15);
+            } else {
+                if (hasGift) {
+                    state.stress = Math.max(0, state.stress - 5);
+                }
+                // お返しをもらう前（未発生）の期間のみ待機バフを適用
+                if (state.hasGivenGiftToMaster && !state.hasEncounteredGift) {
+                    state.stress = Math.max(0, state.stress - 5);
+                }
             }
 
             let roll = Math.random() * 100;
@@ -2932,6 +3000,7 @@ if (Math.random() < obstacleRates[state.debuff]) {
                     };
                     state.hand.push(letterCard);
                    addTurnHistory('event', '手紙');
+                   addTurnHistory('obtained', { type: letterCard.type, name: letterCard.name });
                    turnLogs.push("手紙"); // アラートに追加
                    eventOccurred = true; // 他のイベントと排他にする
                    state.hasEncounteredLetter = true; // 追加：発生済みフラグをオン
@@ -2952,26 +3021,54 @@ if (Math.random() < obstacleRates[state.debuff]) {
             if (!eventOccurred && !state.hasEncounteredGift && state.hand.length < 10 && state.debuff !== 'heavy') {
                 if (Math.random() < 0.02) { // 2%の確率で出現
                     let price = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
-                    let giftCard = {
-                        ...SPECIAL_CARDS['gift'],
-                        sellPrice: price,
-                        id: Date.now() + Math.random()
-                    };
-                    state.hand.push(giftCard);
-                    addTurnHistory('event', '贈り物');
-                    turnLogs.push("贈り物"); // アラートに追加
-                    eventOccurred = true; // 他のイベントと排他にする
-                    state.hasEncounteredGift = true; // 追加：発生済みフラグをオン
-                    state.temporaryEffects.push(`カード入手: ${giftCard.name}`);
                     
-
-                    // 手紙入手時と同じように、フレーバーテキストを出し分ける
-                    let flavorText = getRandomFlavor(giftCard.flavor, state, 'master', false);
-                    
-                    setTimeout(() => {
-                        if (flavorText) addLog(flavorText, "log-flavor");
-                    }, currentLogDelay);
+                    if (state.hasGivenGiftToMaster) {
+                        let pairedCard = {
+                            ...SPECIAL_CARDS['paired_ornament'],
+                            sellPrice: price,
+                            id: Date.now() + Math.random()
+                        };
+                        state.hand.push(pairedCard);
+                        addTurnHistory('event', '揃いの装飾品');
+                        addTurnHistory('obtained', { type: pairedCard.type, name: pairedCard.name });
+                        turnLogs.push("贈り物のお返し");
+                        eventOccurred = true;
+                        state.hasEncounteredGift = true;
+                        state.temporaryEffects.push(`カード変化: ${pairedCard.name}`);
+                        
+                        let flavorObj = {
+                            trust: ["以前渡した品への見返りだろうか。あなたは、彼から不器用に差し出されたそれを受け取った。"],
+                            high_trust: ["彼が贈り物を手渡してきた。以前、あなたが渡した品と誂えを揃えたらしい。"],
+                            dependence: ["あなたが贈ったものと同じ重さの執着が返ってきた。それは、互いを縛る見えない鎖になる。"]
+                        };
+                        let flavorText = getRandomFlavor(flavorObj, state, 'master', false);
+                        
+                        setTimeout(() => {
+                            if (flavorText) addLog(flavorText, "log-flavor");
+                        }, currentLogDelay);
                         currentLogDelay += 600;
+                    } else {
+                        let giftCard = {
+                            ...SPECIAL_CARDS['gift'],
+                            sellPrice: price,
+                            id: Date.now() + Math.random()
+                        };
+                        state.hand.push(giftCard);
+                        addTurnHistory('event', '贈り物');
+                        addTurnHistory('obtained', { type: giftCard.type, name: giftCard.name });
+                        turnLogs.push("贈り物"); // アラートに追加
+                        eventOccurred = true; // 他のイベントと排他にする
+                        state.hasEncounteredGift = true; // 追加：発生済みフラグをオン
+                        state.temporaryEffects.push(`カード入手: ${giftCard.name}`);
+                        
+                        // 手紙入手時と同じように、フレーバーテキストを出し分ける
+                        let flavorText = getRandomFlavor(giftCard.flavor, state, 'master', false);
+                        
+                        setTimeout(() => {
+                            if (flavorText) addLog(flavorText, "log-flavor");
+                        }, currentLogDelay);
+                        currentLogDelay += 600;
+                    }
                 }
             }
 
@@ -3469,12 +3566,18 @@ function executeCard(target) {
 
     if (isTantrumActive) {
         if (target === 'master') {
-            if (card.type === 'direct') {
-                extraLog = (state.relation >= 0) ? TANTRUM_ACTION_TEXTS.care_trust : TANTRUM_ACTION_TEXTS.care_dep;
-            } else if (['indirect', 'season'].includes(card.type)) {
-                extraLog = (state.relation >= 0) ? TANTRUM_ACTION_TEXTS.indirect_trust : TANTRUM_ACTION_TEXTS.indirect_dep;
-            } else if (card.type === 'cold' || card.type === 'harm') {
-                extraLog = (state.relation >= 0) ? TANTRUM_ACTION_TEXTS.cold_trust : TANTRUM_ACTION_TEXTS.cold_dep;
+            if (card.comboTantrumFlavor && [...state.deck, ...state.discard, ...state.hand].some(c => c && c.name === card.comboTantrumFlavor.targetName)) {
+                extraLog = getRandomFlavor(card.comboTantrumFlavor.flavor, state, 'master', false);
+            } else if (card.tantrumFlavor) {
+                extraLog = getRandomFlavor(card.tantrumFlavor, state, 'master', false);
+            } else {
+                if (card.type === 'direct') {
+                    extraLog = (state.relation >= 0) ? TANTRUM_ACTION_TEXTS.care_trust : TANTRUM_ACTION_TEXTS.care_dep;
+                } else if (['indirect', 'season'].includes(card.type)) {
+                    extraLog = (state.relation >= 0) ? TANTRUM_ACTION_TEXTS.indirect_trust : TANTRUM_ACTION_TEXTS.indirect_dep;
+                } else if (card.type === 'cold' || card.type === 'harm') {
+                    extraLog = (state.relation >= 0) ? TANTRUM_ACTION_TEXTS.cold_trust : TANTRUM_ACTION_TEXTS.cold_dep;
+                }
             }
         } else if (target === 'battle' && card.type === 'harm') {
             extraLog = TANTRUM_ACTION_TEXTS.battle;
@@ -3538,7 +3641,14 @@ function executeCard(target) {
         }
     } else if (card.flavor && target !== 'visitor') {
         // 通常時はカード固有のテキストを表示する (visitorの場合は上で出力済みのためスキップ)
-        let text = getRandomFlavor(card.flavor, state, target === 'battle' ? 'battle' : 'master', isMannerism);
+        let flavorToUse = card.flavor;
+        if (card.comboFlavor) {
+            let allCurrentCardsForFlavor = [...state.deck, ...state.discard, ...state.hand];
+            if (allCurrentCardsForFlavor.some(c => c && c.name === card.comboFlavor.targetName)) {
+                flavorToUse = card.comboFlavor.flavor;
+            }
+        }
+        let text = getRandomFlavor(flavorToUse, state, target === 'battle' ? 'battle' : 'master', isMannerism);
         if (text) {
             setTimeout(() => addLog(text, "log-flavor"), executeDelay);
             executeDelay += 600;
@@ -3731,6 +3841,37 @@ case "set_madness":
     activeBuffs.isMadness = true;
     break;
 
+case "set_flag":
+    if (action.key) { state[action.key] = action.value; }
+    break;
+
+case "combine_if_has":
+    let targetIndex = -1;
+    let targetContainer = null;
+    
+    [state.hand, state.deck, state.discard].forEach(container => {
+        if (targetContainer) return;
+        let idx = container.findIndex(c => c && c.name === action.targetName);
+        if (idx !== -1) {
+            targetIndex = idx;
+            targetContainer = container;
+        }
+    });
+    
+    if (targetContainer) {
+        let consumedTarget = targetContainer.splice(targetIndex, 1)[0];
+        addTurnHistory('disposed', { type: consumedTarget.type, name: consumedTarget.name }); // 素材消費の履歴
+
+        let resultCard = {
+            ...SPECIAL_CARDS[action.resultKey],
+            sellPrice: consumedTarget.sellPrice || 0,
+            id: Date.now() + Math.random()
+        };
+        state.hand.push(resultCard);
+        addTurnHistory('obtained', { type: resultCard.type, name: resultCard.name }); // 変化後入手の履歴
+        if (action.message) state.temporaryEffects.push(action.message);
+    }
+    break;
                     
              case "banish_random_hand":
                     let validIndices = [];
@@ -3788,8 +3929,8 @@ case "set_madness":
                         state.hasDisposedObstacle = true; // ★追加：カード効果で不用品を廃棄した記録
                         addTurnHistory('disposed', { type: removed.type, name: removed.name }); // 売却フェーズ以外は（処）として記録
                         if (removed.name === "手紙") disposedLetterEffect = true; // ★追加
-                        if (removed.name === "贈り物") disposedGiftEffect = true; // ★追加
-                       if (removed.name === "贈り物" && state.relation <= -75) {
+                        if (removed.name === "贈り物" || removed.name === "揃いの装飾品") disposedGiftEffect = true; // ★追加
+                       if ((removed.name === "贈り物" || removed.name === "揃いの装飾品") && state.relation <= -75) {
                             if (Math.random() < 0.8) {
                                 isGameOverByGift = true;
                             }
@@ -3802,14 +3943,14 @@ case "set_madness":
                     let giftDisposed = false;
                     
                     // ★追加：不用品全廃棄の前に、手紙と贈り物の所持状況を確認してフラグを立てる
-                    let allCurrentCards = [...state.deck, ...state.discard, ...state.hand];
-                    if (allCurrentCards.some(c => c && c.name === "手紙")) disposedLetterEffect = true;
-                    if (allCurrentCards.some(c => c && c.name === "贈り物")) disposedGiftEffect = true;
+                    let allCurrentCardsForObstacle = [...state.deck, ...state.discard, ...state.hand];
+                    if (allCurrentCardsForObstacle.some(c => c && c.name === "手紙")) disposedLetterEffect = true;
+                    if (allCurrentCardsForObstacle.some(c => c && (c.name === "贈り物" || c.name === "揃いの装飾品"))) disposedGiftEffect = true;
 
                     // デッキから不用品をすべて除外（削除時に配列がずれないよう、後ろからループ処理します）
                     for (let i = state.deck.length - 1; i >= 0; i--) {
                         if (state.deck[i] && state.deck[i].type === 'obstacle') {
-                            if (state.deck[i].name === "贈り物") giftDisposed = true;
+                            if (state.deck[i].name === "贈り物" || state.deck[i].name === "揃いの装飾品") giftDisposed = true;
                             state.deck.splice(i, 1);
                             removedCount++;
                         }
@@ -3818,7 +3959,7 @@ case "set_madness":
                     // 捨て札から不用品をすべて除外
                     for (let i = state.discard.length - 1; i >= 0; i--) {
                         if (state.discard[i] && state.discard[i].type === 'obstacle') {
-                            if (state.discard[i].name === "贈り物") giftDisposed = true;
+                            if (state.discard[i].name === "贈り物" || state.discard[i].name === "揃いの装飾品") giftDisposed = true;
                             state.discard.splice(i, 1);
                             removedCount++;
                         }
@@ -3827,7 +3968,7 @@ case "set_madness":
                     // 手札から不用品をすべて除外
                     for (let i = state.hand.length - 1; i >= 0; i--) {
                         if (state.hand[i] && state.hand[i].type === 'obstacle') {
-                            if (state.hand[i].name === "贈り物") giftDisposed = true;
+                            if (state.hand[i].name === "贈り物" || state.hand[i].name === "揃いの装飾品") giftDisposed = true;
                             state.hand.splice(i, 1);
                             removedCount++;
                         }
@@ -3966,11 +4107,20 @@ case "set_madness":
         }
     }
     if (disposedGiftEffect) {
-        let text = getRandomFlavor({
+        let textObj = {
             trust: ["彼からの贈り物を処分した。もともと、一方的に渡されたものだ。どう扱っても構わないはずだ。"],
             high_trust: ["想いのこもった贈り物を手放した。彼はあなたの行いを黙認している。"],
             dependence: ["彼の執着がこもった品を処分した。あなたの胸の内に仄暗い優越感が広がる。"]
-        }, state, 'master', false);
+        };
+        // 揃いの装飾品が廃棄された場合（データ側からの抽出が難しい場所のため、判定で上書きします）
+        if (state.hasGivenGiftToMaster) {
+            textObj = {
+                trust: ["互いに贈り合った品を破棄した。元の何もない日々に逆戻りする。"],
+                high_trust: ["互いに交わした証を、ためらいなく処分した。彼もまた、何も言わずにそれを見つめている。"],
+                dependence: ["あえて形にした絆をゴミのように捨てる。彼は、あなたの裏切りと明確な拒絶に呆然としている。"]
+            };
+        }
+        let text = getRandomFlavor(textObj, state, 'master', false);
         if (text) {
             setTimeout(() => addLog(text, "log-flavor"), executeDelay);
             executeDelay += 600;
@@ -4151,6 +4301,14 @@ function openShop() {
                 state.seasonEventTriggered = false; // フラグ消費
             } else if (!state.achievements.includes(nextTurnSeason)) {
                 availableCards.push(CARD_POOL.season[nextTurnSeason]);
+            }
+
+            let allCardsInGame = [...state.deck, ...state.hand, ...state.discard];
+            let hasGiftCardInGame = allCardsInGame.some(c => c && c.name === "主人への贈り物");
+            if (!state.hasGivenGiftToMaster && !hasGiftCardInGame) {
+                if (Math.random() < 0.3) {
+                    state.shopCards.push(JSON.parse(JSON.stringify(SPECIAL_CARDS['gift_to_master'])));
+                }
             }
             
             let needed = 4 - state.shopCards.length;
@@ -4387,73 +4545,43 @@ function calculateBonusGold(cardName) {
                 // 売却フェーズでの除外はすべて（売）として記録する
                 addTurnHistory('sold', { type: removed.type, name: removed.name });
 
-                // ★追加：手紙・贈り物・愛着カード売却時のフレーバーテキスト表示
-                let sellFlavorObj = null;
+                // ★追加：売却時のフレーバーテキスト表示（カードデータに定義されていればそれを使用）
+                let sellFlavorObj = removed.sellFlavor || null;
 
-                if (removed.name === "手紙") {
-                    sellFlavorObj = {
-                        trust: ["主人に無断で、彼宛の手紙を処分した。"],
-                        high_trust: ["彼に宛てられた手紙を未開封のまま捨てた。"],
-                        dependence: ["彼宛の手紙を燃やした。彼に外の世界など必要ない。"]
-                    };
-                } else if (removed.name === "贈り物") {
-                    sellFlavorObj = {
-                        trust: ["彼からの贈り物を売り払った。大金と引き換えに、確かな重みを失った。"],
-                        high_trust: ["想いのこもった贈り物を手放した。彼はあなたの行いを黙認している。"],
-                        dependence: ["彼の執着がこもった品を売り払った。あなたの胸の内に仄暗い優越感が広がる。"]
-
-                    };
-                } else if (removed.name === "しがらみの精算") {
-                    sellFlavorObj = {
-                         trust: ["あなたは、何があっても過去を断ち切らないと決意する。"],
-                        high_trust: ["関係をまっさらにする機会を自ら捨てた。これまでの日々を、無かったことにはできなかった。"],
-                        dependence: ["これまでの全てをリセットするなど、そんな勿体ないことはしない。"]
-
-                    };
-                } else if (removed.name === "形見の宝刀") {
-                    sellFlavorObj = {
-                         trust: ["形見の宝刀を売り払った。今すぐ買い戻すべきだということは、わかっている。"],
-                        high_trust: ["あなたは復讐のための刃を手放した。それが彼のためなのか自分のためなのか、わからないでいる。"],
-                        dependence: ["何より大事だった宝刀を処分した。彼を生かし続けることこそが復讐なのだと、自らに言い聞かせる。"]
-                    };
-                } else if (removed.type === "attachment") {
-                    state.attachmentSellCount++; // 愛着カードの売却回数をカウント
-                    
-                    if (state.attachmentSellCount >= 3) {
-                        // 3回以上売却した場合のテキスト
+                if (!sellFlavorObj) {
+                    if (removed.name === "手紙") {
                         sellFlavorObj = {
-                            trust: [
-                                 "もはや彼への愛着を否定しきれない自分がいる。",
-                                "おぞましいことに、切り捨てても切り捨てても彼への情が泉のように湧いてくる。"
-                            ],
-                            high_trust: [
-                                "何度捨てても、彼を愛でてやりたい欲求が消え去ってくれない。",
-                                "切り捨てたはずの情が、また胸の奥で燻り始めている。"
-                            ],
-                            dependence: [
-                                "彼を愛おしく思っている。それでも、あなたは見て見ぬ振りを続けている。",
-                                "何度情を握りつぶそうと、彼への執着は深まるばかりだ。"
-                            ]
+                            trust: ["主人に無断で、彼宛の手紙を処分した。"],
+                            high_trust: ["彼に宛てられた手紙を未開封のまま捨てた。"],
+                            dependence: ["彼宛の手紙を燃やした。彼に外の世界など必要ない。"]
                         };
-                    } else {
-                        // 通常（1〜2回目）の売却時のテキスト
+                    } else if (removed.name === "しがらみの精算") {
                         sellFlavorObj = {
-                            trust: [
-                                "あなたは生温い情を切り捨てた。",
-                                "芽生えかけた情を振り払う。この関係に、私情を挟むべきではない。",
-                                "彼に向き合いそうになる心を、冷たく律した。"
-                            ],
-                            high_trust: [
-                                "彼を愛おしく感じ始めている事実を強引に否定する。",
-                                "温かい感情が芽吹く前に、それを無情にも摘み取った。",
-                                "彼への思い入れを自覚しながらも、あえてそれに蓋をした。"
-                            ],
-                            dependence: [
-                                "甘い情などを覚えている場合ではない。",
-                                "まともな愛情など、彼との間に育てるつもりはない。",
-                                "彼との間には、歪んだ繋がりだけがあればいい。"
-                            ]
+                            trust: ["あなたは、何があっても過去を断ち切らないと決意する。"],
+                            high_trust: ["関係をまっさらにする機会を自ら捨てた。これまでの日々を、無かったことにはできなかった。"],
+                            dependence: ["これまでの全てをリセットするなど、そんな勿体ないことはしない。"]
                         };
+                    } else if (removed.name === "形見の宝刀") {
+                        sellFlavorObj = {
+                            trust: ["形見の宝刀を売り払った。今すぐ買い戻すべきだということは、わかっている。"],
+                            high_trust: ["あなたは復讐のための刃を手放した。それが彼のためなのか自分のためなのか、わからないでいる。"],
+                            dependence: ["何より大事だった宝刀を処分した。彼を生かし続けることこそが復讐なのだと、自らに言い聞かせる。"]
+                        };
+                    } else if (removed.type === "attachment") {
+                        state.attachmentSellCount++; 
+                        if (state.attachmentSellCount >= 3) {
+                            sellFlavorObj = {
+                                trust: ["もはや彼への愛着を否定しきれない自分がいる。"],
+                                high_trust: ["何度捨てても、彼を愛でてやりたい欲求が消え去ってくれない。"],
+                                dependence: ["彼を愛おしく思っている。それでも、あなたは見て見ぬ振りを続けている。"]
+                            };
+                        } else {
+                            sellFlavorObj = {
+                                trust: ["あなたは生温い情を切り捨てた。"],
+                                high_trust: ["彼を愛おしく感じ始めている事実を強引に否定する。"],
+                                dependence: ["甘い情などを覚えている場合ではない。"]
+                            };
+                        }
                     }
                 }
 
@@ -4465,7 +4593,7 @@ function calculateBonusGold(cardName) {
                 }
 
                 // ★追加：贈り物売却によるDEAD END判定
-                if (removed.name === "贈り物" && state.relation <= -75) {
+                if ((removed.name === "贈り物" || removed.name === "揃いの装飾品") && state.relation <= -75) {
                     if (Math.random() < 0.8) {
                         if (activeBuffs.isMadness) {
                             checkEndGame(false, "double_suicide");
@@ -4837,10 +4965,17 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
                 endingText = `彼は過酷な環境に耐えかね、息を引き取った。`;
             } else if (isSurvivalClear) {
               let requiredCount = 10;
-                let hasLetterAtEnd = [...state.deck, ...state.hand, ...state.discard].some(c => c && c.name === '手紙');
+                let allCardsAtEnd = [...state.deck, ...state.hand, ...state.discard];
+                let hasLetterAtEnd = allCardsAtEnd.some(c => c && c.name === '手紙');
+                let hasPairedOrnamentAtEnd = allCardsAtEnd.some(c => c && c.name === '揃いの装飾品');
 
-                // ★追加：「手紙」を所持し、かつ関係性50以上
-                if (hasLetterAtEnd && state.relation >= 50) {
+                if (hasPairedOrnamentAtEnd && state.relation >= 85) {
+                    endingTitle = "【END 12】比翼";
+                    endingText = `彼との関係は主従ではないものになった。彼は、あなたと共に生きる。`;
+                } else if (hasPairedOrnamentAtEnd && state.relation <= -85) {
+                    endingTitle = "【END 13】首輪";
+                    endingText = `贈り合った品は、お互いを逃がさないための首輪だ。二人きりで、この狭い世界に沈んでゆく。`;
+                } else if (hasLetterAtEnd && state.relation >= 50) {
                     endingTitle = "【END 9】鳥籠の外へ";
                     endingText = `ずっと渡さずにいた手紙を彼に渡した。二人で旅行する日も遠くないかもしれない。`;
                  } else if (!state.hasDisposedObstacle) {
@@ -5640,12 +5775,21 @@ function updateBuffDebuffDetails() {
     let allCards = [...state.deck, ...state.hand, ...state.discard];
     let hasLetter = allCards.some(c => c && c.name === "手紙");
     let hasGift = allCards.some(c => c && c.name === "贈り物");
+    let hasPairedOrnament = allCards.some(c => c && c.name === "揃いの装飾品");
     
     if (hasLetter) {
         continuousEffects.push(`手紙: 関係性+の時、毎ターン開始時ストレス+5`);
     }
-    if (hasGift) {
-        continuousEffects.push(`贈り物: ターン開始時ストレス-5`);
+    if (hasPairedOrnament) {
+        continuousEffects.push(`揃いの装飾品: ターン開始時ストレス-15`);
+    } else {
+        if (hasGift) {
+            continuousEffects.push(`贈り物: ターン開始時ストレス-5`);
+        }
+        // お返しをもらう前（未発生）の期間のみ表示
+        if (state.hasGivenGiftToMaster && !state.hasEncounteredGift) {
+            continuousEffects.push(`主人への贈り物: ターン開始時ストレス-5`);
+        }
     }
     if (state.seasonEventTriggered) {
         continuousEffects.push(`季節イベント: 次回購入フェーズで季節カード確定出現`);
@@ -6114,6 +6258,10 @@ function toggleBuffDebuffDetails() {
 
 <details>
   <summary style="font-size: 10px;">更新履歴</summary>
+  <p style="font-size: 9px;">■ver 1.4<br>
+  ・カードを1種追加しました。<br>
+  ・互いに贈り物を所持し合うと特殊な効果が発動するようにしました。<br>
+  ・特殊エンディングを2種追加しました。</p>
   <p style="font-size: 9px;">■ver 1.3<br>・ランダムイベントを1種追加しました。<br>・カード詳細に訪問者使用時の効果を表示するようにしました。<br>
   ・説明書の記載と一部UIを変更しました。</p>
 
