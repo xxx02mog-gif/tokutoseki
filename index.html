@@ -2698,7 +2698,7 @@ const RANDOM_EVENTS = [
         condition: (state) => !state.battleActive && !state.visitorActive,
         effect: (state) => { state.visitorActive = true; state.visitorType = 'friend'; state.hasIgnoredVisitor = false; },
         flavor: { 
-            trust: ["外から扉を叩く音がする。彼の昔馴染みが彼を訪ねてきたようだ。", "扉越しに聞き覚えのある声がする。彼の昔馴染みが様子を見に来たらしい。"],
+            trust: ["外から扉を叩く音がする。彼の昔馴染みが訪ねてきたようだ。", "扉越しに聞き覚えのある声がする。彼の昔馴染みが様子を見に来たらしい。"],
             heavy_trust: ["外から扉を叩く音がする。彼の昔馴染みが訪ねてきたようだが、彼は深い眠りの中だ。", "扉越しに聞き覚えのある声がする。しかし彼が目覚める気配はない。"]
         }
     },
