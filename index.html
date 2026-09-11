@@ -1224,9 +1224,9 @@ const ASSASSINATION_AFTER_FLAVOR = {
 const CARD_POOL = {
     direct: [
          { 
-            name: "水を与える", type: "direct", value: 2, cost: 1, valType: "flat", stressChange: -10, 
+            name: "水を与える", type: "direct", value: 1, cost: 1, valType: "flat", stressChange: -10, 
             actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}], 
-            desc: "健康+5。ストレス-10。関係性+2", 
+            desc: "健康+5。ストレス+10。関係性+1", 
             flavor: { 
                 trust: ["あなたが水が入ったグラスを差し出すと、彼は短く礼を言って受け取った。"], 
                 high_trust: ["口元へコップを運んでやろうとしたが、途中で彼にグラスを奪われてしまった。"],
@@ -1237,8 +1237,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "看病", type: "direct", value: 3, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}, {type: "buff", key: "regenDuration", value: 3}], desc: "健康+15。ストレス-10。関係性+3。3ターンの間、毎ターン健康度+5", 
+            name: "看病", type: "direct", value: 1, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}, {type: "buff", key: "regenDuration", value: 3}], desc: "健康+15。ストレス+10。関係性+1。3ターンの間、毎ターン健康度+5", 
             flavor: {
                 trust: ["あなたは彼を気遣って看病した。彼は気まずそうに目を逸らしている。"], 
                 high_trust: ["あなたの手厚い看病に対して、彼から労いの気持ちが伝わってくる。"],
@@ -1250,7 +1250,7 @@ const CARD_POOL = {
         },
         { 
             name: "髪を梳かす", type: "direct", value: 1, cost: 1, valType: "flat", 
-            actions: [{type: "stress_direct", value: 20}, {type: "buff", key: "nextTurnDrawMod", value: 1}], desc: "ストレス-20。関係性+1。次ターンのドロー枚数+1", 
+            actions: [{type: "stress_direct", value: 20}, {type: "buff", key: "nextTurnDrawMod", value: 1}], desc: "ストレス+20。関係性+1。次ターンのドロー枚数+1", 
             flavor: {
                 trust: ["あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。"], 
                 high_trust: ["髪を梳かす。彼はその仕事をあなたに任せている。"],
@@ -1261,8 +1261,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "薬を飲ませる", type: "direct", value: 2, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 40}, {type: "stress", value: 10}], desc: "健康+40。必ずストレス+10。関係性+2", 
+            name: "薬を飲ませる", type: "direct", value: 1, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 40}, {type: "stress", value: 10}], desc: "健康+40。必ずストレス+10。関係性+1", 
             flavor: {
                 trust: ["あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた。"], 
                 high_trust: ["差し出した薬を受け取ると、彼は一瞬眉を顰めてから一息に飲み干した。"],
@@ -1273,8 +1273,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "体を拭く", type: "direct", value: 3, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "random"}], desc: "健康+5。ストレス-10。関係性+3。手札の冷淡カード1枚をランダムなカードに変化", 
+            name: "体を拭く", type: "direct", value: 1, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 5}, {type: "stress_direct", value: 10}, {type: "convert_card", targetType: "cold", resultName: "random"}], desc: "健康+5。ストレス+10。関係性+1。手札の冷淡カード1枚をランダムなカードに変化", 
             flavor: {
                 trust: ["彼の体を丁寧に拭き上げた。彼はこうして世話を焼かれることに負い目を感じている。"], 
                 high_trust: ["体を拭き終えると、彼は少しだけすっきりしたような表情を見せた。"],
@@ -1285,8 +1285,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "深夜の付き添い", type: "direct", value: 5, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 20},{type: "stress_direct", value: 20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+20。ストレス-20。関係性+5。次ターンの初期AP-1", 
+            name: "深夜の付き添い", type: "direct", value: 2, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 20},{type: "stress_direct", value: 20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+20。ストレス+20。関係性+2。次ターンの初期AP-1", 
             flavor: {  
                 trust: ["夜通し彼の傍にいた。彼はあなたの体調を気遣っている。"], 
                 high_trust: ["あなたが傍にいようとしたが、一人で寝ると追い払われてしまった。"],
@@ -1297,8 +1297,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "傷口の消毒", type: "direct", value: 5, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 25}], desc: "健康+25。関係性+5", 
+            name: "傷口の消毒", type: "direct", value: 2, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 25}], desc: "健康+25。関係性+2", 
             flavor: { 
                 trust: ["あなたは彼の傷口を消毒した。処置の痛みで彼は顔をしかめつつも、手当てには感謝している。"], 
                 high_trust: ["彼は消毒の痛みに顔を歪めまいと、必死に平静を装っている。"],
@@ -1309,8 +1309,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "熱を測る", type: "direct", value: 20, cost: 1, valType: "percent", 
-            actions: [{type: "stress_direct", value: 10}], desc: "ストレス-10。関係性+20%", 
+            name: "熱を測る", type: "direct", value: 10, cost: 1, valType: "percent", 
+            actions: [{type: "stress_direct", value: 10}], desc: "ストレス+10。関係性+10%", 
             flavor: {
                 trust: ["彼の熱を測った。彼は気恥ずかしさと隠しきれない困惑を滲ませている。"], 
                 high_trust: ["額に手を当てて熱を測られるのは、子ども扱いされているように感じて不満なようだ。"],
@@ -1321,8 +1321,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "食事の介助", type: "direct", value: 5, cost: 2, valType: "flat", goldCost: 10,
-            actions: [{type: "gold_random", min: -20, max: -10}, {type: "heal", value: 30}, {type: "stress_direct", value: 30}], desc: "資金-10~20G。健康+30。ストレス-30。関係性+5", 
+            name: "食事の介助", type: "direct", value: 2, cost: 2, valType: "flat", goldCost: 10,
+            actions: [{type: "gold_random", min: -20, max: -10}, {type: "heal", value: 30}, {type: "stress_direct", value: 30}], desc: "資金-10~20G。健康+30。ストレス+30。関係性+2", 
             flavor: {
                 trust: ["つきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。"], 
                 high_trust: ["あなたが食事を与えようとすると、彼は食器を寄越すように言った。"],
@@ -1331,8 +1331,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "輸血を行う", type: "direct", value: 30, cost: 2, valType: "percent", 
-            actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+30%。次ターンの初期AP-1",
+            name: "輸血を行う", type: "direct", value: 15, cost: 2, valType: "percent", 
+            actions: [{type: "heal", value: 60}, {type: "buff", key: "nextTurnAPMod", value: -1}, {type: "consume"}], desc: "健康+60。関係性+15%。次ターンの初期AP-1",
             ignoreVisitorFlavor: ["来客を追い返すこともせず、あなたはただ自らの血を彼に分け与えることに没頭した。"],
             flavor: { 
                 trust: ["あなたは自らの血を彼に分けた。彼はあなたの過剰な献身に戸惑い、心を痛めている。"], 
@@ -1342,8 +1342,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "過呼吸の対処", type: "direct", value: 10, cost: 2, valType: "flat", 
-            actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+10。次ターンの初期AP-1", 
+            name: "過呼吸の対処", type: "direct", value: 5, cost: 2, valType: "flat", 
+            actions: [{type: "heal", value: 15},{type: "stress", value: -20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+15。必ずストレス-20。関係性+5。次ターンの初期AP-1", 
             flavor: { 
                 trust: ["引き攣った呼吸が室内に響く。あなたが背中をさすってやると、彼は慌てて顔を背けた。"], 
                 high_trust: ["あなたが背中をさすると、彼はすぐに落ち着きを取り戻し、あなたの手に触れた。"],
@@ -1976,14 +1976,14 @@ const SPECIAL_CARDS = {
         } 
     },
      water_coma: {
-        name: "水を与える", type: "direct", value: 2, cost: 1, valType: "flat",
+        name: "水を与える", type: "direct", value: 1, cost: 1, valType: "flat",
         actions: [
             {type: "heal", value: 30}, 
             {type: "stress", value: -30}, 
             {type: "set_debuff", value: "heavy"},
             {type: "buff", key: "waterStressDuration", value: 3}
         ], 
-        desc: "健康+30。必ずストレス-30。関係性+2。即座に『昏睡』になる。3ターンの間、毎ターンストレス+15", 
+        desc: "健康+30。必ずストレス-30。関係性+1。即座に『昏睡』になる。3ターンの間、毎ターンストレス+15", 
         flavor: { 
             trust: ["その水を飲んだ彼は一瞬怪訝そうにあなたを見上げ、強い眠気に抗えぬまま深い眠りに落ちていった。"], 
             high_trust: ["迷いなく杯を空けた直後、彼の身体から急激に力が抜けていく。"],
@@ -2101,7 +2101,7 @@ const SPECIAL_CARDS = {
         }
     },
     gift_to_master: {
-        name: "主人への贈り物", type: "direct", value: 10, cost: 2, valType: "flat", goldCost: 100,
+        name: "主人への贈り物", type: "direct", value: 5, cost: 2, valType: "flat", goldCost: 100,
         actions: [
             {type: "gold", value: -100},
             {type: "stress", value: -20},
@@ -2109,7 +2109,7 @@ const SPECIAL_CARDS = {
             {type: "combine_if_has", targetName: "贈り物", resultKey: "paired_ornament", message: "カード変化: 揃いの装飾品"},
             {type: "consume"}
         ],
-        desc: "資金-100G。ストレス-20。関係性+10。主人へ贈り物を渡す。",
+        desc: "資金-100G。必ずストレス-20。関係性+5。主人へ贈り物を渡す。",
         ignoreVisitorFlavor: ["あなたは他人のことなど気に留めず、贈り物を彼へ与えた。"],
         flavor: {
             trust: ["彼にささやかな贈り物を手渡した。彼は少しばかり戸惑いを見せながらも「それ」を受け取った。"],
@@ -2879,7 +2879,7 @@ function processWeekStart() {
                 state.debuff = debuffs[Math.floor(Math.random() * debuffs.length)];
                 
                 let debuffNames = { light: '歩行困難(ケアのAPコスト+1)', medium: '頭痛(ドロー枚数-1)', heavy: '昏睡(APが1に固定)' };
-                let debuffNamesForEffect = { light: '歩行困難 (ケアのAPコスト+1)', medium: '頭痛 (ドロー枚数-1)', heavy: '昏睡 (APが1に固定)' };
+                let debuffNamesForEffect = { light: '歩行困難 (ケアのAPコスト+1)', medium: '頭痛 (ドロー枚数-1)', heavy: '昏睡 (APが1に固定 / 直接ケアのストレス増が減少に反転・関係性上昇量が2倍)' };
                 state.temporaryEffects.push(`主人の体調: ${debuffNamesForEffect[state.debuff]}`);
                
                 let debuffFlavor = "";
@@ -3203,15 +3203,10 @@ if (state.debuff === 'heavy' && card.type === 'harm') {
                     // 4. 発狂（赤の▼）：発狂状態の場合、他の状態を上書きしてこれだけを表示
                     debuffIconsHTML = `<span style="color: #e74c3c; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="発狂状態：関係性の増減がランダム">▼</span>`;
                 } else {
-                    // 1. 矜持（黄色の▼）：関係性0以上かつ直接カードの場合（昏睡時は無効）
-                    if (state.relation >= 0 && card.type === 'direct' && state.debuff !== 'heavy') {
-                        debuffIconsHTML += `<span style="color: #bb9244; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="矜持状態：関係性上昇半減・ストレスの-が+に反転">▼</span>`;
-                    }
-
                     // 2. 依存（紫の▼）：関係性0未満の場合
                     if (state.relation < 0) {
                         if (card.type === 'direct') {
-                            debuffIconsHTML += `<span style="color: #754f87; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="依存状態：関係性の+が-に反転">▲</span>`;
+                            debuffIconsHTML += `<span style="color: #754f87; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="依存状態：直接ケアのストレス増が減少に反転 / 関係性のプラス効果が反転し、2倍マイナスになる">▲</span>`;
                         } else if (card.type === 'indirect') {
                             debuffIconsHTML += `<span style="color: #754f87; margin-left: 3px; font-size: 8px; cursor: help; margin-top: 8px; font-family: 'Zen Kaku Gothic New', sans-serif !important;" title="依存状態：回復量半減・カードの値を問わず、ストレスが+10">▼</span>`;
                         }
@@ -3695,11 +3690,11 @@ let calcRelationDelta = function(targetCard, currentTarget) {
 
         if (targetCard.type === 'direct') {
             if (state.relation < 0) { 
-                delta = -Math.abs(delta); 
+                delta = -Math.abs(delta) * 2; 
             } else { 
                 delta = Math.abs(delta); 
-                if (state.debuff !== 'heavy') {
-                    delta = Math.floor(delta * 0.5); 
+                if (state.debuff === 'heavy') {
+                    delta = delta * 2; 
                 }
             }
         }
@@ -5856,10 +5851,8 @@ function updateBuffDebuffDetails() {
     }
     
     if (!activeBuffs.isMadness) {
-        if (state.relation >= 0) {
-            continuousEffects.push(`矜持状態(関係性+): 直接ケア時ストレス増加 / 関係性上昇半減`);
-        } else {
-            continuousEffects.push(`依存状態(関係性-): 直接ケア時関係性低下 / 間接ケア時回復半減・ストレス+10`);
+        if (state.relation < 0) {
+            continuousEffects.push(`依存状態(関係性-): 直接ケアのストレス増が減少に反転・関係性のプラス効果が反転し、2倍マイナスになる / 間接ケア時回復半減・ストレス+10`);
         }
     }
 
@@ -6389,14 +6382,13 @@ function debugShowAllFlavors() {
                     <div style="margin-bottom: 15px;">
                         <div class="manual-summary"><span class="card-type type-direct" style="margin-right: 5px;">直接</span> 直接ケア</div>
                         <div class="manual-detail">・主人に直接対応する行動です。</div>
-                        <div class="manual-detail">・矜持状態（＋）の時はストレスが増加し、関係性上昇が半減します。</div>
-                        <div class="manual-note">※主人が『昏睡』状態のときはカードに書かれた通りの効果になります。</div>
-                        <div class="manual-detail">・依存状態（－）の時は、関係性がマイナス方向（依存）へ傾きます。</div>
+                        <div class="manual-detail">・依存状態（－）の時は、関係性のプラス効果がマイナスに反転し、さらに2倍の量低下します。同時に、ストレスの増加効果も「ストレス減少」へと反転します。</div>
+                        <div class="manual-note">※主人が『昏睡』状態のときも、ストレス増加が「ストレス減少」に反転します。</div>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <div class="manual-summary"><span class="card-type type-indirect" style="margin-right: 5px;">間接</span> 間接ケア</div>
-                        <div class="manual-detail">・周囲の環境を整え、安定して関係性がプラスに傾く行動です。</div>
+                        <div class="manual-detail">・周囲の環境を整える行動です。</div>
                         <div class="manual-detail">・依存状態（－）の時は回復が半減し、ストレスが強制的に10増加します。</div>
                     </div>
 
@@ -6475,13 +6467,9 @@ function debugShowAllFlavors() {
                     <div class="manual-summary" style="margin-bottom: 15px;">手札のカードにつくマークは、現在の状態による影響を表しています。</div>
                     
                     <div style="margin-bottom: 12px;">
-                        <div class="manual-summary"><span class="manual-hl">矜持状態</span> <span style="font-size: 10px; color: #bb9244; vertical-align: middle; margin-left: 4px;">▼</span></div>
-                        <div class="manual-detail">・（直接ケア時）ストレス増加 / 関係性上昇が半減</div>
-                    </div>
-                    <div style="margin-bottom: 12px;">
                         <div class="manual-summary"><span class="manual-hl">依存状態</span> <span style="font-size: 10px; color: #754f87; vertical-align: middle; margin-left: 4px;">▼ / ▲</span></div>
                         <div class="manual-detail">・（間接ケア時）回復が半減・ストレス増加</div>
-                        <div class="manual-detail">・（直接ケア時）関係性がマイナスに傾く</div>
+                        <div class="manual-detail">・（直接ケア時）関係性のプラス効果がマイナスに反転し、2倍低下する。また、ストレスの増加効果も「減少」に反転する</div>
                     </div>
                     <div style="margin-bottom: 12px;">
                         <div class="manual-summary"><span class="manual-hl">マンネリ状態</span> <span style="font-size: 10px; color: #aaaaaa; vertical-align: middle; margin-left: 4px;">▼</span></div>
