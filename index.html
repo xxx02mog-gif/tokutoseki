@@ -1261,8 +1261,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "薬を飲ませる", type: "direct", value: 1, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 40}, {type: "stress", value: 10}], desc: "健康+40。必ずストレス+10。関係性+1", 
+            name: "薬を飲ませる", type: "direct", value: 3, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 40}, {type: "stress", value: 15}], desc: "健康+40。必ずストレス+15。関係性+3", 
             flavor: {
                 trust: ["あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた。"], 
                 high_trust: ["差し出した薬を受け取ると、彼は一瞬眉を顰めてから一息に飲み干した。"],
@@ -1285,8 +1285,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "深夜の付き添い", type: "direct", value: 2, cost: 1, valType: "flat", 
-            actions: [{type: "heal", value: 20},{type: "stress_direct", value: 20}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+20。ストレス+20。関係性+2。次ターンの初期AP-1", 
+            name: "深夜の付き添い", type: "direct", value: 4, cost: 1, valType: "flat", 
+            actions: [{type: "heal", value: 30},{type: "stress_direct", value: 10}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+30。ストレス+10。関係性+4。次ターンの初期AP-1", 
             flavor: {  
                 trust: ["夜通し彼の傍にいた。彼はあなたの体調を気遣っている。"], 
                 high_trust: ["あなたが傍にいようとしたが、一人で寝ると追い払われてしまった。"],
@@ -1321,8 +1321,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "食事の介助", type: "direct", value: 2, cost: 2, valType: "flat", goldCost: 10,
-            actions: [{type: "gold_random", min: -20, max: -10}, {type: "heal", value: 30}, {type: "stress_direct", value: 30}], desc: "資金-10~20G。健康+30。ストレス+30。関係性+2", 
+            name: "食事の介助", type: "direct", value: 4, cost: 2, valType: "flat", goldCost: 10,
+            actions: [{type: "gold_random", min: -20, max: -10}, {type: "heal", value: 30}, {type: "stress_direct", value: 15}], desc: "資金-10~20G。健康+30。ストレス+15。関係性+4", 
             flavor: {
                 trust: ["つきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。"], 
                 high_trust: ["あなたが食事を与えようとすると、彼は食器を寄越すように言った。"],
@@ -1599,8 +1599,8 @@ const CARD_POOL = {
             }
         },
         { 
-            name: "冷酷な事実", type: "cold", value: -7, visitorValue: -10, cost: 2, valType: "flat", cannotUseOnVisitorWhenHeavy: true,
-            actions: [{context: "master", type: "stress", value: 25}, {type: "discard_obstacle"}, {context: "visitor", type: "stress", value: 10}], desc: "ストレス+25。関係性-7。手札の不用品カードを1枚廃棄する",visitorDesc: { friend: "ストレス+10。関係性-10。手札の不用品カードを1枚廃棄する", official: "ストレス+10。関係性-10。手札の不用品カードを1枚廃棄する" },
+            name: "冷酷な事実", type: "cold", value: -4, visitorValue: -5, cost: 2, valType: "flat", cannotUseOnVisitorWhenHeavy: true,
+            actions: [{context: "master", type: "stress", value: 25}, {type: "discard_obstacle"}, {context: "visitor", type: "stress", value: 10}], desc: "ストレス+25。関係性-4。手札の不用品カードを1枚廃棄する",visitorDesc: { friend: "ストレス+10。関係性-5。手札の不用品カードを1枚廃棄する", official: "ストレス+10。関係性-5。手札の不用品カードを1枚廃棄する" },
             ignoreVisitorFlavor: ["外の騒ぎなど意に介さず、あなたは淡々と残酷な事実を告げた。"],
             flavor: { 
                 trust: ["あなたに事実を淡々と説明され、彼は自分の無力さを実感している。"], 
@@ -1616,8 +1616,8 @@ const CARD_POOL = {
             } 
         },
         { 
-            name: "私物の没収", type: "cold", value: -10, visitorValue: -20, cost: 1, valType: "flat", 
-            actions: [{context: "master", type: "stress", value: 15}, {context: "master", type: "gold_random", min: 5, max: 30}, {context: "visitor", type: "stress", value: 30}, {context: "visitor", type: "gold_random", min: 20, max: 50}], desc: "資金+5~30G。ストレス+15。関係性-10", visitorDesc: { merchant: "資金+20~50G。ストレス+30。関係性-20" },
+            name: "私物の没収", type: "cold", value: -5, visitorValue: -10, cost: 1, valType: "flat", 
+            actions: [{context: "master", type: "stress", value: 15}, {context: "master", type: "gold_random", min: 5, max: 30}, {context: "visitor", type: "stress", value: 30}, {context: "visitor", type: "gold_random", min: 20, max: 50}], desc: "資金+5~30G。ストレス+15。関係性-5", visitorDesc: { merchant: "資金+20~50G。ストレス+30。関係性-10" },
             ignoreVisitorFlavor: ["訪問者の声が響く中、あなたは何事もないかのように彼の私物を処分していく。"],
             flavor: {
                 trust: ["あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。"], 
