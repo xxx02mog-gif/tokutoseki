@@ -794,6 +794,9 @@ display: flex;
     <div style="width: 80%; max-width: 300px; display: flex; flex-direction: column; gap: 10px;">
         <button class="btn btn-primary" onclick="startGame()">物語を始める</button>
         <button class="btn" style="background-color: #1a1a1a;" onclick="openManual()">説明書</button>
+
+        <!-- ▼一時的なデバッグ用ボタンを追加▼ -->
+        <!-- <button class="btn" style="background-color: #5c0f0f; margin-top: 20px;" onclick="debugShowAllFlavors()">全テキスト確認（デバッグ用）</button> -->
     </div>
 </div>
 
@@ -1102,8 +1105,7 @@ const VISITOR_IGNORE_TEXTS = {
     ]
 };
 
-// --- 追加する辞書データ ---
-// 体調不良発生時
+// 体調不良発生時の汎用フレーバーテキスト
 const DEBUFF_FLAVORS = {
     light: [
         "彼は不自由な脚を引きずり、顔をしかめている。",
@@ -1122,7 +1124,7 @@ const DEBUFF_FLAVORS = {
     ]
 };
 
-// 八つ当たり発生時
+// 八つ当たり発生時のフレーバーテキスト
 const TANTRUM_OCCUR_FLAVOR = {
     trust: [
         "蓄積したストレスが限界を超え、彼はあなたに対して声を荒げた。",
@@ -1142,7 +1144,7 @@ const TANTRUM_OCCUR_FLAVOR = {
     ]
 };
 
-// 戦闘勝利時
+// 戦闘勝利時のフレーバーテキスト
 const BATTLE_WIN_FLAVOR = {
     trust: [
         "敵を撃退した。彼は荒れた息を整えるあなたを、痛切な眼差しで見つめている。",
@@ -1153,7 +1155,7 @@ const BATTLE_WIN_FLAVOR = {
         "彼は血に濡れたあなたを案じている。返り血であることを確認し、ようやく安堵の表情を浮かべた。"
     ],
     dependence: [
-        "圧倒的な暴力で敵を蹂躙するあなたを見て、彼は胸を撫でおろした。",
+        "圧倒的な暴力で敵を蹂 forceするあなたを見て、彼は胸を撫でおろした。",
         "彼は、返り血を浴びたあなたに心酔しているようだ。"
     ],
     heavy_trust: [
@@ -1166,7 +1168,7 @@ const BATTLE_WIN_FLAVOR = {
     ]
 };
 
-// 戦闘敗北時
+// 戦闘敗北時のフレーバーテキスト
 const BATTLE_FAIL_FLAVOR = {
     trust: [
         "彼はあなたを庇おうと敵の前に立ちはだかり、傷を負った。",
@@ -1201,7 +1203,7 @@ const TANTRUM_ACTION_TEXTS = {
     battle: "あなたは襲撃の対処に向かう。先程の無様な行いを咎められなかったことに、彼はひそかに安堵した。"
 };
 
-// 暗殺未遂直後のテキスト (getRandomFlavorに渡す形)
+// 暗殺未遂直後の翌ターンテキスト
 const ASSASSINATION_AFTER_FLAVOR = {
     care: {
         trust: ["あんなことがあったにも関わらず、いつも通りに世話を焼かれ、彼は困惑しきっている。"],
@@ -1217,6 +1219,8 @@ const ASSASSINATION_AFTER_FLAVOR = {
     }
 };
 
+// --- 追加する辞書データ ---
+// 体調不良発生時
 const CARD_POOL = {
     direct: [
          { 
@@ -1504,7 +1508,7 @@ const CARD_POOL = {
                 heavy_dependence: ["彼が意識のない間に、あなたは部屋の内装を勝手に新調した。"],
                 visitor: {
                     trust: [
-                        "商人から目新しい調度品を安く買い叩いた。運び込まれた家具を、彼はどこか冷めた目で見ている。",
+                        "商人から目新しい調度品を安く買い叩いた。運び込まれた家具を、彼はどこか遠い目で見ている。",
                         "行商人から質の良い品を手頃な価格で買い取った。"
                     ],
                     heavy_trust: [
@@ -1541,7 +1545,7 @@ const CARD_POOL = {
             name: "しがらみの精算", type: "indirect", value: 0, cost: 2, valType: "flat", visitorGoldCost: 30,
             actions: [{context: "master", type: "remove_all_obstacles"}, {context: "visitor", type: "gold", value: -30}, {context: "visitor", type: "stress", value: -20}, {context: "visitor", type: "remove_all_obstacles"}, {type: "consume"}], desc: "不用品カードをすべて廃棄する。廃棄した枚数が多いほど関係性が0に近付く", visitorDesc: { friend: "資金-30G。ストレス-20。不用品カードをすべて廃棄する。廃棄した枚数が多いほど関係性が0に近付く" },
             flavor: {
-                trust: ["二人の間のしがらみをまっさらにした。これからは、一人の人間として向き合うために。"], 
+                trust: ["二人の間のしがらみをまっさらにした。これからは、一人の人間同士として向き合うために。"], 
                 high_trust: ["過去の鎖を断ち切り、彼は自らの足であなたと共に歩む未来を見据えている。"],
                 dependence: ["互いを縛り付けていたものを手放した。心にぽっかり穴が空いたような気がする。"],
                 mannerism: ["すべてのしがらみを捨てたはずなのに、空虚さだけが残った。"],
@@ -1553,7 +1557,12 @@ const CARD_POOL = {
                         "昔馴染を彼に会わせることはせず、今後彼との関わりを金輪際持たないよう忠告した。"
                     ]
                 }
-            } 
+            },
+            sellFlavor: {
+                trust: ["あなたは、何があっても過去を断ち切らないと決意する。"],
+                high_trust: ["関係をまっさらにする機会を自ら捨てた。これまでの日々を、無かったことにはできなかった。"],
+                dependence: ["これまでの全てをリセットするなど、そんな勿体ないことはしない。"]
+            }
         }
     ],
     cold: [
@@ -1726,7 +1735,23 @@ const CARD_POOL = {
             actions: [{context: "master", type: "heal", value: -30}, {context: "master", type: "stress", value: 30}, {context: "battle", type: "threat", value: 20}, {context: "visitor", type: "increase_base_threat", value: 20}, {context: "visitor", type: "stress", value: 30}, {type: "consume"}],
             desc: "敵脅威度-20。関係性+10 / 【主人】健康-30。ストレス+30。関係性-20", visitorDesc: { merchant: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10", friend: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10", official: "ストレス+30。以降の戦闘で敵脅威度+20。関係性-10" },
             ignoreVisitorFlavor: ["外から聞こえる声を聞きながら、じわじわと彼の首を締め上げた。"],
-            flavor: { 
+            assassinationFlavor: {
+                attempt: {
+                    trust: [
+                        "首に手をかけた瞬間、反射的にナイフを向けられた。相手があなただと気づき、彼は手に持っていたナイフを取り落とした。",
+                        "突然起き上がった彼にナイフを突きつけられた。彼はあなたを賊と勘違いしたようだ。"
+                    ],
+                    dependence: [
+                        "反射的に振り回されたナイフがあなたの皮膚を裂いた。あなたに刃向かってしまった事実に、彼は酷く錯乱している。",
+                        "咄嗟の抵抗をあなたに向けてしまったと気づき、彼は動揺している。"
+                    ]
+                },
+                success: {
+                    trust: ["首に手をかけても彼は抵抗しなかった。あなたの手によって終わることを、ずっと望んでいたようだ。"],
+                    dependence: ["息の根を止めようと力を込めるあなたの手に、彼はそっと自分の手を重ねた。"]
+                }
+            },
+            flavor: {
                 trust: ["彼の首に手をかける。皮膚の向こうに微かな呼吸を感じ、狂おしいまでの支配欲があなたを満たす。"], 
                 high_trust: ["意識のない彼の首を締め上げる。抵抗すら許されない彼を見下ろし、歪な満足感を得た。"],
                 dependence: ["横たわる主人の首に手をかける。薄く開いた彼の目が僅かに微笑んだように感じる。"], 
@@ -1771,6 +1796,27 @@ const CARD_POOL = {
             actions: [{context: "battle", type: "threat", value: 45}, {type: "buff", key: "nextTurnAPMod", value: -1}, {context: "visitor", type: "increase_base_threat", value: 15}, {context: "visitor", type: "stress", value: 20}],
             desc: "敵脅威度-45。関係性+10。次ターンの初期AP-1 / 【主人】特定の条件下で対象を殺害する", visitorDesc: { merchant: "ストレス+20。以降の戦闘で敵脅威度+15。関係性-5。次ターンの初期AP-1", friend: "ストレス+20。以降の戦闘で敵脅威度+15。関係性-5。次ターンの初期AP-1", official: "ストレス+20。以降の戦闘で敵脅威度+15。関係性-5。次ターンの初期AP-1" },
             ignoreVisitorFlavor: ["扉の向こうの来客などどうでもいい。振り下ろした刃が、すべての因縁を断ち切った。"],
+            assassinationFlavor: {
+                attempt: {
+                    trust: [
+                        "刃を振り下ろした瞬間、反射的にナイフで弾き返された。相手があなただと気づき、彼は手に持っていたナイフを取り落とした。",
+                        "突然起き上がった彼にナイフを突きつけられた。彼はあなたを賊と勘違いしたようだ。"
+                    ],
+                    dependence: [
+                        "宝刀を彼の胸へ突き立てようとした瞬間、ナイフで刃を凌がれた。あなたに刃向かってしまった事実に、彼は酷く錯乱している。",
+                        "咄嗟の抵抗をあなたに向けてしまったと知るなり、彼は動揺し、震えている。"
+                    ]
+                },
+                success: {
+                    trust: ["刃を向けても彼は抵抗しなかった。あなたの手によって終わることを、ずっと望んでいたようだ。"],
+                    dependence: ["彼の体に深く刃を突き立てる。彼は震える手で、宝刀の柄をあなたの手を上から握りしめた。"]
+                }
+            },
+            sellFlavor: {
+                trust: ["形見の宝刀を売り払った。今すぐ買い戻すべきだということは、わかっている。"],
+                high_trust: ["あなたは復讐のための刃を手放した。それが彼のためなのか自分のためなのか、わからないでいる。"],
+                dependence: ["何より大事だった宝刀を処分した。彼を生かし続けることこそが復讐なのだと、自らに言い聞かせる。"]
+            },
             flavor: {
                 trust: ["あなたは形見の宝刀を構え、因縁に終止符を打った。"], 
                 dependence: ["あまりにあっけなく、復讐は終わった。"], 
@@ -2027,12 +2073,17 @@ const SPECIAL_CARDS = {
     letter_from_old_friend: { 
         name: "手紙", type: "obstacle", cost: 0, 
         desc: "所持している間、関係値+の時に毎ターンストレス+5。使用不可", 
+        sellFlavor: {
+            trust: ["主人に無断で、彼宛の手紙を処分した。"],
+            high_trust: ["彼に宛てられた手紙を未開封のまま捨てた。"],
+            dependence: ["彼宛の手紙を燃やした。彼に外の世界など必要ない。"]
+        },
         flavor: { 
             trust: ["彼は、自分宛ての手紙をあなたが隠し持っていることに気付いている。"], 
             high_trust: ["あなたが隠した手紙に気づいているはずだが、彼は決してそれを問い詰めようとはしない。"],
             dependence: ["昔馴染からの手紙。今の彼にとっては、もう、どうでもいいものだ。"],
             heavy_trust: ["宛名には彼の名が書かれている。だが、彼がこの封を切ることはないだろう。"],
-            heavy_dependence: ["彼に外や過去との繋がりが必要かどうかは、彼自身ではなくあなたが決める。"]
+            heavy_dependence: ["彼に外や過去との繋がりが必要かどうかは、彼ではなくあなたが決める。"]
         } 
     },
     gift: { 
@@ -2041,7 +2092,7 @@ const SPECIAL_CARDS = {
         flavor: { 
             trust: ["贈り物を唐突に渡された。何の意図があるのか尋ねても、彼は答えなかった。"], 
             high_trust: ["信頼の証があなたの手の中で輝いている。彼は照れくさいのか、顔をそむけている。"],
-            dependence: ["彼は、あなたに「それ」を肌見放さず持っていてもらいたいようだ。"]          
+            dependence: ["彼は、あなたに「それ」を肌身離さず持っていてもらいたいようだ。"]          
         },
         sellFlavor: {
             trust: ["彼からの贈り物を売り払った。大金と引き換えに、確かな重みを失った。"],
@@ -2050,7 +2101,7 @@ const SPECIAL_CARDS = {
         }
     },
     gift_to_master: {
-        name: "主人への贈り物", type: "indirect", value: 5, cost: 2, valType: "flat", goldCost: 100,
+        name: "主人への贈り物", type: "direct", value: 10, cost: 2, valType: "flat", goldCost: 100,
         actions: [
             {type: "gold", value: -100},
             {type: "stress", value: -20},
@@ -2058,36 +2109,36 @@ const SPECIAL_CARDS = {
             {type: "combine_if_has", targetName: "贈り物", resultKey: "paired_ornament", message: "カード変化: 揃いの装飾品"},
             {type: "consume"}
         ],
-        desc: "資金-100G。ストレス-20。関係性+5。主人へ贈り物を渡す。",
+        desc: "資金-100G。ストレス-20。関係性+10。主人へ贈り物を渡す。",
         ignoreVisitorFlavor: ["あなたは他人のことなど気に留めず、贈り物を彼へ与えた。"],
         flavor: {
-            trust: ["彼にささやかな品を手渡した。彼は少しばかり戸惑いを見せながらも、静かにそれを受け取った。"],
-            high_trust: ["用意した品を渡す。彼は受け取る理由を探すように視線を泳がせ、やがて短く礼を言った。"],
+            trust: ["彼にささやかな贈り物を手渡した。彼は少しばかり戸惑いを見せながらも「それ」を受け取った。"],
+            high_trust: ["かねてより用意していた品を渡す。彼はしばらく受け取る理由を探しているようだったが、やがて短く礼を言った。"],
             dependence: ["彼はあなたに渡された品をじっと見つめ、縋るように握りしめている。"]
         },
         tantrumFlavor: {
             trust: ["怒りに身を任せる彼に、用意していた品を差し出した。彼は毒気を抜かれたように押し黙った。"],
-            high_trust: ["声を荒げる彼に静かに贈り物を手渡す。彼は己の振る舞いを恥じ入るように目を伏せた。"],
+            high_trust: ["彼を宥めるために贈り物を手渡す。彼は「それ」を期待の表れとして重く受け止めたようだ。"],
             dependence: ["取り乱す彼に品を握らせた。彼はあなたから与えられたものにすがりつき、震えを鎮めようとしている。"]
         },
         comboFlavor: {
             targetName: "贈り物",
             flavor: {
-                trust: ["貰いっぱなしも癪で、あなたは彼に返礼の品を用意した。彼はキョトンとした顔であなたを見上げている。"],
-                high_trust: ["彼の想いに応えて、揃いの品を贈った。それは、二人の関係をほんの少しだけ曖昧にする。"],
-                dependence: ["彼が渡してきたモノに対して贈り物を見繕った。彼はそれを肌見放さず身に付けるようになった。"]
+                trust: ["貰いっぱなしも癪だと思い、彼にお返しを用意した。彼はキョトンとした顔であなたを見上げている。"],
+                high_trust: ["彼の想いに応えて、揃いの品を贈った。「それ」は、二人の関係をほんの少しだけ曖昧にする。"],
+                dependence: ["気まぐれに、彼が渡してきたものに対して贈り物を見繕った。彼は「それ」を肌見放さず身に付けるようになった。"]
             }
         },
         comboTantrumFlavor: {
             targetName: "贈り物",
             flavor: {
-                trust: ["怒りに任せて声を荒げる彼に、返礼の品を突きつけた。彼はハッと我に返り、気まずそうにそれを受け取った。"],
-                high_trust: ["不満をぶつける彼に揃いの品を差し出した。彼は己の余裕のなさを自嘲し、愛おしげにそれに触れた。"],
-                dependence: ["あなたを責め立てる彼に返礼の品を握らせる。歪な繋がりが形になったことに、彼は歪んだ安堵の息を吐いた。"]
+                trust: ["怒りに任せて声を荒げる彼に、いつぞやのお返しとして用意していた品物を突きつけた。"],
+                high_trust: ["不満をぶつける彼に揃いの品を差し出した。彼は、己の余裕のなさを反省している。"],
+                dependence: ["あなたを責め立ててくる彼に、用意していたお返しを握らせた。彼は「それ」を肌見放さず身に付けるようになった。"]
             }
         },
         sellFlavor: {
-            trust: ["彼に渡すつもりだった品を処分した。今の二人に、このようなやり取りは不要だろう。"],
+            trust: ["ふと我に返り、あなたは彼に渡すつもりだった品を処分した。"],
             high_trust: ["彼のために用意した品を手放した。この関係に、私情を挟むべきではないと自らを律する。"],
             dependence: ["彼に与えるつもりだった品を売り払う。彼を喜ばせる必要など、どこにもないのだから。"]
         }
@@ -2098,7 +2149,7 @@ const SPECIAL_CARDS = {
         sellFlavor: {
             trust: ["互いに贈り合った品を売り払った。手元から重みが消え、元の何もない日々に逆戻りする。"],
             high_trust: ["交わした揃いの品を金銭に換えた。彼もまた、何も言わずにそれを見つめている。"],
-            dependence: ["あえて形にした絆を売り払う。彼は、あなたの裏切りと明確な拒絶に呆然としている。"]
+            dependence: ["あえて形にした歪な繋がりそのものを売り払う。彼は、あなたの裏切りと明確な拒絶に呆然としている。"]
         }
     }
 };
@@ -3361,7 +3412,7 @@ function executeCard(target) {
     }
     state.ap -= currentCost;
 
-    // 追加：使用したカードを記録
+   // 追加：使用したカードを記録
     state.playedCardsList.push(card);
     state.totalPlayedCardsList.push(card);
     addTurnHistory('used', { type: card.type, name: card.name, target: target });
@@ -3413,41 +3464,9 @@ function executeCard(target) {
     // ==============================================================
     // （※冗長だった isKillFlag の再計算ブロックを削除し、すでに計算済みの isKill を使用します）
     if (target === 'master' && card.type === 'harm' && isKill) {
-        // 武器（カード）に応じたフレーバーテキストの用意
-        let attemptFlavor, awakeKillFlavor;
-
-        if (card.name === "首を絞める") {
-            attemptFlavor = {
-                trust: [
-                    "首に手をかけた瞬間、反射的にナイフを向けられた。相手があなただと気づき、彼は手に持っていたナイフを取り落とした。",
-                    "突然起き上がった彼にナイフを突きつけられた。彼はあなたを賊と勘違いしたようだ。"
-                ],
-                dependence: [
-                    "反射的に振り回されたナイフがあなたの皮膚を裂いた。あなたに刃向かってしまった事実に、彼は酷く錯乱している。",
-                    "咄嗟の抵抗をあなたに向けてしまったと気づき、彼は動揺している。"
-                ]
-            };
-            awakeKillFlavor = {
-                trust: ["首に手をかけても彼は抵抗しなかった。あなたの手によって終わることを、ずっと望んでいたようだ。"],
-                dependence: ["息の根を止めようと力を込めるあなたの手に、彼はそっと自分の手を重ねた。"]
-            };
-        } else {
-            // 形見の宝刀などの武器系
-            attemptFlavor = {
-                trust: [
-                    "刃を振り下ろした瞬間、反射的にナイフで弾き返された。相手があなただと気づき、彼は手に持っていたナイフを取り落とした。",
-                    "突然起き上がった彼にナイフを突きつけられた。彼はあなたを賊と勘違いしたようだ。"
-                ],
-                dependence: [
-                    "宝刀を彼の胸へ突き立てようとした瞬間、ナイフで刃を凌がれた。あなたに刃向かってしまった事実に、彼は酷く錯乱している。",
-                    "咄嗟の抵抗をあなたに向けてしまったと知るなり、彼は動揺し、震えている。"
-                ]
-            };
-            awakeKillFlavor = {
-                trust: ["刃を向けても彼は抵抗しなかった。あなたの手によって終わることを、ずっと望んでいたようだ。"],
-                dependence: ["彼の体に深く刃を突き立てる。彼は震える手で、宝刀の柄をあなたの手を上から握りしめた。"]
-            };
-        }
+        // カードデータに設定された暗殺テキストを取得
+        let attemptFlavor = card.assassinationFlavor ? card.assassinationFlavor.attempt : null;
+        let awakeKillFlavor = card.assassinationFlavor ? card.assassinationFlavor.success : null;
 
         // 未遂フラグがなく、かつ自衛状態の場合：暗殺失敗イベント（ゲーム続行）
         if (!state.hasAttemptedAssassination && activeBuffs.hasKnife) {
@@ -4545,29 +4564,11 @@ function calculateBonusGold(cardName) {
                 // 売却フェーズでの除外はすべて（売）として記録する
                 addTurnHistory('sold', { type: removed.type, name: removed.name });
 
-                // ★追加：売却時のフレーバーテキスト表示（カードデータに定義されていればそれを使用）
+               // ★追加：売却時のフレーバーテキスト表示（カードデータに定義されていればそれを使用）
                 let sellFlavorObj = removed.sellFlavor || null;
 
                 if (!sellFlavorObj) {
-                    if (removed.name === "手紙") {
-                        sellFlavorObj = {
-                            trust: ["主人に無断で、彼宛の手紙を処分した。"],
-                            high_trust: ["彼に宛てられた手紙を未開封のまま捨てた。"],
-                            dependence: ["彼宛の手紙を燃やした。彼に外の世界など必要ない。"]
-                        };
-                    } else if (removed.name === "しがらみの精算") {
-                        sellFlavorObj = {
-                            trust: ["あなたは、何があっても過去を断ち切らないと決意する。"],
-                            high_trust: ["関係をまっさらにする機会を自ら捨てた。これまでの日々を、無かったことにはできなかった。"],
-                            dependence: ["これまでの全てをリセットするなど、そんな勿体ないことはしない。"]
-                        };
-                    } else if (removed.name === "形見の宝刀") {
-                        sellFlavorObj = {
-                            trust: ["形見の宝刀を売り払った。今すぐ買い戻すべきだということは、わかっている。"],
-                            high_trust: ["あなたは復讐のための刃を手放した。それが彼のためなのか自分のためなのか、わからないでいる。"],
-                            dependence: ["何より大事だった宝刀を処分した。彼を生かし続けることこそが復讐なのだと、自らに言い聞かせる。"]
-                        };
-                    } else if (removed.type === "attachment") {
+                    if (removed.type === "attachment") {
                         state.attachmentSellCount++; 
                         if (state.attachmentSellCount >= 3) {
                             sellFlavorObj = {
@@ -4749,7 +4750,9 @@ function generateTurnHistoryHTML(startTurn = 1, endTurn = state.turn, options = 
                     let useCards = groupItems.map(item => {
                         let c = item.data;
                         let targetSuffix = '';
-                        if (c.type === 'harm') {
+                        if (c.target === 'visitor') {
+                            targetSuffix = '（訪）';
+                        } else if (c.type === 'harm') {
                             if (c.target === 'master') targetSuffix = '（主人）';
                             else if (c.target === 'battle') targetSuffix = '（敵）';
                         }
@@ -4973,8 +4976,8 @@ if (state.turnHistory && Object.keys(state.turnHistory).length > 0) {
                     endingTitle = "【END 12】比翼";
                     endingText = `彼との関係は主従ではないものになった。彼は、あなたと共に生きる。`;
                 } else if (hasPairedOrnamentAtEnd && state.relation <= -85) {
-                    endingTitle = "【END 13】首輪";
-                    endingText = `贈り合った品は、お互いを逃がさないための首輪だ。二人きりで、この狭い世界に沈んでゆく。`;
+                    endingTitle = "【END 13】枷を嵌める";
+                    endingText = `贈り合った品は、お互いを逃がさないための枷だ。二人きりで、この狭い世界に沈んでゆく。`;
                 } else if (hasLetterAtEnd && state.relation >= 50) {
                     endingTitle = "【END 9】鳥籠の外へ";
                     endingText = `ずっと渡さずにいた手紙を彼に渡した。二人で旅行する日も遠くないかもしれない。`;
@@ -5495,13 +5498,42 @@ function openManual() {
                                 if (segmenter) {
                                     let segments = Array.from(segmenter.segment(blockText)).map(s => s.segment);
                                     let grouped = [];
+                                    let inQuotePhrase = false;
+
                                     for (let seg of segments) {
-                                        if (grouped.length > 0 && /^[ぁ-んー。、！？…\s]+$/.test(seg)) {
-                                            grouped[grouped.length - 1] += seg;
-                                        } else {
+                                        // 1. 開き括弧が来たら新しいブロックを作る
+                                        if (/^[「『（(【]/.test(seg)) {
+                                            inQuotePhrase = true;
                                             grouped.push(seg);
+                                            continue;
                                         }
+
+                                        if (grouped.length > 0) {
+                                            // 2. 括弧内は「閉じ括弧」が来るまで結合
+                                            if (inQuotePhrase) {
+                                                grouped[grouped.length - 1] += seg;
+                                                if (/[」』）)】]$/.test(seg)) {
+                                                    inQuotePhrase = false;
+                                                }
+                                                continue;
+                                            }
+
+                                            // 3. ひらがなや句読点は前のブロックに結合
+                                            if (/^[ぁ-んー。、！？…\s」』）)】]+$/.test(seg)) {
+                                                grouped[grouped.length - 1] += seg;
+                                                continue;
+                                            }
+
+                                            // 4. 前のブロックが2文字以下なら、不自然な分断（「受け」＋「取っ」など）を防ぐため結合
+                                            if (grouped[grouped.length - 1].length <= 2) {
+                                                grouped[grouped.length - 1] += seg;
+                                                continue;
+                                            }
+                                        }
+                                        // 5. それ以外（新しい漢字の始まりなど）は新しいブロックにする
+                                        grouped.push(seg);
                                     }
+                                    
                                     let resultParts = grouped.map(part => `<span style="display: inline-block; max-width: 100%; word-break: keep-all; overflow-wrap: break-word;">${part}</span>`);
                                     innerHTML = resultParts.join('<wbr>');
                                 } else {
@@ -5854,6 +5886,255 @@ function toggleBuffDebuffDetails() {
         el.style.display = el.style.display === 'none' ? 'block' : 'none';
     });
 }
+
+// ==========================================
+// デバッグ用：全フレーバーテキスト出力機能
+// ==========================================
+/*
+function debugShowAllFlavors() {
+    const modal = document.getElementById('flavor-modal');
+    const captureArea = document.getElementById('flavor-capture-area');
+    captureArea.innerHTML = ''; // 現在の内容をクリア
+
+    // ヘルパー: アイテム作成（既存のopenFlavorModalと全く同じ構造＋独立したラベル）
+    function createDebugItem(prefix, text) {
+        if(!text) return;
+        
+        const div = document.createElement('div');
+        div.className = 'flavor-preview-item';
+        div.style.position = 'relative';
+        div.style.width = '100%';
+        div.style.paddingRight = '0px'; 
+        div.style.fontSize = '13px'; 
+        div.style.transition = 'font-size 0.2s ease, margin 0.2s ease'; 
+        div.style.marginBottom = '6px';
+        div.style.lineHeight = '1.4';
+        
+        // ★ポイント: テキスト変換処理に巻き込まれないよう、ラベルを独立したdivで作る
+        const labelDiv = document.createElement('div');
+        labelDiv.style.fontSize = '9px';
+        labelDiv.style.color = '#736e5d';
+        labelDiv.style.marginBottom = '2px';
+        labelDiv.style.fontFamily = "'Zen Kaku Gothic New', sans-serif";
+        labelDiv.innerText = `[${prefix}]`;
+        div.appendChild(labelDiv);
+        
+        // テキスト部分（クリックで処理される対象）
+        const textSpan = document.createElement('span');
+        textSpan.className = 'flavor-text';
+        textSpan.innerText = text;
+        div.appendChild(textSpan);
+        
+        // 余白ボタン
+        const marginBtn = document.createElement('button');
+        marginBtn.className = 'btn margin-btn';
+        marginBtn.innerText = '余白';
+        marginBtn.style.position = 'absolute';
+        marginBtn.style.right = '-40px'; 
+        marginBtn.style.bottom = '0px';
+        marginBtn.style.padding = '2px 6px';
+        marginBtn.style.fontSize = '9px';
+        marginBtn.style.width = 'auto';
+        marginBtn.style.minWidth = '36px';
+        
+        marginBtn.onclick = function(e) {
+            e.stopPropagation();
+            div.classList.toggle('has-extra-margin');
+            if (div.classList.contains('has-extra-margin')) {
+                marginBtn.style.backgroundColor = 'rgba(212, 175, 55, 0.2)';
+                div.style.marginBottom = '30px';
+            } else {
+                marginBtn.style.backgroundColor = 'transparent';
+                div.style.marginBottom = '6px';
+            }
+        };
+        div.appendChild(marginBtn);
+
+        // HTMLタグを含まない純粋なテキストのみをセットする
+        div.dataset.originalText = text; 
+        div.dataset.tapState = 0;
+        
+        // こだわりのハイライト＆文節分割処理をそのまま適用
+        div.onclick = function() {
+            let state = (parseInt(this.dataset.tapState) + 1) % 3;
+            this.dataset.tapState = state;
+            
+            this.classList.remove('highlighted-large', 'highlighted-small');
+            
+            if (state === 1) {
+                this.classList.add('highlighted-large');
+                this.style.fontSize = '16px';
+            } else if (state === 2) {
+                this.classList.add('highlighted-small');
+                this.style.fontSize = '14px';
+            } else {
+                this.style.fontSize = '13px';
+            }
+            
+            if (state === 1 || state === 2) {
+                let segmenter = (window.Intl && Intl.Segmenter) ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
+                let commaThreshold = (state === 1) ? 5 : 15;
+                
+                let lines = this.dataset.originalText.replace(/。/g, '。_SPLIT_').split('_SPLIT_').filter(s => s !== '');
+                
+                let formattedLines = lines.map(line => {
+                    let parts = line.replace(/、/g, '、_SPLIT_').split('_SPLIT_').filter(s => s !== '');
+                    let blocks = [];
+                    let currentBlock = "";
+                    
+                    for (let i = 0; i < parts.length; i++) {
+                        currentBlock += parts[i];
+                        if (parts[i].endsWith('、') && currentBlock.length >= commaThreshold) {
+                            blocks.push(currentBlock);
+                            currentBlock = "";
+                        }
+                    }
+                    if (currentBlock !== "") blocks.push(currentBlock);
+                    
+                    let formattedBlocks = blocks.map(blockText => {
+                        let innerHTML = "";
+                        if (segmenter) {
+                            let segments = Array.from(segmenter.segment(blockText)).map(s => s.segment);
+                            let grouped = [];
+                            let inQuotePhrase = false;
+
+                            for (let seg of segments) {
+                                // 1. 開き括弧が来たら新しいブロックを作る
+                                if (/^[「『（(【]/.test(seg)) {
+                                    inQuotePhrase = true;
+                                    grouped.push(seg);
+                                    continue;
+                                }
+
+                                if (grouped.length > 0) {
+                                    // 2. 括弧内は「閉じ括弧」が来るまで結合
+                                    if (inQuotePhrase) {
+                                        grouped[grouped.length - 1] += seg;
+                                        if (/[」』）)】]$/.test(seg)) {
+                                            inQuotePhrase = false;
+                                        }
+                                        continue;
+                                    }
+
+                                    // 3. ひらがなや句読点は前のブロックに結合
+                                    if (/^[ぁ-んー。、！？…\s」』）)】]+$/.test(seg)) {
+                                        grouped[grouped.length - 1] += seg;
+                                        continue;
+                                    }
+
+                                    // 4. 前のブロックが2文字以下なら、不自然な分断（「受け」＋「取っ」など）を防ぐため結合
+                                    if (grouped[grouped.length - 1].length <= 2) {
+                                        grouped[grouped.length - 1] += seg;
+                                        continue;
+                                    }
+                                }
+                                // 5. それ以外（新しい漢字の始まりなど）は新しいブロックにする
+                                grouped.push(seg);
+                            }
+                            
+                            let resultParts = grouped.map(part => `<span style="display: inline-block; max-width: 100%; word-break: keep-all; overflow-wrap: break-word;">${part}</span>`);
+                            innerHTML = resultParts.join('<wbr>');
+                        } else {
+                            innerHTML = blockText;
+                        }
+                        return `<span style="display: inline-block; max-width: 100%; vertical-align: top;">${innerHTML}</span>`;
+                    });
+                    return formattedBlocks.join('');
+                });
+                this.querySelector('.flavor-text').innerHTML = formattedLines.join('<br>');
+            } else {
+                this.querySelector('.flavor-text').innerHTML = this.dataset.originalText;
+            }
+        };
+        captureArea.appendChild(div);
+    }
+
+    // オブジェクトの階層を辿ってテキストを取り出すヘルパー
+    function processFlavorObj(itemName, prefix, flavorObj) {
+        if (!flavorObj) return;
+        if (Array.isArray(flavorObj)) {
+            flavorObj.forEach((t, i) => createDebugItem(`${itemName} - ${prefix}`, t));
+            return;
+        }
+        for (let key in flavorObj) {
+            let val = flavorObj[key];
+            if (Array.isArray(val)) {
+                val.forEach((t, i) => createDebugItem(`${itemName} - ${prefix}(${key})`, t));
+            } else if (typeof val === 'object') {
+                processFlavorObj(itemName, `${prefix}(${key})`, val);
+            } else if (typeof val === 'string') {
+                createDebugItem(`${itemName} - ${prefix}(${key})`, val);
+            }
+        }
+    }
+
+    // 1. 全カードのテキストを出力
+    let allCards = [
+        ...CARD_POOL.direct, ...CARD_POOL.indirect, ...CARD_POOL.cold, ...CARD_POOL.harm,
+        ...Object.values(CARD_POOL.season),
+        ...OBSTACLE_POOL,
+        ...Object.values(SPECIAL_CARDS)
+    ];
+
+    allCards.forEach(card => {
+        if (card.flavor) processFlavorObj(card.name, '通常', card.flavor);
+        if (card.sellFlavor) processFlavorObj(card.name, '売却', card.sellFlavor);
+        if (card.comboFlavor) processFlavorObj(card.name, 'コンボ', card.comboFlavor.flavor);
+        if (card.tantrumFlavor) processFlavorObj(card.name, '八つ当たり', card.tantrumFlavor);
+        if (card.comboTantrumFlavor) processFlavorObj(card.name, 'コンボ＋八つ当たり', card.comboTantrumFlavor.flavor);
+        if (card.ignoreVisitorFlavor) processFlavorObj(card.name, '来客無視', card.ignoreVisitorFlavor);
+    });
+
+    // 2. その他のイベントやシステムメッセージを出力
+    RANDOM_EVENTS.forEach(ev => {
+        if(ev.flavor) processFlavorObj(`イベント: ${ev.title}`, '発生', ev.flavor);
+    });
+    
+    processFlavorObj('体調不良', '発生', DEBUFF_FLAVORS);
+    processFlavorObj('八つ当たり', '発生', TANTRUM_OCCUR_FLAVOR);
+    processFlavorObj('戦闘勝利', '発生', BATTLE_WIN_FLAVOR);
+    processFlavorObj('戦闘敗北', '発生', BATTLE_FAIL_FLAVOR);
+    processFlavorObj('暗殺未遂翌ターン', '反応', ASSASSINATION_AFTER_FLAVOR);
+    
+    for(let k in TANTRUM_ACTION_TEXTS) {
+        createDebugItem(`八つ当たり中行動 - ${k}`, TANTRUM_ACTION_TEXTS[k]);
+    }
+
+    // --- モーダル表示処理 (openFlavorModalと同一のレイアウト調整) ---
+    const modalDialog = modal.firstElementChild; 
+    modalDialog.style.width = '580px';
+    modalDialog.style.maxWidth = 'none';
+    modalDialog.style.flexShrink = '0';
+    
+    const scrollArea = captureArea.parentElement;
+    scrollArea.style.padding = '0px';
+    scrollArea.style.overflowX = 'hidden';
+    
+    captureArea.style.width = '480px';
+    captureArea.style.padding = '40px 30px'; 
+    captureArea.style.boxSizing = 'border-box';
+    captureArea.style.position = 'relative';
+    captureArea.style.margin = '0 0 0 10px'; 
+    captureArea.style.border = 'none'; 
+    captureArea.style.transform = 'none';
+    
+    const downloadBtn = document.getElementById('btn-download-flavor');
+    downloadBtn.innerText = "画像保存";
+    downloadBtn.disabled = false;
+    downloadBtn.style.opacity = "1";
+    downloadBtn.generatedFile = null;
+
+    adjustFlavorModalScale();
+    
+    modal.style.transition = 'none';
+    modal.style.opacity = '0';
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.style.transition = 'opacity 0.2s ease';
+        modal.style.opacity = '1';
+    }, 50); 
+}
+*/
     </script>
 
 <style>
