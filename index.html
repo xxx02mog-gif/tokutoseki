@@ -1240,7 +1240,7 @@ const CARD_POOL = {
             name: "看病", type: "direct", value: 1, cost: 1, valType: "flat", 
             actions: [{type: "heal", value: 15}, {type: "stress_direct", value: 10}, {type: "buff", key: "regenDuration", value: 3}], desc: "健康+15。ストレス+10。関係性+1。3ターンの間、毎ターン健康度+5", 
             flavor: {
-                trust: ["あなたは彼を気遣って看病した。彼は気まずそうに目を逸らしている。"], 
+                trust: ["布で額を拭うと、彼はあからさまに顔を背けた。"], 
                 high_trust: ["あなたの手厚い看病に対して、彼から労いの気持ちが伝わってくる。"],
                 dependence: ["看病を終えて部屋を立ち去ろうとすると、彼はあなたの服の袖を掴んだ。"],
                 mannerism: ["慣れた手つきで看病をこなす。彼はもう、されるがままになっている。"],
@@ -1252,11 +1252,11 @@ const CARD_POOL = {
             name: "髪を梳かす", type: "direct", value: 1, cost: 1, valType: "flat", 
             actions: [{type: "stress_direct", value: 20}, {type: "buff", key: "nextTurnDrawMod", value: 1}], desc: "ストレス+20。関係性+1。次ターンのドロー枚数+1", 
             flavor: {
-                trust: ["あなたは彼の髪を丁寧に梳かした。彼は自嘲しながらも大人しくしている。"], 
+                trust: ["髪に櫛を通す。彼は自嘲を噛み殺し、じっと大人しくしている。"], 
                 high_trust: ["髪を梳かす。彼はその仕事をあなたに任せている。"],
                 dependence: ["あなたの指先が触れると、彼はひどく安心した表情を見せた。"],
                 mannerism: ["ただ淡々と、髪を梳かしてやった。"],
-                heavy_trust: ["あなたは彼の髪を丁寧に梳かした。彼は眠ったまま、されるがままにされている。"],
+                heavy_trust: ["絡まった毛先を指で解き、思いのままに撫でつける。眠る彼が、あなたの手を拒絶することはない。"],
                 heavy_dependence: ["あなたの指先が触れても、彼は目を覚まさない。"]
             } 
         },
@@ -1264,7 +1264,7 @@ const CARD_POOL = {
             name: "薬を飲ませる", type: "direct", value: 3, cost: 1, valType: "flat", 
             actions: [{type: "heal", value: 40}, {type: "stress", value: 15}], desc: "健康+40。必ずストレス+15。関係性+3", 
             flavor: {
-                trust: ["あなたは彼に薬を飲ませた。彼は申し訳なさそうに視線を彷徨わせた。"], 
+                trust: ["薬を受け取る手が微かに止まり、彼はすぐさま目を伏せた。"], 
                 high_trust: ["差し出した薬を受け取ると、彼は一瞬眉を顰めてから一息に飲み干した。"],
                 dependence: ["あなたが与えるものなら、彼はどんなものでも受け入れる。"],
                 mannerism: ["時刻通りの投薬。彼は機械的にそれを飲み下した。"],
@@ -1289,7 +1289,7 @@ const CARD_POOL = {
             actions: [{type: "heal", value: 30},{type: "stress_direct", value: 10}, {type: "buff", key: "nextTurnAPMod", value: -1}], desc: "健康+30。ストレス+10。関係性+4。次ターンの初期AP-1", 
             flavor: {  
                 trust: ["夜通し彼の傍にいた。彼はあなたの体調を気遣っている。"], 
-                high_trust: ["あなたが傍にいようとしたが、一人で寝ると追い払われてしまった。"],
+                high_trust: ["彼の傍にいようとしたが、一人で寝ると追い払われてしまった。"],
                 dependence: ["あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。"],
                 mannerism: ["夜通し傍にいるのが当たり前になり、彼も特に反応を示さなくなった。"],
                 heavy_trust: ["あなたは、眠ったまま起きる気配のない彼に寄り添い続けた。"],
@@ -1304,7 +1304,7 @@ const CARD_POOL = {
                 high_trust: ["彼は消毒の痛みに顔を歪めまいと、必死に平静を装っている。"],
                 dependence: ["あなたは彼の傷口を消毒した。彼は痛みすらあなたからの慈悲だと感じているようだ。"],
                 mannerism: ["淡々と消毒を済ませる。互いにこの痛みにすら慣れてしまった。"],
-                heavy_trust: ["あなたは彼の傷口を消毒した。この程度の痛みでは目を覚ますことはなさそうだ。"],
+                heavy_trust: ["傷口に薬液を擦り込む。肉体が微かに強張るが、目覚めない彼には抗う術はない。"],
                 heavy_dependence: ["あなたは彼の傷口を消毒した。この程度の痛みで目を覚ますはずはない。"]
             } 
         },
@@ -1312,10 +1312,10 @@ const CARD_POOL = {
             name: "熱を測る", type: "direct", value: 10, cost: 1, valType: "percent", 
             actions: [{type: "stress_direct", value: 10}], desc: "ストレス+10。関係性+10%", 
             flavor: {
-                trust: ["彼の熱を測った。彼は気恥ずかしさと隠しきれない困惑を滲ませている。"], 
+                trust: ["額に手を当てた瞬間、彼の肩が大きく跳ねた。彼は気恥ずかしさと隠しきれない困惑を滲ませている。"], 
                 high_trust: ["額に手を当てて熱を測られるのは、子ども扱いされているように感じて不満なようだ。"],
                 dependence: ["彼の額に手を当てる。彼はあなたの体温に強い安心感を覚えている。"],
-                mannerism: ["事務的に熱を測る。彼も特に気にする素振りを見せない。"],
+                mannerism: ["額に手を当てる。熱を帯びた皮膚の感触にすら、あなたは何の感慨も抱かなくなっていた。"],
                 heavy_trust: ["彼の体は熱い。呼吸は浅く、発熱はまだ落ち着きそうにない。"],
                 heavy_dependence: ["あなたは彼の額に触れた。熱がじわじわと手のひらに伝わってくる。"]
             } 
@@ -1326,8 +1326,8 @@ const CARD_POOL = {
             flavor: {
                 trust: ["つきっきりで食事を与えると、彼は己の不甲斐なさに口を噤んだ。"], 
                 high_trust: ["あなたが食事を与えようとすると、彼は食器を寄越すように言った。"],
-                dependence: ["彼は食事の味など気にも留めず、あなたから与えられているという事実だけを貪っている。"],
-                mannerism: ["黙々と食事を運ぶ。ただ生きるための作業のようだった。"]
+                dependence: ["彼は味など気にも留めず、あなたから与えられているという事実だけを貪っている。"],
+                mannerism: ["食べ物を口元に運べば、彼は無感動にそれを咀嚼する。ただ生きるための作業のようだった。"]
             } 
         },
         { 
@@ -1392,7 +1392,7 @@ const CARD_POOL = {
                 high_trust: ["怪しげな医者の往診に彼は胡乱な目を向けたが、あなたが選んだのであればと渋々受け入れた。"],
                 dependence: ["彼と医者を残して、あなたは部屋を出る。震えた声が扉が閉まる音でかき消された。"],
                 mannerism: ["慣れた手つきで医者が処置を施す。彼ももう抵抗すらしなくなった。"],
-                heavy_trust: ["外部から怪しげな医者を呼び、眠っている間に治療を受けさせた。"],
+                heavy_trust: ["怪しげな医者が彼の身体に触れるのを、腕を組み、無言で眺めていた。"],
                 heavy_dependence: ["人形のように力なく横たわる彼に、怪しげな医師が処置を施す。彼は何をされても抵抗すらできない。"]
             } 
         },
@@ -1504,7 +1504,7 @@ const CARD_POOL = {
                 high_trust: ["新しい調度品を見て、彼はこれからの生活について意見を口にした。"],
                 dependence: ["彼は新しい家具よりも、あなたが傍にいてくれることだけを望んでいる。"],
                 mannerism: ["家具が変わっても、彼の心は何も動かないようだ。"],
-                heavy_trust: ["新しい家具を揃える間も、彼は眠り続けている。"],
+                heavy_trust: ["彼の承諾を待たず、真新しい家具を運び入れた。"],
                 heavy_dependence: ["彼が意識のない間に、あなたは部屋の内装を勝手に新調した。"],
                 visitor: {
                     trust: [
@@ -1587,8 +1587,8 @@ const CARD_POOL = {
             actions: [{context: "master", type: "stress", value: 15}, {context: "visitor", type: "stress", value: -10}], desc: "ストレス+15。関係性-15%", visitorDesc: { merchant: "ストレス-10。関係性-10%", friend: "ストレス-10。関係性-10%", official: "ストレス-10。関係性-10%" },
             flavor: { 
                 trust: ["あなたが無視すると、彼はかつての自分の振る舞いを反省した。"], 
-                high_trust: ["あなたが無視をしても、彼はそれに傷付く素振りも咎めることもしない。"],
-                dependence: ["あなたに無視され、彼は見捨てられるのではないかと怯えている。"],
+                high_trust: ["あなたが無視をしても、彼は傷付く素振りも咎めることもしない。"],
+                dependence: ["呼びかけに応じず背を向ける。彼は見捨てられるのではないかと怯えている。"],
                 mannerism: ["言葉を交わさない時間が、今の二人には当たり前になっていた。"],
                 heavy_trust: ["あなたがその場を離れても、引き留める声が聞こえることはない。"],
                 heavy_dependence: ["静寂に包まれた部屋で、あなたは彼を見下ろした。"],
@@ -1622,7 +1622,7 @@ const CARD_POOL = {
             flavor: {
                 trust: ["あなたに私物を処分されても、彼はそれが当然の報いだと思っているようだ。"], 
                 high_trust: ["私物を処分したことについて、彼は好きにするよう言った。"],
-                dependence: ["自分を構成するものが一つずつ奪われ、空っぽになってゆくことに彼は歪な安堵を覚えている。"],
+                dependence: ["己を構成するものが一つずつ奪われ、空っぽになってゆくことに彼は歪な安堵を覚えている。"],
                 mannerism: ["物が減っていく部屋。彼もそれに対して何も言わなくなった。"],
                 heavy_trust: ["あなたは眠り続ける彼の私物を、ためらいなく処分した。"],
                 heavy_dependence: ["彼が目を覚まさないのをいいことに、彼の持ち物を好き勝手に売り払った。"],
@@ -1668,7 +1668,7 @@ const CARD_POOL = {
             flavor: {
                 trust: ["あなたが部屋の鍵を閉めるのを、彼は正当な処置だと考えている。"], 
                 high_trust: ["閉じ込められることに納得いかないようだが、あなたに免じて従うようだ。"],
-                dependence: ["部屋に閉じ込められることで、彼はあなたに完全に管理されている安心感を得た。"],
+                dependence: ["鍵を下ろす重い音に、彼は深く息を吐き出した。敵のいない空間に安堵しているのかもしれない。"],
                 mannerism: ["閉ざされた扉。それが開かないことは彼もよく分かっている。"],
                 visitor: {
                     trust: [
@@ -1713,9 +1713,9 @@ const CARD_POOL = {
                 trust: ["苦い薬を食事に混ぜても、彼は何も言わずにそれを飲み干す。"], 
                 high_trust: ["彼はそれが毒だと知りながら、黙って飲み込む。信頼という名の圧力を感じる。"],
                 dependence: ["身体の不調を感じながらも、彼はあなたから与えられるものを甘んじて享受している。"], 
-                mannerism: ["見慣れた薬瓶。彼は思考を放棄してそれを飲み下した。"],
+                mannerism: ["見慣れた薬。彼は思考を放棄して飲み下した。"],
                 battle: ["あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"],
-                heavy_trust: ["彼の口に少量の毒を流し込んだ。彼がそれに気づくことはないだろう。"],
+                heavy_trust: ["彼の口に少量の毒を流し込んだ。彼が気づくことはないだろう。"],
                 heavy_dependence: ["彼の生命を、あなたの毒がゆっくりと蝕んでいく。"],
                 heavy_battle: ["あなたは調合した毒を武器に塗り、敵への迎撃態勢を整えた。"],
                 visitor: {
@@ -1814,7 +1814,7 @@ const CARD_POOL = {
             },
             sellFlavor: {
                 trust: ["形見の宝刀を売り払った。今すぐ買い戻すべきだということは、わかっている。"],
-                high_trust: ["あなたは復讐のための刃を手放した。それが彼のためなのか自分のためなのか、わからないでいる。"],
+                high_trust: ["あなたは復讐のための刃を手放した。この行為が、彼の為なのか自分の為なのか、わからないでいる。"],
                 dependence: ["何より大事だった宝刀を処分した。彼を生かし続けることこそが復讐なのだと、自らに言い聞かせる。"]
             },
             flavor: {
@@ -1852,7 +1852,7 @@ const CARD_POOL = {
                 high_trust: ["火薬の匂いが立ち込める中、彼は自らも周囲の警戒を怠らなかった。"],
                 dependence: ["外の騒ぎなど気にも留めず、彼はあなたが戻ってくることだけを待ちわびている。"],
                 mannerism: ["火薬の匂いにも慣れた。外の喧噪はただの雑音に過ぎない。"],
-                heavy_battle: ["火薬の煙が立ち込める。深い眠りの中にいる彼に外の喧騒は届かない。"]
+                heavy_battle: ["火薬の匂いを纏い、微動だにしない彼の元へ戻る。"]
             } 
         },
         { 
@@ -1871,7 +1871,7 @@ const CARD_POOL = {
             flavor: { 
                 trust: ["あなたは、撤退してゆく容赦なく敵を追い詰めた。"], 
                 high_trust: ["危険な役割を担うあなたを、彼は痛ましく思いながら見守っている。"],
-                dependence: ["あなたは敵を徹底的に排除した。障害はすべて取り除くという執念を感じさせる。"],
+                dependence: ["あなたは敵を徹底的に排除した。障害はすべて取り除く"],
                 mannerism: ["ただ敵を排除する。感情のない作業に成り下がっていた。"]
             } 
         },
@@ -1881,7 +1881,7 @@ const CARD_POOL = {
             flavor: {
                 trust: ["身を挺して敵の攻撃を防いだ。彼は己の無力さとあなたを危険に晒したことを悔いている。"], 
                 high_trust: ["自分を庇ったあなたに対し、彼は感謝よりも先に無茶な立ち回りをたしなめた。"],
-                dependence: ["あなたは自らを犠牲にして彼を守った。その姿に彼は心酔している。"],
+                dependence: ["自らを犠牲にして彼を守った。あなたから血が滴るのを見た彼の瞳孔が、異様に開く。"],
                 mannerism: ["傷を負うことにも慣れた。彼もそれを黙って見ているだけだ。"],
                 heavy_battle: ["あなたは傷を負いながら無防備な彼を守り抜いた。"]
             } 
@@ -2088,6 +2088,8 @@ const SPECIAL_CARDS = {
     },
     gift: { 
         name: "贈り物", type: "obstacle", cost: 0, 
+        priceRange: { min: 1000, max: 9999 },
+        isGiftItem: true,
         desc: "持っているとターン開始時ストレス-5。使用不可", 
         flavor: { 
             trust: ["贈り物を唐突に渡された。何の意図があるのか尋ねても、彼は答えなかった。"], 
@@ -2106,7 +2108,7 @@ const SPECIAL_CARDS = {
             {type: "gold", value: -100},
             {type: "stress", value: -20},
             {type: "set_flag", key: "hasGivenGiftToMaster", value: true},
-            {type: "combine_if_has", targetName: "贈り物", resultKey: "paired_ornament", message: "カード変化: 揃いの装飾品"},
+            {type: "combine_if_has", targetName: "贈り物", resultKey: "paired_ornament", message: "カード変化: 揃いの装飾品", extraPriceRange: { min: 100, max: 3000 }},
             {type: "consume"}
         ],
         desc: "資金-100G。必ずストレス-20。関係性+5。主人へ贈り物を渡す。",
@@ -2145,10 +2147,12 @@ const SPECIAL_CARDS = {
     },
     paired_ornament: {
         name: "揃いの装飾品", type: "obstacle", cost: 0,
+        priceRange: { min: 1000, max: 9999 },
+        isGiftItem: true,
         desc: "所持している間、ターン開始時ストレス-15。使用不可。",
         sellFlavor: {
             trust: ["互いに贈り合った品を売り払った。手元から重みが消え、元の何もない日々に逆戻りする。"],
-            high_trust: ["交わした揃いの品を金銭に換えた。彼もまた、何も言わずにそれを見つめている。"],
+            high_trust: ["交わした揃いの品を金銭に換えた。彼もまた、何も言わずに「それ」を見つめている。"],
             dependence: ["あえて形にした歪な繋がりそのものを売り払う。彼は、あなたの裏切りと明確な拒絶に呆然としている。"]
         }
     }
@@ -2689,7 +2693,7 @@ const RANDOM_EVENTS = [
         condition: (state) => !state.battleActive && !state.visitorActive,
         effect: (state) => { state.visitorActive = true; state.visitorType = 'merchant'; state.hasIgnoredVisitor = false; },
                 flavor: { 
-            trust: ["扉を叩く音がする。どうやら行商人が物資の売買に来たようだ。", "扉越しに商人の声がする。取引を持ちかけてきているようだ。"],
+            trust: ["扉を叩く音がする。どうやら行商人が物資の売買に来たようだ。", "扉越しに人の声がする。行商人が取引を持ちかけてきているようだ。"],
             heavy_trust: ["扉を叩く音がする。深い眠りに落ちている彼は気づく様子もない。", "扉越しに商人の声がする。彼は微睡みの中だ。"]
         }
     },
@@ -2699,7 +2703,7 @@ const RANDOM_EVENTS = [
         effect: (state) => { state.visitorActive = true; state.visitorType = 'friend'; state.hasIgnoredVisitor = false; },
         flavor: { 
             trust: ["扉を叩く音がする。彼の昔馴染みが訪ねてきたようだ。", "扉越しに聞き覚えのある声がする。彼の昔馴染みが様子を見に来たらしい。"],
-            heavy_trust: ["扉を叩く音がする。彼の昔馴染みが訪ねてきたようだが、彼は深い眠りの中だ。", "扉越しに聞き覚えのある声がする。しかし彼が目覚める気配はない。"]
+            heavy_trust: ["扉を叩く音がする。彼の昔馴染みが訪ねてきたようだが、彼は深い眠りの中だ。", "扉越しに響く声を聞きながら、彼の頬に触れる。誰が呼ぼうと、彼はここを離れられはしないだろう。"]
         }
     },
     {
@@ -2951,7 +2955,7 @@ if (Math.random() < obstacleRates[state.debuff]) {
                    // 人間による襲撃を示唆するテキスト
                     "外から複数の足音が聞こえる。招かれざる客が迫っているようだ。",
                     "窓の外に人影がちらついた。敵が近づいている。",
-                    "かすかに金属が擦れる音が聞こえた。刃物を持った賊がうろついているらしい。",
+                    "かすかに金属が擦れる音が聞こえた。刃物を持った何者かが屋敷の周辺を徘徊している。",
                     // 魔物による襲撃を示唆するテキスト
                     "獣のような低い唸り声が響いた。外を徘徊しているのは人間ではないようだ。",
                     "ひどく生臭い風が吹き込んだ。魔物が屋敷の近くまで来ている。",
@@ -3074,9 +3078,11 @@ if (Math.random() < obstacleRates[state.debuff]) {
                     let price = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
                     
                     if (state.hasGivenGiftToMaster) {
+                        let pr = SPECIAL_CARDS['paired_ornament'].priceRange || { min: 1000, max: 9999 };
+                        let pairedPrice = Math.floor(Math.random() * (pr.max - pr.min + 1)) + pr.min;
                         let pairedCard = {
                             ...SPECIAL_CARDS['paired_ornament'],
-                            sellPrice: price,
+                            sellPrice: pairedPrice,
                             id: Date.now() + Math.random()
                         };
                         state.hand.push(pairedCard);
@@ -3088,9 +3094,9 @@ if (Math.random() < obstacleRates[state.debuff]) {
                         state.temporaryEffects.push(`カード変化: ${pairedCard.name}`);
                         
                         let flavorObj = {
-                            trust: ["以前渡した品への見返りだろうか。あなたは、彼から不器用に差し出されたそれを受け取った。"],
+                            trust: ["以前渡した品への見返りだろうか。彼から不器用に差し出された「それ」を受け取った。"],
                             high_trust: ["彼が贈り物を手渡してきた。以前、あなたが渡した品と誂えを揃えたらしい。"],
-                            dependence: ["あなたが贈ったものと同じ重さの執着が返ってきた。それは、互いを縛る見えない鎖になる。"]
+                            dependence: ["あなたが贈ったものと同じ重さの執着が返ってきた。「それ」は、互いを縛る見えない鎖になる。"]
                         };
                         let flavorText = getRandomFlavor(flavorObj, state, 'master', false);
                         
@@ -3099,9 +3105,11 @@ if (Math.random() < obstacleRates[state.debuff]) {
                         }, currentLogDelay);
                         currentLogDelay += 600;
                     } else {
+                        let pr = SPECIAL_CARDS['gift'].priceRange || { min: 1000, max: 9999 };
+                        let giftPrice = Math.floor(Math.random() * (pr.max - pr.min + 1)) + pr.min;
                         let giftCard = {
                             ...SPECIAL_CARDS['gift'],
-                            sellPrice: price,
+                            sellPrice: giftPrice,
                             id: Date.now() + Math.random()
                         };
                         state.hand.push(giftCard);
@@ -3876,9 +3884,20 @@ case "combine_if_has":
         let consumedTarget = targetContainer.splice(targetIndex, 1)[0];
         addTurnHistory('disposed', { type: consumedTarget.type, name: consumedTarget.name }); // 素材消費の履歴
 
+        let newSellPrice = consumedTarget.sellPrice || 0;
+        if (action.extraPriceRange) {
+            newSellPrice += Math.floor(Math.random() * (action.extraPriceRange.max - action.extraPriceRange.min + 1)) + action.extraPriceRange.min;
+        } else if (SPECIAL_CARDS[action.resultKey] && SPECIAL_CARDS[action.resultKey].priceRange) {
+            let pr = SPECIAL_CARDS[action.resultKey].priceRange;
+            newSellPrice = Math.floor(Math.random() * (pr.max - pr.min + 1)) + pr.min;
+        }
+        
+        // 金額が上限の9999Gを超えないようにキャップする
+        newSellPrice = Math.min(9999, newSellPrice);
+
         let resultCard = {
             ...SPECIAL_CARDS[action.resultKey],
-            sellPrice: consumedTarget.sellPrice || 0,
+            sellPrice: newSellPrice,
             id: Date.now() + Math.random()
         };
         state.hand.push(resultCard);
@@ -3943,8 +3962,8 @@ case "combine_if_has":
                         state.hasDisposedObstacle = true; // ★追加：カード効果で不用品を廃棄した記録
                         addTurnHistory('disposed', { type: removed.type, name: removed.name }); // 売却フェーズ以外は（処）として記録
                         if (removed.name === "手紙") disposedLetterEffect = true; // ★追加
-                        if (removed.name === "贈り物" || removed.name === "揃いの装飾品") disposedGiftEffect = true; // ★追加
-                       if ((removed.name === "贈り物" || removed.name === "揃いの装飾品") && state.relation <= -75) {
+                        if (removed.isGiftItem) disposedGiftEffect = true; // ★追加
+                       if (removed.isGiftItem && state.relation <= -75) {
                             if (Math.random() < 0.8) {
                                 isGameOverByGift = true;
                             }
@@ -3959,12 +3978,12 @@ case "combine_if_has":
                     // ★追加：不用品全廃棄の前に、手紙と贈り物の所持状況を確認してフラグを立てる
                     let allCurrentCardsForObstacle = [...state.deck, ...state.discard, ...state.hand];
                     if (allCurrentCardsForObstacle.some(c => c && c.name === "手紙")) disposedLetterEffect = true;
-                    if (allCurrentCardsForObstacle.some(c => c && (c.name === "贈り物" || c.name === "揃いの装飾品"))) disposedGiftEffect = true;
+                    if (allCurrentCardsForObstacle.some(c => c && c.isGiftItem)) disposedGiftEffect = true;
 
                     // デッキから不用品をすべて除外（削除時に配列がずれないよう、後ろからループ処理します）
                     for (let i = state.deck.length - 1; i >= 0; i--) {
                         if (state.deck[i] && state.deck[i].type === 'obstacle') {
-                            if (state.deck[i].name === "贈り物" || state.deck[i].name === "揃いの装飾品") giftDisposed = true;
+                            if (state.deck[i].isGiftItem) giftDisposed = true;
                             state.deck.splice(i, 1);
                             removedCount++;
                         }
@@ -3973,7 +3992,7 @@ case "combine_if_has":
                     // 捨て札から不用品をすべて除外
                     for (let i = state.discard.length - 1; i >= 0; i--) {
                         if (state.discard[i] && state.discard[i].type === 'obstacle') {
-                            if (state.discard[i].name === "贈り物" || state.discard[i].name === "揃いの装飾品") giftDisposed = true;
+                            if (state.discard[i].isGiftItem) giftDisposed = true;
                             state.discard.splice(i, 1);
                             removedCount++;
                         }
@@ -3982,7 +4001,7 @@ case "combine_if_has":
                     // 手札から不用品をすべて除外
                     for (let i = state.hand.length - 1; i >= 0; i--) {
                         if (state.hand[i] && state.hand[i].type === 'obstacle') {
-                            if (state.hand[i].name === "贈り物" || state.hand[i].name === "揃いの装飾品") giftDisposed = true;
+                            if (state.hand[i].isGiftItem) giftDisposed = true;
                             state.hand.splice(i, 1);
                             removedCount++;
                         }
@@ -4455,8 +4474,8 @@ function buyCard(idx, cost, btnEl) {
               let bonusGold = calculateBonusGold(card.name);
                 
                 let btnText = ""; let btnClass = "btn-primary";
-                if (card.name === "贈り物") {
-                    let sPrice = card.sellPrice || 5000;
+                if (card.isGiftItem) {
+                    let sPrice = card.sellPrice || (card.priceRange ? card.priceRange.min : 5000);
                     btnText = `+${sPrice}G`; 
                 } else if (state.shopSellCount === 0) {
                     btnText = `+${20 + bonusGold}G`; 
@@ -4510,8 +4529,8 @@ function calculateBonusGold(cardName) {
             let actionType = '処分';
             
             let netCost = 0;
-            if (targetCard.name === "贈り物") {
-                netCost = -(Number(targetCard.sellPrice) || 5000); // 売値がそのまま収入になる
+            if (targetCard.isGiftItem) {
+                netCost = -(Number(targetCard.sellPrice) || (targetCard.priceRange ? targetCard.priceRange.min : 5000)); // 売値がそのまま収入になる
                 actionType = '売却';
             } else if (state.shopSellCount === 0) {
                 netCost = -(20 + bonusGold);
@@ -4589,7 +4608,7 @@ function calculateBonusGold(cardName) {
                 }
 
                 // ★追加：贈り物売却によるDEAD END判定
-                if ((removed.name === "贈り物" || removed.name === "揃いの装飾品") && state.relation <= -75) {
+                if (removed.isGiftItem && state.relation <= -75) {
                     if (Math.random() < 0.8) {
                         if (activeBuffs.isMadness) {
                             checkEndGame(false, "double_suicide");
@@ -6248,7 +6267,7 @@ function debugShowAllFlavors() {
         line-height: 1.5;
     }
 
-    /* 4. さらに細かい補足 */
+   /* 4. さらに細かい補足 */
     #manual-modal-content .manual-note {
         font-size: 10px;
         color: #888888;
@@ -6258,6 +6277,19 @@ function debugShowAllFlavors() {
         padding-left: 14px;
         line-height: 1.4;
     }
+
+    /* 5. 更新履歴のスタイル */
+    #manual-modal-content .update-history {
+        font-size: 9px;
+        font-family: 'Zen Kaku Gothic New', sans-serif !important;
+        color: #bbbbbb;
+        line-height: 1.6;
+        margin-top: 10px;
+        padding-left: 5px;
+    }
+    #manual-modal-content .update-history p {
+        margin-bottom: 12px;
+    font-family: 'Zen Kaku Gothic New', sans-serif !important;}
     
     /* タイムライン（ステップUI） */
     #manual-modal-content .timeline-container {
@@ -6526,144 +6558,132 @@ function debugShowAllFlavors() {
 
 
 <details>
-  <summary style="font-size: 10px;">更新履歴</summary>
-  <p style="font-size: 9px;">■ver 1.4<br>
-  ・カードを1種追加しました。<br>
-  ・互いに贈り物を所持し合うと特殊な効果が発動するようにしました。<br>
-  ・特殊エンディングを2種追加しました。</p>
-  <p style="font-size: 9px;">■ver 1.3<br>・ランダムイベントを1種追加しました。<br>・カード詳細に訪問者使用時の効果を表示するようにしました。<br>
-  ・説明書の記載と一部UIを変更しました。</p>
+  <summary style="font-size: 11px; font-family: 'Zen Kaku Gothic New', sans-serif; color: #d4af37;">更新履歴</summary>
+  <div class="update-history">
+    <p>■ver 1.4<br>
+    ・カードを1種追加しました。<br>
+    ・互いに贈り物を所持し合うと特殊な効果が発動するようにしました。<br>
+    ・特殊エンディングを2種追加しました。<br>
+・UIを更新しました（矜持状態をなくし、デフォルト状態としました）</p>
 
-  <p style="font-size: 9px;">■ver 1.2<br>
-・イベントを1種、特殊状態を1種追加しました。<br>
-・一部のフレーバーテキストを変更しました。
-</p>
+    <p>■ver 1.3<br>
+    ・ランダムイベントを1種追加しました。<br>
+    ・カード詳細に訪問者使用時の効果を表示するようにしました。<br>
+    ・説明書の記載と一部UIを変更しました。</p>
 
-  <p style="font-size: 9px;">■ver 1.1<br>
-・一部のカードを売却したとき、フレーバーテキストを表示されるようにしました。<br>
-・フレーバーテキストログを画像で出力できるようにしました。
-</p>
+    <p>■ver 1.2<br>
+    ・イベントを1種、特殊状態を1種追加しました。<br>
+    ・一部のフレーバーテキストを変更しました。</p>
 
-  <p style="font-size: 9px;">■ver 1.0<br>
-・一部のカードの効果を変更しました。<br>
-・リザルト画像のレイアウトを調整しました。
-</p>
+    <p>■ver 1.1<br>
+    ・一部のカードを売却したとき、フレーバーテキストを表示されるようにしました。<br>
+    ・フレーバーテキストログを画像で出力できるようにしました。</p>
 
-  <p style="font-size: 9px;">■ver 0.9<br>
-・UIを変更しました。<br>
-</p>
-<p style="font-size: 9px;">■ver 0.8<br>
-・通常状態のフレーバーテキストを全カードに追加しました。<br>
-・フレーバーテキストの表示方法を変更し、関係性の偏りが高いほど矜持・依存のテキストが出るようにしました。<br>
-・イベント及び状態異常を一種追加しました。<br>
-</p>
+  <p>■ver 1.0<br>
+    ・一部のカードの効果を変更しました。<br>
+    ・リザルト画像のレイアウトを調整しました。</p>
 
+    <p>■ver 0.9<br>
+    ・UIを変更しました。</p>
 
+    <p>■ver 0.8<br>
+    ・通常状態のフレーバーテキストを全カードに追加しました。<br>
+    ・フレーバーテキストの表示方法を変更し、関係性の偏りが高いほど矜持・依存のテキストが出るようにしました。<br>
+    ・イベント及び状態異常を一種追加しました。</p>
 
-<p style="font-size: 9px;">■ver 0.7<br>
-・イベントを3種、カードを2種、エンディングを2種追加しました。<br>
-・現在の状態やカード効果以外での数値変動がわかるアラートタブを追加しました。<br>
-・ターンの詳細履歴を画像として出力できるようにしました。<br>
-</p>
+    <p>■ver 0.7<br>
+    ・イベントを3種、カードを2種、エンディングを2種追加しました。<br>
+    ・現在の状態やカード効果以外での数値変動がわかるアラートタブを追加しました。<br>
+    ・ターンの詳細履歴を画像として出力できるようにしました。</p>
 
-      <p style="font-size: 9px;">■ver 0.6<br>
-・ランダムイベントを12種実装しました。<br>
-・ターンの詳細履歴に初期デッキと最終デッキを記載しました。<br>
-・ターンの詳細履歴の表示を時系列順にしました。<br>
-・初手の不用品をランダムにしました。<br>
-・一部のテキスト・UIを変更しました。
-</p>
+    <p>■ver 0.6<br>
+    ・ランダムイベントを12種実装しました。<br>
+    ・ターンの詳細履歴に初期デッキと最終デッキを記載しました。<br>
+    ・ターンの詳細履歴の表示を時系列順にしました。<br>
+    ・初手の不用品をランダムにしました。<br>
+    ・一部のテキスト・UIを変更しました。</p>
 
-      <p style="font-size: 9px;">■ver 0.5<br>
-・リザルト画面にすべての「ターンごとの詳細履歴」を追加しました。<br>
-・一部のカードに特定の条件を満たしている時に、特別な処理が発生する効果を追加しました。<br>
-・一部のテキスト・UIを変更しました。
-</p>
+     <p>■ver 0.5<br>
+    ・リザルト画面にすべての「ターンごとの詳細履歴」を追加しました。<br>
+    ・一部のカードに特定の条件を満たしている時に、特別な処理が発生する効果を追加しました。<br>
+    ・一部のテキスト・UIを変更しました。</p>
 
-        <p style="font-size: 10px;">■ver 0.48<br>
-・特殊エンド2種追加しました。<br>
-・カードを3枚追加しました。<br>
-・一部のカードに特定の条件を満たしている時に、特別な処理が発生する効果を追加しました。
-</p>
-      <p style="font-size: 10px;">■ver 0.47<br>
-・攻撃カードに関係性増減値をつけました。<br>
-・一部のカードの効果・フレーバーテキストを変更しました。
-</p>
-    <p style="font-size: 10px;">■ver 0.46<br>
-・襲撃時、勝利時、敗北時、体調不良時のフレーバーテキストをランダム表示されるようにしました。<br>
-・不用品獲得時のフレーバーテキストの一部に昏睡時用のテキストを追加しました。<br>
-・一部のカードの効果を変更しました。
-</p>
-  <p style="font-size: 10px;">■ver 0.45<br>
-・購入フェーズにて季節カードが優先選出されないようにしました。<br>
-・売却フェーズにて使用回数が多いほどカードが高価で売却できるようにしました。<br>
-・一部のカードや獲得資金の調整を行いました。<br>
-・各カードにデバフなどがアイコンでわかるようにしました。
-</p>
-<p style="font-size: 10px;">■ver 0.44<br>
-・攻撃カードで健康度が０になった場合のEND分岐を変更しました。<br>
-・カードのAPの表記やUIを調整しました。
-</p>
+    <p>■ver 0.48<br>
+    ・特殊エンド2種追加しました。<br>
+    ・カードを3枚追加しました。<br>
+    ・一部のカードに特定の条件を満たしている時に、特別な処理が発生する効果を追加しました。</p>
 
-<p style="font-size: 10px;">■ver 0.43<br>
-・不用品を入手した際にフレーバーテキストを表示するようにしました。
-</p>
+    <p>■ver 0.47<br>
+    ・攻撃カードに関係性増減値をつけました。<br>
+    ・一部のカードの効果・フレーバーテキストを変更しました。</p>
 
- <p style="font-size: 10px;">■ver 0.42<br>
-・一定回数以上使用したカードの回復効果が半減するようにしました。<br>（ターン終盤に極端な関係性の時に不用品が混入する処理を削除しました）<br>
-・一定回数以上使用したカードを他より高く売却できるようにしました。<br>
-・タップ、クリックした際のアニメーションを付けました。<br>
-・一部のテキスト・UIを変更しました。<br>
-</p>
+    <p>■ver 0.46<br>
+    ・襲撃時、勝利時、敗北時、体調不良時のフレーバーテキストをランダム表示されるようにしました。<br>
+    ・不用品獲得時のフレーバーテキストの一部に昏睡時用のテキストを追加しました。<br>
+    ・一部のカードの効果を変更しました。</p>
 
- <p style="font-size: 10px;">■ver 0.41<br>
-・リザルト画面に使用カード・最終デッキの一覧を表示させるようにしました。<br>
-・一部のテキスト・UIを変更しました。<br>
-</p>
+    <p>■ver 0.45<br>
+    ・購入フェーズにて季節カードが優先選出されないようにしました。<br>
+    ・売却フェーズにて使用回数が多いほどカードが高価で売却できるようにしました。<br>
+    ・一部のカードや獲得資金の調整を行いました。<br>
+    ・各カードにデバフなどがアイコンでわかるようにしました。</p>
 
- <p style="font-size: 10px;">■ver 0.40<br>
-・カードを1枚追加しました。<br>
-・カードで獲得できる資金をランダムにしました。<br>
-・一部のテキスト・UIを変更しました。<br>
-</p>
+    <p>■ver 0.44<br>
+    ・攻撃カードで健康度が０になった場合のEND分岐を変更しました。<br>
+    ・カードのAPの表記やUIを調整しました。</p>
 
-  <p style="font-size: 10px;">■ver 0.39<br>
-・EDを一種追加しました。<br>
-・昏睡状態のときのフレーバーテキストを追加しました。<br>
-・アニメーション演出をつけました。<br>
-</p>
+    <p>■ver 0.43<br>
+    ・不用品を入手した際にフレーバーテキストを表示するようにしました。</p>
 
-  <p style="font-size: 10px;">■ver 0.38<br>
-・愛着システムを追加しました。<br>
-・カードを３枚追加しました。<br>
-・一部のテキスト・UIを変更しました。<br>
-</p>
+    <p>■ver 0.42<br>
+    ・一定回数以上使用したカードの回復効果が半減するようにしました。<br>
+    （ターン終盤に極端な関係性の時に不用品が混入する処理を削除しました）<br>
+    ・一定回数以上使用したカードを他より高く売却できるようにしました。<br>
+    ・タップ、クリックした際のアニメーションを付けました。<br>
+    ・一部のテキスト・UIを変更しました。</p>
 
-  <p style="font-size: 10px;">■ver 0.37<br>
-・トップ画面をつくりました。<br>
-・カードを３枚追加しました。<br>
-</p>
+ <p>■ver 0.41<br>
+    ・リザルト画面に使用カード・最終デッキの一覧を表示させるようにしました。<br>
+    ・一部のテキスト・UIを変更しました。</p>
 
-  <p style="font-size: 10px;">■ver 0.36<br>
-・一部のカード効果を変更しました。<br>
-・一部のテキスト・UIを変更しました。<br>
-</p>
+    <p>■ver 0.40<br>
+    ・カードを1枚追加しました。<br>
+    ・カードで獲得できる資金をランダムにしました。<br>
+    ・一部のテキスト・UIを変更しました。</p>
 
-  <p style="font-size: 10px;">■ver 0.35<br>
-・カード購入時に新しいカードが補充されるようにしました。<br>
-・カード購入時に季節カードがランダム出現するようにしました。<br>
-・戦闘終了時のフレーバーテキストが表示されるようになりました。<br>
-・一部のテキスト・UIを変更しました。<br>
-</p>
+    <p>■ver 0.39<br>
+    ・EDを一種追加しました。<br>
+    ・昏睡状態のときのフレーバーテキストを追加しました。<br>
+    ・アニメーション演出をつけました。</p>
 
-  <p style="font-size: 10px;">■ver 0.33<br>
-・カードの処理を全体的に修正しました。<br>
-・使用できるカードを３枚増やしました。<br>
-・体調不良時のフレーバーテキストを3種に増やしました。<br>
-・ターンと季節の表記を変更しました。<br>
-・ショップ欄のボタンが2行になるのを修正しました。<br>
-・説明書をページ内部で読めるようにしました。<br>
-└説明書の表記がゲーム内容と異なっていた部分を直しました。</p>
+    <p>■ver 0.38<br>
+    ・愛着システムを追加しました。<br>
+    ・カードを３枚追加しました。<br>
+    ・一部のテキスト・UIを変更しました。</p>
+
+    <p>■ver 0.37<br>
+    ・トップ画面をつくりました。<br>
+    ・カードを３枚追加しました。</p>
+
+    <p>■ver 0.36<br>
+    ・一部のカード効果を変更しました。<br>
+    ・一部のテキスト・UIを変更しました。</p>
+
+    <p>■ver 0.35<br>
+    ・カード購入時に新しいカードが補充されるようにしました。<br>
+    ・カード購入時に季節カードがランダム出現するようにしました。<br>
+    ・戦闘終了時のフレーバーテキストが表示されるようになりました。<br>
+    ・一部のテキスト・UIを変更しました。</p>
+
+    <p>■ver 0.33<br>
+    ・カードの処理を全体的に修正しました。<br>
+    ・使用できるカードを３枚増やしました。<br>
+    ・体調不良時のフレーバーテキストを3種に増やしました。<br>
+    ・ターンと季節の表記を変更しました。<br>
+    ・ショップ欄のボタンが2行になるのを修正しました。<br>
+    ・説明書をページ内部で読めるようにしました。<br>
+    └説明書の表記がゲーム内容と異なっていた部分を直しました。</p>
+  </div>
 </details>
 
         </div>
