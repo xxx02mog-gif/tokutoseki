@@ -953,7 +953,7 @@ display: flex;
     </div>
 </main>
 <script>
-        const GAME_VERSION = "1.5"; // バージョン情報の一元管理
+        const GAME_VERSION = "1.4"; // バージョン情報の一元管理
 
         let state = {
             turn: 0,
@@ -1293,7 +1293,7 @@ const CARD_POOL = {
             flavor: {  
                 trust: ["夜通し彼の傍にいた。彼はあなたの体調を気遣っている。"], 
                 high_trust: ["彼の傍にいようとしたが、一人で寝ると追い払われてしまった。"],
-                dependence: ["あなたが夜通し付き添うと、彼はあなたを失う不安から解放され深く眠りについた。"],
+                dependence: ["あなたが夜通し付き添うと、彼は不安から解放され深く眠りについた。"],
                 mannerism: ["夜通し傍にいるのが当たり前になり、彼も特に反応を示さなくなった。"],
                 heavy_trust: ["あなたは、眠ったまま起きる気配のない彼に寄り添い続けた。"],
                 heavy_dependence: ["あなたが触れても、彼は何の反応も返さない。彼は深い微睡みの中に取り残されている。"]
@@ -2692,9 +2692,17 @@ const RANDOM_EVENTS = [
         }
     },
    {
-       title: "来客（商人）", effectText: "訪問者にカードを使用可能。通常時と異なる効果が発生する。",
+       title: "来客（商人）", effectText: "訪問者にカードを使用可能。ショップの品揃えも更新される。",
         condition: (state) => !state.battleActive && !state.visitorActive,
-        effect: (state) => { state.visitorActive = true; state.visitorType = 'merchant'; state.hasIgnoredVisitor = false; },
+        effect: (state) => { 
+            state.visitorActive = true; 
+            state.visitorType = 'merchant'; 
+            state.hasIgnoredVisitor = false; 
+            state.shopBuyCount = 0;
+            state.shopSellCount = 0;
+            updateShopLineup();
+            state.temporaryEffects.push("商人の到着により、ショップの品揃えが更新されました。");
+        },
                 flavor: { 
             trust: ["扉を叩く音がする。どうやら行商人が物資の売買に来たようだ。", "扉越しに人の声がする。行商人が取引を持ちかけてきているようだ。"],
             heavy_trust: ["扉を叩く音がする。深い眠りに落ちている彼は気づく様子もない。", "扉越しに商人の声がする。彼は微睡みの中だ。"]
@@ -5858,7 +5866,7 @@ function updateBuffDebuffDetails() {
         }
     }
     if (state.seasonEventTriggered) {
-        continuousEffects.push(`季節イベント: 次回購入フェーズで季節カード確定出現`);
+        continuousEffects.push(`季節イベント: 次回ショップ更新時に季節カード確定出現`);
     }
     
     // ★追加：暗殺未遂後の永続表記
