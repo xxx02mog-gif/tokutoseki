@@ -905,7 +905,10 @@ display: flex;
                     <div class="target-btn" style="background-color:#3b3b3b;" id="target-battle-btn" onclick="executeCard('battle')">治安維持（戦闘）に使用</div>
                     <div class="target-btn" style="background-color:#1a1a1a;" onclick="cancelTargetSelect()">キャンセル</div>
                 </div>
-                <button class="btn" id="end-week-btn" onclick="processWeekEnd()">行動を終了</button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn" style="flex: 1;" onclick="openShop()">購入・処分</button>
+                    <button class="btn" id="end-week-btn" style="flex: 1;" onclick="processWeekEnd()">行動を終了</button>
+                </div>
             </div>
         </div>
 
@@ -950,7 +953,7 @@ display: flex;
     </div>
 </main>
 <script>
-        const GAME_VERSION = "1.4"; // バージョン情報の一元管理
+        const GAME_VERSION = "1.5"; // バージョン情報の一元管理
 
         let state = {
             turn: 0,
@@ -4302,20 +4305,18 @@ if (state.battleActive) {
             state.hand = [];
             document.getElementById('phase-main-container').style.display = 'none';
 
-              if (state.turn % 4 === 0) { 
+            if (state.turn % 4 === 0) { 
                 state.shopBuyCount = 0;
                 state.shopSellCount = 0;
-                openShop(); 
-            } else { 
-                document.getElementById('phase-start-container').style.display = 'block'; 
+                updateShopLineup();
             }
+            document.getElementById('phase-start-container').style.display = 'block'; 
             updateUI();
             // ★削除：ターン終了時のステータス記録を廃止（ターン開始時に移動）
         
         }
 
-function openShop() {
-            document.getElementById('phase-shop-container').style.display = 'block';
+        function updateShopLineup() {
             state.shopCards = [];
             
             let nextTurnSeason = getSeasonByTurn(state.turn + 1);
@@ -4357,7 +4358,11 @@ function openShop() {
                     availableCards.splice(randomIndex, 1);
                 }
             }
-            
+        }
+
+        function openShop() {
+            document.getElementById('phase-main-container').style.display = 'none';
+            document.getElementById('phase-shop-container').style.display = 'block';
             switchShopTab('buy');
         }
 
@@ -4449,7 +4454,7 @@ function buyCard(idx, cost, btnEl) {
             let costIncrease = 20; // 上り幅（30から20に緩和）
             let headerText = "";
             if (state.shopSellCount === 0) {
-                headerText = "各月の1回目の売却：カードを売って 資金(+20G) を得られます。";
+                headerText = "4ターン毎の最初の売却：カードを売って 資金(+20G) を得られます。";
             } else {
                 let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
                 headerText = `2回目以降の処分：廃棄コストとして 資金(-${nextCost}G) を消費します。`;
@@ -4457,36 +4462,53 @@ function buyCard(idx, cost, btnEl) {
             
             view.innerHTML = `<div style="font-size:10px; color:#bbbbbb; margin-bottom:6px; font-family: 'Zen Kaku Gothic New', sans-serif;">${headerText}</div>`;
             
-            let rawCards = [...state.deck, ...state.discard];
-            if (rawCards.length === 0) { view.innerHTML += '<div style="color: #bbbbbb; font-size: 11px;">処分できるカードがありません。</div>'; return; }
+            let allCards = [];
+            state.discard.forEach((card, idx) => { if(card) allCards.push({ card, originalIdx: idx, source: 'discard' }); });
+            state.hand.forEach((card, idx) => { if(card) allCards.push({ card, originalIdx: idx, source: 'hand' }); });
+            state.deck.forEach((card, idx) => { if(card) allCards.push({ card, originalIdx: idx, source: 'deck' }); });
+            
+            if (allCards.length === 0) { view.innerHTML += '<div style="color: #bbbbbb; font-size: 11px;">処分できるカードがありません。</div>'; return; }
             
             // 元のインデックスを保持した上で種類ごとにソート（★attachmentを追加）
             const typeOrder = { direct: 1, indirect: 2, cold: 3, harm: 4, season: 5, obstacle: 6, attachment: 7 };
-            let allCards = rawCards.map((card, idx) => ({ card: card, originalIdx: idx }));
             allCards.sort((a, b) => typeOrder[a.card.type] - typeOrder[b.card.type]);
             
             allCards.forEach((data) => {
                 let card = data.card;
                 let idx = data.originalIdx;
+                let source = data.source;
                 const item = document.createElement('div'); item.className = 'shop-item';
                 
                // 使用回数のカウントとボーナス計算
               let bonusGold = calculateBonusGold(card.name);
                 
                 let btnText = ""; let btnClass = "btn-primary";
-                if (card.isGiftItem) {
-                    let sPrice = card.sellPrice || (card.priceRange ? card.priceRange.min : 5000);
-                    btnText = `+${sPrice}G`; 
-                } else if (state.shopSellCount === 0) {
-                    btnText = `+${20 + bonusGold}G`; 
+                let btnAttr = "";
+
+                if (source === 'hand') {
+                    btnText = `手札`;
+                    btnClass = "btn-disabled";
+                    btnAttr = `disabled style="background: transparent; color: #555; border: 1px solid #333; cursor: not-allowed; padding: 6px 4px; font-size: 11px; margin: 0; width: 60px; text-align: center; flex-shrink: 0;"`;
+                } else if (source === 'deck') {
+                    btnText = `デッキ`;
+                    btnClass = "btn-disabled";
+                    btnAttr = `disabled style="background: transparent; color: #555; border: 1px solid #333; cursor: not-allowed; padding: 6px 4px; font-size: 11px; margin: 0; width: 60px; text-align: center; flex-shrink: 0;"`;
                 } else {
-                    let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
-                    let netCost = nextCost - bonusGold;
-                    if (netCost <= 0) {
-                        // ボーナスが処分コストを上回る場合は資金増にする
-                        btnText = `+${Math.abs(netCost)}G`; 
+                    btnAttr = `style="padding: 6px 4px; font-size: 11px; margin: 0; width: 60px; text-align: center; flex-shrink: 0;" onclick="disposeCard(${idx}, this)"`;
+                    if (card.isGiftItem) {
+                        let sPrice = card.sellPrice || (card.priceRange ? card.priceRange.min : 5000);
+                        btnText = `+${sPrice}G`; 
+                    } else if (state.shopSellCount === 0) {
+                        btnText = `+${20 + bonusGold}G`; 
                     } else {
-                        btnText = `-${netCost}G`; 
+                        let nextCost = baseDisposeCost + ((state.shopSellCount - 1) * costIncrease);
+                        let netCost = nextCost - bonusGold;
+                        if (netCost <= 0) {
+                            // ボーナスが処分コストを上回る場合は資金増にする
+                            btnText = `+${Math.abs(netCost)}G`; 
+                        } else {
+                            btnText = `-${netCost}G`; 
+                        }
                     }
                 }
 
@@ -4503,7 +4525,7 @@ function buyCard(idx, cost, btnEl) {
                         </div>
                         <div style="font-size:10px; color:#bbbbbb; font-family: 'Zen Kaku Gothic New', sans-serif; line-height: 1.3;">${getCardDescHTML(card, "shop", state)}</div>
                     </div>
-                    <button class="btn ${btnClass}" style="padding: 6px 4px; font-size: 11px; margin: 0; width: 60px; text-align: center; flex-shrink: 0;" onclick="disposeCard(${idx}, this)">${btnText}</button>`;
+                    <button class="btn ${btnClass}" ${btnAttr}>${btnText}</button>`;
                 view.appendChild(item);
             });
         }
@@ -4513,15 +4535,15 @@ function calculateBonusGold(cardName) {
     return (playCount >= 3) ? (playCount * 10) : 0;
 }
 
-        function disposeCard(combinedIdx, btnEl) {
-            let allCards = [...state.deck, ...state.discard];
+        function disposeCard(idx, btnEl) {
+            let allCards = [...state.deck, ...state.hand, ...state.discard];
             if (allCards.length <= 1) {
                 showCustomAlert("デッキの最小枚数（1枚）を下回るため、これ以上処分できません。");
                 return;
             }
             
             // ボーナスと最終コストの計算
-            let targetCard = combinedIdx < state.deck.length ? state.deck[combinedIdx] : state.discard[combinedIdx - state.deck.length];
+            let targetCard = state.discard[idx];
             let bonusGold = calculateBonusGold(targetCard.name);
             
             let baseDisposeCost = 10;
@@ -4557,12 +4579,7 @@ function calculateBonusGold(cardName) {
                 }
 
                 // ★修正：先にカードを削除し、変数 removed に格納する
-                let removed;
-                if (combinedIdx < state.deck.length) {
-                    removed = state.deck.splice(combinedIdx, 1)[0];
-                } else {
-                    removed = state.discard.splice(combinedIdx - state.deck.length, 1)[0];
-                }
+                let removed = state.discard.splice(idx, 1)[0];
 
                 // ★追加：処分したカードが不用品だった場合の記録
                 if (removed.type === 'obstacle') {
@@ -4629,7 +4646,8 @@ function calculateBonusGold(cardName) {
 
         function closeShop() {
             document.getElementById('phase-shop-container').style.display = 'none';
-            document.getElementById('phase-start-container').style.display = 'block';
+            document.getElementById('phase-main-container').style.display = 'block';
+            updateUI();
         }
 
 // ★変更：整理されたターン履歴のHTMLを生成する関数（抽出範囲を指定可能に）
@@ -5058,6 +5076,8 @@ function startGame() {
             document.getElementById('game-header').style.display = 'block';
             document.getElementById('game-main').style.display = 'flex';
             
+            // 初期ショップラインナップを生成
+            updateShopLineup();
             // 最初の準備フェーズを裏で処理し、第1ターンの行動フェーズから開始する
             processWeekStart();
         }
@@ -6474,21 +6494,22 @@ function debugShowAllFlavors() {
                             <div class="timeline-icon"></div>
                             <div class="manual-summary" style="margin-bottom: 4px;">行動フェーズ</div>
                             <div class="manual-detail">・手札からAPを消費してカードを使用します。</div>
+                            <div class="manual-detail">・「購入・処分」ボタンからショップ画面を開くことができます。</div>
                         </div>
-                        <div class="timeline-step">
+                        <div class="timeline-step" style="border-left: none; padding-bottom: 0;">
                             <div class="timeline-icon"></div>
                             <div class="manual-summary" style="margin-bottom: 4px;">精算フェーズ</div>
                             <div class="manual-detail">・使い残したAPのペナルティ処理が行われます。</div>
                             <div class="manual-detail">・戦闘が発生していた場合、ここで勝敗判定が行われます。</div>
-                        </div>
-                        <div class="timeline-step">
-                            <div class="timeline-icon"></div>
-                            <div class="manual-summary" style="margin-bottom: 4px;">購入・処分フェーズ <span style="font-size: 10px; color: #888; font-family: 'Zen Kaku Gothic New', sans-serif;">（※4ターン毎に発生）</span></div>
-                            <div class="manual-detail">・資金を消費して、カードの購入や処分を行います。</div>
-                            <div class="manual-note">※ただし各月の<span class="manual-hl">最初の1枚の処分に限り、資金（+20G）を獲得</span>できます。</div>
-                            <div class="manual-detail">・終了後、手札をすべて戻して配り直されます。</div>
+                            <div class="manual-detail">・終了後、手札をすべて捨て札に送り、山札（デッキ）から配り直されます。山札が尽きた場合、捨て札をすべてシャッフルして新しい山札を作ります。</div>
                         </div>
                     </div>
+                    
+                    <div class="manual-heading" style="margin-top: 15px;">ショップ（購入・処分）について</div>
+                    <div class="manual-detail">行動フェーズ中、資金を消費してカードの購入や処分を行えます。</div>
+                    <div class="manual-detail">・処分できるカードは「捨て札」にあるもののみです。</div>
+                    <div class="manual-note">※4ターンごとの<span class="manual-hl">最初の1枚の処分に限り、資金（+20G）を獲得</span>できます。</div>
+                    <div class="manual-detail">・4ターン経過ごとに、ショップのラインナップと処分コストがリセットされます。</div>
                 </div>
             </details>
 
@@ -6521,7 +6542,7 @@ function debugShowAllFlavors() {
                     <div class="manual-heading">立ち回りのコツ</div>
                     <div style="margin-bottom: 15px;">
                         <div class="manual-summary">デッキの圧縮</div>
-                        <div class="manual-detail">・不用品や不要なカードはショップで積極的に処分し、手札の巡りを良くしましょう。</div>
+                        <div class="manual-detail">・不用品や不要なカードは、捨て札に送られたタイミングでショップで積極的に処分し、手札の巡りを良くしましょう。</div>
                         <div class="manual-note">※使い込んでマンネリ状態になったカードは、通常より高値で売却できます。</div>
                     </div>
                     <div style="margin-bottom: 25px;">
@@ -6554,12 +6575,16 @@ function debugShowAllFlavors() {
             <div class="ornament-line">◆</div>
             <p style="text-align: center; font-size: 11px; color: #8c6d4f; font-style: italic; margin-bottom: 20px;">
                 特等席の設定は砂上さんの三次創作です。<br>
-ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br><span id="manual-version-display">ver 0.9</span></p>
+ほとんどgeminiに作ってもらったので、色々ガバガバです。<br><br><span id="manual-version-display">ver 1.5</span></p>
 
 
 <details>
   <summary style="font-size: 11px; font-family: 'Zen Kaku Gothic New', sans-serif; color: #d4af37;">更新履歴</summary>
   <div class="update-history">
+    <p>■ver 1.5<br>
+    ・行動フェーズ中いつでもショップ（購入・処分）画面を開けるように変更しました。<br>
+    ・ショップで処分できるカードを「捨て札」にあるもののみに変更しました。<br>
+    ・ショップの処分画面で手札・デッキ（山札）のカードも一覧で確認できるようにしました。</p>
     <p>■ver 1.4<br>
     ・カードを1種追加しました。<br>
     ・互いに贈り物を所持し合うと特殊な効果が発動するようにしました。<br>
