@@ -5767,7 +5767,7 @@ function updateBuffDebuffDetails() {
         let rawText = text.replace(/<[^>]*>?/gm, ''); // HTMLタグを除去
 
         // 最初の : または ： で分割
-        let match = rawText.match(/^(.*?)(:|：)\s*(.*)$/);
+        let match = rawText.match(/^(.*?)(:|：)\s*([\s\S]*)$/);
         if (match) {
             let label = match[1];
             let content = match[3];
@@ -5778,10 +5778,10 @@ function updateBuffDebuffDetails() {
 
             return `<div style="display: flex; align-items: flex-start; margin-bottom: 6px; font-family: 'Zen Kaku Gothic New', sans-serif !important;">
                         <span style="background-color: ${labelBg}; color: ${labelColor}; padding: 2px 4px; line-height: 1; border-radius: 2px; font-size: 9px; margin-top: 1px; margin-right: 6px; white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${label}</span>
-                        <span style="color: ${contentColor}; font-size: 10px; line-height: 1.4; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${content}</span>
+                        <span style="color: ${contentColor}; font-size: 10px; line-height: 1.4; flex: 1; white-space: pre-wrap; word-break: break-all; font-family: 'Zen Kaku Gothic New', sans-serif !important;">${content}</span>
                     </div>`;
         } else {
-            return `<div style="color: #bbbbbb; margin-bottom: 6px; font-size: 10px; line-height: 1.4; font-family: 'Zen Kaku Gothic New', sans-serif !important;">・${rawText}</div>`;
+            return `<div style="color: #bbbbbb; margin-bottom: 6px; font-size: 10px; line-height: 1.4; white-space: pre-wrap; word-break: break-all; font-family: 'Zen Kaku Gothic New', sans-serif !important;">・${rawText}</div>`;
         }
     };
     
@@ -5891,9 +5891,9 @@ function updateBuffDebuffDetails() {
     }
     if (mannerismCards.length > 0) {
         if (state.debuff === 'heavy') {
-            continuousEffects.push(`マンネリ状態 (${mannerismCards.join(', ')}): 昏睡状態のため効果減衰は無効化`);
+            continuousEffects.push(`マンネリ状態: 昏睡状態のため効果減衰は無効化\n[対象: ${mannerismCards.join(', ')}]`);
         } else {
-            continuousEffects.push(`マンネリ状態 (${mannerismCards.join(', ')}): 回復・ストレス軽減が半減`);
+            continuousEffects.push(`マンネリ状態: 回復・ストレス軽減が半減\n[対象: ${mannerismCards.join(', ')}]`);
         }
     }
     
