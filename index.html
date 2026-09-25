@@ -792,7 +792,7 @@ display: flex;
     <img src="catch.png" alt="キャッチコピー" style="width: 80%; max-width: 250px; height: auto; margin-bottom: 30px;">
     
     <div style="width: 80%; max-width: 300px; display: flex; flex-direction: column; gap: 10px;">
-        <button class="btn btn-primary" onclick="startGame()">物語を始める</button>
+        <button class="btn btn-primary" onclick="startGame()">始める</button>
         <button class="btn" style="background-color: #1a1a1a;" onclick="openManual()">説明書</button>
 
         <!-- ▼一時的なデバッグ用ボタンを追加▼ -->
@@ -1158,7 +1158,7 @@ const BATTLE_WIN_FLAVOR = {
         "彼は血に濡れたあなたを案じている。返り血であることを確認し、ようやく安堵の表情を浮かべた。"
     ],
     dependence: [
-        "圧倒的な暴力で敵を蹂 forceするあなたを見て、彼は胸を撫でおろした。",
+        "圧倒的な暴力で敵を蹂躙するあなたを見て、彼は胸を撫でおろした。",
         "彼は、返り血を浴びたあなたに心酔しているようだ。"
     ],
     heavy_trust: [
@@ -1844,7 +1844,7 @@ const CARD_POOL = {
                 trust: ["周囲に罠を仕掛けた。屋敷の安全を万全にする。"], 
                 high_trust: ["仕掛けられた罠の配置を確認し、彼はより効果的な防衛策を提案した。"],
                 dependence: ["屋敷への侵入者を拒むための罠を張った。"],
-                mannerism: ["罠を張り巡らせる。だが、もう誰が来ることもないかもしれない。"]
+                mannerism: ["罠を張り巡らせる。だが、もう誰かがここに来ることはないかもしれない。"]
             } 
         },
         { 
@@ -1872,9 +1872,9 @@ const CARD_POOL = {
             name: "容赦なき追撃", type: "harm", value: 3, cost: 1, valType: "flat", isBattleOnly: true, 
             actions: [{context: "battle", type: "threat_dynamic", base: 10, combo: 35, comboType: "harm"}], desc: "敵脅威度-10（同ターンに他の攻撃カードを使用済なら-35）。関係性+3", 
             flavor: { 
-                trust: ["あなたは、撤退してゆく容赦なく敵を追い詰めた。"], 
+                trust: ["あなたは撤退してゆく敵を容赦なく追い詰めた。"], 
                 high_trust: ["危険な役割を担うあなたを、彼は痛ましく思いながら見守っている。"],
-                dependence: ["あなたは敵を徹底的に排除した。障害はすべて取り除く"],
+                dependence: ["あなたは敵を徹底的に排除した。障害はすべて取り除く。"],
                 mannerism: ["ただ敵を排除する。感情のない作業に成り下がっていた。"]
             } 
         },
@@ -1895,9 +1895,9 @@ const CARD_POOL = {
             name: "収穫祭の思い出", type: "season", season: "秋", value: 20, cost: 2, valType: "percent", 
             actions: [{type: "stress", value: -45}, {type: "season_effect"}], desc: "秋限定。ストレス-45。関係性+20%。使用後、『秋の名残』に変化する", 
             flavor: { 
-                trust: ["彼は、収穫祭の賑やかさをポツリと語った。はるか過去のことを話すような口ぶりだった。"], 
+                trust: ["彼は収穫祭の賑やかさをポツリと語った。それは、はるか過去のことを話すような口ぶりだった。"], 
                 high_trust: ["外から祭りの音が聞こえる。彼はかつての賑やかな日々を懐かしんでいるようだ。"],
-                dependence: ["外の喧噪よりも、彼はあなたが給仕してくれる時間だけを欲している。"],
+                dependence: ["彼は華やかな催しよりも、あなたが世話してくれる時間だけを欲している。"],
                 mannerism: ["祭りの名残を見る。過去の記憶も、今となっては遠い昔のことだ。"]
             } 
         },
@@ -2155,7 +2155,7 @@ const SPECIAL_CARDS = {
         desc: "所持している間、ターン開始時ストレス-15。使用不可。",
         sellFlavor: {
             trust: ["互いに贈り合った品を売り払った。手元から重みが消え、元の何もない日々に逆戻りする。"],
-            high_trust: ["交わした揃いの品を金銭に換えた。彼もまた、何も言わずに「それ」を見つめている。"],
+            high_trust: ["交わした揃いの品を金銭に換えた。彼もまた、何も言わずにそれを見つめている。"],
             dependence: ["あえて形にした歪な繋がりそのものを売り払う。彼は、あなたの裏切りと明確な拒絶に呆然としている。"]
         }
     }
@@ -2463,7 +2463,7 @@ prevStats.relation = state.relation;
             dependence: ["疑うことさえ忘れてしまえば楽になれる。しかし、彼に残された誇りがそれを許さない。"],
             mannerism: ["拭いきれない疑念も、今や日常の景色として定着してしまった。"],
             heavy_trust: ["彼がどれだけ疑いを抱いていても、微睡みの中ではあなたを拒絶できない。"],
-            heavy_dependence: ["たとえ全てを信じられなくても、彼はあなただけは正しいと定義しようとしている。"]
+            heavy_dependence: ["たとえ全てを信じられなくても、彼はあなただけは「正しい」と定義しようとしている。"]
         } 
     },
     { 
