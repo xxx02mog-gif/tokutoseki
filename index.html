@@ -875,7 +875,10 @@ display: flex;
                 
             </div>
             <div class="phase-button-area">
-                <button id="next-turn-btn" class="btn" onclick="processWeekStart()">次へ進む</button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn" style="flex: 1;" onclick="openShop()">購入・処分</button>
+                    <button id="next-turn-btn" class="btn" style="flex: 1;" onclick="processWeekStart()">次へ進む</button>
+                </div>
             </div>
         </div>
 
@@ -954,6 +957,8 @@ display: flex;
 </main>
 <script>
         const GAME_VERSION = "1.4"; // バージョン情報の一元管理
+
+        let previousPhaseContainer = 'phase-main-container';
 
         let state = {
             turn: 0,
@@ -4296,7 +4301,7 @@ if (state.battleActive) {
             if (endLogs.length > 0) {
                 setLastAction(endLogs.join(" / "));
             } else {
-                setLastAction("精算完了");
+                setLastAction("　");
             }
            if (state.health <= 0) { 
                 updateUI(); 
@@ -4369,6 +4374,12 @@ if (state.battleActive) {
         }
 
         function openShop() {
+            if (document.getElementById('phase-start-container').style.display !== 'none') {
+                previousPhaseContainer = 'phase-start-container';
+            } else {
+                previousPhaseContainer = 'phase-main-container';
+            }
+            document.getElementById('phase-start-container').style.display = 'none';
             document.getElementById('phase-main-container').style.display = 'none';
             document.getElementById('phase-shop-container').style.display = 'block';
             switchShopTab('buy');
@@ -4654,7 +4665,7 @@ function calculateBonusGold(cardName) {
 
         function closeShop() {
             document.getElementById('phase-shop-container').style.display = 'none';
-            document.getElementById('phase-main-container').style.display = 'block';
+            document.getElementById(previousPhaseContainer).style.display = 'block';
             updateUI();
         }
 
